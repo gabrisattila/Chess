@@ -1,5 +1,6 @@
 package classes.GUI.FrameParts;
 
+import classes.Ai.AI;
 import classes.Game.I18N.ChessGameException;
 import classes.Game.I18N.Location;
 import classes.Game.I18N.PieceAttributes;
@@ -10,6 +11,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
+import static classes.Ai.AI.*;
 import static classes.Ai.FenConverter.BoardToFen;
 import static classes.GUI.FrameParts.ViewBoard.getViewBoard;
 import static classes.Game.I18N.METHODS.*;
@@ -41,7 +43,7 @@ public class ViewField extends JButton {
     public ViewField(Location loc, String fieldColor){
         this.loc = loc;
         this.fieldColor = fieldColor;
-        setBounds(loc.getI() * FIELD_HEIGHT /* + 20*/, (7 - loc.getJ()) * FIELD_WIDTH /* + 20*/, FIELD_WIDTH, FIELD_HEIGHT);
+        setBounds(loc.getI() * FIELD_HEIGHT /* + 20*/, loc.getJ() * FIELD_WIDTH /* + 20*/, FIELD_WIDTH, FIELD_HEIGHT);
         if (fieldColor.equals(WHITE_STRING))
             setBackground(WHITE);
         else
@@ -155,15 +157,9 @@ public class ViewField extends JButton {
         private void aiActionAfterMove() {
             SwingUtilities.invokeLater(() -> {
                 try {
-                    putToFenQueue(BoardToFen(getViewBoard()), rightQueue(!whiteToPlay ? "WHITE" : "BLACK"));
-                    if (aiStarted) {
-                        getWindow().getAi().calculate();
-                    } else {
-                        getWindow().getAi().start();
-                        aiStarted = true;
-                    }
-                } catch (InterruptedException | ChessGameException ex) {
-                    throw new RuntimeException(ex);
+                    getWindow().getAi().aiTurn();
+                } catch (ChessGameException | InterruptedException e) {
+                    throw new RuntimeException(e);
                 }
             });
         }

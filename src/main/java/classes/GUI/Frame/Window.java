@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 
 import static classes.Ai.FenConverter.*;
 import static classes.GUI.FrameParts.ViewBoard.*;
+import static classes.Game.I18N.Helpers.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
@@ -40,7 +41,8 @@ public class Window extends JFrame {
         setTitle("Sakk Dolgozat");
         setResizable(false);
         setLocationRelativeTo(null);
-        getViewBoard().pieceSetUp("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
+//        getViewBoard().pieceSetUp("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
+        fieldNums(getViewBoard().getFields());
 
         gameBoard = new GameBoard(getViewBoard());
 

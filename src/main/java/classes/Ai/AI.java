@@ -6,6 +6,7 @@ import classes.Game.Model.Structure.Field;
 import classes.Game.Model.Structure.Piece;
 import lombok.*;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -39,9 +40,37 @@ public class AI extends Thread {
 
     //region Methods
 
+    public void aiTurn() throws ChessGameException, InterruptedException {
+
+        putToFenQueue(BoardToFen(getViewBoard()), rightQueue(whiteToPlay ? "WHITE" : "BLACK"));
+
+        if (aiStarted) {
+            calculate();
+        } else {
+            start();
+            aiStarted = true;
+        }
+    }
+
     @Override
     public void run(){
         calculate();
+    }
+
+    public void calculate() {
+        String baseFen;
+        String fenToPut;
+        try {
+            baseFen = takeFromFenQueue(rightQueue(color));
+            getAiBoard().pieceSetUp(baseFen);
+            fenToPut = Move();
+            putToFenQueue(fenToPut, rightQueue(whiteToPlay ? "WHITE" : "BLACK"));
+            FenToBoard(fenToPut, getViewBoard());
+        } catch (InterruptedException | ChessGameException e) {
+            throw new RuntimeException(e);
+        }
+        AiTurn = false;
+        whiteToPlay = !whiteToPlay;
     }
 
     public String Move() throws ChessGameException {
@@ -78,23 +107,6 @@ public class AI extends Thread {
 
         return BoardToFen(getAiBoard());
 
-    }
-
-    public void calculate() {
-        String baseFen;
-        String fenToPut;
-        try {
-            baseFen = takeFromFenQueue(rightQueue(color));
-            getAiBoard().pieceSetUp(baseFen);
-            fenToPut = Move();
-//            putToFenQueue(fenToPut, rightQueue(whiteToPlay ? "WHITE" : "BLACK"));
-            FenToBoard(fenToPut, getViewBoard());
-//            getWindow().setGameBoard(new GameBoard(getViewBoard()));
-        } catch (InterruptedException | ChessGameException e) {
-            throw new RuntimeException(e);
-        }
-        AiTurn = false;
-        whiteToPlay = !whiteToPlay;
     }
 
     //endregion

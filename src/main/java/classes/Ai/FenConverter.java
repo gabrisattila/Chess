@@ -20,14 +20,18 @@ public class FenConverter {
         if (fenIsWrong(fen))
             throw new ChessGameException("This Fen String doesn't suites for the table sizes");
         char currentChar;
-        int sor = MAX_HEIGHT - 1, oszlop = 0;
+        int sor = 0, oszlop = 0;
         PieceAttributes piece;
+
+        for (int i = 0; i < fen.length(); i++) {
+        }
+
         for (int i = 0; i < fen.length(); i++) {
             if (containsLocation(sor, oszlop)){
                 currentChar = fen.charAt(i);
                 if (currentChar == '/'){
                     oszlop = 0;
-                    sor--;
+                    sor++;
                 } else {
                     if (Character.isDigit(currentChar)){
                         oszlop += Character.getNumericValue(currentChar);
@@ -50,7 +54,7 @@ public class FenConverter {
         }
     }
 
-    public static <T, F> String BoardToFen(Board<T> board) throws ChessGameException {
+    public static <T> String BoardToFen(Board<T> board) throws ChessGameException {
         int counterForRows = 0;
         StringBuilder fenToReturn = new StringBuilder();
         for (int i = 0; i < MAX_WIDTH; i++) {
