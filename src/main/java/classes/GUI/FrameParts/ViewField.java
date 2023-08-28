@@ -43,7 +43,7 @@ public class ViewField extends JButton {
     public ViewField(Location loc, String fieldColor){
         this.loc = loc;
         this.fieldColor = fieldColor;
-        setBounds(loc.getI() * FIELD_HEIGHT /* + 20*/, loc.getJ() * FIELD_WIDTH /* + 20*/, FIELD_WIDTH, FIELD_HEIGHT);
+        setSize(FIELD_WIDTH, FIELD_HEIGHT);
         if (fieldColor.equals(WHITE_STRING))
             setBackground(WHITE);
         else

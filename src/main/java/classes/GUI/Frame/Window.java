@@ -41,8 +41,8 @@ public class Window extends JFrame {
         setTitle("Sakk Dolgozat");
         setResizable(false);
         setLocationRelativeTo(null);
-//        getViewBoard().pieceSetUp("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
-        fieldNums(getViewBoard().getFields());
+        getViewBoard().pieceSetUp("RNBQKBNR/PPPPPPPP/8/8/8/8/pppppppp/rnbqkbnr");
+//        fieldNums(getViewBoard().getFields());
 
         gameBoard = new GameBoard(getViewBoard());
 
