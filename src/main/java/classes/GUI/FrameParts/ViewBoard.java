@@ -6,8 +6,7 @@ import classes.Game.Model.Structure.Board;
 import java.util.ArrayList;
 
 import static classes.Game.I18N.METHODS.isNull;
-import static classes.Game.I18N.VARS.MUTUABLES.MAX_HEIGHT;
-import static classes.Game.I18N.VARS.MUTUABLES.MAX_WIDTH;
+import static classes.Game.I18N.VARS.MUTUABLES.*;
 
 public class ViewBoard extends Board<ViewField> {
 

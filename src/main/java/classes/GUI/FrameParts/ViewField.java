@@ -1,6 +1,5 @@
 package classes.GUI.FrameParts;
 
-import classes.Ai.AI;
 import classes.Game.I18N.ChessGameException;
 import classes.Game.I18N.Location;
 import classes.Game.I18N.PieceAttributes;
@@ -11,17 +10,16 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
-import static classes.Ai.AI.*;
-import static classes.Ai.FenConverter.BoardToFen;
-import static classes.GUI.FrameParts.ViewBoard.getViewBoard;
+import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
 import static classes.GUI.Frame.Window.*;
+import static classes.Ai.FenConverter.*;
 
 @Getter
 @Setter
-public class ViewField extends JButton {
+public class ViewField extends JButton{
 
     //region Fields
 
@@ -67,6 +65,7 @@ public class ViewField extends JButton {
         return loc.getJ();
     }
 
+
     public void setPiece(ViewPiece piece){
         gotPiece = notNull(piece);
         this.piece = piece;
@@ -79,6 +78,10 @@ public class ViewField extends JButton {
                 setPiece(p);
             }
         }
+    }
+
+    public void clean() {
+        setPiece((ViewPiece) null);
     }
 
     //endregion
@@ -120,28 +123,29 @@ public class ViewField extends JButton {
 
         }
 
-        private synchronized void PlayerClick(ViewField clicked) throws ChessGameException {
+        private synchronized void PlayerClick(ViewField clicked) throws ChessGameException{
 
             if (CLICK_COUNTER == 0) {
                 CLICK_COUNTER++;
                 lastClicked = clicked;
                 pieceToChange = clicked.piece;
             } else {
-                //if (notNull(clicked.piece)){
-                //    if (helperIfBasedOnColor(clicked.piece)) {
-                //        CLICK_COUNTER = 0;
-                //        return;
-                //    }
-                //    pieceChangeInsteadOfPlayerMove(clicked, lastClicked, pieceToChange);
-                //}else {
-                //    if (helperIfBasedOnColor(lastClicked.piece)) {
-                //    }
-                //}
-                pieceChangeInsteadOfPlayerMove(clicked, lastClicked, pieceToChange);
-                whiteToPlay = !whiteToPlay;
+                if (notNull(clicked.piece)){
+                    if (helperIfBasedOnColor(clicked.piece)) {
+                        CLICK_COUNTER = 0;
+                        return;
+                    }
+                }
+                pieceChangeOnViewBoard(pieceToChange, lastClicked, clicked);
                 CLICK_COUNTER = 0;
                 aiActionAfterMove();
             }
+        }
+
+        private void pieceChangeOnViewBoard(ViewPiece piece, ViewField from, ViewField to){
+            to.setPiece(piece);
+            from.clean();
+            whiteToPlay = !whiteToPlay;
         }
 
         private boolean helperIfBasedOnColor(ViewPiece piece){
@@ -149,13 +153,8 @@ public class ViewField extends JButton {
                     (!piece.isWhite() && !whiteToPlay);
         }
 
-        private void pieceChangeInsteadOfPlayerMove(ViewField clicked, ViewField lastClicked, ViewPiece pieceToChange){
-            clicked.setPiece(pieceToChange);
-            lastClicked.setPiece((ViewPiece) null);
-        }
-
         private void aiActionAfterMove() {
-            SwingUtilities.invokeLater(() -> {
+            SwingUtilities.invokeLater(() ->{
                 try {
                     getWindow().getAi().aiTurn();
                 } catch (ChessGameException | InterruptedException e) {

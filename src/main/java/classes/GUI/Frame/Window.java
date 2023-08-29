@@ -2,18 +2,14 @@ package classes.GUI.Frame;
 
 import classes.Ai.AI;
 import classes.GUI.FrameParts.GameBoard;
+import classes.GUI.FrameParts.ViewField;
+import classes.GUI.FrameParts.ViewPiece;
 import classes.Game.I18N.ChessGameException;
 import lombok.*;
 
 import javax.swing.*;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import static classes.Ai.FenConverter.*;
 import static classes.GUI.FrameParts.ViewBoard.*;
-import static classes.Game.I18N.Helpers.*;
-import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
 
@@ -63,7 +59,6 @@ public class Window extends JFrame {
 
 
     //region Methods
-
 
 
     //endregion

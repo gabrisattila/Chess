@@ -137,10 +137,10 @@ public class Board<F> {
 
     //endregion
 
-    public void takePieceFromAToB(Piece piece, Field A, Field B){
-        Piece change = new Piece(piece.attributes);
-        B.setPiece(change);
-        A.setPiece((Piece) null);
+    public static void pieceChangeOnBoard(Piece piece, Field from, Field to) {
+        to.setPiece(piece);
+        from.clean();
+        whiteToPlay = !whiteToPlay;
     }
 
     public void cleanBoard() throws ChessGameException {
@@ -157,6 +157,7 @@ public class Board<F> {
                 }
             }
         }
+        pieces.clear();
     }
 
     //endregion

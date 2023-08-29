@@ -1,7 +1,7 @@
 package classes.Ai;
 
-import classes.GUI.FrameParts.GameBoard;
 import classes.Game.I18N.ChessGameException;
+import classes.Game.Model.Structure.Board;
 import classes.Game.Model.Structure.Field;
 import classes.Game.Model.Structure.Piece;
 import lombok.*;
@@ -12,7 +12,6 @@ import java.util.Random;
 
 import static classes.Ai.AiBoard.*;
 import static classes.Ai.FenConverter.*;
-import static classes.GUI.Frame.Window.getWindow;
 import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
@@ -70,7 +69,6 @@ public class AI extends Thread {
             throw new RuntimeException(e);
         }
         AiTurn = false;
-        whiteToPlay = !whiteToPlay;
     }
 
     public String Move() throws ChessGameException {
@@ -79,7 +77,17 @@ public class AI extends Thread {
 
         int indexOfChosen = random.nextInt(0, getAiBoard().getPieces().size());
 
-        Piece stepper = getAiBoard().getPieces().get(indexOfChosen);
+        Piece stepper;
+//        int i = 0;
+//        int numOfPieces = getAiBoard().getPieces().size();
+        while ((stepper = getAiBoard().getPieces().get(indexOfChosen)).isWhite() != WHITE_STRING.equals(color)){
+//                || i < numOfPieces){
+            indexOfChosen = random.nextInt(0, getAiBoard().getPieces().size());
+//            i++;
+        }
+//        if (i == numOfPieces){
+//            throw new ChessGameException("The game is over!");
+//        }
 
         ArrayList<Field> ableToStepThere = new ArrayList<>();
 
@@ -99,7 +107,7 @@ public class AI extends Thread {
         indexOfChosen = random.nextInt(0, ableToStepThere.size());
         Field toStepOn = ableToStepThere.get(indexOfChosen);
 
-        getAiBoard().takePieceFromAToB(
+        pieceChangeOnBoard(
                             stepper,
                             getAiBoard().getFieldByPieceFromBoard(stepper),
                             toStepOn
