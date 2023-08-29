@@ -6,6 +6,7 @@ import lombok.*;
 import javax.swing.*;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
@@ -27,21 +28,24 @@ public class GameBoard extends JLayeredPane {
 
     public GameBoard(ViewBoard viewBoard){
         parentBoard = viewBoard;
-        setBounds(300, 100, 8 * FIELD_WIDTH, 8 * FIELD_HEIGHT);
-
-        rotateBoard();
-
-        for (var v : parentBoard.getFields()) {
-            for (var vv : v) {
-                add(vv);
-            }
-        }
+        gameBoardSetUp();
     }
 
     //endregion
 
 
     //region Methods
+
+    private void gameBoardSetUp(){
+        setBoardCoordinates();
+
+        rotateBoard();
+        addFieldsAtTheirFinalForm();
+    }
+
+    private void setBoardCoordinates(){
+        setBounds((int) BOARD_START_X, (int) BOARD_START_Y, 8 * FIELD_WIDTH, 8 * FIELD_HEIGHT);
+    }
 
     private void rotateBoard(){
 
@@ -57,6 +61,7 @@ public class GameBoard extends JLayeredPane {
                 );
             }
         }
+
     }
 
     private Point rotateAntiClockwise(Point point, int width) {
@@ -65,15 +70,12 @@ public class GameBoard extends JLayeredPane {
         return new Point(newX, newY);
     }
 
-
-    private void setTmp(Pair<Integer, Integer> tmp, int i, int j){
-        tmp.setFirst(parentBoard.getFieldByIJFromBoard(i, j).getX());
-        tmp.setSecond(parentBoard.getFieldByIJFromBoard(i, j).getY());
-    }
-
-    private void setNewBounds(int elementToChangeI, int elementToChangeJ, int newX, int newY){
-        parentBoard.getFieldByIJFromBoard(elementToChangeI, elementToChangeJ)
-                .setBounds(newX, newY, FIELD_WIDTH, FIELD_HEIGHT);
+    private void addFieldsAtTheirFinalForm(){
+        for (ArrayList<ViewField> row: parentBoard.getFields()){
+            for (ViewField f : row) {
+                add(f);
+            }
+        }
     }
 
     //endregion

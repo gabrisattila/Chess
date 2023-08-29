@@ -8,8 +8,7 @@ import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import static classes.Game.I18N.VARS.FINALS.FIELD_HEIGHT;
-import static classes.Game.I18N.VARS.FINALS.FIELD_WIDTH;
+import static classes.Game.I18N.VARS.FINALS.*;
 
 public class VARS {
 
@@ -111,9 +110,24 @@ public class VARS {
 
         public static int MAX_HEIGHT = 8;
 
-        public static int WINDOW_WIDTH = MAX_WIDTH * FIELD_WIDTH + (int)(MAX_WIDTH * 1.5); // + 40;
+        public static double SCREEN_HEIGHT = screenSize.getHeight();
 
-        public static int WINDOW_HEIGHT = MAX_HEIGHT * FIELD_HEIGHT + (MAX_HEIGHT * 4); // + 40;
+        public static double SCREEN_WIDTH = screenSize.getWidth();;
+
+        public static double BOARD_HEIGHT = FIELD_HEIGHT * MAX_HEIGHT;
+
+        public static double BOARD_WIDTH = FIELD_WIDTH * MAX_WIDTH;
+
+
+        /**
+         * This is the X coordinate where the board starts. It's used in calculate the position of the board.
+         */
+        public static double BOARD_START_X = (SCREEN_WIDTH - BOARD_WIDTH) / 2;
+
+        /**
+         * This is the Y coordinate where the board starts. It's used in calculate the position of the board.
+         */
+        public static double BOARD_START_Y = (SCREEN_HEIGHT - BOARD_HEIGHT) / 2;
 
         public static int CLICK_COUNTER = 0;
 
