@@ -1,11 +1,9 @@
 package classes.Game.Model.Structure;
 
 
-import classes.GUI.FrameParts.ViewField;
-import classes.Game.I18N.ChessGameException;
-import classes.Game.I18N.Location;
-import lombok.Getter;
-import lombok.Setter;
+import classes.GUI.FrameParts.*;
+import classes.Game.I18N.*;
+import lombok.*;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -143,6 +141,22 @@ public class Board<F> {
         Piece change = new Piece(piece.attributes);
         B.setPiece(change);
         A.setPiece((Piece) null);
+    }
+
+    public void cleanBoard() throws ChessGameException {
+        for (ArrayList<F> row : fields) {
+            for (F f : row) {
+                if (!(f instanceof Field) && !(f instanceof ViewField)){
+                    throw new ChessGameException(BAD_TYPE_MSG);
+                }
+
+                if (f instanceof Field && ((Field) f).isGotPiece()){
+                    ((Field) f).setPiece((Piece) null);
+                } else if (f instanceof ViewField && ((ViewField) f).isGotPiece()) {
+                    ((ViewField) f).setPiece((ViewPiece) null);
+                }
+            }
+        }
     }
 
     //endregion

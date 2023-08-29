@@ -22,9 +22,7 @@ public class FenConverter {
         char currentChar;
         int sor = 0, oszlop = 0;
         PieceAttributes piece;
-
-        for (int i = 0; i < fen.length(); i++) {
-        }
+        board.cleanBoard();
 
         for (int i = 0; i < fen.length(); i++) {
             if (containsLocation(sor, oszlop)){
