@@ -11,7 +11,6 @@ import classes.Game.Model.Structure.Piece;
 
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.PieceType.*;
-import static classes.Game.I18N.PieceType.B;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
 
