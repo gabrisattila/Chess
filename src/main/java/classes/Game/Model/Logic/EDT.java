@@ -47,17 +47,15 @@ public class EDT extends Thread {
 
     @Override
     public void run(){
-        SwingUtilities.invokeLater(() -> {
-            try {
-                getWindow();
-                initializeAis();
-            } catch (ChessGameException | InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        try {
+            getWindow();
+            initializeAis();
+        } catch (ChessGameException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private void initializeAis() throws ChessGameException, InterruptedException {
+    private void initializeAis() {
 
         theresOnlyOneAi = true;
         whiteAiNeeded = true;
