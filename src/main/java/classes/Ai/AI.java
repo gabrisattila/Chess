@@ -44,17 +44,17 @@ public class AI extends Thread {
 
         putToFenQueue(BoardToFen(getViewBoard()), rightQueue(whiteToPlay ? "WHITE" : "BLACK"));
 
-        if (aiStarted) {
-            calculate();
-        } else {
-            start();
-            aiStarted = true;
-        }
+        calculate();
+
     }
 
     @Override
     public void run(){
-        calculate();
+        try {
+            sleep(1000000000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void calculate() {
@@ -69,7 +69,7 @@ public class AI extends Thread {
         } catch (InterruptedException | ChessGameException e) {
             throw new RuntimeException(e);
         }
-        AiTurn = false;
+//        AiTurn = false;
     }
 
     public String Move() throws ChessGameException {

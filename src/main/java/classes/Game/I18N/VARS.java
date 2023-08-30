@@ -137,7 +137,7 @@ public class VARS {
 
         public static Boolean whiteToPlay = true;
 
-        public static Boolean AiTurn = false;
+//        public static Boolean AiTurn = false;
 
         public static Boolean aiStarted = false;
     }

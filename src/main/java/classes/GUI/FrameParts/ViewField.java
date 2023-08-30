@@ -10,12 +10,11 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
-import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
 import static classes.GUI.Frame.Window.*;
-import static classes.Ai.FenConverter.*;
+import static classes.Game.Model.Logic.EDT.*;
 
 @Getter
 @Setter
@@ -115,12 +114,12 @@ public class ViewField extends JButton{
 
         @Override
         public void mouseEntered(MouseEvent e) {
-
+            MouseEnter((ViewField) e.getSource());
         }
 
         @Override
         public void mouseExited(MouseEvent e) {
-
+            MouseExit((ViewField) e.getSource());
         }
 
         private synchronized void PlayerClick(ViewField clicked) throws ChessGameException{
@@ -142,6 +141,22 @@ public class ViewField extends JButton{
             }
         }
 
+        private void MouseEnter(ViewField source) {
+            if (WHITE_STRING.equals(source.fieldColor)){
+                source.setBackground(DARK_WHITE);
+            }else {
+                source.setBackground(DARK_BLACK);
+            }
+        }
+
+        private void MouseExit(ViewField source) {
+            if (WHITE_STRING.equals(source.fieldColor)){
+                source.setBackground(WHITE);
+            }else {
+                source.setBackground(BLACK);
+            }
+        }
+
         private void pieceChangeOnViewBoard(ViewPiece piece, ViewField from, ViewField to){
             to.setPiece(piece);
             from.clean();
@@ -156,7 +171,11 @@ public class ViewField extends JButton{
         private void aiActionAfterMove() {
             SwingUtilities.invokeLater(() ->{
                 try {
-                    getWindow().getAi().aiTurn();
+                    if (whiteAiNeeded){
+                        aiW.aiTurn();
+                    }else {
+                        aiB.aiTurn();
+                    }
                 } catch (ChessGameException | InterruptedException e) {
                     throw new RuntimeException(e);
                 }

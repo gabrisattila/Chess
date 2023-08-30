@@ -1,6 +1,7 @@
 package classes;
 
 import classes.Game.I18N.ChessGameException;
+import classes.Game.Model.Logic.EDT;
 
 import javax.swing.*;
 
@@ -10,11 +11,8 @@ public class Main {
     public static void main(String[] args) {
 
         SwingUtilities.invokeLater(() -> {
-                    try {
-                        getWindow();
-                    } catch (ChessGameException e) {
-                        throw new RuntimeException(e.getMsg());
-                    }
+                    EDT edt = new EDT();
+                    edt.start();
                 }
         );
         
