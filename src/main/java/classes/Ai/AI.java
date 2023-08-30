@@ -12,6 +12,7 @@ import java.util.Random;
 
 import static classes.Ai.AiBoard.*;
 import static classes.Ai.FenConverter.*;
+import static classes.Ai.Position.*;
 import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
@@ -115,6 +116,35 @@ public class AI extends Thread {
 
         return BoardToFen(getAiBoard());
 
+    }
+
+    private int miniMax(Position starterPos, boolean maxNeeded, int depth, int alpha, int beta) throws ChessGameException {
+
+        if (depth == 0 || isGameEndInPos(starterPos)){
+
+            if (isGameEndInPos(starterPos)){
+
+            }
+
+            return evaluate(starterPos);
+        }
+
+        ArrayList<String> possibilities = starterPos.collectPossiblePositions();
+
+        if (maxNeeded){
+
+        }else {
+
+        }
+
+        return 0;
+    }
+
+    private int evaluate(Position position){
+
+
+
+        return 0;
     }
 
     //endregion

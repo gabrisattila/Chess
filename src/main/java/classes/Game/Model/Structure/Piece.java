@@ -73,6 +73,11 @@ public class Piece {
         return WHITE_STRING.equals(attributes.getColor());
     }
 
+
+    public <F> void STEP(Location from, Location to, Board<F> board) {
+        ((Field)(board.getFieldByLocation(to))).setPiece(this);
+        ((Field)(board.getFieldByLocation(from))).clean();
+    }
     //endregion
 
 }
