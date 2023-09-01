@@ -57,7 +57,7 @@ public class EDT extends Thread {
 
     private void initializeAis() {
 
-        theresOnlyOneAi = true;
+        theresOnlyOneAi = false;
         whiteAiNeeded = true;
 
         if (theresOnlyOneAi){
@@ -66,6 +66,7 @@ public class EDT extends Thread {
                 aiW.start();
                 SwingUtilities.invokeLater(() -> {
                     try {
+                        sleep(5000);
                         aiW.aiTurn();
                     } catch (ChessGameException | InterruptedException e) {
                         throw new RuntimeException(e);
@@ -81,6 +82,16 @@ public class EDT extends Thread {
             aiB = new AI("BLACK");
             aiW.start();
             aiB.start();
+            SwingUtilities.invokeLater(() ->{
+                try {
+                    sleep(3000);
+                    aiW.aiTurn();
+                    sleep(3000);
+                    aiB.aiTurn();
+                } catch (ChessGameException | InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
         }
     }
 
