@@ -1,5 +1,6 @@
 package classes.GUI.FrameParts;
 
+import classes.Ai.AI;
 import classes.Game.I18N.ChessGameException;
 import classes.Game.I18N.Location;
 import classes.Game.I18N.PieceAttributes;
@@ -13,7 +14,6 @@ import java.util.ArrayList;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
-import static classes.GUI.Frame.Window.*;
 import static classes.Game.Model.Logic.EDT.*;
 
 @Getter
@@ -137,7 +137,7 @@ public class ViewField extends JButton{
                 }
                 pieceChangeOnViewBoard(pieceToChange, lastClicked, clicked);
                 CLICK_COUNTER = 0;
-                aiActionAfterMove();
+                aiMoveAfterMove();
             }
         }
 
@@ -168,18 +168,20 @@ public class ViewField extends JButton{
                     (!piece.isWhite() && !whiteToPlay);
         }
 
-        private void aiActionAfterMove() {
+        private void aiMoveAfterMove() {
             SwingUtilities.invokeLater(() ->{
-                try {
-                    if (whiteAiNeeded){
-                        aiW.aiTurn();
-                    }else {
-                        aiB.aiTurn();
-                    }
-                } catch (ChessGameException | InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
+                aiAction(whiteAiNeeded ? aiW : aiB);
             });
+        }
+
+        private void aiAction(AI ai){
+            if (ai.isAlive()){
+                synchronized (ai){
+                    ai.notify();
+                }
+            }else {
+                ai.start();
+            }
         }
 
     }

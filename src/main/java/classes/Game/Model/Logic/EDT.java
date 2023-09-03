@@ -7,6 +7,7 @@ import lombok.*;
 import javax.swing.*;
 
 import static classes.GUI.Frame.Window.*;
+import static classes.Game.I18N.VARS.MUTUABLES.*;
 
 /**
  * Event Dispatch Thread
@@ -16,10 +17,6 @@ import static classes.GUI.Frame.Window.*;
 public class EDT extends Thread {
 
     //region Fields
-
-    public static boolean theresOnlyOneAi;
-
-    public static boolean whiteAiNeeded;
 
     /**
      * Always this should be the white one. Even if it's alone, even if it has a pair.
@@ -37,7 +34,7 @@ public class EDT extends Thread {
     //region Constructor
 
     public EDT(){
-
+        aiGameIsOn = true;
     }
 
     //endregion
@@ -50,48 +47,27 @@ public class EDT extends Thread {
         try {
             getWindow();
             initializeAis();
-        } catch (ChessGameException e) {
+        } catch (ChessGameException | InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void initializeAis() {
-
-        theresOnlyOneAi = false;
-        whiteAiNeeded = true;
+    private void initializeAis() throws InterruptedException {
 
         if (theresOnlyOneAi){
             if (whiteAiNeeded) {
                 aiW = new AI("WHITE");
+                sleep(1000);
                 aiW.start();
-                SwingUtilities.invokeLater(() -> {
-                    try {
-                        sleep(5000);
-                        aiW.aiTurn();
-                    } catch (ChessGameException | InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
             }
             else {
                 aiB = new AI("BLACK");
-                aiB.start();
             }
         }else {
             aiW = new AI("WHITE");
             aiB = new AI("BLACK");
             aiW.start();
             aiB.start();
-            SwingUtilities.invokeLater(() ->{
-                try {
-                    sleep(3000);
-                    aiW.aiTurn();
-                    sleep(3000);
-                    aiB.aiTurn();
-                } catch (ChessGameException | InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            });
         }
     }
 

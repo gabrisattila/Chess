@@ -5,6 +5,8 @@ import classes.GUI.FrameParts.ViewPiece;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -72,6 +74,11 @@ public class VARS {
             add('8');
         }};
 
+
+        public static Map<String, String> usualFens = new HashMap<>(){{
+            put("baseWhiteDownStarter", "RNBQKBNR/PPPPPPPP/8/8/8/8/pppppppp/rnbqkbnr");
+        }};
+
         //region PieceViews
 
         public static final ArrayList<ViewPiece> DICT_FOR_VIEW_PIECE = new ArrayList<>(){{
@@ -137,9 +144,13 @@ public class VARS {
 
         public static Boolean whiteToPlay = true;
 
-//        public static Boolean AiTurn = false;
+        public static Boolean aiGameIsOn = false;
 
-        public static Boolean aiStarted = false;
+        public static boolean theresOnlyOneAi;
+
+        public static boolean whiteAiNeeded;
+
+
     }
 
 }

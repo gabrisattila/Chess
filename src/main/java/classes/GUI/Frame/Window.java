@@ -8,7 +8,9 @@ import lombok.*;
 import javax.swing.*;
 
 import static classes.GUI.FrameParts.ViewBoard.*;
+import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
+import static classes.Game.I18N.VARS.MUTUABLES.*;
 import static classes.Game.Model.Logic.EDT.*;
 
 @Getter
@@ -29,8 +31,9 @@ public class Window extends JFrame {
     private Window() throws ChessGameException {
 
         frameSetup();
-        getViewBoard().pieceSetUp("RNBQKBNR/PPPPPPPP/8/8/8/8/pppppppp/rnbqkbnr");
-//        fieldNums(getViewBoard().getFields());
+        getViewBoard().pieceSetUp(usualFens.get("baseWhiteDownStarter"));
+        setAiNumberDemand();
+        //        fieldNums(getViewBoard().getFields());
         gameBoard = new GameBoard(getViewBoard());
         add(gameBoard);
         setVisible(true);
@@ -56,6 +59,13 @@ public class Window extends JFrame {
         setTitle("Sakk Dolgozat");
         setResizable(false);
         setLocationRelativeTo(null);
+    }
+
+    private void setAiNumberDemand() {
+
+        theresOnlyOneAi = true;
+
+        whiteAiNeeded = false;
     }
 
 

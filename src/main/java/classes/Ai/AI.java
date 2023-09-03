@@ -40,21 +40,26 @@ public class AI extends Thread {
 
     //region Methods
 
+    @Override
+    public void run(){
+        while (aiGameIsOn){
+            try {
+                aiTurn();
+                synchronized (this){
+                    wait();
+                }
+            } catch (InterruptedException | ChessGameException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
     public void aiTurn() throws ChessGameException, InterruptedException {
 
         putToFenQueue(BoardToFen(getViewBoard()), rightQueue(whiteToPlay ? "WHITE" : "BLACK"));
 
         calculate();
 
-    }
-
-    @Override
-    public void run(){
-        try {
-            sleep(1000000000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public void calculate() {
@@ -69,7 +74,6 @@ public class AI extends Thread {
         } catch (InterruptedException | ChessGameException e) {
             throw new RuntimeException(e);
         }
-//        AiTurn = false;
     }
 
     public String Move() throws ChessGameException {
