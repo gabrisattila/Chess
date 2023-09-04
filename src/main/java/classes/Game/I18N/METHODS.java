@@ -1,14 +1,38 @@
 package classes.Game.I18N;
 
+import classes.Ai.AI;
 import classes.Game.Model.Structure.Board;
 import classes.Game.Model.Structure.Field;
 
+import javax.swing.*;
 import java.util.concurrent.BlockingQueue;
 
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
+import static classes.Game.Model.Logic.EDT.aiB;
+import static classes.Game.Model.Logic.EDT.aiW;
 
 public class METHODS {
+
+    public static void aiMove() throws InterruptedException {
+        if (theresOnlyOneAi)
+            SwingUtilities.invokeLater(() -> aiAction(whiteAiNeeded ? aiW : aiB));
+        else
+            while (aiGameIsOn){
+                Thread.sleep(500);
+                SwingUtilities.invokeLater(() -> aiAction(whiteToPlay ? aiW : aiB));
+            }
+    }
+
+    private static void aiAction(AI ai){
+        if (ai.isAlive()){
+            synchronized (ai){
+                ai.notify();
+            }
+        }else {
+            ai.start();
+        }
+    }
 
     public static boolean containsLocation(int i, int j){
         return containsLocation(MAX_WIDTH, MAX_HEIGHT, i, j);

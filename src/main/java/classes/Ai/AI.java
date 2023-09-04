@@ -17,6 +17,8 @@ import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
+import static classes.Game.Model.Logic.EDT.aiB;
+import static classes.Game.Model.Logic.EDT.aiW;
 
 @Getter
 @Setter
@@ -69,7 +71,8 @@ public class AI extends Thread {
             baseFen = takeFromFenQueue(rightQueue(color));
             getAiBoard().pieceSetUp(baseFen);
             fenToPut = Move();
-            putToFenQueue(fenToPut, rightQueue(whiteToPlay ? "WHITE" : "BLACK"));
+            if (theresOnlyOneAi)
+                putToFenQueue(fenToPut, rightQueue(whiteToPlay ? "WHITE" : "BLACK"));
             FenToBoard(fenToPut, getViewBoard());
         } catch (InterruptedException | ChessGameException e) {
             throw new RuntimeException(e);

@@ -11,6 +11,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
+import static classes.Ai.AI.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
@@ -97,7 +98,7 @@ public class ViewField extends JButton{
         public void mouseClicked(MouseEvent e) {
             try {
                 PlayerClick((ViewField) e.getSource());
-            } catch (ChessGameException ex) {
+            } catch (ChessGameException | InterruptedException ex) {
                 throw new RuntimeException(ex);
             }
         }
@@ -122,39 +123,50 @@ public class ViewField extends JButton{
             MouseExit((ViewField) e.getSource());
         }
 
-        private synchronized void PlayerClick(ViewField clicked) throws ChessGameException{
+        private synchronized void PlayerClick(ViewField clicked) throws ChessGameException, InterruptedException {
 
-            if (CLICK_COUNTER == 0) {
-                CLICK_COUNTER++;
-                lastClicked = clicked;
-                pieceToChange = clicked.piece;
-            } else {
-                if (notNull(clicked.piece)){
-                    if (helperIfBasedOnColor(clicked.piece)) {
-                        CLICK_COUNTER = 0;
-                        return;
+            if (theresOnlyOneAi){
+                if (CLICK_COUNTER == 0) {
+                    CLICK_COUNTER++;
+                    lastClicked = clicked;
+                    pieceToChange = clicked.piece;
+                } else {
+                    if (notNull(clicked.piece)){
+                        if (helperIfBasedOnColor(clicked.piece)) {
+                            CLICK_COUNTER = 0;
+                            return;
+                        }
                     }
+                    pieceChangeOnViewBoard(pieceToChange, lastClicked, clicked);
+                    CLICK_COUNTER = 0;
+                    aiMove();
                 }
-                pieceChangeOnViewBoard(pieceToChange, lastClicked, clicked);
-                CLICK_COUNTER = 0;
-                aiMoveAfterMove();
             }
+
         }
 
         private void MouseEnter(ViewField source) {
-            if (WHITE_STRING.equals(source.fieldColor)){
-                source.setBackground(DARK_WHITE);
-            }else {
-                source.setBackground(DARK_BLACK);
+
+            if (theresOnlyOneAi){
+                if (WHITE_STRING.equals(source.fieldColor)){
+                    source.setBackground(DARK_WHITE);
+                }else {
+                    source.setBackground(DARK_BLACK);
+                }
             }
+
         }
 
         private void MouseExit(ViewField source) {
-            if (WHITE_STRING.equals(source.fieldColor)){
-                source.setBackground(WHITE);
-            }else {
-                source.setBackground(BLACK);
+
+            if (theresOnlyOneAi){
+                if (WHITE_STRING.equals(source.fieldColor)) {
+                    source.setBackground(WHITE);
+                } else {
+                    source.setBackground(BLACK);
+                }
             }
+
         }
 
         private void pieceChangeOnViewBoard(ViewPiece piece, ViewField from, ViewField to){
@@ -166,22 +178,6 @@ public class ViewField extends JButton{
         private boolean helperIfBasedOnColor(ViewPiece piece){
             return (piece.isWhite() && whiteToPlay) ||
                     (!piece.isWhite() && !whiteToPlay);
-        }
-
-        private void aiMoveAfterMove() {
-            SwingUtilities.invokeLater(() ->{
-                aiAction(whiteAiNeeded ? aiW : aiB);
-            });
-        }
-
-        private void aiAction(AI ai){
-            if (ai.isAlive()){
-                synchronized (ai){
-                    ai.notify();
-                }
-            }else {
-                ai.start();
-            }
         }
 
     }

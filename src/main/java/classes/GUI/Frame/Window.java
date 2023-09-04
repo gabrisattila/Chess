@@ -63,7 +63,7 @@ public class Window extends JFrame {
 
     private void setAiNumberDemand() {
 
-        theresOnlyOneAi = true;
+        theresOnlyOneAi = false;
 
         whiteAiNeeded = false;
     }

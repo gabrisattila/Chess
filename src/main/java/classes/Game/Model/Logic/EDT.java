@@ -7,6 +7,7 @@ import lombok.*;
 import javax.swing.*;
 
 import static classes.GUI.Frame.Window.*;
+import static classes.Game.I18N.METHODS.aiMove;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
 
 /**
@@ -66,8 +67,7 @@ public class EDT extends Thread {
         }else {
             aiW = new AI("WHITE");
             aiB = new AI("BLACK");
-            aiW.start();
-            aiB.start();
+            aiMove();
         }
     }
 
