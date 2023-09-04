@@ -5,6 +5,9 @@ import classes.Game.I18N.PieceType;
 import lombok.*;
 
 import javax.swing.*;
+import javax.swing.text.FieldView;
+
+import java.util.ArrayList;
 
 import static classes.Ai.FenConverter.charToPieceType;
 import static classes.Game.I18N.VARS.FINALS.*;
@@ -16,6 +19,8 @@ public class ViewPiece extends ImageIcon {
     //region Fields
 
     private final PieceAttributes attributes;
+
+    private ArrayList<ViewField> options;
 
     //endregion
 

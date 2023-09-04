@@ -11,10 +11,13 @@ public class Main {
     public static void main(String[] args) {
 
         SwingUtilities.invokeLater(() -> {
-                    EDT edt = new EDT();
-                    edt.start();
-                }
-        );
-        
+            EDT edt;
+            try {
+                edt = new EDT();
+            } catch (ChessGameException | InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            edt.start();
+        });
     }
 }

@@ -75,8 +75,12 @@ public class Piece {
 
 
     public <F> void STEP(Location from, Location to, Board<F> board) {
-        ((Field)(board.getFieldByLocation(to))).setPiece(this);
-        ((Field)(board.getFieldByLocation(from))).clean();
+        ((Field)(board.getField(to))).setPiece(this);
+        ((Field)(board.getField(from))).clean();
+    }
+
+    public void updateRange() {
+
     }
     //endregion
 

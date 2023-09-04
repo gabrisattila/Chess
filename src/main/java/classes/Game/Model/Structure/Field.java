@@ -1,7 +1,6 @@
 package classes.Game.Model.Structure;
 
 
-import classes.GUI.FrameParts.ViewPiece;
 import classes.Game.I18N.Location;
 import classes.Game.I18N.PieceAttributes;
 import classes.Game.I18N.PieceType;
@@ -108,10 +107,10 @@ public class Field {
 
         for (int i = location.getI() - 1; i < location.getI() + 2; i++) {
             for (int j = location.getJ() - 1; j < location.getJ() + 2; j++) {
-                if (containsLocation(i, j) && notNull(board.getFieldByIJFromBoard(i, j).getPiece())
-                        && board.getFieldByIJFromBoard(i, j).getPiece().getType() == PieceType.K){
-                    if (board.getFieldByIJFromBoard(i, j).getPiece().isWhite() != white){
-                        return board.getFieldByIJFromBoard(i, j).getPiece().isWhite() != white;
+                if (containsLocation(i, j) && notNull(board.getField(i, j).getPiece())
+                        && board.getField(i, j).getPiece().getType() == PieceType.K){
+                    if (board.getField(i, j).getPiece().isWhite() != white){
+                        return board.getField(i, j).getPiece().isWhite() != white;
                     }
                 }
             }

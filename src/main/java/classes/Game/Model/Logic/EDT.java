@@ -2,15 +2,14 @@ package classes.Game.Model.Logic;
 
 import classes.Ai.AI;
 import classes.Game.I18N.*;
+import classes.Game.Model.Structure.Board;
 import lombok.*;
 
-import javax.swing.*;
-
-import java.io.IOException;
-
 import static classes.GUI.Frame.Window.*;
-import static classes.Game.I18N.METHODS.aiMove;
+import static classes.GUI.FrameParts.ViewBoard.getViewBoard;
+import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
+import static classes.Game.Model.Structure.Board.*;
 
 /**
  * Event Dispatch Thread
@@ -36,8 +35,8 @@ public class EDT extends Thread {
 
     //region Constructor
 
-    public EDT(){
-        aiGameIsOn = true;
+    public EDT() throws ChessGameException, InterruptedException {
+        initialization();
     }
 
     //endregion
@@ -47,12 +46,21 @@ public class EDT extends Thread {
 
     @Override
     public void run(){
-        try {
-            getWindow();
-            initializeAis();
-        } catch (ChessGameException | InterruptedException e) {
-            throw new RuntimeException(e);
+        while (gameIsOn){
+            if (whiteAiNeeded != whiteToPlay){
+                try {
+                    getViewBoard().updatePieceRanges();
+                } catch (ChessGameException | InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
+    }
+
+    private void initialization() throws ChessGameException, InterruptedException {
+        gameIsOn = true;
+        getWindow();
+        initializeAis();
     }
 
     private void initializeAis() throws InterruptedException {

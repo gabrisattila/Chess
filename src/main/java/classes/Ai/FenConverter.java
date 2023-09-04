@@ -34,7 +34,7 @@ public class FenConverter {
                     if (Character.isDigit(currentChar)){
                         oszlop += Character.getNumericValue(currentChar);
                     }else {
-                        T f = board.getFieldByIJFromBoard(sor, oszlop);
+                        T f = board.getField(sor, oszlop);
                         if (! ((f instanceof Field ) || (f instanceof ViewField))){
                             throw new ChessGameException(f, BAD_TYPE_MSG);
                         }

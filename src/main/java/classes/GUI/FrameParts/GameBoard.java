@@ -1,6 +1,5 @@
 package classes.GUI.FrameParts;
 
-import classes.Game.I18N.Pair;
 import lombok.*;
 
 import javax.swing.*;
@@ -53,7 +52,7 @@ public class GameBoard extends JLayeredPane {
             for (int j = 0; j < 8; j++) {
                 Point rotatedPosition = rotateAntiClockwise(new Point(i, j), MAX_WIDTH);
 
-                parentBoard.getFieldByIJFromBoard(i, j).setBounds(
+                parentBoard.getField(i, j).setBounds(
                         rotatedPosition.x * FIELD_HEIGHT,
                         rotatedPosition.y * FIELD_WIDTH,
                         FIELD_WIDTH,

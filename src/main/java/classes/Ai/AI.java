@@ -1,12 +1,10 @@
 package classes.Ai;
 
 import classes.Game.I18N.ChessGameException;
-import classes.Game.Model.Structure.Board;
 import classes.Game.Model.Structure.Field;
 import classes.Game.Model.Structure.Piece;
 import lombok.*;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -17,8 +15,6 @@ import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
-import static classes.Game.Model.Logic.EDT.aiB;
-import static classes.Game.Model.Logic.EDT.aiW;
 
 @Getter
 @Setter
@@ -44,7 +40,7 @@ public class AI extends Thread {
 
     @Override
     public void run(){
-        while (aiGameIsOn){
+        while (gameIsOn){
             try {
                 aiTurn();
                 synchronized (this){
@@ -111,7 +107,7 @@ public class AI extends Thread {
 
         pieceChangeOnBoard(
                             stepper,
-                            getAiBoard().getFieldByPieceFromBoard(stepper),
+                            getAiBoard().getField(stepper),
                             toStepOn
         );
 

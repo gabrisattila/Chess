@@ -115,24 +115,24 @@ public class Board<F> {
 
     //region GetBy
 
-    public F getFieldByIJFromBoard(int i, int j){
+    public F getField(int i, int j){
         return fields.get(i).get(j);
     }
 
-    public F getFieldByLocation(Location location){
+    public F getField(Piece p){
+        return fields.get(p.getI()).get(p.getJ());
+    }
+
+    public F getField(Location location){
         return fields.get(location.getI()).get(location.getJ());
     }
 
-    public Piece getPieceByIJFromBoard(int i, int j){
+    public Piece getPiece(int i, int j){
         return ((Field)fields.get(i).get(j)).getPiece();
     }
 
-    public Piece getPieceByLocationFromBoard(Location location){
-        return getPieceByIJFromBoard(location.getI(), location.getJ());
-    }
-
-    public F getFieldByPieceFromBoard(Piece p){
-        return fields.get(p.getI()).get(p.getJ());
+    public Piece getPiece(Location location){
+        return getPiece(location.getI(), location.getJ());
     }
 
     //endregion
@@ -159,6 +159,14 @@ public class Board<F> {
         }
         pieces.clear();
     }
+
+
+    public void updatePieceRanges() throws ChessGameException, InterruptedException {
+        for (Piece p : pieces) {
+            p.updateRange();
+        }
+    }
+
 
     //endregion
 

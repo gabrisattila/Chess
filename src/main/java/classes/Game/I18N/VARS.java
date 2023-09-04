@@ -144,7 +144,7 @@ public class VARS {
 
         public static Boolean whiteToPlay = true;
 
-        public static Boolean aiGameIsOn = false;
+        public static Boolean gameIsOn = false;
 
         public static boolean theresOnlyOneAi;
 
