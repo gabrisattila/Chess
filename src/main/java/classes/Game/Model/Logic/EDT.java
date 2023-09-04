@@ -50,7 +50,7 @@ public class EDT extends Thread {
         try {
             getWindow();
             initializeAis();
-        } catch (ChessGameException | InterruptedException | IOException e) {
+        } catch (ChessGameException | InterruptedException e) {
             throw new RuntimeException(e);
         }
     }

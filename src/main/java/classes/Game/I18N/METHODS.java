@@ -94,7 +94,7 @@ public class METHODS {
         return count;
     }
 
-    public static <T, F> Field castToField(Board<T> board, int i, int j){
+    public static <T> Field castToField(Board<T> board, int i, int j){
         return (Field)(board.getFieldByIJFromBoard(i, j));
     }
 

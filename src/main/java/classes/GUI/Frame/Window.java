@@ -28,7 +28,7 @@ public class Window extends JFrame {
 
     //region Constructor
 
-    private Window() throws ChessGameException, IOException {
+    private Window() throws ChessGameException {
 
         setAiNumberDemand();
 
@@ -42,7 +42,7 @@ public class Window extends JFrame {
 
     }
 
-    public static void getWindow() throws ChessGameException, IOException {
+    public static void getWindow() throws ChessGameException {
         if (window == null){
             window = new Window();
         }
@@ -62,7 +62,7 @@ public class Window extends JFrame {
         setLocationRelativeTo(null);
     }
 
-    private void setAiNumberDemand() throws IOException {
+    private void setAiNumberDemand(){
 
         System.out.println("Szeretné-e végig nézni a gép csatáját saját maga ellen, vagy inkább ön mérkőzik meg vele? \n (Igen / Nem)");
 
