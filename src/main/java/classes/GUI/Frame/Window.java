@@ -35,7 +35,8 @@ public class Window extends JFrame {
         setAiNumberDemand();
 
         frameSetup();
-        getViewBoard().pieceSetUp(usualFens.get("baseWhiteDownStarter"));
+        setUpSides();
+//        getViewBoard().pieceSetUp(usualFens.get("whiteDownStarter"));
 
         gameBoard = new GameBoard(getViewBoard());
         add(gameBoard);
@@ -73,6 +74,14 @@ public class Window extends JFrame {
             System.out.println("Világossal szeretne lenni? (Igen / Nem)");
             whiteAiNeeded = "Nem".equals(new Scanner(System.in).nextLine().trim());
         }
+    }
+
+    private void setUpSides() throws ChessGameException {
+        getViewBoard().pieceSetUp(usualFens.get(
+                theresOnlyOneAi ? (whiteAiNeeded ? "blackDownStarter" : "whiteDownStarter") :
+                                  "whiteDownStarter"
+            )
+        );
     }
 
 

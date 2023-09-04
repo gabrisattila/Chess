@@ -59,6 +59,7 @@ public class EDT extends Thread {
     }
 
     private void initialization() throws ChessGameException, InterruptedException {
+        setName("EDT");
         gameIsOn = true;
         getWindow();
         initializeAis();
@@ -68,17 +69,27 @@ public class EDT extends Thread {
 
         if (theresOnlyOneAi){
             if (whiteAiNeeded) {
-                aiW = new AI("WHITE");
+                initializeAi("WHITE");
                 sleep(1000);
                 aiW.start();
             }
             else {
-                aiB = new AI("BLACK");
+                initializeAi("BLACK");
             }
         }else {
-            aiW = new AI("WHITE");
-            aiB = new AI("BLACK");
+            initializeAi("WHITE");
+            initializeAi("BLACK");
             aiMove();
+        }
+    }
+
+    private void initializeAi(String color){
+        if ("WHITE".equals(color)){
+            aiW = new AI(color);
+            aiW.setName("aiW");
+        }else {
+            aiB = new AI(color);
+            aiB.setName("aiB");
         }
     }
 
