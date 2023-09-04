@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 
 public class VARS {
@@ -37,6 +38,45 @@ public class VARS {
         public final static Color DARK_BLACK = new Color(77, 60, 22);
 
         public final static Color BACK_GROUND = new Color(33, 3, 8, 205);
+
+        public static final Map<PieceType, Location[]> matrixChooser = new HashMap<>(){{
+            put(G, pawnMatrix);
+            put(H, knightMatrix);
+            put(F, bishopMatrix);
+            put(B, rookMatrix);
+            put(V, qkMatrix);
+            put(K, qkMatrix);
+        }};
+
+        public static final Location[] pawnMatrix = new Location[]{
+                new Location(1, -1), new Location(1, 0), new Location(1, 1), new Location(2, 0)
+        };
+
+        public static final Location[] knightMatrix = new Location[]{
+                                        new Location(2,  -1), new Location(2,  1),
+                new Location(1,  -2),                                               new Location(1,  2),
+                new Location(-1, -2),                                               new Location(-1, 2),
+                                        new Location(-2, -1), new Location(-2, 1),
+
+        };
+
+        public static final Location[] bishopMatrix = new Location[]{
+                new Location( 1, -1),        new Location( 1, 1),
+
+                new Location(-1, -1),        new Location(-1, 1)
+        };
+
+        public static final Location[] rookMatrix = new Location[]{
+                                       new Location(1,  0),
+                new Location(0, -1),                     new Location(0, 1),
+                                       new Location(-1, 0)
+        };
+
+        public static final Location[] qkMatrix = new Location[]{
+                new Location( 1, -1), new Location(1,  0), new Location( 1, 1),
+                new Location( 0, -1),                           new Location( 0, 1),
+                new Location(-1, -1), new Location(-1, 0), new Location(-1, 1)
+        };
 
         public final static ArrayList<Character> whiteBlackLetters = new ArrayList<>(){{
             add('W');

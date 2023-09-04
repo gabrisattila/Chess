@@ -56,6 +56,10 @@ public class METHODS {
         board.pieceSetUp(takeFromFenQueue(rightQueue(whiteToPlay ? "WHITE" : "BLACK")));
     }
 
+    public static boolean containsLocation(Location location){
+        return containsLocation(location.getI(), location.getJ());
+    }
+
     public static boolean containsLocation(int i, int j){
         return containsLocation(MAX_WIDTH, MAX_HEIGHT, i, j);
     }
