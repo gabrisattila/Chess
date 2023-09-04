@@ -8,7 +8,7 @@ public class TODO {
     //TODO Szabályos lépések megírása
         //TODO A tábla folyamatos fen másolatokban menjen:
         //     Ha sima ember akkor view -> fenChannel -> board átveszi a fent -> sima board felrakása ->
-        //                              -> lehetőségek számolás -> viewban kirajzolás -> választás
+        //                              -> lehetőségek számolás -> viewban kirajzolása a lehetőségeknek -> választás
         //     Ha ai akkor view -> fenChannel -> ai átveszi a fent -> aiBoard felrakása -> calculate -> aiBoardon lépés ->
         //                      -> aiBoard to fen -> fen a fenChannelbe -> fenChannelből fen alapján view
 

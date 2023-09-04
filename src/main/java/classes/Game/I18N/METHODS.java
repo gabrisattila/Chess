@@ -7,10 +7,11 @@ import classes.Game.Model.Structure.Field;
 import javax.swing.*;
 import java.util.concurrent.BlockingQueue;
 
+import static classes.Ai.FenConverter.*;
+import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
-import static classes.Game.Model.Logic.EDT.aiB;
-import static classes.Game.Model.Logic.EDT.aiW;
+import static classes.Game.Model.Logic.EDT.*;
 
 public class METHODS {
 
@@ -32,6 +33,11 @@ public class METHODS {
         }else {
             ai.start();
         }
+    }
+
+    public static <F> void passViewBoardInFenTo(Board<F> board) throws ChessGameException, InterruptedException {
+        putToFenQueue(BoardToFen(getViewBoard()), rightQueue(whiteToPlay ? "WHITE" : "BLACK"));
+        board.pieceSetUp(takeFromFenQueue(rightQueue(whiteToPlay ? "WHITE" : "BLACK")));
     }
 
     public static boolean containsLocation(int i, int j){

@@ -1,17 +1,17 @@
 package classes.GUI.Frame;
 
-import classes.Ai.AI;
 import classes.GUI.FrameParts.GameBoard;
 import classes.Game.I18N.ChessGameException;
 import lombok.*;
 
 import javax.swing.*;
 
+import java.io.IOException;
+import java.util.Scanner;
+
 import static classes.GUI.FrameParts.ViewBoard.*;
-import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
-import static classes.Game.Model.Logic.EDT.*;
 
 @Getter
 @Setter
@@ -28,11 +28,13 @@ public class Window extends JFrame {
 
     //region Constructor
 
-    private Window() throws ChessGameException {
+    private Window() throws ChessGameException, IOException {
+
+        setAiNumberDemand();
 
         frameSetup();
         getViewBoard().pieceSetUp(usualFens.get("baseWhiteDownStarter"));
-        setAiNumberDemand();
+
         //        fieldNums(getViewBoard().getFields());
         gameBoard = new GameBoard(getViewBoard());
         add(gameBoard);
@@ -40,11 +42,10 @@ public class Window extends JFrame {
 
     }
 
-    public static Window getWindow() throws ChessGameException {
+    public static void getWindow() throws ChessGameException, IOException {
         if (window == null){
             window = new Window();
         }
-        return window;
     }
 
     //endregion
@@ -61,11 +62,19 @@ public class Window extends JFrame {
         setLocationRelativeTo(null);
     }
 
-    private void setAiNumberDemand() {
+    private void setAiNumberDemand() throws IOException {
 
-        theresOnlyOneAi = false;
+        System.out.println("Szeretné-e végig nézni a gép csatáját saját maga ellen, vagy inkább ön mérkőzik meg vele? \n (Igen / Nem)");
 
-        whiteAiNeeded = false;
+        theresOnlyOneAi = "Nem".equals(new Scanner(System.in).nextLine().trim());
+
+        if (theresOnlyOneAi){
+            System.out.println("Világossal szeretne lenni? (Igen / Nem)");
+            whiteAiNeeded = "Nem".equals(new Scanner(System.in).nextLine().trim());
+        }
+
+
+
     }
 
 

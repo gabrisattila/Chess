@@ -57,19 +57,13 @@ public class AI extends Thread {
     }
 
     public void aiTurn() throws ChessGameException, InterruptedException {
-
-        putToFenQueue(BoardToFen(getViewBoard()), rightQueue(whiteToPlay ? "WHITE" : "BLACK"));
-
+        passViewBoardInFenTo(getAiBoard());
         calculate();
-
     }
 
     public void calculate() {
-        String baseFen;
         String fenToPut;
         try {
-            baseFen = takeFromFenQueue(rightQueue(color));
-            getAiBoard().pieceSetUp(baseFen);
             fenToPut = Move();
             if (theresOnlyOneAi)
                 putToFenQueue(fenToPut, rightQueue(whiteToPlay ? "WHITE" : "BLACK"));

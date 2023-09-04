@@ -6,6 +6,8 @@ import lombok.*;
 
 import javax.swing.*;
 
+import java.io.IOException;
+
 import static classes.GUI.Frame.Window.*;
 import static classes.Game.I18N.METHODS.aiMove;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
@@ -48,7 +50,7 @@ public class EDT extends Thread {
         try {
             getWindow();
             initializeAis();
-        } catch (ChessGameException | InterruptedException e) {
+        } catch (ChessGameException | InterruptedException | IOException e) {
             throw new RuntimeException(e);
         }
     }
