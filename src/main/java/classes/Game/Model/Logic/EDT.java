@@ -36,8 +36,6 @@ public class EDT extends Thread {
     //region Constructor
 
     public EDT() throws ChessGameException, InterruptedException {
-        gameIsOn = true;
-//        initialization();
     }
 
     //endregion
@@ -47,21 +45,21 @@ public class EDT extends Thread {
 
     @Override
     public void run(){
-        while (gameIsOn){
-            if (whiteAiNeeded != whiteToPlay){
-                try {
-                    getWindow();
-                    initializeAis();
-//                    getViewBoard().updatePieceRanges();
-                } catch (ChessGameException | InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+        try {
+            initialization();
+            getViewBoard().updatePieceRanges();
+        } catch (ChessGameException | InterruptedException e) {
+            throw new RuntimeException(e);
         }
+//        while (gameIsOn){
+//            if (whiteAiNeeded != whiteToPlay){
+//
+//            }
+//        }
     }
 
     private void initialization() throws ChessGameException, InterruptedException {
-//        gameIsOn = true;
+        gameIsOn = true;
         getWindow();
         initializeAis();
     }

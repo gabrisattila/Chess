@@ -37,7 +37,6 @@ public class Window extends JFrame {
         frameSetup();
         getViewBoard().pieceSetUp(usualFens.get("baseWhiteDownStarter"));
 
-        //        fieldNums(getViewBoard().getFields());
         gameBoard = new GameBoard(getViewBoard());
         add(gameBoard);
         setVisible(true);
