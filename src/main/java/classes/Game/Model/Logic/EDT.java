@@ -36,7 +36,7 @@ public class EDT extends Thread {
     //region Constructor
 
     public EDT() throws ChessGameException, InterruptedException {
-        aiGameIsOn = true;
+        gameIsOn = true;
 //        initialization();
     }
 
@@ -47,7 +47,7 @@ public class EDT extends Thread {
 
     @Override
     public void run(){
-        while (aiGameIsOn){
+        while (gameIsOn){
             if (whiteAiNeeded != whiteToPlay){
                 try {
                     getWindow();
