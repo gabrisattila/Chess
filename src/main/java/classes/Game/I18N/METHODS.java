@@ -12,8 +12,24 @@ import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
 import static classes.Game.Model.Logic.EDT.*;
+import static classes.Main.*;
 
 public class METHODS {
+
+    public static Thread getThread(String name){
+        switch (name){
+            case ("aiW") -> {
+                return aiW;
+            }
+            case ("aiB") -> {
+                return aiB;
+            }
+            case ("EDT") -> {
+                return edt;
+            }
+        }
+        return null;
+    }
 
     public static void aiMove() throws InterruptedException {
         if (theresOnlyOneAi)

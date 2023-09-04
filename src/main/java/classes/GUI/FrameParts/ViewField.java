@@ -10,12 +10,14 @@ import javax.swing.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import static classes.Ai.AI.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
 import static classes.Game.Model.Logic.EDT.*;
+import static classes.Main.*;
 
 @Getter
 @Setter
@@ -140,6 +142,9 @@ public class ViewField extends JButton{
                     pieceChangeOnViewBoard(pieceToChange, lastClicked, clicked);
                     CLICK_COUNTER = 0;
                     aiMove();
+                    synchronized (edt){
+                        notify();
+                    }
                 }
             }
 

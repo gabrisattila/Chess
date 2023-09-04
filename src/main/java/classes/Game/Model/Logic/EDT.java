@@ -2,14 +2,12 @@ package classes.Game.Model.Logic;
 
 import classes.Ai.AI;
 import classes.Game.I18N.*;
-import classes.Game.Model.Structure.Board;
 import lombok.*;
 
 import static classes.GUI.Frame.Window.*;
 import static classes.GUI.FrameParts.ViewBoard.getViewBoard;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
-import static classes.Game.Model.Structure.Board.*;
 
 /**
  * Event Dispatch Thread
@@ -47,7 +45,14 @@ public class EDT extends Thread {
     public void run(){
         try {
             initialization();
-            getViewBoard().updatePieceRanges();
+            while(gameIsOn && theresOnlyOneAi){
+                if (whiteAiNeeded != whiteToPlay){
+                    getViewBoard().updatePieceRanges();
+                    synchronized (this){
+                        wait();
+                    }
+                }
+            }
         } catch (ChessGameException | InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -63,6 +68,7 @@ public class EDT extends Thread {
         gameIsOn = true;
         getWindow();
         initializeAis();
+        getViewBoard().updatePieceRanges();
     }
 
     private void initializeAis() throws InterruptedException {
