@@ -19,8 +19,8 @@ public class METHODS {
         if (theresOnlyOneAi)
             SwingUtilities.invokeLater(() -> aiAction(whiteAiNeeded ? aiW : aiB));
         else
-            while (gameIsOn){
-                Thread.sleep(500);
+            while (aiGameIsOn){
+                Thread.sleep(750);
                 SwingUtilities.invokeLater(() -> aiAction(whiteToPlay ? aiW : aiB));
             }
     }
@@ -95,7 +95,7 @@ public class METHODS {
     }
 
     public static <T> Field castToField(Board<T> board, int i, int j){
-        return (Field)(board.getField(i, j));
+        return (Field)(board.getFieldByIJFromBoard(i, j));
     }
 
     public static <T> Field castToField(T fieldInT){

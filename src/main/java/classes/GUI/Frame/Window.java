@@ -6,6 +6,8 @@ import lombok.*;
 
 import javax.swing.*;
 
+import java.util.Scanner;
+
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -72,9 +74,6 @@ public class Window extends JFrame {
             System.out.println("Világossal szeretne lenni? (Igen / Nem)");
             whiteAiNeeded = "Nem".equals(new Scanner(System.in).nextLine().trim());
         }
-
-
-
     }
 
 
