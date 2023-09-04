@@ -46,7 +46,7 @@ public class EDT extends Thread {
 
     @Override
     public void run(){
-        while (gameIsOn){
+        while (!gameIsOn){
             if (whiteAiNeeded != whiteToPlay){
                 try {
                     getViewBoard().updatePieceRanges();
