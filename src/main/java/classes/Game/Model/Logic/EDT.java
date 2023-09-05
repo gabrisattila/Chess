@@ -5,7 +5,7 @@ import classes.Game.I18N.*;
 import lombok.*;
 
 import static classes.GUI.Frame.Window.*;
-import static classes.GUI.FrameParts.ViewBoard.getViewBoard;
+import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
 
@@ -76,7 +76,7 @@ public class EDT extends Thread {
         if (theresOnlyOneAi){
             if (whiteAiNeeded) {
                 initializeAi("WHITE");
-                sleep(1000);
+                sleep(2000);
                 aiW.start();
             }
             else {

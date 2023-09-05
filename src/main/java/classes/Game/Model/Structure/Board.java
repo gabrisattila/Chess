@@ -162,9 +162,11 @@ public class Board<F> {
 
 
     public void updatePieceRanges() throws ChessGameException, InterruptedException {
+        setEnemyInDefendBasedOnWatching();
         for (Piece p : pieces) {
             p.updateRange();
         }
+        setInDefendBasedOnWatching();
     }
 
 

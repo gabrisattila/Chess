@@ -41,7 +41,7 @@ public class FenConverter {
                         piece = charToPieceAttributes(currentChar);
                         if (f instanceof Field) {
                             ((Field) f).setPiece(piece);
-                            board.getPieces().add(new Piece(piece, new Location(sor, oszlop)));
+                            board.getPieces().add(new Piece(piece, new Location(sor, oszlop), board));
                         } else {
                             ((ViewField) f).setPiece(piece);
                         }

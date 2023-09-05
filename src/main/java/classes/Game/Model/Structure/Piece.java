@@ -17,7 +17,7 @@ import static classes.Game.I18N.VARS.MUTUABLES.*;
 
 @Getter
 @Setter
-public class Piece {
+public class Piece <F> {
 
     //region Fields
 
@@ -35,6 +35,8 @@ public class Piece {
 
     private double VALUE;
 
+    private Board<Field> board;
+
     private Set<Location> possibleRange;
 
     private Set<Location> watchedRange;
@@ -46,15 +48,17 @@ public class Piece {
 
     //region Constructor
 
-    public Piece(){}
+    public Piece(){
+    }
 
     public Piece(PieceAttributes attributes){
         this.attributes = attributes;
     }
 
-    public Piece(PieceAttributes attributes, Location location){
+    public Piece(PieceAttributes attributes, Location location, Board<Field> board){
         this.attributes = attributes;
         this.location = location;
+        this.board = board;
     }
 
     //endregion
@@ -78,62 +82,123 @@ public class Piece {
         return WHITE_STRING.equals(attributes.getColor());
     }
 
-
-    public <F> void STEP(Location from, Location to, Board<F> board) {
+    public void STEP(Location from, Location to, Board<F> board) {
         ((Field)(board.getField(to))).setPiece(this);
         ((Field)(board.getField(from))).clean();
     }
 
     public void updateRange() throws ChessGameException {
-        possibleRange = getRange(getType());
+        possibleRange = getRange(getType(), true);
+        watchedRange = getRange(getType(), false);
+        if (board.isCheckForCurrent()) {
+            possibleRange = checkConstraint(possibleRange);
+        }
     }
 
-    private Set<Location> getRange(PieceType type) throws ChessGameException {
+    private Set<Location> getRange(PieceType type, boolean posOrWatch) throws ChessGameException {
         if (type == null)
             throw new ChessGameException("Type can't be null when choose range to PieceType");
         switch (type){
             case G -> {
-                return range(G);
+                return range(G, posOrWatch);
             }
             case H -> {
-                return range(H);
+                return range(H, posOrWatch);
             }
             case F -> {
-                return range(F);
+                return range(F, posOrWatch);
             }
             case B -> {
-                return range(B);
+                return range(B, posOrWatch);
             }
             case V -> {
-                return range(V);
+                return range(V, posOrWatch);
             }
             case K -> {
-                return range(K);
+                return range(K, posOrWatch);
             }
         }
-        return range(G);
+        return range(G, posOrWatch);
     }
 
-    private Set<Location> range(PieceType type){
+    private Set<Location> range(PieceType type, boolean posOrWatch){
         Set<Location> range = new HashSet<>();
-        Location locationToAdd;
-        for (Location l : matrixChooser.get(type)) {
+        for (Location loc : matrixChooser.get(type)) {
             if (type == G || type == K || type == H){
-                addToRange(l, range);
+                if (containsLocation(loc)){
+                    if (hasPiece(loc)){
+                        if (type == G && (pawnHitFilter(loc) || pawnEmPassantFilter(loc))){
+                            range.add(loc);
+                        } else if (type == K && kingFilter(loc)) {
+                            range.add(loc);
+                        } else if (!isSameColor(loc)){
+                            range.add(loc);
+                        }
+                    }else {
+                        if (type == K && kingFilter(loc)){
+                            range.add(loc);
+                        }else if (type == G){
+                            if (posOrWatch){
+                                if (pawnFilter(loc)){
+                                    range.add(loc);
+                                }
+                            }else {
+                                if (pawnHitFilter(loc) || pawnEmPassantFilter(loc)){
+                                    range.add(loc);
+                                }
+                            }
+                        } else {
+                            range.add(loc);
+                        }
+                    }
+                }
             }else {
+                Location locToAdd;
                 for (int i = 1; i < MAX_WIDTH; i++) {
-                    locationToAdd = nTimesLoc(i, l);
-                    addToRange(locationToAdd, range);
+                    locToAdd = nTimesLoc(i, loc);
+                    if (containsLocation(locToAdd)){
+                        if (hasPiece(locToAdd)){
+                            if (isSameColor(locToAdd)){
+                                if (!posOrWatch) {
+                                    range.add(locToAdd);
+                                    break;
+                                }
+                            }else {
+                                range.add(locToAdd);
+                                break;
+                            }
+                        }else {
+                            range.add(locToAdd);
+                        }
+                    }
                 }
             }
         }
         return range;
     }
 
-    private void addToRange(Location l, Set<Location> range){
-        if (containsLocation(matrixPlusOriginLoc(l))){
-            range.add(matrixPlusOriginLoc(l));
-        }
+    private boolean kingFilter(Location l){
+        return !board.enemyKingInNeighbour(l, this) && !thereWouldBeCheck(l);
+    }
+
+    private boolean pawnEmPassantFilter(Location loc){
+        return board.isEmPassantEnabledToHere_For(loc, this);
+    }
+
+    private boolean pawnHitFilter(Location loc){
+        return (hasPiece(loc) && !isSameColor(loc) && loc.getJ() != getJ());
+    }
+
+    private boolean pawnFilter(Location l){
+        return l.getJ() == getJ() && (enemyStartRow == 6 ? ((getI() == 1 && l.getI() == 3) || (l.getI() - getI() < 2)) : ((getI() == 6 && l.getI() == 4) || (Math.abs(l.getI() - getI()) < 2)));
+    }
+
+    private boolean isSameColor(Location location){
+        return board.getPiece(location).isWhite() == isWhite();
+    }
+
+    private boolean hasPiece(Location l){
+        return board.getField(l).isGotPiece();
     }
 
     private Location nTimesLoc(int n, Location loc){
@@ -143,6 +208,11 @@ public class Piece {
     private Location matrixPlusOriginLoc(Location l){
         return new Location(location.getI() + l.getI(), location.getJ() + l.getJ());
     }
+
+
+
+
+
 
     //endregion
 
