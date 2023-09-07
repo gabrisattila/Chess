@@ -5,9 +5,7 @@ import classes.Game.I18N.ChessGameException;
 import classes.Game.I18N.Location;
 import classes.Game.I18N.PieceAttributes;
 import classes.Game.I18N.PieceType;
-import classes.Game.Model.Structure.Board;
-import classes.Game.Model.Structure.Field;
-import classes.Game.Model.Structure.Piece;
+import classes.Game.Model.Structure.*;
 
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.PieceType.*;
@@ -16,7 +14,7 @@ import static classes.Game.I18N.VARS.MUTUABLES.*;
 
 public class FenConverter {
 
-    public static <T> void FenToBoard(String fen, Board<T> board) throws ChessGameException {
+    public static void FenToBoard(String fen, IBoard board) throws ChessGameException {
         if (fenIsWrong(fen))
             throw new ChessGameException("This Fen String doesn't suites for the table sizes");
         char currentChar;
@@ -34,13 +32,13 @@ public class FenConverter {
                     if (Character.isDigit(currentChar)){
                         oszlop += Character.getNumericValue(currentChar);
                     }else {
-                        T f = board.getField(sor, oszlop);
+                        IField f = board.getField(sor, oszlop);
                         if (! ((f instanceof Field ) || (f instanceof ViewField))){
                             throw new ChessGameException(f, BAD_TYPE_MSG);
                         }
                         piece = charToPieceAttributes(currentChar);
                         if (f instanceof Field) {
-                            ((Field) f).setPiece(piece);
+                            f.setPiece(piece);
                             board.getPieces().add(new Piece(piece, new Location(sor, oszlop), board));
                         } else {
                             ((ViewField) f).setPiece(piece);
@@ -52,12 +50,12 @@ public class FenConverter {
         }
     }
 
-    public static <T> String BoardToFen(Board<T> board) throws ChessGameException {
+    public static String BoardToFen(IBoard board) throws ChessGameException {
         int counterForRows = 0;
         StringBuilder fenToReturn = new StringBuilder();
         for (int i = 0; i < MAX_WIDTH; i++) {
             for (int j = 0; j < MAX_HEIGHT; j++) {
-                T f = board.getFields().get(i).get(j);
+                IField f = board.getFields().get(i).get(j);
                 if (! ((f instanceof Field ) || (f instanceof ViewField))){
                     throw new ChessGameException(f, BAD_TYPE_MSG);
                 }

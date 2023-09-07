@@ -17,7 +17,7 @@ import static classes.Game.I18N.VARS.MUTUABLES.*;
 
 @Getter
 @Setter
-public class Piece <F> {
+public class Piece implements IPiece {
 
     //region Fields
 
@@ -35,7 +35,7 @@ public class Piece <F> {
 
     private double VALUE;
 
-    private Board<Field> board;
+    private Board board;
 
     private Set<Location> possibleRange;
 
@@ -55,10 +55,10 @@ public class Piece <F> {
         this.attributes = attributes;
     }
 
-    public Piece(PieceAttributes attributes, Location location, Board<Field> board){
+    public Piece(PieceAttributes attributes, Location location, IBoard board){
         this.attributes = attributes;
         this.location = location;
-        this.board = board;
+        this.board = (Board) board;
     }
 
     //endregion
@@ -82,9 +82,9 @@ public class Piece <F> {
         return WHITE_STRING.equals(attributes.getColor());
     }
 
-    public void STEP(Location from, Location to, Board<F> board) {
-        ((Field)(board.getField(to))).setPiece(this);
-        ((Field)(board.getField(from))).clean();
+    public void STEP(Location from, Location to, IBoard board) {
+        board.getField(to).setPiece(this);
+        board.getField(from).clean();
     }
 
     public void updateRange() throws ChessGameException {

@@ -2,6 +2,7 @@ package classes.Ai;
 
 import classes.Game.I18N.ChessGameException;
 import classes.Game.Model.Structure.Field;
+import classes.Game.Model.Structure.IField;
 import classes.Game.Model.Structure.Piece;
 import lombok.*;
 
@@ -15,6 +16,7 @@ import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
+import static classes.Game.Model.Structure.IBoard.pieceChangeOnBoard;
 
 @Getter
 @Setter
@@ -89,8 +91,8 @@ public class AI extends Thread {
 
         ArrayList<Field> ableToStepThere = new ArrayList<>();
 
-        for (ArrayList<Field> row : getAiBoard().getFields()) {
-            for (Field f : row) {
+        for (ArrayList<IField> row : getAiBoard().getFields()) {
+            for (IField f : row) {
                 if (f.isGotPiece()){
                     if ((f.getPiece().isWhite() && !WHITE_STRING.equals(color)) ||
                             (!f.getPiece().isWhite() && WHITE_STRING.equals(color))){

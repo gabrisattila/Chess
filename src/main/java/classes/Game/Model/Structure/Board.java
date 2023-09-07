@@ -5,8 +5,6 @@ import classes.GUI.FrameParts.*;
 import classes.Game.I18N.*;
 import lombok.*;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
 import static classes.Ai.FenConverter.*;
@@ -17,7 +15,7 @@ import static classes.Game.I18N.VARS.MUTUABLES.*;
 
 @Getter
 @Setter
-public class Board<F> {
+public class Board implements IBoard {
 
     //region Fields
 
@@ -25,11 +23,9 @@ public class Board<F> {
 
     private int Y;
 
-    private ArrayList<ArrayList<F>> fields;
+    private ArrayList<ArrayList<Field>> fields;
 
-    private final Class<F> fieldType;
-
-    private static Board<Field> board;
+    private static Board board;
 
     protected ArrayList<Piece> pieces = new ArrayList<>();
 
@@ -38,19 +34,15 @@ public class Board<F> {
 
     //region Constructor
 
-    protected Board(int x, int y, Class<F> fieldType) throws ChessGameException {
+    protected Board(int x, int y) throws ChessGameException {
         X = x;
         Y = y;
-        this.fieldType = fieldType;
-        if (fieldType != Field.class && fieldType != ViewField.class){
-            throw new ChessGameException("This board can't be created because the type of it's fields isn't Field or ViewField");
-        }
         boardSetUp();
     }
 
-    public static Board<Field> getBoard() throws ChessGameException {
+    public static Board getBoard() throws ChessGameException {
         if(board == null){
-            return board = new Board<>(MAX_WIDTH, MAX_HEIGHT, Field.class);
+            return board = new Board(MAX_WIDTH, MAX_HEIGHT);
         }
         return board;
     }
@@ -62,35 +54,24 @@ public class Board<F> {
 
     //region SetUp
 
-    protected void boardSetUp(){
+    public void boardSetUp(){
         fields = new ArrayList<>();
 
-        F field;
+        Field field;
         String fieldColor;
         Location location;
-        ArrayList<F> row;
+        ArrayList<Field> row;
 
-        try {
-
-            Constructor<F> constructor = fieldType.getConstructor(Location.class, String.class);
-
-            for (int i = 0; i < X; i++) {
-                row = new ArrayList<>();
-                for (int j = 0; j < Y; j++) {
-                    location = new Location(i, j);
-                    fieldColor = tableIf(WHITE_STRING, BLACK_STRING, i, j);
-                    field = constructor.newInstance(location, fieldColor);
-                    row.add(field);
-                }
-                fields.add(row);
+        for (int i = 0; i < X; i++) {
+            row = new ArrayList<>();
+            for (int j = 0; j < Y; j++) {
+                location = new Location(i, j);
+                fieldColor = tableIf(WHITE_STRING, BLACK_STRING, i, j);
+                field = new Field(location, fieldColor);
+                row.add(field);
             }
-
-        }catch (InstantiationException | IllegalAccessException | InvocationTargetException e){
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e);
+            fields.add(row);
         }
-
     }
 
     public void pieceSetUp(String FEN) throws ChessGameException {
@@ -115,37 +96,36 @@ public class Board<F> {
 
     //region GetBy
 
-    public F getField(int i, int j){
+    public IField getField(int i, int j){
         return fields.get(i).get(j);
     }
 
-    public F getField(Piece p){
+    public IField getField(IPiece p){
         return fields.get(p.getI()).get(p.getJ());
     }
 
-    public F getField(Location location){
+    public IField getField(Location location){
         return fields.get(location.getI()).get(location.getJ());
     }
 
-    public Piece getPiece(int i, int j){
-        return ((Field)fields.get(i).get(j)).getPiece();
+    public IPiece getPiece(int i, int j){
+        return fields.get(i).get(j).getPiece();
     }
 
-    public Piece getPiece(Location location){
+    public IPiece getPiece(Location location){
         return getPiece(location.getI(), location.getJ());
+    }
+
+    public IPiece getPiece(IField field){
+        return fields.get(field.getI()).get(field.getJ()).getPiece();
     }
 
     //endregion
 
-    public static void pieceChangeOnBoard(Piece piece, Field from, Field to) {
-        to.setPiece(piece);
-        from.clean();
-        whiteToPlay = !whiteToPlay;
-    }
 
     public void cleanBoard() throws ChessGameException {
-        for (ArrayList<F> row : fields) {
-            for (F f : row) {
+        for (ArrayList<Field> row : fields) {
+            for (IField f : row) {
                 if (!(f instanceof Field) && !(f instanceof ViewField)){
                     throw new ChessGameException(BAD_TYPE_MSG);
                 }
@@ -161,7 +141,7 @@ public class Board<F> {
     }
 
 
-    public void updatePieceRanges() throws ChessGameException, InterruptedException {
+    public void updatePiecesRanges() throws ChessGameException, InterruptedException {
 //        setEnemyInDefendBasedOnWatching();
         for (Piece p : pieces) {
             p.updateRange();

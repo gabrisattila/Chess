@@ -8,6 +8,10 @@ public interface IField {
 
     public int getJ();
 
+    public IPiece getPiece();
+
+    public boolean isGotPiece();
+
     public void setPiece(IPiece piece);
 
     public void setPiece(PieceAttributes piece);

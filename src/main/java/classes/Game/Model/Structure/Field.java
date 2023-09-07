@@ -12,7 +12,7 @@ import static classes.Game.I18N.METHODS.notNull;
 
 @Getter
 @Setter
-public class Field {
+public class Field implements IField {
 
     //region Fields
 
@@ -75,6 +75,7 @@ public class Field {
     //region Methods
 
     // GetBy
+
     public int getI(){
         return location.getI();
     }
@@ -85,8 +86,8 @@ public class Field {
 
     //Pieces
 
-    public void setPiece(Piece piece){
-        this.piece = piece;
+    public void setPiece(IPiece piece){
+        this.piece = (Piece) piece;
         gotPiece = notNull(piece);
         if (notNull(piece))
             piece.setLocation(location);
@@ -103,7 +104,7 @@ public class Field {
         setPiece((Piece) null);
     }
 
-    public boolean isEnemyKingInNeighbour(boolean white, Board<Field> board) {
+    public boolean isEnemyKingInNeighbour(boolean white, Board board) {
 
         for (int i = location.getI() - 1; i < location.getI() + 2; i++) {
             for (int j = location.getJ() - 1; j < location.getJ() + 2; j++) {

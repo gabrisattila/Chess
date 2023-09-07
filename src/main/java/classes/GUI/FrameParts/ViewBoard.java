@@ -3,12 +3,14 @@ package classes.GUI.FrameParts;
 import classes.Game.I18N.ChessGameException;
 import classes.Game.I18N.Location;
 import classes.Game.Model.Structure.Board;
+import classes.Game.Model.Structure.IBoard;
 
 import static classes.Game.I18N.METHODS.isNull;
 import static classes.Game.I18N.METHODS.passViewBoardInFenTo;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
+import static classes.Game.Model.Structure.Board.getBoard;
 
-public class ViewBoard extends Board<ViewField> {
+public class ViewBoard implements IBoard {
 
     //region Fields
 
@@ -20,7 +22,6 @@ public class ViewBoard extends Board<ViewField> {
     //region Constructor
 
     protected ViewBoard(int x, int y, Class<ViewField> fieldViewClass) throws ChessGameException {
-        super(x, y, fieldViewClass);
         boardSetUp();
     }
 
@@ -37,12 +38,10 @@ public class ViewBoard extends Board<ViewField> {
 
     //region Methods
 
-    @Override
-    public void updatePieceRanges() throws ChessGameException, InterruptedException {
+    public void updatePiecesRanges() throws ChessGameException, InterruptedException {
 
         passViewBoardInFenTo(getBoard());
 
-        super.updatePieceRanges();
 
         for (int i = 0; i < MAX_HEIGHT; i++) {
             for (int j = 0; j < MAX_WIDTH; j++) {
