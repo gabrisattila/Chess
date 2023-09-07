@@ -90,9 +90,9 @@ public class Piece <F> {
     public void updateRange() throws ChessGameException {
         possibleRange = getRange(getType(), true);
         watchedRange = getRange(getType(), false);
-        if (board.isCheckForCurrent()) {
-            possibleRange = checkConstraint(possibleRange);
-        }
+//        if (board.isCheckForCurrent()) {
+//            possibleRange = checkConstraint(possibleRange);
+//        }
     }
 
     private Set<Location> getRange(PieceType type, boolean posOrWatch) throws ChessGameException {
@@ -178,11 +178,13 @@ public class Piece <F> {
     }
 
     private boolean kingFilter(Location l){
-        return !board.enemyKingInNeighbour(l, this) && !thereWouldBeCheck(l);
+//        return !board.enemyKingInNeighbour(l, this) && !thereWouldBeCheck(l);
+        return true;
     }
 
     private boolean pawnEmPassantFilter(Location loc){
-        return board.isEmPassantEnabledToHere_For(loc, this);
+//        return board.isEmPassantEnabledToHere_For(loc, this);
+        return false;
     }
 
     private boolean pawnHitFilter(Location loc){
