@@ -47,7 +47,7 @@ public class EDT extends Thread {
             initialization();
             while(gameIsOn && theresOnlyOneAi){
                 if (whiteAiNeeded != whiteToPlay){
-                    getViewBoard().updatePieceRanges();
+                    getViewBoard().updatePiecesRanges();
                     synchronized (this){
                         wait();
                     }
@@ -68,7 +68,7 @@ public class EDT extends Thread {
         gameIsOn = true;
         getWindow();
         initializeAis();
-        getViewBoard().updatePieceRanges();
+        getViewBoard().updatePiecesRanges();
     }
 
     private void initializeAis() throws InterruptedException {

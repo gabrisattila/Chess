@@ -55,7 +55,7 @@ public class Piece implements IPiece {
         this.attributes = attributes;
     }
 
-    public Piece(PieceAttributes attributes, Location location, IBoard board){
+    public Piece(PieceAttributes attributes, Location location, GrandBoard board){
         this.attributes = attributes;
         this.location = location;
         this.board = (Board) board;
@@ -74,19 +74,23 @@ public class Piece implements IPiece {
         return location.getJ();
     }
 
+    @Override
     public PieceType getType(){
         return attributes.getType();
     }
 
+    @Override
     public boolean isWhite(){
         return WHITE_STRING.equals(attributes.getColor());
     }
 
-    public void STEP(Location from, Location to, IBoard board) {
+    @Override
+    public void STEP(Location from, Location to, GrandBoard board) {
         board.getField(to).setPiece(this);
         board.getField(from).clean();
     }
 
+    @Override
     public void updateRange() throws ChessGameException {
         possibleRange = getRange(getType(), true);
         watchedRange = getRange(getType(), false);

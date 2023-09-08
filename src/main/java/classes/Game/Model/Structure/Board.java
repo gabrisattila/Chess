@@ -15,7 +15,7 @@ import static classes.Game.I18N.VARS.MUTUABLES.*;
 
 @Getter
 @Setter
-public class Board implements IBoard {
+public class Board extends GrandBoard {
 
     //region Fields
 
@@ -23,9 +23,9 @@ public class Board implements IBoard {
 
     private int Y;
 
-    private ArrayList<ArrayList<Field>> fields;
-
     private static Board board;
+
+    private ArrayList<ArrayList<Field>> fields;
 
     protected ArrayList<Piece> pieces = new ArrayList<>();
 
@@ -55,9 +55,8 @@ public class Board implements IBoard {
     //region SetUp
 
     public void boardSetUp(){
-        fields = new ArrayList<>();
 
-        Field field;
+        IField field;
         String fieldColor;
         Location location;
         ArrayList<Field> row;
@@ -67,7 +66,11 @@ public class Board implements IBoard {
             for (int j = 0; j < Y; j++) {
                 location = new Location(i, j);
                 fieldColor = tableIf(WHITE_STRING, BLACK_STRING, i, j);
-                field = new Field(location, fieldColor);
+                if (Field.class.equals(fields.getClass())) {
+                    field = new Field(location, fieldColor);
+                }else {
+
+                }
                 row.add(field);
             }
             fields.add(row);
@@ -96,26 +99,27 @@ public class Board implements IBoard {
 
     //region GetBy
 
+    @Override
     public IField getField(int i, int j){
         return fields.get(i).get(j);
     }
 
-    public IField getField(IPiece p){
-        return fields.get(p.getI()).get(p.getJ());
-    }
-
+    @Override
     public IField getField(Location location){
-        return fields.get(location.getI()).get(location.getJ());
+        return getField(location.getI(), location.getJ());
     }
 
+    @Override
     public IPiece getPiece(int i, int j){
         return fields.get(i).get(j).getPiece();
     }
 
+    @Override
     public IPiece getPiece(Location location){
         return getPiece(location.getI(), location.getJ());
     }
 
+    @Override
     public IPiece getPiece(IField field){
         return fields.get(field.getI()).get(field.getJ()).getPiece();
     }
@@ -123,6 +127,7 @@ public class Board implements IBoard {
     //endregion
 
 
+    @Override
     public void cleanBoard() throws ChessGameException {
         for (ArrayList<Field> row : fields) {
             for (IField f : row) {
@@ -141,6 +146,7 @@ public class Board implements IBoard {
     }
 
 
+    @Override
     public void updatePiecesRanges() throws ChessGameException, InterruptedException {
 //        setEnemyInDefendBasedOnWatching();
         for (Piece p : pieces) {

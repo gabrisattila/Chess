@@ -14,7 +14,7 @@ import static classes.Game.I18N.VARS.MUTUABLES.*;
 
 public class FenConverter {
 
-    public static void FenToBoard(String fen, IBoard board) throws ChessGameException {
+    public static void FenToBoard(String fen, GrandBoard board) throws ChessGameException {
         if (fenIsWrong(fen))
             throw new ChessGameException("This Fen String doesn't suites for the table sizes");
         char currentChar;
@@ -41,7 +41,7 @@ public class FenConverter {
                             f.setPiece(piece);
                             board.getPieces().add(new Piece(piece, new Location(sor, oszlop), board));
                         } else {
-                            ((ViewField) f).setPiece(piece);
+                            f.setPiece(piece);
                         }
                         oszlop++;
                     }
@@ -50,7 +50,7 @@ public class FenConverter {
         }
     }
 
-    public static String BoardToFen(IBoard board) throws ChessGameException {
+    public static String BoardToFen(GrandBoard board) throws ChessGameException {
         int counterForRows = 0;
         StringBuilder fenToReturn = new StringBuilder();
         for (int i = 0; i < MAX_WIDTH; i++) {
@@ -59,24 +59,13 @@ public class FenConverter {
                 if (! ((f instanceof Field ) || (f instanceof ViewField))){
                     throw new ChessGameException(f, BAD_TYPE_MSG);
                 }
-                if (f instanceof Field){
-                    if (((Field) f).isGotPiece()){
-                        if (counterForRows != 0)
-                            fenToReturn.append(counterForRows);
-                        counterForRows = 0;
-                        fenToReturn.append(pieceAttributesToChar(castToField(f).getPiece().getAttributes()));
-                    }else {
-                        counterForRows++;
-                    }
+                if (f.isGotPiece()){
+                    if (counterForRows != 0)
+                        fenToReturn.append(counterForRows);
+                    counterForRows = 0;
+                    fenToReturn.append(pieceAttributesToChar(f.getPiece().getAttributes()));
                 }else {
-                    if (((ViewField) f).isGotPiece()){
-                        if (counterForRows != 0)
-                            fenToReturn.append(counterForRows);
-                        counterForRows = 0;
-                        fenToReturn.append(pieceAttributesToChar(((ViewField)f).getPiece().getAttributes()));
-                    }else {
-                        counterForRows++;
-                    }
+                    counterForRows++;
                 }
             }
             if (counterForRows != 0)

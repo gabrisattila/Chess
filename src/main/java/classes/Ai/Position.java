@@ -44,9 +44,9 @@ public class Position {
         FenToBoard(fen, getAiBoard());
         ArrayList<String> possibilities = new ArrayList<>();
         Location from;
-        for (Piece p : getAiBoard().getPieces()) {
+        for (IPiece p : getAiBoard().getPieces()) {
             for (Location l : p.getPossibleRange()) {
-                from = p.getLocation();
+                from = ((Piece)p).getLocation();
                 p.STEP(from, l, getAiBoard());
                 possibilities.add(BoardToFen(getAiBoard()));
                 p.STEP(l, from, getAiBoard());

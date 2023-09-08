@@ -3,6 +3,7 @@ package classes.Game.I18N;
 import classes.Ai.AI;
 import classes.Game.Model.Structure.Board;
 import classes.Game.Model.Structure.Field;
+import classes.Game.Model.Structure.GrandBoard;
 
 import javax.swing.*;
 import java.util.concurrent.BlockingQueue;
@@ -51,7 +52,7 @@ public class METHODS {
         }
     }
 
-    public static <F> void passViewBoardInFenTo(Board<F> board) throws ChessGameException, InterruptedException {
+    public static void passViewBoardInFenTo(GrandBoard board) throws ChessGameException, InterruptedException {
         putToFenQueue(BoardToFen(getViewBoard()), rightQueue(whiteToPlay ? "WHITE" : "BLACK"));
         board.pieceSetUp(takeFromFenQueue(rightQueue(whiteToPlay ? "WHITE" : "BLACK")));
     }
@@ -112,14 +113,6 @@ public class METHODS {
             }
         }
         return count;
-    }
-
-    public static <T> Field castToField(Board<T> board, int i, int j){
-        return (Field)(board.getField(i, j));
-    }
-
-    public static <T> Field castToField(T fieldInT){
-        return (Field) fieldInT;
     }
 
     public static String translate(String englishFen){

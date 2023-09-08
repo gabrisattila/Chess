@@ -1,5 +1,6 @@
 package classes.GUI.FrameParts;
 
+import classes.Game.Model.Structure.IField;
 import lombok.*;
 
 import javax.swing.*;
@@ -52,7 +53,7 @@ public class GameBoard extends JLayeredPane {
             for (int j = 0; j < 8; j++) {
                 Point rotatedPosition = rotateAntiClockwise(new Point(i, j), MAX_WIDTH);
 
-                parentBoard.getField(i, j).setBounds(
+                ((ViewField)parentBoard.getField(i, j)).setBounds(
                         rotatedPosition.x * FIELD_HEIGHT,
                         rotatedPosition.y * FIELD_WIDTH,
                         FIELD_WIDTH,
@@ -70,9 +71,9 @@ public class GameBoard extends JLayeredPane {
     }
 
     private void addFieldsAtTheirFinalForm(){
-        for (ArrayList<ViewField> row: parentBoard.getFields()){
-            for (ViewField f : row) {
-                add(f);
+        for (ArrayList<IField> row: parentBoard.getFields()){
+            for (IField f : row) {
+                add((ViewField) f);
             }
         }
     }

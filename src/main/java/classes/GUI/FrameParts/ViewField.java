@@ -5,6 +5,8 @@ import classes.Game.I18N.ChessGameException;
 import classes.Game.I18N.Location;
 import classes.Game.I18N.PieceAttributes;
 
+import classes.Game.Model.Structure.IField;
+import classes.Game.Model.Structure.IPiece;
 import lombok.*;
 import javax.swing.*;
 import java.awt.event.MouseEvent;
@@ -21,7 +23,7 @@ import static classes.Main.*;
 
 @Getter
 @Setter
-public class ViewField extends JButton{
+public class ViewField extends JButton implements IField {
 
     //region Fields
 
@@ -65,6 +67,12 @@ public class ViewField extends JButton{
 
     public int getJ(){
         return loc.getJ();
+    }
+
+    @Override
+    public void setPiece(IPiece piece) {
+        if (piece instanceof ViewPiece)
+            setPiece(piece);
     }
 
 

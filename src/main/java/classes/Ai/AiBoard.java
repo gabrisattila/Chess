@@ -14,24 +14,28 @@ import static classes.Game.I18N.VARS.MUTUABLES.MAX_WIDTH;
 
 @Getter
 @Setter
-public class AiBoard implements IBoard {
+public class AiBoard extends GrandBoard {
 
     //region Fields
 
+    private ArrayList<ArrayList<Field>> fields;
+
     private static AiBoard aiBoard;
+
+    protected ArrayList<Piece> pieces = new ArrayList<>();
 
     //endregion
 
 
     //region Constructor
 
-    protected AiBoard(int x, int y, Class<Field> fieldClass) throws ChessGameException {
+    protected AiBoard(int x, int y) throws ChessGameException {
         boardSetUp();
     }
 
     public static AiBoard getAiBoard() throws ChessGameException {
         if (isNull(aiBoard)){
-            aiBoard = new AiBoard(MAX_WIDTH, MAX_HEIGHT, Field.class);
+            aiBoard = new AiBoard(MAX_WIDTH, MAX_HEIGHT);
         }
         return aiBoard;
     }
@@ -57,17 +61,16 @@ public class AiBoard implements IBoard {
 
     @Override
     public IField getField(int i, int j) {
-        return null;
-    }
-
-    @Override
-    public IField getField(IPiece piece) {
-        return null;
+        return fields.get(i).get(j);
     }
 
     @Override
     public IField getField(Location loc) {
-        return null;
+        return getField(loc.getI(), loc.getJ());
+    }
+
+    public IField getField(Piece piece) {
+        return getField(piece.getLocation());
     }
 
     @Override
@@ -101,7 +104,7 @@ public class AiBoard implements IBoard {
     }
 
     @Override
-    public void updatePiecesRange() throws ChessGameException, InterruptedException {
+    public void updatePiecesRanges() throws ChessGameException, InterruptedException {
 
     }
 

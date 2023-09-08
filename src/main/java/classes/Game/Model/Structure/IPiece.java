@@ -2,15 +2,14 @@ package classes.Game.Model.Structure;
 
 import classes.Game.I18N.ChessGameException;
 import classes.Game.I18N.Location;
+import classes.Game.I18N.PieceAttributes;
 import classes.Game.I18N.PieceType;
 
 import java.util.Set;
 
 public interface IPiece {
 
-    public int getI();
-
-    public int getJ();
+    public PieceAttributes getAttributes();
 
     public PieceType getType();
 
@@ -18,11 +17,7 @@ public interface IPiece {
 
     public Set<Location> getPossibleRange();
 
-    public Set<Location> getWatchedRange();
-
-    public void setLocation(Location location);
-
-    public void STEP(Location from, Location to, IBoard board);
+    public void STEP(Location from, Location to, GrandBoard board);
 
     public void updateRange() throws ChessGameException;
 

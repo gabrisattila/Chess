@@ -1,20 +1,26 @@
 package classes.GUI.FrameParts;
 
-import classes.Game.I18N.ChessGameException;
-import classes.Game.I18N.Location;
-import classes.Game.Model.Structure.Board;
-import classes.Game.Model.Structure.IBoard;
+import classes.Game.I18N.*;
+import classes.Game.Model.Structure.*;
+import lombok.*;
 
-import static classes.Game.I18N.METHODS.isNull;
-import static classes.Game.I18N.METHODS.passViewBoardInFenTo;
+import java.util.*;
+
+import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
-import static classes.Game.Model.Structure.Board.getBoard;
+import static classes.Game.Model.Structure.Board.*;
 
-public class ViewBoard implements IBoard {
+@Getter
+@Setter
+public class ViewBoard extends GrandBoard {
 
     //region Fields
 
     private static ViewBoard viewBoard;
+
+    private ArrayList<ArrayList<ViewField>> fields;
+
+    private Set<ViewPiece> pieces;
 
     //endregion
 
@@ -38,6 +44,51 @@ public class ViewBoard implements IBoard {
 
     //region Methods
 
+    @Override
+    public void boardSetUp() {
+
+    }
+
+    @Override
+    public void pieceSetUp(String FEN) throws ChessGameException {
+
+    }
+
+    @Override
+    public IField getField(int i, int j) {
+        return fields.get(i).get(j);
+    }
+
+    @Override
+    public IField getField(Location loc) {
+        return getField(loc.getI(), loc.getJ());
+    }
+
+    @Override
+    public IPiece getPiece(int i, int j) {
+        return getField(i, j).getPiece();
+    }
+
+    @Override
+    public IPiece getPiece(Location loc) {
+        return getPiece(loc.getI(), loc.getJ());
+    }
+
+    @Override
+    public IPiece getPiece(IField field) {
+        return field.getPiece();
+    }
+
+    @Override
+    public void cleanBoard() throws ChessGameException {
+        for (int i = 0; i < MAX_HEIGHT; i++) {
+            for (int j = 0; j < MAX_WIDTH; j++) {
+                if (getField(i, j).isGotPiece())
+                    getField(i, j).clean();
+            }
+        }
+    }
+
     public void updatePiecesRanges() throws ChessGameException, InterruptedException {
 
         passViewBoardInFenTo(getBoard());
@@ -51,7 +102,7 @@ public class ViewBoard implements IBoard {
 
                 if (getField(i, j).isGotPiece())
                     for (Location l : getBoard().getField(i, j).getPiece().getPossibleRange()) {
-                        getField(i, j).getPiece().getOptions().add(getField(l));
+                        ((ViewPiece)getField(i, j).getPiece()).getOptions().add((ViewField)getField(l));
                     }
             }
         }
