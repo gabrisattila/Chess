@@ -7,8 +7,8 @@ import lombok.*;
 
 import java.util.ArrayList;
 
-import static classes.Ai.AiBoard.*;
 import static classes.Ai.FenConverter.*;
+import static classes.Game.Model.Structure.Board.*;
 
 @Getter
 @Setter

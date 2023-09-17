@@ -5,12 +5,15 @@ import classes.Game.I18N.Location;
 import classes.Game.I18N.PieceAttributes;
 import classes.Game.I18N.PieceType;
 import classes.Game.Model.Structure.GrandBoard;
+import classes.Game.Model.Structure.IBoard;
 import classes.Game.Model.Structure.IPiece;
 import lombok.*;
 
 import javax.swing.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import static classes.Ai.FenConverter.charToPieceType;
 import static classes.Game.I18N.VARS.FINALS.*;
@@ -23,7 +26,7 @@ public class ViewPiece extends ImageIcon implements IPiece {
 
     private final PieceAttributes attributes;
 
-    private ArrayList<Location> possibleRange;
+    private Set<Location> possibleRange;
 
     private ArrayList<ViewField> options;
 
@@ -46,7 +49,7 @@ public class ViewPiece extends ImageIcon implements IPiece {
             attributes.setColor("BLACK");
         attributes.setType(charToPieceType(type));
 
-        possibleRange = new ArrayList<>();
+        possibleRange = new HashSet<>();
         options = new ArrayList<>();
     }
 
@@ -64,12 +67,22 @@ public class ViewPiece extends ImageIcon implements IPiece {
     }
 
     @Override
-    public void STEP(Location from, Location to, GrandBoard board) {
+    public int getI() {
+        return 0;
+    }
+
+    @Override
+    public int getJ() {
+        return 0;
+    }
+
+    @Override
+    public void STEP(Location from, Location to, IBoard board) {
 
     }
 
     @Override
-    public void updateRange() throws ChessGameException {
+    public void updateRange() {
 
     }
 

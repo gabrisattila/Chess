@@ -1,11 +1,12 @@
 package classes.Game.I18N;
 
 import classes.Ai.AI;
-import classes.Game.Model.Structure.Board;
-import classes.Game.Model.Structure.Field;
-import classes.Game.Model.Structure.GrandBoard;
+import classes.GUI.FrameParts.ViewBoard;
+import classes.GUI.FrameParts.ViewField;
+import classes.Game.Model.Structure.*;
 
 import javax.swing.*;
+import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
 
 import static classes.Ai.FenConverter.*;
@@ -52,7 +53,7 @@ public class METHODS {
         }
     }
 
-    public static void passViewBoardInFenTo(GrandBoard board) throws ChessGameException, InterruptedException {
+    public static void passViewBoardInFenTo(Board board) throws ChessGameException, InterruptedException {
         putToFenQueue(BoardToFen(getViewBoard()), rightQueue(whiteToPlay ? "WHITE" : "BLACK"));
         board.pieceSetUp(takeFromFenQueue(rightQueue(whiteToPlay ? "WHITE" : "BLACK")));
     }
@@ -93,6 +94,16 @@ public class METHODS {
             }
         }
         return o1;
+    }
+
+    public static void pieceChangeOnBoard(IPiece piece, IField from, IField to) {
+        try {
+            to.setPiece(piece);
+            from.clean();
+        } catch (ChessGameException e) {
+            throw new RuntimeException(e);
+        }
+        whiteToPlay = !whiteToPlay;
     }
 
     public static String replace(String original, int index, char newChar) {

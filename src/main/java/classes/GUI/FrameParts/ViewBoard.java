@@ -9,31 +9,40 @@ import java.util.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
 import static classes.Game.Model.Structure.Board.*;
+import static classes.Game.I18N.VARS.*;
 
 @Getter
 @Setter
-public class ViewBoard extends GrandBoard {
+public class ViewBoard implements IBoard {
 
     //region Fields
 
+    private int X;
+
+    private int Y;
+
     private static ViewBoard viewBoard;
 
-    private ArrayList<ArrayList<ViewField>> fields;
+    private ArrayList<ArrayList<IField>> fields;
 
-    private Set<ViewPiece> pieces;
+    private ArrayList<IPiece> pieces;
 
     //endregion
 
 
     //region Constructor
 
-    protected ViewBoard(int x, int y, Class<ViewField> fieldViewClass) throws ChessGameException {
-        boardSetUp();
+    protected ViewBoard(int x, int y) {
+        X = x;
+        Y = y;
+        fields = new ArrayList<>();
+        boardSetUp(this, fields);
+        pieces = new ArrayList<>();
     }
 
     public static ViewBoard getViewBoard() throws ChessGameException {
         if (isNull(viewBoard)){
-            viewBoard = new ViewBoard(MAX_WIDTH, MAX_HEIGHT, ViewField.class);
+            viewBoard = new ViewBoard(MAX_WIDTH, MAX_HEIGHT);
         }
         return viewBoard;
     }
@@ -44,55 +53,62 @@ public class ViewBoard extends GrandBoard {
 
     //region Methods
 
-    @Override
-    public void boardSetUp() {
+    //region GetBy
 
+    @Override
+    public IField getField(int i, int j){
+        return getFields().get(i).get(j);
     }
 
     @Override
-    public void pieceSetUp(String FEN) throws ChessGameException {
-
+    public IField getField(Location location){
+        return getField(location.getI(), location.getJ());
     }
 
     @Override
-    public IField getField(int i, int j) {
-        return fields.get(i).get(j);
+    public IField getField(IPiece piece){
+        return getField(piece.getI(), piece.getJ());
     }
 
     @Override
-    public IField getField(Location loc) {
-        return getField(loc.getI(), loc.getJ());
+    public IPiece getPiece(int i, int j){
+        return getFields().get(i).get(j).getPiece();
     }
 
     @Override
-    public IPiece getPiece(int i, int j) {
-        return getField(i, j).getPiece();
+    public IPiece getPiece(Location location){
+        return getPiece(location.getI(), location.getJ());
     }
 
     @Override
-    public IPiece getPiece(Location loc) {
-        return getPiece(loc.getI(), loc.getJ());
+    public IPiece getPiece(IField field){
+        return getField(field.getI(), field.getJ()).getPiece();
     }
 
-    @Override
-    public IPiece getPiece(IField field) {
-        return field.getPiece();
-    }
+
+    //endregion
 
     @Override
-    public void cleanBoard() throws ChessGameException {
+    public void cleanBoard(){
         for (int i = 0; i < MAX_HEIGHT; i++) {
             for (int j = 0; j < MAX_WIDTH; j++) {
-                if (getField(i, j).isGotPiece())
-                    getField(i, j).clean();
+                if (getField(i, j).isGotPiece()) {
+                    try {
+                        getField(i, j).clean();
+                    } catch (ChessGameException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
             }
         }
+        pieces.clear();
     }
 
+    @Override
     public void updatePiecesRanges() throws ChessGameException, InterruptedException {
 
         passViewBoardInFenTo(getBoard());
-
+        getBoard().updatePiecesRanges();
 
         for (int i = 0; i < MAX_HEIGHT; i++) {
             for (int j = 0; j < MAX_WIDTH; j++) {

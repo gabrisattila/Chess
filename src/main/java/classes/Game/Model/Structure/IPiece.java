@@ -13,11 +13,15 @@ public interface IPiece {
 
     public PieceType getType();
 
+    public int getI();
+
+    public int getJ();
+
     public boolean isWhite();
 
     public Set<Location> getPossibleRange();
 
-    public void STEP(Location from, Location to, GrandBoard board);
+    public void STEP(Location from, Location to, IBoard board);
 
     public void updateRange() throws ChessGameException;
 

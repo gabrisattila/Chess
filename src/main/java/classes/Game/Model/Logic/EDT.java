@@ -56,11 +56,6 @@ public class EDT extends Thread {
         } catch (ChessGameException | InterruptedException e) {
             throw new RuntimeException(e);
         }
-//        while (gameIsOn){
-//            if (whiteAiNeeded != whiteToPlay){
-//
-//            }
-//        }
     }
 
     private void initialization() throws ChessGameException, InterruptedException {

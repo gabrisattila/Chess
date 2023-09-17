@@ -49,16 +49,21 @@ public class Piece implements IPiece {
     //region Constructor
 
     public Piece(){
+        possibleRange = new HashSet<>();
     }
 
     public Piece(PieceAttributes attributes){
         this.attributes = attributes;
+        possibleRange = new HashSet<>();
     }
 
-    public Piece(PieceAttributes attributes, Location location, GrandBoard board){
+    public Piece(PieceAttributes attributes, Location location, IBoard board) throws ChessGameException {
         this.attributes = attributes;
         this.location = location;
+        if (! (board instanceof Board))
+            throw new ChessGameException("Nem megfelelő az átadott tábla típusa");
         this.board = (Board) board;
+        possibleRange = new HashSet<>();
     }
 
     //endregion
@@ -85,9 +90,13 @@ public class Piece implements IPiece {
     }
 
     @Override
-    public void STEP(Location from, Location to, GrandBoard board) {
-        board.getField(to).setPiece(this);
-        board.getField(from).clean();
+    public void STEP(Location from, Location to, IBoard board) {
+        try {
+            board.getField(to).setPiece(this);
+            board.getField(from).clean();
+        } catch (ChessGameException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

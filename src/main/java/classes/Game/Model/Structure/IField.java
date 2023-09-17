@@ -1,5 +1,6 @@
 package classes.Game.Model.Structure;
 
+import classes.Game.I18N.ChessGameException;
 import classes.Game.I18N.PieceAttributes;
 
 public interface IField {
@@ -12,10 +13,10 @@ public interface IField {
 
     public boolean isGotPiece();
 
-    public void setPiece(IPiece piece);
+    public void setPiece(IPiece piece) throws ChessGameException;
 
     public void setPiece(PieceAttributes piece);
 
-    public void clean();
+    public void clean() throws ChessGameException;
 
 }

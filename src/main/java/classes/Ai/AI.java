@@ -9,14 +9,13 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.Random;
 
-import static classes.Ai.AiBoard.*;
 import static classes.Ai.FenConverter.*;
 import static classes.Ai.Position.*;
 import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
-import static classes.Game.Model.Structure.IBoard.pieceChangeOnBoard;
+import static classes.Game.Model.Structure.Board.*;
 
 @Getter
 @Setter
@@ -80,7 +79,7 @@ public class AI extends Thread {
         Piece stepper;
 //        int i = 0;
 //        int numOfPieces = getAiBoard().getPieces().size();
-        while ((stepper = getAiBoard().getPieces().get(indexOfChosen)).isWhite() != WHITE_STRING.equals(color)){
+        while ((stepper = ((Piece)getAiBoard().getPieces().get(indexOfChosen))).isWhite() != WHITE_STRING.equals(color)){
 //                || i < numOfPieces){
             indexOfChosen = random.nextInt(0, getAiBoard().getPieces().size());
 //            i++;
@@ -96,10 +95,10 @@ public class AI extends Thread {
                 if (f.isGotPiece()){
                     if ((f.getPiece().isWhite() && !WHITE_STRING.equals(color)) ||
                             (!f.getPiece().isWhite() && WHITE_STRING.equals(color))){
-                        ableToStepThere.add(f);
+                        ableToStepThere.add((Field) f);
                     }
                 }else {
-                    ableToStepThere.add(f);
+                    ableToStepThere.add((Field) f);
                 }
             }
         }

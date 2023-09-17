@@ -1,21 +1,22 @@
 package classes.Game.Model.Structure;
 
 
-import classes.GUI.FrameParts.*;
 import classes.Game.I18N.*;
 import lombok.*;
 
 import java.util.ArrayList;
 
-import static classes.Ai.FenConverter.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
 
 
+/**
+ * It's not a singleton, but technically it works like a singleton.
+ */
 @Getter
 @Setter
-public class Board extends GrandBoard {
+public class Board implements IBoard {
 
     //region Fields
 
@@ -23,28 +24,46 @@ public class Board extends GrandBoard {
 
     private int Y;
 
-    private static Board board;
+    private static Pair<Board, Board> board;
 
-    private ArrayList<ArrayList<Field>> fields;
+    private ArrayList<ArrayList<IField>> fields;
 
-    protected ArrayList<Piece> pieces = new ArrayList<>();
+    private ArrayList<IPiece> pieces;
 
     //endregion
 
 
     //region Constructor
 
-    protected Board(int x, int y) throws ChessGameException {
+    private Board(int x, int y) throws ChessGameException {
         X = x;
         Y = y;
-        boardSetUp();
+        fields = new ArrayList<>();
+        boardSetUp(this, fields);
+        pieces = new ArrayList<>();
     }
 
     public static Board getBoard() throws ChessGameException {
         if(board == null){
-            return board = new Board(MAX_WIDTH, MAX_HEIGHT);
+            Board b1 = new Board(MAX_WIDTH, MAX_HEIGHT);
+            board = new Pair<>(b1, null);
+            return board.getFirst();
         }
-        return board;
+        return board.getFirst();
+    }
+
+
+    public static Board getAiBoard() throws ChessGameException {
+        if(board == null){
+            Board b1 = new Board(MAX_WIDTH, MAX_HEIGHT);
+            board = new Pair<>(b1, null);
+        }
+        if (isNull(board.getSecond())){
+            Board b2 = new Board(MAX_WIDTH, MAX_HEIGHT);
+            board.setSecond(b2);
+            return board.getSecond();
+        }
+        return board.getSecond();
     }
 
     //endregion
@@ -52,56 +71,11 @@ public class Board extends GrandBoard {
 
     //region Methods
 
-    //region SetUp
-
-    public void boardSetUp(){
-
-        IField field;
-        String fieldColor;
-        Location location;
-        ArrayList<Field> row;
-
-        for (int i = 0; i < X; i++) {
-            row = new ArrayList<>();
-            for (int j = 0; j < Y; j++) {
-                location = new Location(i, j);
-                fieldColor = tableIf(WHITE_STRING, BLACK_STRING, i, j);
-                if (Field.class.equals(fields.getClass())) {
-                    field = new Field(location, fieldColor);
-                }else {
-
-                }
-                row.add(field);
-            }
-            fields.add(row);
-        }
-    }
-
-    public void pieceSetUp(String FEN) throws ChessGameException {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < FEN.length(); i++) {
-            if (Character.isLetter(FEN.charAt(i))){
-                sb.append(Character.toLowerCase(FEN.charAt(i)));
-            }else {
-                sb.append(FEN.charAt(i));
-            }
-        }
-        String fen = sb.toString();
-        if (fen.contains("p") || fen.contains("r") || fen.contains("q") ||
-            fen.contains("n")){
-            FEN = translate(FEN);
-        }
-        FenToBoard(FEN, this);
-    }
-
-    //endregion
-
-
     //region GetBy
 
     @Override
     public IField getField(int i, int j){
-        return fields.get(i).get(j);
+        return getFields().get(i).get(j);
     }
 
     @Override
@@ -110,8 +84,13 @@ public class Board extends GrandBoard {
     }
 
     @Override
+    public IField getField(IPiece piece){
+        return getField(piece.getI(), piece.getJ());
+    }
+
+    @Override
     public IPiece getPiece(int i, int j){
-        return fields.get(i).get(j).getPiece();
+        return getFields().get(i).get(j).getPiece();
     }
 
     @Override
@@ -121,7 +100,7 @@ public class Board extends GrandBoard {
 
     @Override
     public IPiece getPiece(IField field){
-        return fields.get(field.getI()).get(field.getJ()).getPiece();
+        return getField(field.getI(), field.getJ()).getPiece();
     }
 
     //endregion
@@ -129,17 +108,12 @@ public class Board extends GrandBoard {
 
     @Override
     public void cleanBoard() throws ChessGameException {
-        for (ArrayList<Field> row : fields) {
+        for (ArrayList<IField> row : this.fields) {
             for (IField f : row) {
-                if (!(f instanceof Field) && !(f instanceof ViewField)){
+                if (!(f instanceof Field)){
                     throw new ChessGameException(BAD_TYPE_MSG);
                 }
-
-                if (f instanceof Field && ((Field) f).isGotPiece()){
-                    ((Field) f).setPiece((Piece) null);
-                } else if (f instanceof ViewField && ((ViewField) f).isGotPiece()) {
-                    ((ViewField) f).setPiece((ViewPiece) null);
-                }
+                f.clean();
             }
         }
         pieces.clear();
@@ -149,7 +123,7 @@ public class Board extends GrandBoard {
     @Override
     public void updatePiecesRanges() throws ChessGameException, InterruptedException {
 //        setEnemyInDefendBasedOnWatching();
-        for (Piece p : pieces) {
+        for (IPiece p : pieces) {
             p.updateRange();
         }
 //        setInDefendBasedOnWatching();

@@ -1,6 +1,7 @@
 package classes.Game.Model.Structure;
 
 
+import classes.Game.I18N.ChessGameException;
 import classes.Game.I18N.Location;
 import classes.Game.I18N.PieceAttributes;
 import classes.Game.I18N.PieceType;
@@ -39,33 +40,49 @@ public class Field implements IField {
 
     //region Constructor
 
-    public Field(){
+    public Field() throws ChessGameException {
         setPiece((Piece) null);
     }
 
-    public Field(Location location){
+    public Field(Location location) {
         this.location = location;
-        setPiece((Piece) null);
+        try {
+            setPiece((Piece) null);
+        } catch (ChessGameException e) {
+            throw new RuntimeException(e);
+        }
         setValuesToZero();
     }
 
-    public Field(int i, int j){
+    public Field(int i, int j) {
         location = new Location(i, j);
-        setPiece((Piece) null);
+        try {
+            setPiece((Piece) null);
+        } catch (ChessGameException e) {
+            throw new RuntimeException(e);
+        }
         setValuesToZero();
     }
 
-    public Field(Location location, String color){
+    public Field(Location location, String color) {
         this.location = location;
         fieldColor = color;
-        setPiece((Piece) null);
+        try {
+            setPiece((Piece) null);
+        } catch (ChessGameException e) {
+            throw new RuntimeException(e);
+        }
         setValuesToZero();
     }
 
-    public Field(Location location, String color, Piece piece){
+    public Field(Location location, String color, Piece piece) {
         this.location = location;
         fieldColor = color;
-        setPiece(piece);
+        try {
+            setPiece(piece);
+        } catch (ChessGameException e) {
+            throw new RuntimeException(e.getMsg());
+        }
         setValuesToZero();
     }
 
@@ -86,11 +103,14 @@ public class Field implements IField {
 
     //Pieces
 
-    public void setPiece(IPiece piece){
-        this.piece = (Piece) piece;
+    public void setPiece(IPiece piece) throws ChessGameException {
         gotPiece = notNull(piece);
-        if (notNull(piece))
-            piece.setLocation(location);
+        if (gotPiece && piece instanceof Piece) {
+            this.piece = (Piece) piece;
+            ((Piece) piece).setLocation(location);
+        }
+        if (piece != null && ! (piece instanceof Piece))
+            throw new ChessGameException("Nem megfelelő típus");
     }
 
     public void setPiece(PieceAttributes attributes){
@@ -100,7 +120,7 @@ public class Field implements IField {
             piece.setLocation(location);
     }
 
-    public void clean(){
+    public void clean() throws ChessGameException {
         setPiece((Piece) null);
     }
 

@@ -39,8 +39,52 @@ public class VARS {
 
         public final static Color BACK_GROUND = new Color(33, 3, 8, 205);
 
-        public static final Map<PieceType, Location[]> matrixChooser = new HashMap<>(){{
-            put(G, pawnMatrix);
+
+        public static final ArrayList<Location> pawnMatrix = new ArrayList<>(){{
+            add(new Location(1, -1));
+            add(new Location(1, 0));
+            add(new Location(1, 1));
+            add(new Location(2, 0));
+        }};
+
+        public static final ArrayList<Location> knightMatrix = new ArrayList<>(){{
+            add(new Location(2, -1));
+            add(new Location(2, 1));
+            add(new Location(1, -2));
+            add(new Location(1, 2));
+            add(new Location(-1, -2));
+            add(new Location(-1, 2));
+            add(new Location(-2, -1));
+            add(new Location(-2, 1));
+        }};
+
+        public static final ArrayList<Location> bishopMatrix = new ArrayList<>(){{
+            add(new Location(1, -1));
+            add(new Location(1, 1));
+            add(new Location(-1, -1));
+            add(new Location(-1, 1));
+        }};
+
+        public static final ArrayList<Location> rookMatrix = new ArrayList<>(){{
+                add(new Location(1, 0));
+                add(new Location(0, -1));
+                add(new Location(0, 1));
+                add(new Location(-1, 0));
+        }};
+
+        public static final ArrayList<Location> qkMatrix = new ArrayList<>(){{
+                add(new Location(1, -1));
+                add(new Location(1, 0));
+                add(new Location(1, 1));
+                add(new Location(0, -1));
+                add(new Location(0, 1));
+                add(new Location(-1, -1));
+                add(new Location(-1, 0));
+                add(new Location(-1, 1));
+        }};
+
+        public static final Map<PieceType, ArrayList<Location>> matrixChooser = new HashMap<>(){{
+            put(G, new ArrayList<>(pawnMatrix));
             put(H, knightMatrix);
             put(F, bishopMatrix);
             put(B, rookMatrix);
@@ -48,40 +92,11 @@ public class VARS {
             put(K, qkMatrix);
         }};
 
-        public static final Location[] pawnMatrix = new Location[]{
-                new Location(1, -1), new Location(1, 0), new Location(1, 1), new Location(2, 0)
-        };
-
-        public static final Location[] knightMatrix = new Location[]{
-                                        new Location(2,  -1), new Location(2,  1),
-                new Location(1,  -2),                                               new Location(1,  2),
-                new Location(-1, -2),                                               new Location(-1, 2),
-                                        new Location(-2, -1), new Location(-2, 1),
-
-        };
-
-        public static final Location[] bishopMatrix = new Location[]{
-                new Location( 1, -1),        new Location( 1, 1),
-
-                new Location(-1, -1),        new Location(-1, 1)
-        };
-
-        public static final Location[] rookMatrix = new Location[]{
-                                       new Location(1,  0),
-                new Location(0, -1),                     new Location(0, 1),
-                                       new Location(-1, 0)
-        };
-
-        public static final Location[] qkMatrix = new Location[]{
-                new Location( 1, -1), new Location(1,  0), new Location( 1, 1),
-                new Location( 0, -1),                           new Location( 0, 1),
-                new Location(-1, -1), new Location(-1, 0), new Location(-1, 1)
-        };
-
         public final static ArrayList<Character> whiteBlackLetters = new ArrayList<>(){{
             add('W');
             add('B');
         }};
+
 
         public static final ArrayList<Character> pieceLetters = new ArrayList<>(){{
             add('G');

@@ -14,7 +14,7 @@ import static classes.Game.I18N.VARS.MUTUABLES.*;
 
 public class FenConverter {
 
-    public static void FenToBoard(String fen, GrandBoard board) throws ChessGameException {
+    public static void FenToBoard(String fen, IBoard board) throws ChessGameException {
         if (fenIsWrong(fen))
             throw new ChessGameException("This Fen String doesn't suites for the table sizes");
         char currentChar;
@@ -50,7 +50,7 @@ public class FenConverter {
         }
     }
 
-    public static String BoardToFen(GrandBoard board) throws ChessGameException {
+    public static String BoardToFen(IBoard board) throws ChessGameException {
         int counterForRows = 0;
         StringBuilder fenToReturn = new StringBuilder();
         for (int i = 0; i < MAX_WIDTH; i++) {
