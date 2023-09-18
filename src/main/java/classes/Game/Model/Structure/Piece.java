@@ -174,8 +174,8 @@ public class Piece implements IPiece {
                             if (isSameColor(locToAdd)){
                                 if (!posOrWatch) {
                                     range.add(locToAdd);
-                                    break;
                                 }
+                                break;
                             }else {
                                 range.add(locToAdd);
                                 break;
@@ -183,6 +183,8 @@ public class Piece implements IPiece {
                         }else {
                             range.add(locToAdd);
                         }
+                    }else {
+                        break;
                     }
                 }
             }
