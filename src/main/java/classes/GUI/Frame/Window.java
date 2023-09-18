@@ -6,6 +6,7 @@ import lombok.*;
 
 import javax.swing.*;
 
+import java.awt.*;
 import java.util.Scanner;
 
 import java.io.IOException;
@@ -61,6 +62,7 @@ public class Window extends JFrame {
         setSize(screenSize);
         setTitle("Sakk Dolgozat");
         setResizable(false);
+        getContentPane().setBackground(BACK_GROUND);
         setLocationRelativeTo(null);
     }
 

@@ -175,11 +175,10 @@ public class Piece implements IPiece {
                                 if (!posOrWatch) {
                                     range.add(locToAdd);
                                 }
-                                break;
                             }else {
                                 range.add(locToAdd);
-                                break;
                             }
+                            break;
                         }else {
                             range.add(locToAdd);
                         }
