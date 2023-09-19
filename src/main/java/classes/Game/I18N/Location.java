@@ -38,5 +38,9 @@ public class Location {
         return i == l.i && j == l.j;
     }
 
+    public String toString(){
+        return "[" + i + ", " + j + "] ";
+    }
+
     //endregion
 }

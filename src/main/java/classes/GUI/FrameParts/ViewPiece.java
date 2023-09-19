@@ -28,8 +28,6 @@ public class ViewPiece extends ImageIcon implements IPiece {
 
     private Set<Location> possibleRange;
 
-    private ArrayList<ViewField> options;
-
     //endregion
 
 
@@ -50,7 +48,6 @@ public class ViewPiece extends ImageIcon implements IPiece {
         attributes.setType(charToPieceType(type));
 
         possibleRange = new HashSet<>();
-        options = new ArrayList<>();
     }
 
     //endregion

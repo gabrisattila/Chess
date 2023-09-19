@@ -1,6 +1,6 @@
 package classes.Ai;
 
-import classes.GUI.FrameParts.ViewField;
+import classes.GUI.FrameParts.*;
 import classes.Game.I18N.ChessGameException;
 import classes.Game.I18N.Location;
 import classes.Game.I18N.PieceAttributes;
@@ -42,6 +42,9 @@ public class FenConverter {
                             board.getPieces().add(new Piece(piece, new Location(sor, oszlop), board));
                         } else {
                             f.setPiece(piece);
+                            board.getPieces().add(
+                                    new ViewPiece(createSourceStringFromGotAttributes(piece))
+                            );
                         }
                         oszlop++;
                     }
@@ -137,6 +140,25 @@ public class FenConverter {
         if (!piece.isWhite())
             pieceChar = Character.toLowerCase(pieceChar);
         return pieceChar;
+    }
+
+    private static String createSourceStringFromGotAttributes(PieceAttributes attributes){
+        StringBuilder sb = new StringBuilder();
+        sb.append("src\\main\\resources\\Figura_Images\\");
+
+        sb.append(attributes.isWhite() ? "w_" : "b_");
+        String type;
+        switch (attributes.getType()){
+            case G -> type = "gyalog";
+            case H -> type = "huszar";
+            case F -> type = "futo";
+            case B -> type = "bastya";
+            case V -> type = "vezer";
+            default -> type = "kiraly";
+        }
+        sb.append(type);
+
+        return sb.toString();
     }
 
 }

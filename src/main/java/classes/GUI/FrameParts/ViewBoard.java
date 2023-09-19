@@ -6,7 +6,9 @@ import lombok.*;
 
 import java.util.*;
 
+import static classes.Game.I18N.Helpers.*;
 import static classes.Game.I18N.METHODS.*;
+import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
 import static classes.Game.Model.Structure.Board.*;
 import static classes.Game.I18N.VARS.*;
@@ -110,18 +112,14 @@ public class ViewBoard implements IBoard {
         passViewBoardInFenTo(getBoard());
         getBoard().updatePiecesRanges();
 
-        for (int i = 0; i < MAX_HEIGHT; i++) {
-            for (int j = 0; j < MAX_WIDTH; j++) {
+        boardToString(getBoard());
 
-                if (getField(i, j).isGotPiece() && !getBoard().getField(i, j).isGotPiece())
-                    throw new RuntimeException("Nem megfelelően íródott át a FEN boardra.");
-
-                if (getField(i, j).isGotPiece())
-                    for (Location l : getBoard().getField(i, j).getPiece().getPossibleRange()) {
-                        ((ViewPiece)getField(i, j).getPiece()).getOptions().add((ViewField)getField(l));
-                    }
+        for (IPiece p : getBoard().getPieces()) {
+            for (Location l : p.getPossibleRange()) {
+                getPiece(p.getI(), p.getJ()).getPossibleRange().add(l);
             }
         }
+
     }
 
     //endregion

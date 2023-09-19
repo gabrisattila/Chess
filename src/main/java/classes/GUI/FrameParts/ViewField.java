@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import static classes.Ai.AI.*;
+import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
@@ -137,6 +138,7 @@ public class ViewField extends JButton implements IField {
 
             if (theresOnlyOneAi){
                 if (CLICK_COUNTER == 0) {
+                    changeColor(clicked);
                     CLICK_COUNTER++;
                     lastClicked = clicked;
                     pieceToChange = clicked.piece;
@@ -148,6 +150,7 @@ public class ViewField extends JButton implements IField {
                         }
                     }
                     pieceChangeOnViewBoard(pieceToChange, lastClicked, clicked);
+                    changeColor(clicked);
                     CLICK_COUNTER = 0;
                     aiMove();
                     synchronized (edt){
@@ -180,6 +183,36 @@ public class ViewField extends JButton implements IField {
                 }
             }
 
+        }
+
+        private void changeColor(ViewField field){
+            if (field.isGotPiece()){
+                ArrayList<ViewField> fields = new ArrayList<>();
+                for (Location l : field.piece.getPossibleRange()) {
+                    try {
+                        fields.add((ViewField) getViewBoard().getField(l));
+                    } catch (ChessGameException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                for (ViewField f : fields) {
+                    changeFieldColor(f);
+                }
+            }
+        }
+
+        private void changeFieldColorsOfARange(ArrayList<ViewField> fields){
+            for (ViewField f : fields) {
+                changeFieldColor(f);
+            }
+        }
+
+        private void changeFieldColor(ViewField field){
+            if (WHITE_STRING.equals(field.fieldColor)){
+                field.setBackground(field.getBackground() == WHITE ? DARK_WHITE : WHITE);
+            }else {
+                field.setBackground(field.getBackground() == BLACK ? DARK_BLACK : BLACK);
+            }
         }
 
         private void pieceChangeOnViewBoard(ViewPiece piece, ViewField from, ViewField to){

@@ -63,7 +63,6 @@ public class EDT extends Thread {
         gameIsOn = true;
         getWindow();
         initializeAis();
-        getViewBoard().updatePiecesRanges();
     }
 
     private void initializeAis() throws InterruptedException {
