@@ -154,7 +154,7 @@ public class ViewField extends JButton implements IField {
                     CLICK_COUNTER = 0;
                     aiMove();
                     synchronized (edt){
-                        notify();
+                        edt.notify();
                     }
                 }
             }

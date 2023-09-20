@@ -112,14 +112,15 @@ public class ViewBoard implements IBoard {
         passViewBoardInFenTo(getBoard());
         getBoard().updatePiecesRanges();
 
-        boardToString(getBoard());
+//        boardToString(getBoard());
+
+        System.out.println("getBoard().updateRanges() happened.");
 
         for (IPiece p : getBoard().getPieces()) {
             for (Location l : p.getPossibleRange()) {
                 getPiece(p.getI(), p.getJ()).getPossibleRange().add(l);
             }
         }
-
     }
 
     //endregion
