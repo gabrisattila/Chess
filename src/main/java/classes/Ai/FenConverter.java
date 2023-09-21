@@ -40,6 +40,13 @@ public class FenConverter {
                         if (f instanceof Field) {
                             f.setPiece(piece);
                             board.getPieces().add(new Piece(piece, new Location(sor, oszlop), board));
+                            if (piece.getType() == K){
+                                Piece king = (Piece) board.getPieces().get(board.getPieces().size() - 1);
+                                if (piece.isWhite())
+                                    ((Board) board).setWhiteKing(king);
+                                else
+                                    ((Board) board).setBlackKing(king);
+                            }
                         } else {
                             f.setPiece(piece);
                             board.getPieces().add(

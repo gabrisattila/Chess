@@ -30,6 +30,10 @@ public class Board implements IBoard {
 
     private ArrayList<IPiece> pieces;
 
+    private Piece whiteKing;
+
+    private Piece blackKing;
+
     //endregion
 
 
@@ -41,6 +45,8 @@ public class Board implements IBoard {
         fields = new ArrayList<>();
         boardSetUp(this, fields);
         pieces = new ArrayList<>();
+        whiteKing = new Piece();
+        blackKing = new Piece();
     }
 
     public static Board getBoard() throws ChessGameException {

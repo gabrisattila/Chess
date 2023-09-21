@@ -73,7 +73,7 @@ public class ViewField extends JButton implements IField {
     @Override
     public void setPiece(IPiece piece) {
         if (piece instanceof ViewPiece)
-            setPiece(piece);
+            setPiece((ViewPiece) piece);
     }
 
 
