@@ -12,6 +12,29 @@ public enum PieceType {
 
     V,
 
-    K
+    K;
+
+    public char toLowerCase(){
+        switch (this){
+            case G -> {
+                return 'g';
+            }
+            case H -> {
+                return 'h';
+            }
+            case F -> {
+                return 'f';
+            }
+            case B -> {
+                return 'b';
+            }
+            case V -> {
+                return 'v';
+            }
+            default -> {
+                return 'k';
+            }
+        }
+    }
 
 }

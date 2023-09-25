@@ -8,10 +8,8 @@ import java.util.*;
 
 import static classes.Game.I18N.Helpers.*;
 import static classes.Game.I18N.METHODS.*;
-import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
 import static classes.Game.Model.Structure.Board.*;
-import static classes.Game.I18N.VARS.*;
 
 @Getter
 @Setter
@@ -112,15 +110,24 @@ public class ViewBoard implements IBoard {
         passViewBoardInFenTo(getBoard());
         getBoard().updatePiecesRanges();
 
-        boardToString(getBoard());
+        System.out.println(printBoardWithPieces(getBoard(), false));
+        System.out.println("getBoard().updateRanges() happened.\n");
 
-        System.out.println("getBoard().updateRanges() happened.");
+        System.out.println(printBoardWithPieces(getViewBoard(), true));
+        System.out.println("getViewBoard().updateRanges() happened.\n");
+        System.out.println("--------------------------\n");
 
-        for (IPiece p : getBoard().getPieces()) {
-            for (Location l : p.getPossibleRange()) {
-                getPiece(p.getI(), p.getJ()).getPossibleRange().add(l);
+
+        for (int i = 0; i < MAX_HEIGHT; i++) {
+            for (int j = 0; j < MAX_WIDTH; j++) {
+                if (getBoard().getField(i, j).isGotPiece()){
+                    getPiece(i, j).getPossibleRange().addAll(
+                            getBoard().getPiece(i, j).getPossibleRange()
+                    );
+                }
             }
         }
+
     }
 
     //endregion

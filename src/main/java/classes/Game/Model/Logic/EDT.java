@@ -47,9 +47,10 @@ public class EDT extends Thread {
             initialization();
             while(gameIsOn && theresOnlyOneAi){
                 if (whiteAiNeeded != whiteToPlay){
+                    playerTurn = true;
                     getViewBoard().updatePiecesRanges();
                     synchronized (this){
-                        wait();
+                        this.wait();
                     }
                 }
             }

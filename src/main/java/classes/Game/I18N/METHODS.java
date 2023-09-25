@@ -34,12 +34,14 @@ public class METHODS {
     }
 
     public static void aiMove() throws InterruptedException {
-        if (theresOnlyOneAi)
-            SwingUtilities.invokeLater(() -> aiAction(whiteAiNeeded ? aiW : aiB));
-        else
+        if (theresOnlyOneAi) {
+            aiTurn = true;
+            Thread.sleep(500);
+            aiAction(whiteAiNeeded ? aiW : aiB);
+        }else
             while (gameIsOn){
                 Thread.sleep(750);
-                SwingUtilities.invokeLater(() -> aiAction(whiteToPlay ? aiW : aiB));
+                aiAction(whiteToPlay ? aiW : aiB);
             }
     }
 
@@ -100,10 +102,10 @@ public class METHODS {
         try {
             to.setPiece(piece);
             from.clean();
+            whiteToPlay = !whiteToPlay;
         } catch (ChessGameException e) {
             throw new RuntimeException(e);
         }
-        whiteToPlay = !whiteToPlay;
     }
 
     public static String replace(String original, int index, char newChar) {

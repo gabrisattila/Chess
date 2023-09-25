@@ -109,6 +109,15 @@ public class ViewField extends JButton implements IField {
         public void mouseClicked(MouseEvent e) {
             try {
                 PlayerClick((ViewField) e.getSource());
+                if (!playerTurn){
+                    SwingUtilities.invokeLater(() -> {
+                        try {
+                            aiAndEdtAfterClick();
+                        } catch (InterruptedException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    });
+                }
             } catch (ChessGameException | InterruptedException ex) {
                 throw new RuntimeException(ex);
             }
@@ -152,10 +161,7 @@ public class ViewField extends JButton implements IField {
                     pieceChangeOnViewBoard(pieceToChange, lastClicked, clicked);
                     changeColor(clicked);
                     CLICK_COUNTER = 0;
-                    aiMove();
-                    synchronized (edt){
-                        edt.notify();
-                    }
+                    playerTurn = false;
                 }
             }
 
@@ -224,6 +230,18 @@ public class ViewField extends JButton implements IField {
         private boolean helperIfBasedOnColor(ViewPiece piece){
             return (piece.isWhite() && whiteToPlay) ||
                     (!piece.isWhite() && !whiteToPlay);
+        }
+
+        private void aiAndEdtAfterClick() throws InterruptedException {
+            aiMove();
+            while (aiTurn) {}
+            notifyEdt();
+        }
+
+        private void notifyEdt(){
+            synchronized (edt){
+                edt.notify();
+            }
         }
 
     }

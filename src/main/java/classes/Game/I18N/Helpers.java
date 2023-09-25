@@ -1,11 +1,9 @@
 package classes.Game.I18N;
 
-import classes.Ai.AI;
 import classes.GUI.FrameParts.ViewField;
 import classes.Game.Model.Structure.*;
 
-import java.util.ArrayList;
-import java.util.Set;
+import java.util.*;
 
 import static classes.Game.I18N.VARS.MUTUABLES.*;
 
@@ -17,6 +15,25 @@ public class Helpers {
                 fields.get(i).get(j).setText(i + " " + j);
             }
         }
+    }
+
+    public static String printBoardWithPieces(IBoard board, boolean inRed){
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < MAX_HEIGHT; i++) {
+            for (int j = 0; j < MAX_WIDTH; j++) {
+                if (board.getField(i, j).isGotPiece()){
+                    if (board.getPiece(i, j).isWhite()){
+                        sb.append("[").append(board.getPiece(i, j).getType()).append(", ").append(board.getPiece(i, j).getType()).append("] ");
+                    }else {
+                        sb.append("[").append(board.getPiece(i, j).getType().toLowerCase()).append(", ").append(board.getPiece(i, j).getType().toLowerCase()).append("] ");
+                    }
+                }else {
+                    sb.append("[").append(i).append(", ").append(j).append("] ");
+                }
+            }
+            sb.append('\n');
+        }
+        return inRed ? giveBackTextInRed(sb.toString()) : sb.toString();
     }
 
     public static void boardToString(IBoard board){
@@ -39,6 +56,10 @@ public class Helpers {
         }
 
         return sb.toString();
+    }
+
+    public static String giveBackTextInRed(String text){
+        return "\u001B[31m" + text + "\u001B[0m";
     }
 
 }

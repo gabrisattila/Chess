@@ -206,6 +206,10 @@ public class VARS {
 
         public static boolean whiteAiNeeded;
 
+        public static boolean playerTurn;
+
+        public static volatile boolean aiTurn;
+
 
     }
 

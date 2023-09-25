@@ -12,6 +12,7 @@ import java.util.Random;
 import static classes.Ai.FenConverter.*;
 import static classes.Ai.Position.*;
 import static classes.GUI.FrameParts.ViewBoard.*;
+import static classes.Game.I18N.Helpers.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
@@ -45,7 +46,7 @@ public class AI extends Thread {
             try {
                 aiTurn();
                 synchronized (this){
-                    wait();
+                    this.wait();
                 }
             } catch (InterruptedException | ChessGameException e) {
                 throw new RuntimeException(e);
@@ -56,16 +57,18 @@ public class AI extends Thread {
     public void aiTurn() throws ChessGameException, InterruptedException {
         passViewBoardInFenTo(getAiBoard());
         calculate();
+        aiTurn = false;
     }
 
     public void calculate() {
         String fenToPut;
         try {
             fenToPut = Move();
-            if (theresOnlyOneAi)
-                putToFenQueue(fenToPut, rightQueue(whiteToPlay ? "WHITE" : "BLACK"));
             FenToBoard(fenToPut, getViewBoard());
-        } catch (InterruptedException | ChessGameException e) {
+            System.out.println("--------------------------");
+            System.out.println("By AI:\n" + printBoardWithPieces(getViewBoard(), true));
+            System.out.println("--------------------------");
+        } catch (ChessGameException e) {
             throw new RuntimeException(e);
         }
     }
