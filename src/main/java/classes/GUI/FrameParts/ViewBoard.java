@@ -127,7 +127,6 @@ public class ViewBoard implements IBoard {
                 }
             }
         }
-
     }
 
     //endregion

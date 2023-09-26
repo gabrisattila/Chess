@@ -8,6 +8,7 @@ import classes.Game.Model.Structure.IField;
 import classes.Game.Model.Structure.IPiece;
 import lombok.*;
 import javax.swing.*;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -98,8 +99,7 @@ public class ViewField extends JButton implements IField {
 
     @Getter
     @Setter
-    public static class FieldMouseListener implements MouseListener {
-
+    public static class FieldMouseListener extends MouseAdapter {
 
         @Override
         public void mouseClicked(MouseEvent e) {
@@ -109,16 +109,6 @@ public class ViewField extends JButton implements IField {
             } catch (ChessGameException | InterruptedException ex) {
                 throw new RuntimeException(ex);
             }
-        }
-
-        @Override
-        public void mousePressed(MouseEvent e) {
-
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent e) {
-
         }
 
         @Override
@@ -152,7 +142,6 @@ public class ViewField extends JButton implements IField {
                     switchWhoseTurnComes();
                 }
             }
-
         }
 
         private void MouseEnter(ViewField source) {
@@ -225,6 +214,11 @@ public class ViewField extends JButton implements IField {
                 SwingUtilities.invokeLater(() -> {
                     try {
                         aiMove();
+                        /*
+                        * Sufni tuning ahhoz,
+                        * hogy az edt ne vegye át korábban a viewBoard
+                        * kezelését.
+                        * */
                         while (aiTurn) {}
                         notifyEdt();
                     } catch (InterruptedException ex) {

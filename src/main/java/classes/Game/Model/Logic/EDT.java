@@ -14,7 +14,7 @@ import static classes.Game.I18N.VARS.MUTUABLES.*;
  */
 @Getter
 @Setter
-public class EDT extends Thread {
+public class EDT extends Thread { //
 
     //region Fields
 
@@ -34,6 +34,7 @@ public class EDT extends Thread {
     //region Constructor
 
     public EDT() throws ChessGameException, InterruptedException {
+//        initialization();
     }
 
     //endregion
