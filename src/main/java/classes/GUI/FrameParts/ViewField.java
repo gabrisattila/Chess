@@ -1,6 +1,5 @@
 package classes.GUI.FrameParts;
 
-import classes.Ai.AI;
 import classes.Game.I18N.ChessGameException;
 import classes.Game.I18N.Location;
 import classes.Game.I18N.PieceAttributes;
@@ -12,14 +11,11 @@ import javax.swing.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
-import java.util.Objects;
 
-import static classes.Ai.AI.*;
 import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
-import static classes.Game.Model.Logic.EDT.*;
 import static classes.Main.*;
 
 @Getter
@@ -109,15 +105,7 @@ public class ViewField extends JButton implements IField {
         public void mouseClicked(MouseEvent e) {
             try {
                 PlayerClick((ViewField) e.getSource());
-                if (!playerTurn){
-                    SwingUtilities.invokeLater(() -> {
-                        try {
-                            aiAndEdtAfterClick();
-                        } catch (InterruptedException ex) {
-                            throw new RuntimeException(ex);
-                        }
-                    });
-                }
+                aiAndEdtAfterClick();
             } catch (ChessGameException | InterruptedException ex) {
                 throw new RuntimeException(ex);
             }
@@ -161,7 +149,7 @@ public class ViewField extends JButton implements IField {
                     pieceChangeOnViewBoard(pieceToChange, lastClicked, clicked);
                     changeColor(clicked);
                     CLICK_COUNTER = 0;
-                    playerTurn = false;
+                    switchWhoseTurnComes();
                 }
             }
 
@@ -233,9 +221,17 @@ public class ViewField extends JButton implements IField {
         }
 
         private void aiAndEdtAfterClick() throws InterruptedException {
-            aiMove();
-            while (aiTurn) {}
-            notifyEdt();
+            if (aiTurn){
+                SwingUtilities.invokeLater(() -> {
+                    try {
+                        aiMove();
+                        while (aiTurn) {}
+                        notifyEdt();
+                    } catch (InterruptedException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                });
+            }
         }
 
         private void notifyEdt(){

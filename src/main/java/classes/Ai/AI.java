@@ -17,6 +17,7 @@ import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
 import static classes.Game.Model.Structure.Board.*;
+import static classes.Main.edt;
 
 @Getter
 @Setter
@@ -45,6 +46,12 @@ public class AI extends Thread {
         while (gameIsOn){
             try {
                 aiTurn();
+                System.out.println("Ai started waiting.");
+                if (whiteAiNeeded){
+                    synchronized (edt){
+                        edt.notify();
+                    }
+                }
                 synchronized (this){
                     this.wait();
                 }
@@ -57,7 +64,7 @@ public class AI extends Thread {
     public void aiTurn() throws ChessGameException, InterruptedException {
         passViewBoardInFenTo(getAiBoard());
         calculate();
-        aiTurn = false;
+        switchWhoseTurnComes();
     }
 
     public void calculate() {

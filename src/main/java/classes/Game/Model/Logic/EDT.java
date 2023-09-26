@@ -46,8 +46,8 @@ public class EDT extends Thread {
         try {
             initialization();
             while(gameIsOn && theresOnlyOneAi){
-                if (whiteAiNeeded != whiteToPlay){
-                    playerTurn = true;
+                if (playerTurn){
+                    System.out.println("EDT started work.");
                     getViewBoard().updatePiecesRanges();
                     synchronized (this){
                         this.wait();
@@ -72,10 +72,14 @@ public class EDT extends Thread {
             if (whiteAiNeeded) {
                 initializeAi("WHITE");
                 sleep(2000);
+                aiTurn = true;
+                playerTurn = false;
                 aiW.start();
             }
             else {
                 initializeAi("BLACK");
+                aiTurn = false;
+                playerTurn = true;
             }
         }else {
             initializeAi("WHITE");

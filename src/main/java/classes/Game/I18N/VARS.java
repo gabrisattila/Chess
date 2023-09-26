@@ -204,7 +204,7 @@ public class VARS {
 
         public static boolean theresOnlyOneAi;
 
-        public static boolean whiteAiNeeded;
+        public static boolean whiteAiNeeded = false;
 
         public static boolean playerTurn;
 

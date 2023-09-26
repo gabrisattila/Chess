@@ -1,12 +1,8 @@
 package classes.Game.I18N;
 
 import classes.Ai.AI;
-import classes.GUI.FrameParts.ViewBoard;
-import classes.GUI.FrameParts.ViewField;
 import classes.Game.Model.Structure.*;
 
-import javax.swing.*;
-import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
 
 import static classes.Ai.FenConverter.*;
@@ -17,6 +13,12 @@ import static classes.Game.Model.Logic.EDT.*;
 import static classes.Main.*;
 
 public class METHODS {
+
+    public static void switchWhoseTurnComes(){
+        aiTurn = !aiTurn;
+        playerTurn = !playerTurn;
+        System.out.println("Who turns changes.");
+    }
 
     public static Thread getThread(String name){
         switch (name){
@@ -35,7 +37,6 @@ public class METHODS {
 
     public static void aiMove() throws InterruptedException {
         if (theresOnlyOneAi) {
-            aiTurn = true;
             Thread.sleep(500);
             aiAction(whiteAiNeeded ? aiW : aiB);
         }else
