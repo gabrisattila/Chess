@@ -1,0 +1,58 @@
+Az `invokeLater` metódus a Java Swing GUI toolkit része. A Java Swing az ablakokat, grafikus felhasználói felületeket és interaktív elemeket kezelő keretrendszer. Az `invokeLater` metódust általában arra használják, hogy egy adott műveletet (kódot) elindítsanak az eseménykezelő szálban (event dispatch thread), ami a grafikus felület frissítéséért és kezeléséért felel.
+
+A Swing grafikus felületi műveletek és események feldolgozása az eseménykezelő szálban történik. Az eseménykezelő szál felelős az ablakok és komponensek rajzolásáért, események kezeléséért (például gombok lenyomásáért), és a felhasználói interakciókért. Fontos, hogy a Swing komponensek és műveletek csak az eseménykezelő szálon legyenek végrehajtva, hogy elkerülhető legyen a szinkronizációs problémák és a grafikus felület hibáinak kialakulása.
+
+Az `invokeLater` metódust akkor használjuk, amikor más szálon, például egy háttérszálon szeretnénk elindítani egy műveletet, de ennek eredményét vagy valamilyen hatását a grafikus felületen szeretnénk megjeleníteni vagy frissíteni. Az `invokeLater` metódus segítségével az adott műveletet biztosítjuk az eseménykezelő szálnak, hogy azt a megfelelő időben, a Swing szabályainak megfelelően lefuttathassa.
+
+Például, ha egy háttérszálban (nem eseménykezelő szálon) kell valamilyen adatot frissíteni a felhasználói felületen, akkor ezt tehetjük az `invokeLater` metódus segítségével. A metódus biztosítja, hogy a művelet végrehajtása az eseménykezelő szálon történjen, amikor az biztonságos és helyes módon frissítheti a Swing komponenseket.
+
+Az alábbi példában megmutatom, hogyan lehet az `invokeLater` metódust használni:
+
+
+import javax.swing.*;
+
+public class BackgroundAndInvokeLaterExample {
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            JFrame frame = new JFrame("Background and InvokeLater Example");
+            JButton button = new JButton("Start Calculation");
+            JLabel resultLabel = new JLabel("Result: ");
+
+            button.addActionListener(e -> {
+                button.setEnabled(false);
+                resultLabel.setText("Calculating...");
+
+                // Háttérszál a számításra
+                new Thread(() -> {
+                    int result = performCalculation();
+                    SwingUtilities.invokeLater(() -> {
+                        resultLabel.setText("Result: " + result);
+                        button.setEnabled(true);
+                    });
+                }).start();
+            });
+
+            JPanel panel = new JPanel();
+            panel.add(button);
+            panel.add(resultLabel);
+
+            frame.add(panel);
+            frame.pack();
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setVisible(true);
+        });
+    }
+
+    private static int performCalculation() {
+        // Példa számítás, valódi alkalmazásban itt lenne a számítás logikája
+        try {
+            Thread.sleep(3000); // Szimuláljuk a hosszabb számítást
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return 42;
+    }
+}
+
+
+Ebben a példában az `invokeLater` metódust arra használjuk, hogy a Swing komponenseket (JFrame és JButton) a helyes eseménykezelő szálon hozzuk létre és konfiguráljuk. Ez biztosítja a helyes működést és elkerüli a grafikus felület szinkronizációs problémáit.
