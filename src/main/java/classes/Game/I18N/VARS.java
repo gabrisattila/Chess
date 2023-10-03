@@ -200,7 +200,7 @@ public class VARS {
 
         public static Boolean whiteToPlay = true;
 
-        public static Boolean gameIsOn = false;
+//        public static Boolean gameIsOn = false;
 
         public static boolean theresOnlyOneAi;
 
@@ -208,7 +208,7 @@ public class VARS {
 
         public static boolean playerTurn;
 
-        public static volatile boolean aiTurn;
+        public static boolean aiTurn;
 
 
     }

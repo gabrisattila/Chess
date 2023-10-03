@@ -107,16 +107,8 @@ public class ViewBoard implements IBoard {
     @Override
     public void updatePiecesRanges() throws ChessGameException, InterruptedException {
 
-        passViewBoardInFenTo(getBoard());
+        convertOneBoardToAnother(getViewBoard(), getBoard());
         getBoard().updatePiecesRanges();
-
-        System.out.println(printBoardWithPieces(getBoard(), false));
-        System.out.println("getBoard().updateRanges() happened.\n");
-
-        System.out.println(printBoardWithPieces(getViewBoard(), true));
-        System.out.println("getViewBoard().updateRanges() happened.\n");
-        System.out.println("--------------------------\n");
-
 
         for (int i = 0; i < MAX_HEIGHT; i++) {
             for (int j = 0; j < MAX_WIDTH; j++) {

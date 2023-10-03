@@ -4,23 +4,29 @@ import classes.Ai.AI;
 import classes.Game.I18N.*;
 import lombok.*;
 
+import javax.swing.*;
+
+import static classes.Ai.FenConverter.FenToBoard;
 import static classes.GUI.Frame.Window.*;
 import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.METHODS.*;
+import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
+import static java.lang.Thread.sleep;
 
 /**
  * Event Dispatch Thread
  */
 @Getter
 @Setter
-public class EDT extends Thread { //
+public class EDT { //
 
     //region Fields
 
     /**
      * Always this should be the white one. Even if it's alone, even if it has a pair.
      */
+
     public static AI aiW;
 
     /**
@@ -34,7 +40,7 @@ public class EDT extends Thread { //
     //region Constructor
 
     public EDT() throws ChessGameException, InterruptedException {
-//        initialization();
+        initialization();
     }
 
     //endregion
@@ -42,60 +48,71 @@ public class EDT extends Thread { //
 
     //region Methods
 
-    @Override
-    public void run(){
-        try {
-            initialization();
-            while(gameIsOn && theresOnlyOneAi){
-                if (playerTurn){
-                    System.out.println("EDT started work.");
-                    getViewBoard().updatePiecesRanges();
-                    synchronized (this){
-                        this.wait();
-                    }
-                }
-            }
-        } catch (ChessGameException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
-    private void initialization() throws ChessGameException, InterruptedException {
-        setName("EDT");
-        gameIsOn = true;
+    private void initialization() throws ChessGameException {
+//        gameIsOn = true;
         getWindow();
-        initializeAis();
+//        initializeAis();
+        SwingUtilities.invokeLater(this::initializeAis);
     }
 
-    private void initializeAis() throws InterruptedException {
-
+    private void initializeAis(){
         if (theresOnlyOneAi){
             if (whiteAiNeeded) {
-                initializeAi("WHITE");
-                sleep(2000);
                 aiTurn = true;
                 playerTurn = false;
-                aiW.start();
+                startAi("WHITE");
             }
             else {
-                initializeAi("BLACK");
                 aiTurn = false;
                 playerTurn = true;
             }
         }else {
-            initializeAi("WHITE");
-            initializeAi("BLACK");
-            aiMove();
+            //startAi("WHITE");
+            //startAi("BLACK");
         }
     }
 
-    private void initializeAi(String color){
-        if ("WHITE".equals(color)){
+    public static void startAi(String color){
+        if (WHITE_STRING.equals(color)){
             aiW = new AI(color);
-            aiW.setName("aiW");
+            SwingUtilities.invokeLater(() -> {
+                try {
+                    sleep(2000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                aiW.start();
+            });
         }else {
             aiB = new AI(color);
-            aiB.setName("aiB");
+            SwingUtilities.invokeLater(() -> {
+                try {
+                    sleep(2000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                aiB.start();
+            });
+        }
+    }
+
+    public static void interruptAi(String color){
+        if (WHITE_STRING.equals(color)){
+            aiW.interrupt();
+        }else {
+            aiB.interrupt();
+        }
+    }
+
+
+    public static void receivedMoveFromAi(String fen){
+        try {
+            FenToBoard(fen, getViewBoard());
+            switchWhoComes();
+            getViewBoard().updatePiecesRanges();
+        } catch (ChessGameException | InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 

@@ -14,6 +14,7 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
 import static classes.GUI.FrameParts.ViewBoard.*;
+import static classes.Game.Model.Logic.EDT.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
@@ -104,8 +105,12 @@ public class ViewField extends JButton implements IField {
         @Override
         public void mouseClicked(MouseEvent e) {
             try {
-                PlayerClick((ViewField) e.getSource());
-                aiAndEdtAfterClick();
+                if (theresOnlyOneAi){
+                    PlayerClick((ViewField) e.getSource());
+                    if (aiTurn) {
+                        startAi(whiteToPlay ? "WHITE" : "BLACK");
+                    }
+                }
             } catch (ChessGameException | InterruptedException ex) {
                 throw new RuntimeException(ex);
             }
@@ -121,27 +126,29 @@ public class ViewField extends JButton implements IField {
             MouseExit((ViewField) e.getSource());
         }
 
-        private synchronized void PlayerClick(ViewField clicked) throws ChessGameException, InterruptedException {
+        private void PlayerClick(ViewField clicked) throws ChessGameException, InterruptedException {
 
-            if (theresOnlyOneAi){
-                if (CLICK_COUNTER == 0) {
-                    changeColor(clicked);
-                    CLICK_COUNTER++;
-                    lastClicked = clicked;
-                    pieceToChange = clicked.piece;
-                } else {
-                    if (notNull(clicked.piece)){
-                        if (helperIfBasedOnColor(clicked.piece)) {
-                            CLICK_COUNTER = 0;
-                            return;
-                        }
-                    }
-                    pieceChangeOnViewBoard(pieceToChange, lastClicked, clicked);
-                    changeColor(clicked);
-                    CLICK_COUNTER = 0;
-                    switchWhoseTurnComes();
-                }
+            if (CLICK_COUNTER == 0 && clicked.isGotPiece() && clicked.piece.isWhite() == whiteToPlay){
+                changeColor(clicked);
+                CLICK_COUNTER++;
+                lastClicked = clicked;
+                pieceToChange = clicked.piece;
+            } else if (CLICK_COUNTER == 1 && lastClicked.isGotPiece() && lastClicked.piece.isWhite() == whiteToPlay &&
+                    lastClicked.piece.inRange(clicked)) {
+                pieceChangeOnViewBoard(pieceToChange, lastClicked, clicked);
+                changeColor(clicked);
+                CLICK_COUNTER = 0;
+                switchWhoComes();
+            } else if (CLICK_COUNTER == 0 && !clicked.isGotPiece()) {
+                changeColor(clicked);
+            } else if (CLICK_COUNTER == 0 && clicked.piece.isWhite() != whiteToPlay) {
+                return;
+            } else if (CLICK_COUNTER == 1 && !lastClicked.piece.inRange(clicked)) {
+                CLICK_COUNTER = 0;
+                lastClicked = null;
+                return;
             }
+
         }
 
         private void MouseEnter(ViewField source) {
@@ -207,31 +214,6 @@ public class ViewField extends JButton implements IField {
         private boolean helperIfBasedOnColor(ViewPiece piece){
             return (piece.isWhite() && whiteToPlay) ||
                     (!piece.isWhite() && !whiteToPlay);
-        }
-
-        private void aiAndEdtAfterClick() throws InterruptedException {
-            if (aiTurn){
-                SwingUtilities.invokeLater(() -> {
-                    try {
-                        aiMove();
-                        /*
-                        * Sufni tuning ahhoz,
-                        * hogy az edt ne vegye át korábban a viewBoard
-                        * kezelését.
-                        * */
-                        while (aiTurn) {}
-                        notifyEdt();
-                    } catch (InterruptedException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                });
-            }
-        }
-
-        private void notifyEdt(){
-            synchronized (edt){
-                edt.notify();
-            }
         }
 
     }

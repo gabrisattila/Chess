@@ -7,17 +7,11 @@ import javax.swing.*;
 
 public class Main {
 
-    public static EDT edt;
-
     public static void main(String[] args) {
-
-        SwingUtilities.invokeLater(() -> {
-            try {
-                edt = new EDT();
-            } catch (ChessGameException | InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            edt.start();
-        });
+        try {
+            new EDT();
+        } catch (ChessGameException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

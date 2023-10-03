@@ -83,6 +83,16 @@ public class ViewPiece extends ImageIcon implements IPiece {
 
     }
 
+    public boolean inRange(ViewField clicked) {
+        return !clicked.isGotPiece();
+        //for (Location l :
+        //        possibleRange) {
+        //    if (clicked.getLoc().EQUALS(l))
+        //        return true;
+        //}
+        //return false;
+    }
+
     //endregion
 
 }

@@ -14,51 +14,17 @@ import static classes.Main.*;
 
 public class METHODS {
 
-    public static void switchWhoseTurnComes(){
+    public static void switchWhoComes(){
         aiTurn = !aiTurn;
         playerTurn = !playerTurn;
-        System.out.println("Who turns changes.");
     }
 
-    public static Thread getThread(String name){
-        switch (name){
-            case ("aiW") -> {
-                return aiW;
-            }
-            case ("aiB") -> {
-                return aiB;
-            }
-            case ("EDT") -> {
-                return edt;
-            }
+    public static void convertOneBoardToAnother(IBoard what, IBoard to){
+        try {
+            FenToBoard(BoardToFen(what), to);
+        } catch (ChessGameException e) {
+            throw new RuntimeException(e);
         }
-        return null;
-    }
-
-    public static void aiMove() throws InterruptedException {
-        if (theresOnlyOneAi) {
-            Thread.sleep(500);
-            aiAction(whiteAiNeeded ? aiW : aiB);
-        }else
-            while (gameIsOn){
-                Thread.sleep(750);
-                aiAction(whiteToPlay ? aiW : aiB);
-            }
-    }
-
-    private static void aiAction(AI ai){
-        if (ai.isAlive()){
-            synchronized (ai){
-                ai.notify();
-            }
-        }else {
-            ai.start();
-        }
-    }
-
-    public static void passViewBoardInFenTo(Board board) throws ChessGameException, InterruptedException {
-        putToFenQueue(BoardToFen(getViewBoard()), rightQueue(whiteToPlay ? "WHITE" : "BLACK"));
-        board.pieceSetUp(takeFromFenQueue(rightQueue(whiteToPlay ? "WHITE" : "BLACK")));
     }
 
     public static boolean containsLocation(Location location){
@@ -153,18 +119,6 @@ public class METHODS {
             }
         }
         return stringBuilder.toString();
-    }
-
-    public static void putToFenQueue(String fen, BlockingQueue<String> queue) throws InterruptedException {
-        queue.put(fen);
-    }
-
-    public static String takeFromFenQueue(BlockingQueue<String> queue) throws InterruptedException {
-        return queue.take();
-    }
-
-    public static BlockingQueue<String> rightQueue(String color){
-        return WHITE_STRING.equals(color) ? fenChannelFirst : fenChannelSecond;
     }
 
 }

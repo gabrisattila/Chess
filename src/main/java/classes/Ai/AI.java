@@ -12,12 +12,10 @@ import java.util.Random;
 import static classes.Ai.FenConverter.*;
 import static classes.Ai.Position.*;
 import static classes.GUI.FrameParts.ViewBoard.*;
-import static classes.Game.I18N.Helpers.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
-import static classes.Game.I18N.VARS.MUTUABLES.*;
+import static classes.Game.Model.Logic.EDT.*;
 import static classes.Game.Model.Structure.Board.*;
-import static classes.Main.edt;
 
 @Getter
 @Setter
@@ -43,41 +41,33 @@ public class AI extends Thread {
 
     @Override
     public void run(){
-        while (gameIsOn){
-            try {
-                aiTurn();
-                System.out.println("Ai started waiting.");
-                if (whiteAiNeeded){
-                    synchronized (edt){
-                        edt.notify();
-                    }
-                }
-                synchronized (this){
-                    this.wait();
-                }
-            } catch (InterruptedException | ChessGameException e) {
-                throw new RuntimeException(e);
-            }
+        try {
+            String fen = aiMove();
+            receivedMoveFromAi(fen);
+        } catch (InterruptedException | ChessGameException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    public void aiTurn() throws ChessGameException, InterruptedException {
-        passViewBoardInFenTo(getAiBoard());
-        calculate();
-        switchWhoseTurnComes();
+    /**
+     * @return the Fen String of the best option what minimax chosen
+     */
+    public String aiMove() throws ChessGameException, InterruptedException {
+        convertOneBoardToAnother(getViewBoard(), getAiBoard());
+        return calculate();
     }
 
-    public void calculate() {
-        String fenToPut;
+    /**
+     * @return the Fen String of the best option what minimax chosen
+     */
+    public String calculate() {
+        String fen;
         try {
-            fenToPut = Move();
-            FenToBoard(fenToPut, getViewBoard());
-            System.out.println("--------------------------");
-            System.out.println("By AI:\n" + printBoardWithPieces(getViewBoard(), true));
-            System.out.println("--------------------------");
+            fen = Move();
         } catch (ChessGameException e) {
             throw new RuntimeException(e);
         }
+        return fen;
     }
 
     public String Move() throws ChessGameException {
