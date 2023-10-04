@@ -210,6 +210,15 @@ public class VARS {
 
         public static boolean aiTurn;
 
+        public static boolean whiteSmallCastleHappened = false;
+
+        public static boolean whiteBigCastleHappened = false;
+
+        public static boolean blackSmallCastleHappened = false;
+
+        public static boolean blackBigCastleHappened = false;
+
+        public static String emPassantPossibility = "-";
 
     }
 

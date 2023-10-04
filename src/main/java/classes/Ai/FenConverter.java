@@ -15,16 +15,19 @@ import static classes.Game.I18N.VARS.MUTUABLES.*;
 public class FenConverter {
 
     public static void FenToBoard(String fen, IBoard board) throws ChessGameException {
-        if (fenIsWrong(fen))
+
+        String pieces = fen.split(" ")[0];
+
+        if (fenIsWrong(pieces))
             throw new ChessGameException("This Fen String doesn't suites for the table sizes");
         char currentChar;
         int sor = 0, oszlop = 0;
         PieceAttributes piece;
         board.cleanBoard();
 
-        for (int i = 0; i < fen.length(); i++) {
+        for (int i = 0; i < pieces.length(); i++) {
             if (containsLocation(sor, oszlop)){
-                currentChar = fen.charAt(i);
+                currentChar = pieces.charAt(i);
                 if (currentChar == '/'){
                     oszlop = 0;
                     sor++;
@@ -58,6 +61,16 @@ public class FenConverter {
                 }
             }
         }
+
+        String castleCases = fen.split(" ")[1];
+
+        whiteSmallCastleHappened = 'K' == castleCases.charAt(0);
+
+        whiteBigCastleHappened = 'V' == castleCases.charAt(1);
+
+        blackSmallCastleHappened = 'k' == castleCases.charAt(2);
+
+        blackBigCastleHappened = 'v' == castleCases.charAt(3);
     }
 
     public static String BoardToFen(IBoard board) throws ChessGameException {
@@ -84,6 +97,29 @@ public class FenConverter {
             fenToReturn.append('/');
         }
         fenToReturn.deleteCharAt(fenToReturn.length() - 1);
+
+        fenToReturn.append(' ');
+
+        if (whiteSmallCastleHappened)
+            fenToReturn.append('-');
+        else
+            fenToReturn.append('K');
+
+        if (whiteBigCastleHappened)
+            fenToReturn.append('-');
+        else
+            fenToReturn.append('V');
+
+        if (blackSmallCastleHappened)
+            fenToReturn.append('-');
+        else
+            fenToReturn.append('k');
+
+        if (blackBigCastleHappened)
+            fenToReturn.append('-');
+        else
+            fenToReturn.append('v');
+
         return fenToReturn.toString();
     }
 
