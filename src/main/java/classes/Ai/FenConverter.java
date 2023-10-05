@@ -16,7 +16,9 @@ public class FenConverter {
 
     public static void FenToBoard(String fen, IBoard board) throws ChessGameException {
 
-        String pieces = fen.split(" ")[0];
+        String[] separatedFen = fen.split(" ");
+
+        String pieces = separatedFen[0];
 
         if (fenIsWrong(pieces))
             throw new ChessGameException("This Fen String doesn't suites for the table sizes");
@@ -62,7 +64,7 @@ public class FenConverter {
             }
         }
 
-        String castleCases = fen.split(" ")[1];
+        String castleCases = separatedFen[1];
 
         whiteSmallCastleHappened = 'K' == castleCases.charAt(0);
 
