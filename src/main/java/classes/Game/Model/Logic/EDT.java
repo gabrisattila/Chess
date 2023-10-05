@@ -49,11 +49,14 @@ public class EDT { //
     //region Methods
 
 
-    private void initialization() throws ChessGameException {
+    private void initialization() throws ChessGameException, InterruptedException {
 //        gameIsOn = true;
         getWindow();
 //        initializeAis();
         SwingUtilities.invokeLater(this::initializeAis);
+
+        if (theresOnlyOneAi && !whiteAiNeeded)
+            getViewBoard().updatePiecesRanges();
     }
 
     private void initializeAis(){

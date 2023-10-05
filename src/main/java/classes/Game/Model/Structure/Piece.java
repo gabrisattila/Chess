@@ -168,7 +168,7 @@ public class Piece implements IPiece {
             }else {
                 Location locToAdd;
                 for (int i = 1; i < MAX_WIDTH; i++) {
-                    locToAdd = nTimesLoc(i, loc);
+                    locToAdd = location.add(loc.times(i));
                     if (containsLocation(locToAdd)){
                         if (hasPiece(locToAdd)){
                             if (isSameColor(locToAdd)){
@@ -215,10 +215,6 @@ public class Piece implements IPiece {
 
     private boolean hasPiece(Location l){
         return board.getField(l).isGotPiece();
-    }
-
-    private Location nTimesLoc(int n, Location loc){
-        return new Location(n * loc.getI(), n * loc.getJ());
     }
 
     private Location matrixPlusOriginLoc(Location l){
