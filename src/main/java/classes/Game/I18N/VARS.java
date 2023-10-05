@@ -131,8 +131,8 @@ public class VARS {
 
 
         public static Map<String, String> usualFens = new HashMap<>(){{
-            put("whiteDownStarter", "RNBQKBNR/PPPPPPPP/8/8/8/8/pppppppp/rnbqkbnr KQkq");
-            put("blackDownStarter", "rnbkqbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBKQBNR KQkq");
+            put("whiteDownStarter", "RNBQKBNR/PPPPPPPP/8/8/8/8/pppppppp/rnbqkbnr KQkq -");
+            put("blackDownStarter", "rnbkqbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBKQBNR KQkq -");
         }};
 
         //region PieceViews
