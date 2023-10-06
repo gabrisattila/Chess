@@ -36,8 +36,8 @@ public class Window extends JFrame {
         setAiNumberDemand();
 
         frameSetup();
-        setUpSides();
-//        getViewBoard().pieceSetUp(usualFens.get("whiteDownStarter"));
+//        setUpSides();
+        getViewBoard().pieceSetUp(usualFens.get("whiteDownOnlyKnights"));
 
         gameBoard = new GameBoard(getViewBoard());
         add(gameBoard);

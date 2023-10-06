@@ -9,21 +9,23 @@ import java.util.Set;
 
 public interface IPiece {
 
-    public PieceAttributes getAttributes();
+     PieceAttributes getAttributes();
 
-    public PieceType getType();
+     PieceType getType();
 
-    public int getI();
+     int getI();
 
-    public int getJ();
+     int getJ();
 
-    public boolean isWhite();
+     boolean isWhite();
 
-    public Set<Location> getPossibleRange();
+     boolean isEmpty();
 
-    public void STEP(Location from, Location to, IBoard board);
+     Set<Location> getPossibleRange();
 
-    public void updateRange() throws ChessGameException;
+     void STEP(Location from, Location to, IBoard board);
+
+     void updateRange() throws ChessGameException;
 
 
 }

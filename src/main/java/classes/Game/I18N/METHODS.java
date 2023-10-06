@@ -36,7 +36,7 @@ public class METHODS {
     }
 
     public static boolean containsLocation(int maxWidth, int maxHeight, int x, int y){
-        return x >= 0 && x <= maxWidth && y >= 0 && y <= maxHeight;
+        return x >= 0 && x < maxWidth && y >= 0 && y < maxHeight;
     }
 
     public static boolean isNull(Object o){
@@ -119,6 +119,14 @@ public class METHODS {
             }
         }
         return stringBuilder.toString();
+    }
+
+    public static Piece firstEmptyWhite(){
+        return whitePieceSet.getFirstEmpty();
+    }
+
+    public static Piece firstEmptyBlack(){
+        return blackPieceSet.getFirstEmpty();
     }
 
 }

@@ -8,6 +8,7 @@ import classes.Game.Model.Structure.IField;
 import classes.Game.Model.Structure.IPiece;
 import lombok.*;
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -152,27 +153,11 @@ public class ViewField extends JButton implements IField {
         }
 
         private void MouseEnter(ViewField source) {
-
-            if (theresOnlyOneAi){
-                if (WHITE_STRING.equals(source.fieldColor)){
-                    source.setBackground(DARK_WHITE);
-                }else {
-                    source.setBackground(DARK_BLACK);
-                }
-            }
-
+            changeFieldColor(source);
         }
 
         private void MouseExit(ViewField source) {
-
-            if (theresOnlyOneAi){
-                if (WHITE_STRING.equals(source.fieldColor)) {
-                    source.setBackground(WHITE);
-                } else {
-                    source.setBackground(BLACK);
-                }
-            }
-
+            changeFieldColor(source);
         }
 
         private void changeColor(ViewField field){

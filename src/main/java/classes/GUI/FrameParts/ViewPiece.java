@@ -24,6 +24,10 @@ public class ViewPiece extends ImageIcon implements IPiece {
 
     //region Fields
 
+    private int i;
+
+    private int j;
+
     private final PieceAttributes attributes;
 
     private Set<Location> possibleRange;
@@ -55,22 +59,19 @@ public class ViewPiece extends ImageIcon implements IPiece {
 
     //region Methods
 
+    @Override
     public PieceType getType(){
         return attributes.getType();
     }
 
+    @Override
     public boolean isWhite(){
         return WHITE_STRING.equals(attributes.getColor());
     }
 
     @Override
-    public int getI() {
-        return 0;
-    }
-
-    @Override
-    public int getJ() {
-        return 0;
+    public boolean isEmpty(){
+        return attributes == null;
     }
 
     @Override
@@ -84,13 +85,11 @@ public class ViewPiece extends ImageIcon implements IPiece {
     }
 
     public boolean inRange(ViewField clicked) {
-        return !clicked.isGotPiece();
-        //for (Location l :
-        //        possibleRange) {
-        //    if (clicked.getLoc().EQUALS(l))
-        //        return true;
-        //}
-        //return false;
+        for (Location l : possibleRange) {
+            if (clicked.getLoc().EQUALS(l))
+                return true;
+        }
+        return false;
     }
 
     //endregion

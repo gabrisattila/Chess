@@ -10,7 +10,7 @@ import lombok.Setter;
 import java.util.HashSet;
 import java.util.Set;
 
-import static classes.Game.I18N.METHODS.containsLocation;
+import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
@@ -50,11 +50,13 @@ public class Piece implements IPiece {
 
     public Piece(){
         possibleRange = new HashSet<>();
+        watchedRange = new HashSet<>();
     }
 
     public Piece(PieceAttributes attributes){
         this.attributes = attributes;
         possibleRange = new HashSet<>();
+        watchedRange = new HashSet<>();
     }
 
     public Piece(PieceAttributes attributes, Location location, IBoard board) throws ChessGameException {
@@ -64,6 +66,7 @@ public class Piece implements IPiece {
             throw new ChessGameException("Nem megfelelő az átadott tábla típusa");
         this.board = (Board) board;
         possibleRange = new HashSet<>();
+        watchedRange = new HashSet<>();
     }
 
     //endregion
@@ -87,6 +90,22 @@ public class Piece implements IPiece {
     @Override
     public boolean isWhite(){
         return WHITE_STRING.equals(attributes.getColor());
+    }
+
+    public boolean isEmpty(){
+        return attributes == null && location == null;
+    }
+
+    public void setEmpty(){
+        attributes = null;
+        location = null;
+        enemyStartRow = 0;
+        inDefend = false;
+        moveCount = 0;
+        inBinding = false;
+        VALUE = 0;
+        possibleRange = null;
+        watchedRange = null;
     }
 
     @Override
@@ -137,50 +156,49 @@ public class Piece implements IPiece {
     private Set<Location> range(PieceType type, boolean posOrWatch){
         Set<Location> range = new HashSet<>();
         for (Location loc : matrixChooser.get(type)) {
+            Location locForCalculation = loc.add(location);
             if (type == G || type == K || type == H){
-                if (containsLocation(loc)){
-                    if (hasPiece(loc)){
-                        if (type == G && (pawnHitFilter(loc) || pawnEmPassantFilter(loc))){
-                            range.add(loc);
-                        } else if (type == K && kingFilter(loc)) {
-                            range.add(loc);
-                        } else if (!isSameColor(loc)){
-                            range.add(loc);
+                if (containsLocation(locForCalculation)){
+                    if (hasPiece(locForCalculation)){
+                        if (type == G && (pawnHitFilter(locForCalculation) || pawnEmPassantFilter(locForCalculation))){
+                            range.add(locForCalculation);
+                        } else if (type == K && kingFilter(locForCalculation)) {
+                            range.add(locForCalculation);
+                        } else if (!isSameColor(locForCalculation)){
+                            range.add(locForCalculation);
                         }
                     }else {
                         if (type == K && kingFilter(loc)){
-                            range.add(loc);
+                            range.add(locForCalculation);
                         }else if (type == G){
                             if (posOrWatch){
-                                if (pawnFilter(loc)){
-                                    range.add(loc);
+                                if (pawnFilter(locForCalculation)){
+                                    range.add(locForCalculation);
                                 }
                             }else {
-                                if (pawnHitFilter(loc) || pawnEmPassantFilter(loc)){
-                                    range.add(loc);
+                                if (pawnHitFilter(locForCalculation) || pawnEmPassantFilter(locForCalculation)){
+                                    range.add(locForCalculation);
                                 }
                             }
                         } else {
-                            range.add(loc);
+                            range.add(locForCalculation);
                         }
                     }
                 }
             }else {
-                Location locToAdd;
                 for (int i = 1; i < MAX_WIDTH; i++) {
-                    locToAdd = location.add(loc.times(i));
-                    if (containsLocation(locToAdd)){
-                        if (hasPiece(locToAdd)){
-                            if (isSameColor(locToAdd)){
+                    if (containsLocation(locForCalculation)){
+                        if (hasPiece(locForCalculation)){
+                            if (isSameColor(locForCalculation)){
                                 if (!posOrWatch) {
-                                    range.add(locToAdd);
+                                    range.add(locForCalculation);
                                 }
                             }else {
-                                range.add(locToAdd);
+                                range.add(locForCalculation);
                             }
                             break;
                         }else {
-                            range.add(locToAdd);
+                            range.add(locForCalculation);
                         }
                     }else {
                         break;

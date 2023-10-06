@@ -28,7 +28,7 @@ public class FenConverter {
         board.cleanBoard();
 
         for (int i = 0; i < pieces.length(); i++) {
-            if (containsLocation(sor, oszlop)){
+            if (containsLocation(MAX_WIDTH + 1, MAX_HEIGHT + 1, sor, oszlop)){
                 currentChar = pieces.charAt(i);
                 if (currentChar == '/'){
                     oszlop = 0;
@@ -42,21 +42,27 @@ public class FenConverter {
                             throw new ChessGameException(f, BAD_TYPE_MSG);
                         }
                         piece = charToPieceAttributes(currentChar);
+                        f.setPiece(piece);
                         if (f instanceof Field) {
-                            f.setPiece(piece);
-                            board.getPieces().add(new Piece(piece, new Location(sor, oszlop), board));
+                            Piece pieceForParams = piece.isWhite() ? whitePieceSet.getFirstEmpty() : blackPieceSet.getFirstEmpty();
+                            pieceForParams.setAttributes(piece);
+                            pieceForParams.setLocation(new Location(sor, oszlop));
+                            pieceForParams.setBoard((Board) board);
                             if (piece.getType() == K){
-                                Piece king = (Piece) board.getPieces().get(board.getPieces().size() - 1);
                                 if (piece.isWhite())
-                                    ((Board) board).setWhiteKing(king);
+                                    ((Board) board).setWhiteKing(pieceForParams);
                                 else
-                                    ((Board) board).setBlackKing(king);
+                                    ((Board) board).setBlackKing(pieceForParams);
                             }
+                            board.getPieces().add(pieceForParams);
                         } else {
-                            f.setPiece(piece);
+                            ViewPiece pieceForParams = new ViewPiece(createSourceStringFromGotAttributes(piece));
+                            pieceForParams.setI(sor);
+                            pieceForParams.setJ(oszlop);
                             board.getPieces().add(
-                                    new ViewPiece(createSourceStringFromGotAttributes(piece))
+                                    pieceForParams
                             );
+                            board.getField(sor, oszlop).setPiece(pieceForParams);
                         }
                         oszlop++;
                     }
@@ -202,6 +208,7 @@ public class FenConverter {
             default -> type = "kiraly";
         }
         sb.append(type);
+        sb.append(".png");
 
         return sb.toString();
     }

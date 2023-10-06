@@ -5,11 +5,9 @@ import classes.Game.I18N.ChessGameException;
 import classes.Game.I18N.Location;
 import classes.Game.I18N.PieceAttributes;
 import classes.Game.I18N.PieceType;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-import static classes.Game.I18N.METHODS.containsLocation;
-import static classes.Game.I18N.METHODS.notNull;
+import static classes.Game.I18N.METHODS.*;
 
 @Getter
 @Setter
@@ -114,13 +112,17 @@ public class Field implements IField {
     }
 
     public void setPiece(PieceAttributes attributes){
-        piece = new Piece(attributes);
+        if (isNull(attributes))
+            piece = null;
+        piece = attributes.isWhite() ? firstEmptyWhite() : firstEmptyBlack();
+        piece.setAttributes(attributes);
         gotPiece = true;
-        if (notNull(attributes))
-            piece.setLocation(location);
+        piece.setLocation(location);
     }
 
     public void clean() throws ChessGameException {
+        if (gotPiece)
+            piece.setEmpty();
         setPiece((Piece) null);
     }
 

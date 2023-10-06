@@ -2,6 +2,7 @@ package classes.Game.I18N;
 
 import classes.GUI.FrameParts.ViewField;
 import classes.GUI.FrameParts.ViewPiece;
+import classes.Game.Model.Structure.Piece;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -129,10 +130,10 @@ public class VARS {
             add('8');
         }};
 
-
         public static Map<String, String> usualFens = new HashMap<>(){{
             put("whiteDownStarter", "RNBQKBNR/PPPPPPPP/8/8/8/8/pppppppp/rnbqkbnr KQkq -");
             put("blackDownStarter", "rnbkqbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBKQBNR KQkq -");
+            put("whiteDownOnlyKnights", "1N4N1/8/8/8/8/8/8/1n4n1 ---- -");
         }};
 
         //region PieceViews
@@ -165,13 +166,47 @@ public class VARS {
 
     public static class MUTUABLES{
 
-        public static BlockingQueue<String> fenChannelFirst = new LinkedBlockingQueue<>();
-
-        public static BlockingQueue<String> fenChannelSecond = new LinkedBlockingQueue<>();
-
         public static int MAX_WIDTH = 8;
 
         public static int MAX_HEIGHT = 8;
+
+        public static PieceSet whitePieceSet = new PieceSet(){{
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+        }};
+
+        public static PieceSet blackPieceSet = new PieceSet(){{
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+        }};
 
         public static double SCREEN_HEIGHT = screenSize.getHeight();
 

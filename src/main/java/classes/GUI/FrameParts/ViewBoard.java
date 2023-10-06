@@ -72,7 +72,11 @@ public class ViewBoard implements IBoard {
 
     @Override
     public IPiece getPiece(int i, int j){
-        return getFields().get(i).get(j).getPiece();
+        for (IPiece p : pieces) {
+            if (p.getI() == i && p.getJ() == j)
+                return p;
+        }
+        throw new RuntimeException("Nincs ilyen figura.\n");
     }
 
     @Override
