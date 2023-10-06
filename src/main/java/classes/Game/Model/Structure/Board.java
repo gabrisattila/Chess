@@ -127,6 +127,8 @@ public class Board implements IBoard {
             }
         }
         pieces.clear();
+        whitePieceSet.clean();
+        blackPieceSet.clean();
     }
 
 

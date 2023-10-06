@@ -1,19 +1,21 @@
 package classes.Ai;
 
 import classes.Game.I18N.ChessGameException;
-import classes.Game.Model.Structure.Field;
-import classes.Game.Model.Structure.IField;
-import classes.Game.Model.Structure.Piece;
+import classes.Game.I18N.Location;
+import classes.Game.Model.Structure.*;
 import lombok.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 import static classes.Ai.FenConverter.*;
 import static classes.Ai.Position.*;
 import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
+import static classes.Game.I18N.VARS.MUTUABLES.*;
 import static classes.Game.Model.Logic.EDT.*;
 import static classes.Game.Model.Structure.Board.*;
 
@@ -64,22 +66,25 @@ public class AI extends Thread {
         String fen;
         try {
             fen = Move();
-        } catch (ChessGameException e) {
+        } catch (ChessGameException | InterruptedException e) {
             throw new RuntimeException(e);
         }
         return fen;
     }
 
-    public String Move() throws ChessGameException {
+    public String Move() throws ChessGameException, InterruptedException {
 
         Random random = new Random();
 
         int indexOfChosen = random.nextInt(0, getAiBoard().getPieces().size());
 
+        getAiBoard().updatePiecesRanges();
+
         Piece stepper;
 //        int i = 0;
 //        int numOfPieces = getAiBoard().getPieces().size();
-        while ((stepper = ((Piece)getAiBoard().getPieces().get(indexOfChosen))).isWhite() != WHITE_STRING.equals(color)){
+        while ((stepper = ((Piece)getAiBoard().getPieces().get(indexOfChosen))).isWhite() != WHITE_STRING.equals(color)
+                && stepper.getPossibleRange().size() > 0){
 //                || i < numOfPieces){
             indexOfChosen = random.nextInt(0, getAiBoard().getPieces().size());
 //            i++;
@@ -103,7 +108,13 @@ public class AI extends Thread {
             }
         }
 
-        indexOfChosen = random.nextInt(0, ableToStepThere.size());
+        //ArrayList<Location> ableToStepThereInLocations = new ArrayList<>(stepper.getPossibleRange());
+//
+//        //indexOfChosen = random.nextInt(0, ableToStepThereInLocations.size());
+        //ArrayList<Field> ableToStepThere = new ArrayList<>();
+        //for (Location l : ableToStepThereInLocations) {
+        //    ableToStepThere.add((Field) getAiBoard().getField(l));
+        //}
         Field toStepOn = ableToStepThere.get(indexOfChosen);
 
         pieceChangeOnBoard(

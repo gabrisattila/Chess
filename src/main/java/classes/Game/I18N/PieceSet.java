@@ -34,4 +34,10 @@ public class PieceSet extends ArrayList<IPiece> {
         );
     }
 
+    public void clean(){
+        for (IPiece p : super.stream().toList()) {
+            p.setEmpty();
+        }
+    }
+
 }

@@ -4,7 +4,6 @@ import classes.Game.I18N.ChessGameException;
 import classes.Game.I18N.Location;
 import classes.Game.I18N.PieceAttributes;
 import classes.Game.I18N.PieceType;
-import classes.Game.Model.Structure.GrandBoard;
 import classes.Game.Model.Structure.IBoard;
 import classes.Game.Model.Structure.IPiece;
 import lombok.*;
@@ -28,7 +27,7 @@ public class ViewPiece extends ImageIcon implements IPiece {
 
     private int j;
 
-    private final PieceAttributes attributes;
+    private PieceAttributes attributes;
 
     private Set<Location> possibleRange;
 
@@ -72,6 +71,11 @@ public class ViewPiece extends ImageIcon implements IPiece {
     @Override
     public boolean isEmpty(){
         return attributes == null;
+    }
+
+    @Override
+    public void setEmpty(){
+        attributes = null;
     }
 
     @Override

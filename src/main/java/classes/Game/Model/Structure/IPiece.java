@@ -21,6 +21,8 @@ public interface IPiece {
 
      boolean isEmpty();
 
+     void setEmpty();
+
      Set<Location> getPossibleRange();
 
      void STEP(Location from, Location to, IBoard board);

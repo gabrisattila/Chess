@@ -103,17 +103,23 @@ public class Field implements IField {
 
     public void setPiece(IPiece piece) throws ChessGameException {
         gotPiece = notNull(piece);
+
         if (gotPiece && piece instanceof Piece) {
             this.piece = (Piece) piece;
             ((Piece) piece).setLocation(location);
+        }else {
+            this.piece = null;
         }
+
         if (piece != null && ! (piece instanceof Piece))
             throw new ChessGameException("Nem megfelelő típus");
     }
 
     public void setPiece(PieceAttributes attributes){
-        if (isNull(attributes))
+        if (isNull(attributes)) {
             piece = null;
+            gotPiece = false;
+        }
         piece = attributes.isWhite() ? firstEmptyWhite() : firstEmptyBlack();
         piece.setAttributes(attributes);
         gotPiece = true;
@@ -121,8 +127,7 @@ public class Field implements IField {
     }
 
     public void clean() throws ChessGameException {
-        if (gotPiece)
-            piece.setEmpty();
+        gotPiece = false;
         setPiece((Piece) null);
     }
 

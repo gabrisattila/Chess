@@ -42,7 +42,6 @@ public class FenConverter {
                             throw new ChessGameException(f, BAD_TYPE_MSG);
                         }
                         piece = charToPieceAttributes(currentChar);
-                        f.setPiece(piece);
                         if (f instanceof Field) {
                             Piece pieceForParams = piece.isWhite() ? whitePieceSet.getFirstEmpty() : blackPieceSet.getFirstEmpty();
                             pieceForParams.setAttributes(piece);
@@ -55,6 +54,7 @@ public class FenConverter {
                                     ((Board) board).setBlackKing(pieceForParams);
                             }
                             board.getPieces().add(pieceForParams);
+                            board.getField(sor, oszlop).setPiece(pieceForParams);
                         } else {
                             ViewPiece pieceForParams = new ViewPiece(createSourceStringFromGotAttributes(piece));
                             pieceForParams.setI(sor);
