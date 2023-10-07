@@ -81,40 +81,36 @@ public class AI extends Thread {
         getAiBoard().updatePiecesRanges();
 
         Piece stepper;
-//        int i = 0;
-//        int numOfPieces = getAiBoard().getPieces().size();
-        while ((stepper = ((Piece)getAiBoard().getPieces().get(indexOfChosen))).isWhite() != WHITE_STRING.equals(color)
-                && stepper.getPossibleRange().size() > 0){
-//                || i < numOfPieces){
-            indexOfChosen = random.nextInt(0, getAiBoard().getPieces().size());
-//            i++;
-        }
-//        if (i == numOfPieces){
-//            throw new ChessGameException("The game is over!");
-//        }
-
-        ArrayList<Field> ableToStepThere = new ArrayList<>();
-
-        for (ArrayList<IField> row : getAiBoard().getFields()) {
-            for (IField f : row) {
-                if (f.isGotPiece()){
-                    if ((f.getPiece().isWhite() && !WHITE_STRING.equals(color)) ||
-                            (!f.getPiece().isWhite() && WHITE_STRING.equals(color))){
-                        ableToStepThere.add((Field) f);
-                    }
-                }else {
-                    ableToStepThere.add((Field) f);
-                }
+        ArrayList<Piece> possibleSteppers = new ArrayList<>();
+        for (IPiece p : getAiBoard().getPieces()) {
+            if (p.isWhite() == WHITE_STRING.equals(color) && p.getPossibleRange().size() > 0){
+                possibleSteppers.add((Piece) p);
             }
         }
+        stepper = possibleSteppers.get(random.nextInt(0, possibleSteppers.size()));
 
-        //ArrayList<Location> ableToStepThereInLocations = new ArrayList<>(stepper.getPossibleRange());
-//
-//        //indexOfChosen = random.nextInt(0, ableToStepThereInLocations.size());
         //ArrayList<Field> ableToStepThere = new ArrayList<>();
-        //for (Location l : ableToStepThereInLocations) {
-        //    ableToStepThere.add((Field) getAiBoard().getField(l));
+//
+        //for (ArrayList<IField> row : getAiBoard().getFields()) {
+        //    for (IField f : row) {
+        //        if (f.isGotPiece()){
+        //            if ((f.getPiece().isWhite() && !WHITE_STRING.equals(color)) ||
+        //                    (!f.getPiece().isWhite() && WHITE_STRING.equals(color))){
+        //                ableToStepThere.add((Field) f);
+        //            }
+        //        }else {
+        //            ableToStepThere.add((Field) f);
+        //        }
+        //    }
         //}
+
+        ArrayList<Location> ableToStepThereInLocations = new ArrayList<>(stepper.getPossibleRange());
+
+        indexOfChosen = random.nextInt(0, ableToStepThereInLocations.size());
+        ArrayList<Field> ableToStepThere = new ArrayList<>();
+        for (Location l : ableToStepThereInLocations) {
+            ableToStepThere.add((Field) getAiBoard().getField(l));
+        }
         Field toStepOn = ableToStepThere.get(indexOfChosen);
 
         pieceChangeOnBoard(
