@@ -76,8 +76,6 @@ public class AI extends Thread {
 
         Random random = new Random();
 
-        int indexOfChosen = random.nextInt(0, getAiBoard().getPieces().size());
-
         getAiBoard().updatePiecesRanges();
 
         Piece stepper;
@@ -89,24 +87,10 @@ public class AI extends Thread {
         }
         stepper = possibleSteppers.get(random.nextInt(0, possibleSteppers.size()));
 
-        //ArrayList<Field> ableToStepThere = new ArrayList<>();
-//
-        //for (ArrayList<IField> row : getAiBoard().getFields()) {
-        //    for (IField f : row) {
-        //        if (f.isGotPiece()){
-        //            if ((f.getPiece().isWhite() && !WHITE_STRING.equals(color)) ||
-        //                    (!f.getPiece().isWhite() && WHITE_STRING.equals(color))){
-        //                ableToStepThere.add((Field) f);
-        //            }
-        //        }else {
-        //            ableToStepThere.add((Field) f);
-        //        }
-        //    }
-        //}
 
         ArrayList<Location> ableToStepThereInLocations = new ArrayList<>(stepper.getPossibleRange());
 
-        indexOfChosen = random.nextInt(0, ableToStepThereInLocations.size());
+        int indexOfChosen = random.nextInt(0, ableToStepThereInLocations.size());
         ArrayList<Field> ableToStepThere = new ArrayList<>();
         for (Location l : ableToStepThereInLocations) {
             ableToStepThere.add((Field) getAiBoard().getField(l));
