@@ -159,7 +159,7 @@ public class Piece implements IPiece {
             Location locForCalculation = loc.add(location);
             if (type == G || type == K || type == H){
                 if (containsLocation(locForCalculation)){
-                    if (hasPiece(locForCalculation)){
+                    if (isTherePiece(locForCalculation)){
                         if (type == G && (pawnHitFilter(locForCalculation) || pawnEmPassantFilter(locForCalculation))){
                             range.add(locForCalculation);
                         } else if (type == K && kingFilter(locForCalculation)) {
@@ -186,29 +186,41 @@ public class Piece implements IPiece {
                     }
                 }
             }else {
-                for (int i = 1; i < MAX_WIDTH; i++) {
-                    if (containsLocation(locForCalculation)){
-                        if (hasPiece(locForCalculation)){
-                            if (isSameColor(locForCalculation)){
-                                if (!posOrWatch) {
-                                    range.add(locForCalculation);
-                                }
-                            }else {
-                                range.add(locForCalculation);
-                            }
-                            break;
-                        }else {
-                            range.add(locForCalculation);
-                        }
-                    }else {
-                        break;
-                    }
-                }
+                range.addAll(runTrough(getI(), getJ(), loc.getI(), loc.getJ(), posOrWatch));
             }
         }
         return range;
     }
 
+
+    private Set<Location> runTrough(int i, int j, int addToI, int addToJ, boolean possibleOrWatched){
+        boolean b = true;
+        Set<Location> pRange = new HashSet<>();
+        Set<Location> wRange = new HashSet<>();
+        while(b && containsLocation(i, j)){
+            if (!(i == location.getI() && j == location.getJ())){
+                if (!isTherePiece(i, j)){
+                    pRange.add(new Location(i, j));
+                }else {
+                    if (!isSameColor(i, j)){
+                        pRange.add((new Location(i, j)));
+                    }else {
+                        ((Piece)board.getPiece(i, j)).inDefend = true;
+                    }
+                    b = false;
+                }
+                if (board.getField(i, j).isGotPiece() &&
+                        board.getPiece(i, j) != board.getKing(!attributes.isWhite())) {
+                    wRange.add(new Location(i, j));
+//                    table.getFieldByIJFromBoard(i, j).increaseWatcherCount(white);
+                }
+            }
+            i += addToI;
+            j += addToJ;
+        }
+        return possibleOrWatched ? pRange : wRange;
+    }
+    
     private boolean kingFilter(Location l){
 //        return !board.enemyKingInNeighbour(l, this) && !thereWouldBeCheck(l);
         return true;
@@ -220,7 +232,7 @@ public class Piece implements IPiece {
     }
 
     private boolean pawnHitFilter(Location loc){
-        return (hasPiece(loc) && !isSameColor(loc) && loc.getJ() != getJ());
+        return (isTherePiece(loc) && !isSameColor(loc) && loc.getJ() != getJ());
     }
 
     private boolean pawnFilter(Location l){
@@ -231,8 +243,16 @@ public class Piece implements IPiece {
         return board.getPiece(location).isWhite() == isWhite();
     }
 
-    private boolean hasPiece(Location l){
+    private boolean isSameColor(int i, int j){
+        return board.getPiece(i, j).isWhite() == isWhite();
+    }
+
+    private boolean isTherePiece(Location l){
         return board.getField(l).isGotPiece();
+    }
+
+    private boolean isTherePiece(int i, int j){
+        return board.getField(i, j).isGotPiece();
     }
 
     private Location matrixPlusOriginLoc(Location l){

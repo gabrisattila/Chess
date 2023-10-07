@@ -141,6 +141,9 @@ public class Board implements IBoard {
 //        setInDefendBasedOnWatching();
     }
 
+    public Piece getKing(boolean whiteNeeded){
+        return whiteNeeded ? whiteKing : blackKing;
+    }
 
     //endregion
 

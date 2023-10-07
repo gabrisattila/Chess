@@ -134,6 +134,10 @@ public class VARS {
             put("whiteDownStarter", "RNBQKBNR/PPPPPPPP/8/8/8/8/pppppppp/rnbqkbnr KQkq -");
             put("blackDownStarter", "rnbkqbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBKQBNR KQkq -");
             put("whiteDownOnlyKnights", "1N4N1/8/8/8/8/8/8/1n4n1 ---- -");
+            put("whiteDownOnlyBishops", "2F2F2/8/8/8/8/8/8/2f2f2 ---- -");
+            put("onlyTwoBishops6x6", "1F4/6/6/6/6/4f1 ---- -");
+            put("onlyTwoRooks6x6", "B5/6/6/6/6/5b ---- -");
+            put("onlyTwoQueens6x6", "2V3/6/6/6/6/3v2 ---- -");
         }};
 
         //region PieceViews

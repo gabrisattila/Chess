@@ -49,8 +49,8 @@ public class GameBoard extends JLayeredPane {
 
     private void rotateBoard(){
 
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
+        for (int i = 0; i < MAX_WIDTH; i++) {
+            for (int j = 0; j < MAX_HEIGHT; j++) {
                 Point rotatedPosition = rotateAntiClockwise(new Point(i, j), MAX_WIDTH);
 
                 ((ViewField)parentBoard.getField(i, j)).setBounds(
