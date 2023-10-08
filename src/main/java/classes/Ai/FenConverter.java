@@ -1,10 +1,7 @@
 package classes.Ai;
 
 import classes.GUI.FrameParts.*;
-import classes.Game.I18N.ChessGameException;
-import classes.Game.I18N.Location;
-import classes.Game.I18N.PieceAttributes;
-import classes.Game.I18N.PieceType;
+import classes.Game.I18N.*;
 import classes.Game.Model.Structure.*;
 
 import static classes.Game.I18N.METHODS.*;
@@ -12,6 +9,10 @@ import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
 
+/**
+ * FEN string structure:
+ *  "piecesOnTheBoard WhiteOrBlackToPlay castleCases_OR_-forEachImpossibleCastleOption emPassantPossibility_OR_-"
+ */
 public class FenConverter {
 
     public static void FenToBoard(String fen, IBoard board) throws ChessGameException {
@@ -27,6 +28,10 @@ public class FenConverter {
         PieceAttributes piece;
         board.cleanBoard();
 
+//        whiteToPlayFenToBoard(separatedFen[2]);
+
+        String emPassant = separatedFen[3];
+
         for (int i = 0; i < pieces.length(); i++) {
             if (containsLocation(MAX_WIDTH + 1, MAX_HEIGHT + 1, sor, oszlop)){
                 currentChar = pieces.charAt(i);
@@ -41,7 +46,11 @@ public class FenConverter {
                         if (! ((f instanceof Field ) || (f instanceof ViewField))){
                             throw new ChessGameException(f, BAD_TYPE_MSG);
                         }
+
                         piece = charToPieceAttributes(currentChar);
+
+                        enemyAndOwnStartRowFenToBoard(piece);
+
                         if (f instanceof Field) {
                             Piece pieceForParams = piece.isWhite() ? whitePieceSet.getFirstEmpty() : blackPieceSet.getFirstEmpty();
                             pieceForParams.setAttributes(piece);
@@ -53,6 +62,9 @@ public class FenConverter {
                                 else
                                     ((Board) board).setBlackKing(pieceForParams);
                             }
+
+                            emPassantFenToBoard(emPassant, piece);
+
                             board.getPieces().add(pieceForParams);
                             board.getField(sor, oszlop).setPiece(pieceForParams);
                         } else {
@@ -70,15 +82,7 @@ public class FenConverter {
             }
         }
 
-        String castleCases = separatedFen[1];
-
-        whiteSmallCastleHappened = 'K' == castleCases.charAt(0);
-
-        whiteBigCastleHappened = 'V' == castleCases.charAt(1);
-
-        blackSmallCastleHappened = 'k' == castleCases.charAt(2);
-
-        blackBigCastleHappened = 'v' == castleCases.charAt(3);
+        castleCaseFenToBoard(separatedFen[2]);
     }
 
     public static String BoardToFen(IBoard board) throws ChessGameException {
@@ -108,6 +112,10 @@ public class FenConverter {
 
         fenToReturn.append(' ');
 
+        fenToReturn.append(whiteToPlay ? 'w' : 'b');
+
+        fenToReturn.append(' ');
+
         if (whiteSmallCastleHappened)
             fenToReturn.append('-');
         else
@@ -128,9 +136,18 @@ public class FenConverter {
         else
             fenToReturn.append('v');
 
+        fenToReturn.append(' ');
+
+//        if (board instanceof Board)
+//            if (((Board) board).getThereWasEmPassant().getFirst())
+//                fenToReturn.append(((Board) board).getThereWasEmPassant().getSecond());
+//            else
+//                fenToReturn.append('-');
+//        else
+            fenToReturn.append('-');
+
         return fenToReturn.toString();
     }
-
 
     public static boolean fenIsWrong(String FEN){
         boolean fenIsWrong = false;
@@ -211,6 +228,48 @@ public class FenConverter {
         sb.append(".png");
 
         return sb.toString();
+    }
+
+    private static void whiteToPlayFenToBoard(String wB){
+        whiteToPlay = "w".equals(wB);
+    }
+
+    private static void emPassantFenToBoard(String emPassant, PieceAttributes piece){
+        if (!("-".equals(emPassant)) && piece.getType() == G){
+            char sorInChar = emPassant.charAt(0);
+            char oszlopInChar = emPassant.charAt(1);
+            piece.setPossibleEmPassant(
+                    Integer.parseInt(String.valueOf(sorInChar)),
+                    Integer.parseInt(String.valueOf(oszlopInChar))
+            );
+        }
+    }
+
+    private static void enemyAndOwnStartRowFenToBoard(PieceAttributes piece){
+        if (theresOnlyOneAi){
+            piece.setEnemyStartRow(
+                    whiteAiNeeded ?
+                            (piece.isWhite() ? 0 : 7) :
+                            (piece.isWhite() ? 7 : 0)
+            );
+        }else {
+            piece.setEnemyStartRow(
+                    piece.isWhite() ? 7 : 0
+            );
+        }
+        piece.setOwnStartRow(piece.getEnemyAndOwnStartRow().getFirst() == 7 ? 1 : 6);
+    }
+
+    private static void castleCaseFenToBoard(String castleCases){
+
+        whiteSmallCastleHappened = 'K' == castleCases.charAt(0);
+
+        whiteBigCastleHappened = 'V' == castleCases.charAt(1);
+
+        blackSmallCastleHappened = 'k' == castleCases.charAt(2);
+
+        blackBigCastleHappened = 'v' == castleCases.charAt(3);
+
     }
 
 }

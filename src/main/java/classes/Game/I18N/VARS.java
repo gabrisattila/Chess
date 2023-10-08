@@ -43,8 +43,8 @@ public class VARS {
 
         public static final ArrayList<Location> pawnMatrix = new ArrayList<>(){{
             add(new Location(1, -1));
-            add(new Location(1, 0));
             add(new Location(1, 1));
+            add(new Location(1, 0));
             add(new Location(2, 0));
         }};
 
@@ -131,13 +131,14 @@ public class VARS {
         }};
 
         public static Map<String, String> usualFens = new HashMap<>(){{
-            put("whiteDownStarter", "RNBQKBNR/PPPPPPPP/8/8/8/8/pppppppp/rnbqkbnr KQkq -");
-            put("blackDownStarter", "rnbkqbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBKQBNR KQkq -");
-            put("whiteDownOnlyKnights", "1N4N1/8/8/8/8/8/8/1n4n1 ---- -");
-            put("whiteDownOnlyBishops", "2F2F2/8/8/8/8/8/8/2f2f2 ---- -");
-            put("onlyTwoBishops6x6", "1F4/6/6/6/6/4f1 ---- -");
-            put("onlyTwoRooks6x6", "B5/6/6/6/6/5b ---- -");
-            put("onlyTwoQueens6x6", "2V3/6/6/6/6/3v2 ---- -");
+            put("whiteDownStarter", "RNBQKBNR/PPPPPPPP/8/8/8/8/pppppppp/rnbqkbnr w KQkq -");
+            put("blackDownStarter", "rnbkqbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBKQBNR w KQkq -");
+            put("whiteDownOnlyKnights", "1N4N1/8/8/8/8/8/8/1n4n1 w ---- -");
+            put("whiteDownOnlyBishops", "2F2F2/8/8/8/8/8/8/2f2f2 w ---- -");
+            put("onlyTwoBishops6x6", "1F4/6/6/6/6/4f1 w ---- -");
+            put("onlyTwoRooks6x6", "B5/6/6/6/6/5b w ---- -");
+            put("onlyTwoQueens6x6", "2V3/6/6/6/6/3v2 w ---- -");
+            put("onlyPawns6x6", "6/GGGGGG/6/6/gggggg/6 w ---- -");
         }};
 
         //region PieceViews

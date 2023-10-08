@@ -17,6 +17,13 @@ public class PieceAttributes {
 
     private String color;
 
+    /**
+     * 0 and 7 minden figuránál. Nyilván attól függően merre megy
+     */
+    private Pair<Integer, Integer> enemyAndOwnStartRow;
+
+    private int[] possibleEmPassant;
+
     //endregion
 
 
@@ -27,6 +34,7 @@ public class PieceAttributes {
     public PieceAttributes(PieceType pieceType, String color){
         type = pieceType;
         this.color = color;
+        enemyAndOwnStartRow = new Pair<>();
     }
 
     //endregion
@@ -48,6 +56,24 @@ public class PieceAttributes {
 
     public boolean isWhite(){
         return WHITE_STRING.equals(color);
+    }
+
+    public Location getEmPassantLoc(){
+        return new Location(possibleEmPassant[0], possibleEmPassant[1]);
+    }
+
+    public void setPossibleEmPassant(int sor, int oszlop){
+        possibleEmPassant = new int[2];
+        possibleEmPassant[0] = sor;
+        possibleEmPassant[1] = oszlop;
+    }
+
+    public void setEnemyStartRow(int x){
+        enemyAndOwnStartRow.setFirst(x);
+    }
+
+    public void setOwnStartRow(int x){
+        enemyAndOwnStartRow.setSecond(x);
     }
 
     //endregion

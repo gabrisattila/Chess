@@ -7,6 +7,8 @@ import classes.Game.I18N.PieceType;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,8 +26,6 @@ public class Piece implements IPiece {
     protected PieceAttributes attributes;
 
     private Location location;
-
-    private int enemyStartRow;
 
     private boolean inDefend;
 
@@ -74,10 +74,12 @@ public class Piece implements IPiece {
 
     //region Methods
 
+    @Override
     public int getI(){
         return location.getI();
     }
 
+    @Override
     public int getJ(){
         return location.getJ();
     }
@@ -92,14 +94,23 @@ public class Piece implements IPiece {
         return WHITE_STRING.equals(attributes.getColor());
     }
 
+    public int getOwnStartRow(){
+        return attributes.getEnemyAndOwnStartRow().getSecond();
+    }
+
+    public int getEnemyStartRow(){
+        return attributes.getEnemyAndOwnStartRow().getFirst();
+    }
+
+    @Override
     public boolean isEmpty(){
         return attributes == null && location == null;
     }
 
+    @Override
     public void setEmpty(){
         attributes = null;
         location = null;
-        enemyStartRow = 0;
         inDefend = false;
         moveCount = 0;
         inBinding = false;
@@ -155,41 +166,69 @@ public class Piece implements IPiece {
 
     private Set<Location> range(PieceType type, boolean posOrWatch){
         Set<Location> range = new HashSet<>();
-        for (Location loc : matrixChooser.get(type)) {
+        ArrayList<Location> optionsToIterateTrough = type == G && getEnemyStartRow() > getOwnStartRow() ?
+                                                    matrixChooser.get(type) :
+                                                    (ArrayList<Location>) locationListTimesN(matrixChooser.get(type), -1);
+        for (Location loc : optionsToIterateTrough) {
             Location locForCalculation = loc.add(location);
-            if (type == G || type == K || type == H){
+            if (type == G){
+                if (pawnCase(locForCalculation, posOrWatch)){
+                    range.add(locForCalculation);
+                }
+            }
+            if (type == K || type == H){
                 if (containsLocation(locForCalculation)){
                     if (isTherePiece(locForCalculation)){
-                        if (type == G && (pawnHitFilter(locForCalculation) || pawnEmPassantFilter(locForCalculation))){
+                        if (type == K && kingFilter(locForCalculation)) {
                             range.add(locForCalculation);
-                        } else if (type == K && kingFilter(locForCalculation)) {
-                            range.add(locForCalculation);
-                        } else if (!isSameColor(locForCalculation)){
+                        } else if (enemyColor(locForCalculation)){
                             range.add(locForCalculation);
                         }
                     }else {
                         if (type == K && kingFilter(loc)){
                             range.add(locForCalculation);
-                        }else if (type == G){
-                            if (posOrWatch){
-                                if (pawnFilter(locForCalculation)){
-                                    range.add(locForCalculation);
-                                }
-                            }else {
-                                if (pawnHitFilter(locForCalculation) || pawnEmPassantFilter(locForCalculation)){
-                                    range.add(locForCalculation);
-                                }
-                            }
-                        } else {
+                        }else {
                             range.add(locForCalculation);
                         }
                     }
                 }
-            }else {
+            } else if (type != G) {
                 range.addAll(runTrough(getI(), getJ(), loc.getI(), loc.getJ(), posOrWatch));
             }
         }
         return range;
+    }
+
+    private boolean pawnCase(Location l, boolean posOrWatch) {
+        if (containsLocation(l)){
+            if (l.getJ() == getJ()){
+                if (isTherePiece(l))
+                    return false;
+                if (Math.abs(l.getI() - getI()) == 1){
+                    return posOrWatch;
+                }
+                if (Math.abs(l.getI() - getI()) == 2){
+                    if (posOrWatch && getI() == getOwnStartRow()){
+                        if (getOwnStartRow() == 1){
+                            return !isTherePiece(2, getJ());
+                        }else {
+                            return !isTherePiece(5, getJ());
+                        }
+                    }
+                }
+            } else {
+                if (Math.abs(l.getJ() - getJ()) > 1)
+                    throw new RuntimeException("Nem eshet bele a gyalog range-be");
+                //if (board.getThereWasEmPassant().getFirst()){
+                //
+                //} else
+                if (isTherePiece(l)){
+                    return enemyColor(l);
+                }
+                return !posOrWatch;
+            }
+        }
+        return false;
     }
 
 
@@ -202,7 +241,7 @@ public class Piece implements IPiece {
                 if (!isTherePiece(i, j)){
                     pRange.add(new Location(i, j));
                 }else {
-                    if (!isSameColor(i, j)){
+                    if (!enemyColor(i, j)){
                         pRange.add((new Location(i, j)));
                     }else {
                         ((Piece)board.getPiece(i, j)).inDefend = true;
@@ -227,24 +266,27 @@ public class Piece implements IPiece {
     }
 
     private boolean pawnEmPassantFilter(Location loc){
-//        return board.isEmPassantEnabledToHere_For(loc, this);
-        return false;
+        return notNull(attributes.getPossibleEmPassant()) && loc.EQUALS(new Location(attributes.getEmPassantLoc()));
     }
 
     private boolean pawnHitFilter(Location loc){
-        return (isTherePiece(loc) && !isSameColor(loc) && loc.getJ() != getJ());
+        return (isTherePiece(loc) && enemyColor(loc) && loc.getJ() != getJ());
     }
 
     private boolean pawnFilter(Location l){
-        return l.getJ() == getJ() && (enemyStartRow == 6 ? ((getI() == 1 && l.getI() == 3) || (l.getI() - getI() < 2)) : ((getI() == 6 && l.getI() == 4) || (Math.abs(l.getI() - getI()) < 2)));
+        return getJ() == l.getJ() &&
+                (
+                        (Math.abs(l.getI() - getI()) == 2 && getI() == getOwnStartRow()) ||
+                        (Math.abs(l.getI() - getI()) == 1)
+                );
     }
 
-    private boolean isSameColor(Location location){
-        return board.getPiece(location).isWhite() == isWhite();
+    private boolean enemyColor(Location location){
+        return board.getPiece(location).isWhite() != isWhite();
     }
 
-    private boolean isSameColor(int i, int j){
-        return board.getPiece(i, j).isWhite() == isWhite();
+    private boolean enemyColor(int i, int j){
+        return board.getPiece(i, j).isWhite() != isWhite();
     }
 
     private boolean isTherePiece(Location l){

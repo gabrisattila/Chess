@@ -1,16 +1,13 @@
 package classes.Game.I18N;
 
-import classes.Ai.AI;
 import classes.Game.Model.Structure.*;
 
-import java.util.concurrent.BlockingQueue;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static classes.Ai.FenConverter.*;
-import static classes.GUI.FrameParts.ViewBoard.*;
-import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
-import static classes.Game.Model.Logic.EDT.*;
-import static classes.Main.*;
 
 public class METHODS {
 
@@ -73,6 +70,10 @@ public class METHODS {
         } catch (ChessGameException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static List<Location> locationListTimesN(ArrayList<Location> list, int n){
+        return list.stream().map(t -> t.times(n)).collect(Collectors.toList());
     }
 
     public static String replace(String original, int index, char newChar) {

@@ -5,8 +5,11 @@ import classes.Game.I18N.*;
 import lombok.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import static classes.Game.I18N.METHODS.*;
+import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
 
@@ -33,6 +36,8 @@ public class Board implements IBoard {
     private Piece whiteKing;
 
     private Piece blackKing;
+
+    private Pair<Boolean, String> thereWasEmPassant;
 
     //endregion
 
@@ -143,6 +148,16 @@ public class Board implements IBoard {
 
     public Piece getKing(boolean whiteNeeded){
         return whiteNeeded ? whiteKing : blackKing;
+    }
+
+    public Set<Location> enemyPawnWatchedRange(boolean imWithWhite){
+        Set<Location> range = new HashSet<>();
+        for (IPiece p : pieces) {
+            if (p.getType() == G && p.isWhite() != imWithWhite) {
+                range.addAll( ((Piece) p).getWatchedRange() );
+            }
+        }
+        return range;
     }
 
     //endregion

@@ -2,8 +2,9 @@ package classes;
 
 public class TODO {
 
-    //TODO Kijavítani, hogy adott figurát csak egyszer vegyen fel, ne kétszer.
-    // Amikor FenConvert van.
+    //TODO EmPassant, Átváltozás ViewBoard-ból kommunikálni Board felé
+
+    //TODO whiteToPlay manipulation must based on FEN
 
     //TODO !!!
     // Minimax alatt nem elfelejteni A Castle és az EmPassant helyzeteket lekezelni
