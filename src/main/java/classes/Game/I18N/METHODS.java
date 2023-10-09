@@ -131,23 +131,23 @@ public class METHODS {
         return blackPieceSet.getFirstEmpty();
     }
 
-    public static ArrayList<Location> getCastleMatrixFor(String color){
+    public static ArrayList<Location> getCastleMatrixFor(boolean isWhite){
         if (theresOnlyOneAi){
-            return whiteDownCastleMatrix(color);
+            return whiteDownCastleMatrix(isWhite);
         }else {
             if (whiteAiNeeded){
-                return WHITE_STRING.equals(color) ?
+                return isWhite ?
                         new ArrayList<>(){{add(new Location(0, 1)); add(new Location(0, 5));}} :
                         new ArrayList<>(){{add(new Location(MAX_HEIGHT - 1, 1)); add(new Location(MAX_HEIGHT - 1, 5));}};
 
             }else {
-                return whiteDownCastleMatrix(color);
+                return whiteDownCastleMatrix(isWhite);
             }
         }
     }
 
-    private static ArrayList<Location> whiteDownCastleMatrix(String color){
-        return WHITE_STRING.equals(color) ?
+    private static ArrayList<Location> whiteDownCastleMatrix(boolean isWhite){
+        return isWhite ?
                 new ArrayList<>(){{ add(new Location(0, 2)); add(new Location(0, 6)); }} :
                 new ArrayList<>(){{ add(new Location(MAX_HEIGHT - 1, 2)); new Location(MAX_HEIGHT - 1, 6); }};
     }
