@@ -160,6 +160,20 @@ public class Board implements IBoard {
         return range;
     }
 
+    public Set<Location> fullAttackRangeOfMyPieces(boolean imWithWhite){
+        Set<Location> range = new HashSet<>();
+        for (IPiece p : pieces) {
+            if (p.isWhite() == imWithWhite && p.getType() != K){
+                if (p.getType() == G){
+                    range.addAll( ((Piece) p).getWatchedRange() );
+                }else {
+                    range.addAll(p.getPossibleRange());
+                }
+            }
+        }
+        return range;
+    }
+
     //endregion
 
 }

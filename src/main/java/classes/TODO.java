@@ -2,6 +2,9 @@ package classes;
 
 public class TODO {
 
+    //TODO Nem felejteni királyhoz: Alapvetés a következő:
+    // Először mindig az ellenfél ranget kell kiszámolni, ugyanis ő semmiképp nem lehet sakkban. (Ha benne lenne az előző lépés óta akkor matt lenne)
+
     //TODO EmPassant, Átváltozás ViewBoard-ból kommunikálni Board felé
 
     //TODO whiteToPlay manipulation must based on FEN

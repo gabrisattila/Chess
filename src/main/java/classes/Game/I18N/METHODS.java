@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static classes.Ai.FenConverter.*;
+import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
 
 public class METHODS {
@@ -128,6 +129,27 @@ public class METHODS {
 
     public static Piece firstEmptyBlack(){
         return blackPieceSet.getFirstEmpty();
+    }
+
+    public static ArrayList<Location> getCastleMatrixFor(String color){
+        if (theresOnlyOneAi){
+            return whiteDownCastleMatrix(color);
+        }else {
+            if (whiteAiNeeded){
+                return WHITE_STRING.equals(color) ?
+                        new ArrayList<>(){{add(new Location(0, 1)); add(new Location(0, 5));}} :
+                        new ArrayList<>(){{add(new Location(MAX_HEIGHT - 1, 1)); add(new Location(MAX_HEIGHT - 1, 5));}};
+
+            }else {
+                return whiteDownCastleMatrix(color);
+            }
+        }
+    }
+
+    private static ArrayList<Location> whiteDownCastleMatrix(String color){
+        return WHITE_STRING.equals(color) ?
+                new ArrayList<>(){{ add(new Location(0, 2)); add(new Location(0, 6)); }} :
+                new ArrayList<>(){{ add(new Location(MAX_HEIGHT - 1, 2)); new Location(MAX_HEIGHT - 1, 6); }};
     }
 
 }

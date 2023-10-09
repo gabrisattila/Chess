@@ -8,14 +8,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
-import static classes.Game.I18N.VARS.MUTUABLES.*;
 
 @Getter
 @Setter
@@ -179,13 +177,13 @@ public class Piece implements IPiece {
             if (type == K || type == H){
                 if (containsLocation(locForCalculation)){
                     if (isTherePiece(locForCalculation)){
-                        if (type == K && kingFilter(locForCalculation)) {
+                        if (type == K && baseKingRange(locForCalculation)) {
                             range.add(locForCalculation);
                         } else if (enemyColor(locForCalculation)){
                             range.add(locForCalculation);
                         }
                     }else {
-                        if (type == K && kingFilter(loc)){
+                        if (type == K && baseKingRange(locForCalculation)){
                             range.add(locForCalculation);
                         }else {
                             range.add(locForCalculation);
@@ -241,7 +239,7 @@ public class Piece implements IPiece {
                 if (!isTherePiece(i, j)){
                     pRange.add(new Location(i, j));
                 }else {
-                    if (!enemyColor(i, j)){
+                    if (enemyColor(i, j)){
                         pRange.add((new Location(i, j)));
                     }else {
                         ((Piece)board.getPiece(i, j)).inDefend = true;
@@ -260,25 +258,8 @@ public class Piece implements IPiece {
         return possibleOrWatched ? pRange : wRange;
     }
     
-    private boolean kingFilter(Location l){
-//        return !board.enemyKingInNeighbour(l, this) && !thereWouldBeCheck(l);
-        return true;
-    }
-
-    private boolean pawnEmPassantFilter(Location loc){
-        return notNull(attributes.getPossibleEmPassant()) && loc.EQUALS(new Location(attributes.getEmPassantLoc()));
-    }
-
-    private boolean pawnHitFilter(Location loc){
-        return (isTherePiece(loc) && enemyColor(loc) && loc.getJ() != getJ());
-    }
-
-    private boolean pawnFilter(Location l){
-        return getJ() == l.getJ() &&
-                (
-                        (Math.abs(l.getI() - getI()) == 2 && getI() == getOwnStartRow()) ||
-                        (Math.abs(l.getI() - getI()) == 1)
-                );
+    private boolean baseKingRange(Location l){
+        return (!isTherePiece(l)) || (isTherePiece(l) && enemyColor(l));
     }
 
     private boolean enemyColor(Location location){
