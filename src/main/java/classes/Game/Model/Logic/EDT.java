@@ -56,7 +56,7 @@ public class EDT { //
         SwingUtilities.invokeLater(this::initializeAis);
 
         if (theresOnlyOneAi && !whiteAiNeeded)
-            getViewBoard().updatePiecesRanges();
+            getViewBoard().rangeUpdater();
     }
 
     private void initializeAis(){
@@ -112,7 +112,7 @@ public class EDT { //
         try {
             FenToBoard(fen, getViewBoard());
             switchWhoComes();
-            getViewBoard().updatePiecesRanges();
+            getViewBoard().rangeUpdater();
         } catch (ChessGameException | InterruptedException e) {
             throw new RuntimeException(e);
         }

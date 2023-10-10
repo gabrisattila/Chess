@@ -29,5 +29,4 @@ public interface IPiece {
 
      void updateRange() throws ChessGameException;
 
-
 }

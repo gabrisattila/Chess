@@ -1,6 +1,5 @@
 package classes.Game.Model.Structure;
 
-import classes.Ai.AI;
 import classes.GUI.FrameParts.ViewField;
 import classes.Game.I18N.ChessGameException;
 import classes.Game.I18N.Location;
@@ -76,5 +75,5 @@ public interface IBoard {
 
     IPiece getPiece(IField field);
 
-    void updatePiecesRanges() throws ChessGameException, InterruptedException;
+    void rangeUpdater() throws ChessGameException, InterruptedException;
 }

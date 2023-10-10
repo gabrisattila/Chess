@@ -6,16 +6,13 @@ import classes.Game.Model.Structure.*;
 import lombok.*;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Random;
-import java.util.Set;
 
 import static classes.Ai.FenConverter.*;
 import static classes.Ai.Position.*;
 import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
-import static classes.Game.I18N.VARS.MUTUABLES.*;
 import static classes.Game.Model.Logic.EDT.*;
 import static classes.Game.Model.Structure.Board.*;
 
@@ -76,7 +73,7 @@ public class AI extends Thread {
 
         Random random = new Random();
 
-        getAiBoard().updatePiecesRanges();
+        getAiBoard().rangeUpdater();
 
         Piece stepper;
         ArrayList<Piece> possibleSteppers = new ArrayList<>();

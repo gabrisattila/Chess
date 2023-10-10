@@ -12,7 +12,18 @@ public enum PieceType {
 
     V,
 
-    K;
+    K,
+
+    normalKing,
+
+    castleKing;
+
+    public PieceType getKing(boolean normalOrCastle){
+        if (this == K){
+            return normalOrCastle ? normalKing : castleKing;
+        }
+        throw new RuntimeException("Nem megfelelő típuson lett használva a függvény.");
+    }
 
     public char toLowerCase(){
         switch (this){

@@ -6,7 +6,6 @@ import lombok.*;
 
 import java.util.*;
 
-import static classes.Game.I18N.Helpers.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
 import static classes.Game.Model.Structure.Board.*;
@@ -109,10 +108,10 @@ public class ViewBoard implements IBoard {
     }
 
     @Override
-    public void updatePiecesRanges() throws ChessGameException, InterruptedException {
+    public void rangeUpdater() throws ChessGameException, InterruptedException {
 
         convertOneBoardToAnother(getViewBoard(), getBoard());
-        getBoard().updatePiecesRanges();
+        getBoard().rangeUpdater();
 
         for (int i = 0; i < MAX_HEIGHT; i++) {
             for (int j = 0; j < MAX_WIDTH; j++) {

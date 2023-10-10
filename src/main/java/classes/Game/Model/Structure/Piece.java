@@ -39,7 +39,9 @@ public class Piece implements IPiece {
 
     private Set<Location> watchedRange;
 
-    private Set<Location> rangeInsteadOfCheck;
+    private Set<Move> pseudoLegals;
+
+    private Set<Move> legalMoves;
 
     //endregion
 
@@ -117,6 +119,36 @@ public class Piece implements IPiece {
         watchedRange = null;
     }
 
+    public void setPseudoLegals(String newOrNulling){
+        if ("new".equals(newOrNulling) || "New".equals(newOrNulling) || "NEW".equals(newOrNulling))
+            pseudoLegals = new HashSet<>();
+        else if ("null".equals(newOrNulling) || "Null".equals(newOrNulling) || "NULL".equals(newOrNulling))
+            pseudoLegals = null;
+        else
+            throw new RuntimeException("Vagy a paraméter típusa, vagy annak értéke rossz.");
+    }
+
+    public void setPseudoLegals(Move moveToAdd){
+        if (isNull(pseudoLegals))
+            setPseudoLegals("new");
+        pseudoLegals.add(moveToAdd);
+    }
+
+    public void setLegals(String newOrNulling){
+        if ("new".equals(newOrNulling) || "New".equals(newOrNulling) || "NEW".equals(newOrNulling))
+            pseudoLegals = new HashSet<>();
+        else if ("null".equals(newOrNulling) || "Null".equals(newOrNulling) || "NULL".equals(newOrNulling))
+            pseudoLegals = null;
+        else
+            throw new RuntimeException("Vagy a paraméter típusa, vagy annak értéke rossz.");
+    }
+
+    public void setLegals(Move moveToAdd){
+        if (isNull(pseudoLegals))
+            setPseudoLegals("new");
+        pseudoLegals.add(moveToAdd);
+    }
+
     @Override
     public void STEP(Location from, Location to, IBoard board) {
         try {
@@ -173,24 +205,22 @@ public class Piece implements IPiece {
                 if (pawnCase(locForCalculation, posOrWatch)){
                     range.add(locForCalculation);
                 }
-            }
-            if (type == K || type == H){
+            } else if (type == K) {
+
+            } else if (type == H){
                 if (containsLocation(locForCalculation)){
                     if (isTherePiece(locForCalculation)){
-                        if (type == K && baseKingRange(locForCalculation)) {
-                            range.add(locForCalculation);
-                        } else if (enemyColor(locForCalculation)){
-                            range.add(locForCalculation);
-                        }
-                    }else {
-                        if (type == K && baseKingRange(locForCalculation)){
-                            range.add(locForCalculation);
+                        if (posOrWatch){
+                            if (enemyColor(locForCalculation))
+                                range.add(locForCalculation);
                         }else {
                             range.add(locForCalculation);
                         }
+                    }else {
+                        range.add(locForCalculation);
                     }
                 }
-            } else if (type != G) {
+            } else {
                 range.addAll(runTrough(getI(), getJ(), loc.getI(), loc.getJ(), posOrWatch));
             }
         }

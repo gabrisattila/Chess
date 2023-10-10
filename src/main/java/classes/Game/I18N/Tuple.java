@@ -3,17 +3,15 @@ package classes.Game.I18N;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
-@Setter
 public class Tuple<F, S, T> {
 
     //region Fields
 
-    private F First;
+    public F First;
 
-    private S Second;
+    public S Second;
 
-    private T Third;
+    public T Third;
 
     //endregion
 
