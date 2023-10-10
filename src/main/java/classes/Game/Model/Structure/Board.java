@@ -118,6 +118,10 @@ public class Board implements IBoard {
         return getField(field.getI(), field.getJ()).getPiece();
     }
 
+    public Piece getKing(boolean whiteNeeded){
+        return whiteNeeded ? whiteKing : blackKing;
+    }
+
     //endregion
 
 
@@ -137,6 +141,7 @@ public class Board implements IBoard {
     }
 
 
+
     @Override
     public void updatePiecesRanges() throws ChessGameException, InterruptedException {
 //        setEnemyInDefendBasedOnWatching();
@@ -146,11 +151,57 @@ public class Board implements IBoard {
 //        setInDefendBasedOnWatching();
     }
 
-    public Piece getKing(boolean whiteNeeded){
-        return whiteNeeded ? whiteKing : blackKing;
+    public void rangeUpdater(){
+
     }
 
-    public Set<Location> enemyPawnWatchedRange(boolean imWithWhite){
+    public Set<Location> getLegalMoves(boolean white) {
+        Set<Location> range = new HashSet<>();
+
+
+        //Meghatározni először az ellenfél majd a saját figuráimnak az összes lehetséges lépését KIVÉVE király
+        pseudoLegalMovesFor(!whiteToPlay);
+        pseudoLegalMovesFor(whiteToPlay);
+
+        //Ezeket leszűkíteni annak függvényében, hogy valamely lépéssel sakkba kerülne az ellenfél vagy én
+        tightenTheCalculatedPseudoLegals(!whiteToPlay);
+        tightenTheCalculatedPseudoLegals(whiteToPlay);
+
+
+
+        return range;
+    }
+
+    public void pseudoLegalMovesFor(boolean forWhite) {
+
+    }
+
+    public void tightenTheCalculatedPseudoLegals(boolean forWhite) {
+
+    }
+    
+    private void kingRanges(){
+        //A királyok lépéslehetőségeinek leszűkítése a már meghatározott rangek függvényében
+        for (Location l : matrixChooser.get(K)) {
+            Location possiblePlaceOfEnemyKing = l.add(getKing(!whiteToPlay).getLocation());
+            if (!getLegalMoves(whiteToPlay).contains(possiblePlaceOfEnemyKing)){
+                getLegalMoves(!whiteToPlay).add(possiblePlaceOfEnemyKing);
+            }
+        }
+        for (Location l : matrixChooser.get(K)) {
+            Location possiblePlaceOfMyKing = l.add(getKing(whiteToPlay).getLocation());
+            if (!getLegalMoves(!whiteToPlay).contains(possiblePlaceOfMyKing)){
+                getLegalMoves(whiteToPlay).add(possiblePlaceOfMyKing);
+            }
+        }
+
+        //Sáncok lehetőségeink számbavétele
+        // Ellenőrizni, hogy van-e lehetőség erre-arra a sáncra
+        // Ha igen megnézni, hogy a sánccal megtett király mezők közül bele esik-e valamelyik az ellenfél range-be.
+
+    }
+
+    private Set<Location> enemyPawnWatchedRange(boolean imWithWhite){
         Set<Location> range = new HashSet<>();
         for (IPiece p : pieces) {
             if (p.getType() == G && p.isWhite() != imWithWhite) {
@@ -160,7 +211,7 @@ public class Board implements IBoard {
         return range;
     }
 
-    public Set<Location> fullAttackRangeOfMyPieces(boolean imWithWhite){
+    private Set<Location> fullAttackRangeOfMyPieces(boolean imWithWhite){
         Set<Location> range = new HashSet<>();
         for (IPiece p : pieces) {
             if (p.isWhite() == imWithWhite && p.getType() != K){
@@ -173,6 +224,8 @@ public class Board implements IBoard {
         }
         return range;
     }
+
+
 
     //endregion
 

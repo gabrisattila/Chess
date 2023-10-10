@@ -261,36 +261,10 @@ public class Piece implements IPiece {
         return (!isTherePiece(l)) || (isTherePiece(l) && enemyColor(l));
     }
 
-
-
     private Set<Location> kingRange(){
         Set<Location> range = new HashSet<>();
 
-        //Meghatározni először az ellenfél majd a saját figuráimnak az összes lehetséges lépését KIVÉVE király
-        board.pseudoLegalMovesFor(!isWhite());
-        board.pseudoLegalMovesFor(isWhite());
 
-        //Ezeket leszűkíteni annak függvényében, hogy valamely lépéssel sakkba kerülne az ellenfél vagy én
-        board.tightenTheCalculatedPseudoLegals(!isWhite());
-        board.tightenTheCalculatedPseudoLegals(isWhite());
-
-        //A királyok lépéslehetőségeinek leszűkítése a már meghatározott rangek függvényében
-        for (Location l : matrixChooser.get(K)) {
-            Location possiblePlaceOfEnemyKing = l.add(board.getKing(!isWhite()).location);
-            if (!((Board) board).getLegalMoves(isWhite()).contains(possiblePlaceOfEnemyKing)){
-                ((Board) board).getLegalMoves(!isWhite()).add(possiblePlaceOfEnemyKing);
-            }
-        }
-        for (Location l : matrixChooser.get(K)) {
-            Location possiblePlaceOfMyKing = l.add(board.getKing(isWhite()).location);
-            if (!((Board) board).getLegalMoves(!isWhite()).contains(possiblePlaceOfMyKing)){
-                ((Board) board).getLegalMoves(isWhite()).add(possiblePlaceOfMyKing);
-            }
-        }
-
-        //Sáncok lehetőségeink számbavétele
-        // Ellenőrizni, hogy van-e lehetőség erre-arra a sáncra
-        // Ha igen megnézni, hogy a sánccal megtett király mezők közül bele esik-e valamelyik az ellenfél range-be.
 
 
 
