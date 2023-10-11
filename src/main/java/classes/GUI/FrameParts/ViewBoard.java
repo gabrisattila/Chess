@@ -115,7 +115,7 @@ public class ViewBoard implements IBoard {
 
         for (int i = 0; i < MAX_HEIGHT; i++) {
             for (int j = 0; j < MAX_WIDTH; j++) {
-                if (getBoard().getField(i, j).isGotPiece()){
+                if (getBoard().getField(i, j).isGotPiece() && notNull(getBoard().getPiece(i, j).getPossibleRange())){
                     getPiece(i, j).getPossibleRange().addAll(
                             getBoard().getPiece(i, j).getPossibleRange()
                     );

@@ -204,6 +204,7 @@ public class FenConverter {
             case B -> 'B';
             case V -> 'V';
             case K -> 'K';
+            default -> throw new IllegalStateException("Itt nem megengedett ez a típus: " + piece.getType());
         };
         if (!piece.isWhite())
             pieceChar = Character.toLowerCase(pieceChar);

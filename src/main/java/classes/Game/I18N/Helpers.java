@@ -17,7 +17,7 @@ public class Helpers {
         }
     }
 
-    public static String printBoardWithPieces(IBoard board, boolean inRed){
+    public static String printBoardWithPieces(IBoard board, boolean inRed) throws ChessGameException {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < MAX_HEIGHT; i++) {
             for (int j = 0; j < MAX_WIDTH; j++) {

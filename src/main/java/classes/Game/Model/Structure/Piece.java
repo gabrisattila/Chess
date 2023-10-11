@@ -107,6 +107,10 @@ public class Piece implements IPiece {
         return attributes == null && location == null;
     }
 
+    public Set<Location> getAttackRange(){
+        return getType() == G ? watchedRange : possibleRange;
+    }
+
     @Override
     public void setEmpty(){
         attributes = null;
@@ -194,7 +198,7 @@ public class Piece implements IPiece {
         return range(G, posOrWatch);
     }
 
-    private Set<Location> range(PieceType type, boolean posOrWatch){
+    private Set<Location> range(PieceType type, boolean posOrWatch) throws ChessGameException {
         Set<Location> range = new HashSet<>();
         ArrayList<Location> optionsToIterateTrough = type == G && getEnemyStartRow() > getOwnStartRow() ?
                                                     matrixChooser.get(type) :
@@ -227,7 +231,7 @@ public class Piece implements IPiece {
         return range;
     }
 
-    private boolean pawnCase(Location l, boolean posOrWatch) {
+    private boolean pawnCase(Location l, boolean posOrWatch) throws ChessGameException {
         if (containsLocation(l)){
             if (l.getJ() == getJ()){
                 if (isTherePiece(l))
@@ -259,7 +263,7 @@ public class Piece implements IPiece {
         return false;
     }
 
-    private Set<Location> runTrough(int i, int j, int addToI, int addToJ, boolean possibleOrWatched){
+    private Set<Location> runTrough(int i, int j, int addToI, int addToJ, boolean possibleOrWatched) throws ChessGameException {
         boolean b = true;
         Set<Location> pRange = new HashSet<>();
         Set<Location> wRange = new HashSet<>();
@@ -287,7 +291,7 @@ public class Piece implements IPiece {
         return possibleOrWatched ? pRange : wRange;
     }
     
-    private boolean baseKingRange(Location l){
+    private boolean baseKingRange(Location l) throws ChessGameException {
         return (!isTherePiece(l)) || (isTherePiece(l) && enemyColor(l));
     }
 
@@ -333,19 +337,19 @@ public class Piece implements IPiece {
 
 
 
-    private boolean enemyColor(Location location){
+    private boolean enemyColor(Location location) throws ChessGameException {
         return board.getPiece(location).isWhite() != isWhite();
     }
 
-    private boolean enemyColor(int i, int j){
+    private boolean enemyColor(int i, int j) throws ChessGameException {
         return board.getPiece(i, j).isWhite() != isWhite();
     }
 
-    private boolean isTherePiece(Location l){
+    public boolean isTherePiece(Location l){
         return board.getField(l).isGotPiece();
     }
 
-    private boolean isTherePiece(int i, int j){
+    public boolean isTherePiece(int i, int j){
         return board.getField(i, j).isGotPiece();
     }
 

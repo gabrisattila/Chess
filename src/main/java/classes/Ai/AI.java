@@ -78,7 +78,7 @@ public class AI extends Thread {
         Piece stepper;
         ArrayList<Piece> possibleSteppers = new ArrayList<>();
         for (IPiece p : getAiBoard().getPieces()) {
-            if (p.isWhite() == WHITE_STRING.equals(color) && p.getPossibleRange().size() > 0){
+            if (p.isWhite() == WHITE_STRING.equals(color) && !p.getPossibleRange().isEmpty()){
                 possibleSteppers.add((Piece) p);
             }
         }

@@ -69,9 +69,9 @@ public interface IBoard {
 
     IField getField(IPiece piece);
 
-    IPiece getPiece(int i, int j);
+    IPiece getPiece(int i, int j) throws ChessGameException;
 
-    IPiece getPiece(Location location);
+    IPiece getPiece(Location location) throws ChessGameException;
 
     IPiece getPiece(IField field);
 

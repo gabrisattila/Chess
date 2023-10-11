@@ -3,6 +3,7 @@ package classes.Game.I18N;
 import classes.Game.Model.Structure.*;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,6 +24,22 @@ public class METHODS {
         } catch (ChessGameException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static <T> boolean collectionNotContains(Collection<T> collection, T element){
+        return !collection.contains(element);
+    }
+
+    public static <T> boolean collectionContains(Collection<T> collection, T element){
+        return collection.contains(element);
+    }
+
+    public static boolean notContainsLocation(Location location){
+        return !containsLocation(location.getI(), location.getJ());
+    }
+
+    public static boolean notContainsLocation(int i, int j){
+        return !containsLocation(MAX_WIDTH, MAX_HEIGHT, i, j);
     }
 
     public static boolean containsLocation(Location location){

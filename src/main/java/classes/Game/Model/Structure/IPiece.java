@@ -29,4 +29,7 @@ public interface IPiece {
 
      void updateRange() throws ChessGameException;
 
+     default boolean EQUALS(IPiece ownPiece) {
+          return isWhite() == ownPiece.isWhite() && getAttributes().equals(ownPiece.getAttributes());
+     }
 }

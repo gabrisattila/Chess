@@ -68,17 +68,17 @@ public class Window extends JFrame {
 
     private void setAiNumberDemand(){
 
-        //System.out.println("\nSzeretné-e végig nézni a gép csatáját saját maga ellen, vagy inkább ön mérkőzik meg vele? \n (Igen / Nem)");
-//
-        //theresOnlyOneAi = "Nem".equals(new Scanner(System.in).nextLine().trim());
-//
-        //if (theresOnlyOneAi){
-        //    System.out.println("Világossal szeretne lenni? (Igen / Nem)");
-        //    whiteAiNeeded = "Nem".equals(new Scanner(System.in).nextLine().trim());
-        //}
+        System.out.println("\nSzeretné-e végig nézni a gép csatáját saját maga ellen, vagy inkább ön mérkőzik meg vele? \n (Igen / Nem)");
 
-        theresOnlyOneAi = true;
-        whiteAiNeeded = false;
+        theresOnlyOneAi = "Nem".equals(new Scanner(System.in).nextLine().trim());
+
+        if (theresOnlyOneAi){
+            System.out.println("Világossal szeretne lenni? (Igen / Nem)");
+            whiteAiNeeded = "Nem".equals(new Scanner(System.in).nextLine().trim());
+        }
+
+//        theresOnlyOneAi = true;
+//        whiteAiNeeded = false;
     }
 
     private void setUpSides() throws ChessGameException {
