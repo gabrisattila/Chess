@@ -242,7 +242,7 @@ public class VARS {
 
 //        public static Boolean gameIsOn = false;
 
-        public static boolean theresOnlyOneAi;
+        public static boolean theresOnlyOneAi = false;
 
         public static boolean whiteAiNeeded = false;
 

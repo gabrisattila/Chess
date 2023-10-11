@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static classes.Ai.FenConverter.*;
-import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
 
 public class METHODS {
@@ -149,24 +148,18 @@ public class METHODS {
     }
 
     public static ArrayList<Location> getCastleMatrixFor(boolean isWhite){
-        if (theresOnlyOneAi){
-            return whiteDownCastleMatrix(isWhite);
-        }else {
-            if (whiteAiNeeded){
-                return isWhite ?
-                        new ArrayList<>(){{add(new Location(0, 1)); add(new Location(0, 5));}} :
-                        new ArrayList<>(){{add(new Location(MAX_HEIGHT - 1, 1)); add(new Location(MAX_HEIGHT - 1, 5));}};
-
-            }else {
-                return whiteDownCastleMatrix(isWhite);
-            }
-        }
+        return castleMatrix(isWhite, (theresOnlyOneAi || !whiteAiNeeded));
     }
 
-    private static ArrayList<Location> whiteDownCastleMatrix(boolean isWhite){
-        return isWhite ?
-                new ArrayList<>(){{ add(new Location(0, 2)); add(new Location(0, 6)); }} :
-                new ArrayList<>(){{ add(new Location(MAX_HEIGHT - 1, 2)); new Location(MAX_HEIGHT - 1, 6); }};
+    private static ArrayList<Location> castleMatrix(boolean isWhite, boolean whiteDown){
+        int i = isWhite ? 0 : MAX_HEIGHT - 1;
+        Pair<Integer, Integer> js = new Pair<>();
+        js.setFirst(whiteDown ? 2 : 1);
+        js.setSecond(whiteDown ? 5 : 6);
+        return new ArrayList<>() {{
+            add(new Location(i, js.getFirst()));
+            add(new Location(i, js.getSecond()));
+        }};
     }
 
 }
