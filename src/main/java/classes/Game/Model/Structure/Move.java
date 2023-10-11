@@ -1,7 +1,10 @@
 package classes.Game.Model.Structure;
 
+import classes.Game.I18N.ChessGameException;
 import classes.Game.I18N.Location;
 import lombok.*;
+
+import static classes.Game.I18N.VARS.MUTUABLES.*;
 
 @Getter
 @Setter
@@ -62,7 +65,15 @@ public class Move {
 
     //region Methods
 
-
+    public static void pieceChangeOnBoard(IPiece piece, IField from, IField to){
+        try {
+            to.setPiece(piece);
+            from.clean();
+            whiteToPlay = ! whiteToPlay;
+        } catch (ChessGameException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     //endregion
 

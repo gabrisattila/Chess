@@ -79,15 +79,15 @@ public class METHODS {
         return o1;
     }
 
-    public static void pieceChangeOnBoard(IPiece piece, IField from, IField to) {
-        try {
-            to.setPiece(piece);
-            from.clean();
-            whiteToPlay = !whiteToPlay;
-        } catch (ChessGameException e) {
-            throw new RuntimeException(e);
-        }
-    }
+//    public static void pieceChangeOnBoard(IPiece piece, IField from, IField to) {
+//        try {
+//            to.setPiece(piece);
+//            from.clean();
+//            whiteToPlay = !whiteToPlay;
+//        } catch (ChessGameException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
     public static List<Location> locationListTimesN(ArrayList<Location> list, int n){
         return list.stream().map(t -> t.times(n)).collect(Collectors.toList());

@@ -19,6 +19,7 @@ import static classes.Game.Model.Logic.EDT.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
+import static classes.Game.Model.Structure.Move.*;
 import static classes.Main.*;
 
 @Getter
@@ -136,7 +137,7 @@ public class ViewField extends JButton implements IField {
                 pieceToChange = clicked.piece;
             } else if (CLICK_COUNTER == 1 && lastClicked.isGotPiece() && lastClicked.piece.isWhite() == whiteToPlay &&
                     lastClicked.piece.inRange(clicked)) {
-                pieceChangeOnViewBoard(pieceToChange, lastClicked, clicked);
+                pieceChangeOnBoard(pieceToChange, lastClicked, clicked);
                 changeColor(clicked);
                 CLICK_COUNTER = 0;
                 switchWhoComes();
@@ -188,12 +189,6 @@ public class ViewField extends JButton implements IField {
             }else {
                 field.setBackground(field.getBackground() == BLACK ? DARK_BLACK : BLACK);
             }
-        }
-
-        private void pieceChangeOnViewBoard(ViewPiece piece, ViewField from, ViewField to){
-            to.setPiece(piece);
-            from.clean();
-            whiteToPlay = !whiteToPlay;
         }
 
         private boolean helperIfBasedOnColor(ViewPiece piece){

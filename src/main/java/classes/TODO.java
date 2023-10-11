@@ -4,8 +4,6 @@ public class TODO {
 
     //TODO Piece fv.-ek szortírozása region-okba
 
-    //TODO Move-ba kiszervezni a hozzá tartozó fv-eket
-
     //TODO EmPassant, Átváltozás ViewBoard-ból kommunikálni Board felé
 
     //TODO whiteToPlay manipulation must based on FEN
