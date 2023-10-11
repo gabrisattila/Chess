@@ -6,9 +6,6 @@ public class TODO {
 
     //TODO Move-ba kiszervezni a hozzá tartozó fv-eket
 
-    //TODO GetCastleMártix egyszerűsítése -> csak egyszer legyen benne a whiteDownCastleMatrix ->
-    // Ehhez a whiteAiNeeded és hasonló konstansoknak alap érték adás
-
     //TODO EmPassant, Átváltozás ViewBoard-ból kommunikálni Board felé
 
     //TODO whiteToPlay manipulation must based on FEN
