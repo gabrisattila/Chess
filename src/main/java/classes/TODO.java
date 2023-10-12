@@ -2,8 +2,6 @@ package classes;
 
 public class TODO {
 
-    //TODO Piece fv.-ek szortírozása region-okba
-
     //TODO EmPassant, Átváltozás ViewBoard-ból kommunikálni Board felé
 
     //TODO whiteToPlay manipulation must based on FEN

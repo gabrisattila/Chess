@@ -74,6 +74,8 @@ public class Piece implements IPiece {
 
     //region Methods
 
+    //region Get&Set
+
     @Override
     public int getI(){
         return location.getI();
@@ -153,6 +155,10 @@ public class Piece implements IPiece {
         pseudoLegals.add(moveToAdd);
     }
 
+    //endregion
+
+    //region Moving
+
     @Override
     public void STEP(Location from, Location to, IBoard board) {
         try {
@@ -162,6 +168,10 @@ public class Piece implements IPiece {
             throw new RuntimeException(e);
         }
     }
+
+    //region Range
+
+    //region Main of range
 
     @Override
     public void updateRange() throws ChessGameException {
@@ -191,9 +201,6 @@ public class Piece implements IPiece {
             case V -> {
                 return range(V, posOrWatch);
             }
-            case K -> {
-                return range(K, posOrWatch);
-            }
         }
         return range(G, posOrWatch);
     }
@@ -201,16 +208,14 @@ public class Piece implements IPiece {
     private Set<Location> range(PieceType type, boolean posOrWatch) throws ChessGameException {
         Set<Location> range = new HashSet<>();
         ArrayList<Location> optionsToIterateTrough = type == G && getEnemyStartRow() > getOwnStartRow() ?
-                                                    matrixChooser.get(type) :
-                                                    (ArrayList<Location>) locationListTimesN(matrixChooser.get(type), -1);
+                matrixChooser.get(type) :
+                (ArrayList<Location>) locationListTimesN(matrixChooser.get(type), -1);
         for (Location loc : optionsToIterateTrough) {
             Location locForCalculation = loc.add(location);
             if (type == G){
                 if (pawnCase(locForCalculation, posOrWatch)){
                     range.add(locForCalculation);
                 }
-            } else if (type == K) {
-
             } else if (type == H){
                 if (containsLocation(locForCalculation)){
                     if (isTherePiece(locForCalculation)){
@@ -224,12 +229,16 @@ public class Piece implements IPiece {
                         range.add(locForCalculation);
                     }
                 }
-            } else {
+            } else if (type != K){
                 range.addAll(runTrough(getI(), getJ(), loc.getI(), loc.getJ(), posOrWatch));
             }
         }
         return range;
     }
+
+    //endregion
+
+    //region Piece cases separately
 
     private boolean pawnCase(Location l, boolean posOrWatch) throws ChessGameException {
         if (containsLocation(l)){
@@ -290,7 +299,7 @@ public class Piece implements IPiece {
         }
         return possibleOrWatched ? pRange : wRange;
     }
-    
+
     private boolean baseKingRange(Location l) throws ChessGameException {
         return (!isTherePiece(l)) || (isTherePiece(l) && enemyColor(l));
     }
@@ -309,33 +318,9 @@ public class Piece implements IPiece {
         return range;
     }
 
+    //endregion
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    //region Helpers for ranges
 
     private boolean enemyColor(Location location) throws ChessGameException {
         return board.getPiece(location).isWhite() != isWhite();
@@ -358,10 +343,11 @@ public class Piece implements IPiece {
     }
 
 
-
-
-
+    //endregion
 
     //endregion
 
+    //endregion
+
+    //endregion
 }
