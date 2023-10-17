@@ -1,0 +1,22 @@
+Megoldási terv: 
+- feladat specifikálása, elmondása mire kell képesnek lennie
+	- játék leírás
+	- grafikus interfész
+	- milyen felhasználásra készül, nem webes alkalmazás
+	- stb...
+	- tervek leírása
+- nem funkcionális követelmények:
+	- teljesítmény
+		- pl.: sebesség
+	
+- szoftver felépítésének bemutatása
+	- folyamatok
+	- osztályok
+
+- use case-ek bemutatásának specifikálása 
+- grafikus felület megtervezése
+- MVC architektúrával történő bemutatás
+- NEM KELL java nyelvet említeni. Majd utána, megvalósításban.
+- komponensek bemutatása
+- MAX 10 oldal 
+

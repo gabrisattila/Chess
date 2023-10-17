@@ -1,0 +1,6 @@
+Teszt
+
+- Integrációs tesztek:
+	- Ai vs Ai játszon, adott helyen ellenőrizni, hogy lehetségesen létrejöhető a FEN-e
+	- Feladványok
+	- GUI tesztrendszerek használata -> neten keresni!!!
