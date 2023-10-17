@@ -28,7 +28,7 @@ public class FenConverter {
         PieceAttributes piece;
         board.cleanBoard();
 
-//        whiteToPlayFenToBoard(separatedFen[2]);
+        whiteToPlayFenToBoard(separatedFen[1]);
 
         String emPassant = separatedFen[3];
 

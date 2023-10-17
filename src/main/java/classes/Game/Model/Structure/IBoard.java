@@ -35,20 +35,19 @@ public interface IBoard {
     }
 
     default void pieceSetUp(String FEN){
-        StringBuilder sb = new StringBuilder();
+        String fenPieces = FEN.split(" ")[0];
+        int separateIndex = FEN.indexOf(' ');
+        String fenOtherParts = FEN.substring(separateIndex);
 
-        for (int i = 0; i < FEN.length(); i++) {
-            if (Character.isLetter(FEN.charAt(i))){
-                sb.append(Character.toLowerCase(FEN.charAt(i)));
-            }else {
-                sb.append(FEN.charAt(i));
+        for (int i = 0; i < fenPieces.length(); i++) {
+            if ('p' == fenPieces.charAt(i) || 'P' == fenPieces.charAt(i) || 'r' == fenPieces.charAt(i) || 'R' == fenPieces.charAt(i) ||
+                    'q' == fenPieces.charAt(i) || 'Q' == fenPieces.charAt(i) || 'n' == fenPieces.charAt(i) || 'N' == fenPieces.charAt(i)){
+                fenPieces = translate(fenPieces);
+                break;
             }
         }
-        String fen = sb.toString();
-        if (fen.contains("p") || fen.contains("r") || fen.contains("q") ||
-                fen.contains("n")){
-            FEN = translate(FEN);
-        }
+
+        FEN = fenPieces + fenOtherParts;
 
         try {
             FenToBoard(FEN, this);

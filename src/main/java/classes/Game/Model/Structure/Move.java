@@ -69,7 +69,6 @@ public class Move {
         try {
             to.setPiece(piece);
             from.clean();
-            whiteToPlay = ! whiteToPlay;
         } catch (ChessGameException e) {
             throw new RuntimeException(e);
         }

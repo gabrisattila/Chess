@@ -19,7 +19,7 @@ import static java.lang.Thread.sleep;
  */
 @Getter
 @Setter
-public class EDT { //
+public class EDT {
 
     //region Fields
 
@@ -50,9 +50,7 @@ public class EDT { //
 
 
     private void initialization() throws ChessGameException, InterruptedException {
-//        gameIsOn = true;
         getWindow();
-//        initializeAis();
         SwingUtilities.invokeLater(this::initializeAis);
 
         if (theresOnlyOneAi && !whiteAiNeeded)
@@ -117,7 +115,7 @@ public class EDT { //
             throw new RuntimeException(e);
         }
         if (!theresOnlyOneAi){
-            startAi(whiteToPlay ? "WHITE" : "BLACK");
+            startAi(whiteToPlay ? "BLACK" : "WHITE");
         }
     }
 
