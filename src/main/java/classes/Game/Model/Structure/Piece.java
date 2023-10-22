@@ -151,8 +151,9 @@ public class Piece implements IPiece {
 
     public void setLegals(Move moveToAdd){
         if (isNull(pseudoLegals))
-            setPseudoLegals("new");
+            setLegals("new");
         pseudoLegals.add(moveToAdd);
+        possibleRange.add(moveToAdd.getTo());
     }
 
     //endregion

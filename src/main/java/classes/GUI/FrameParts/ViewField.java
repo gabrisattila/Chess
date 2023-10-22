@@ -110,7 +110,7 @@ public class ViewField extends JButton implements IField {
                 if (theresOnlyOneAi){
                     PlayerClick((ViewField) e.getSource());
                     if (aiTurn) {
-                        startAi(whiteToPlay ? "BLACK" : "WHITE");
+                        startAi(whiteToPlay() ? "WHITE" : "BLACK");
                     }
                 }
             } catch (ChessGameException | InterruptedException ex) {
@@ -130,12 +130,12 @@ public class ViewField extends JButton implements IField {
 
         private void PlayerClick(ViewField clicked) throws ChessGameException, InterruptedException {
 
-            if (CLICK_COUNTER == 0 && clicked.isGotPiece() && clicked.piece.isWhite() == whiteToPlay){
+            if (CLICK_COUNTER == 0 && clicked.isGotPiece() && clicked.piece.isWhite() == whiteToPlay()){
                 changeColor(clicked);
                 CLICK_COUNTER++;
                 lastClicked = clicked;
                 pieceToChange = clicked.piece;
-            } else if (CLICK_COUNTER == 1 && lastClicked.isGotPiece() && lastClicked.piece.isWhite() == whiteToPlay &&
+            } else if (CLICK_COUNTER == 1 && lastClicked.isGotPiece() && lastClicked.piece.isWhite() == whiteToPlay() &&
                     lastClicked.piece.inRange(clicked)) {
                 pieceChangeOnBoard(pieceToChange, lastClicked, clicked);
                 changeColor(clicked);
@@ -143,7 +143,7 @@ public class ViewField extends JButton implements IField {
                 switchWhoComes();
             } else if (CLICK_COUNTER == 0 && !clicked.isGotPiece()) {
                 changeColor(clicked);
-            } else if (CLICK_COUNTER == 0 && clicked.piece.isWhite() != whiteToPlay) {
+            } else if (CLICK_COUNTER == 0 && clicked.piece.isWhite() != whiteToPlay()) {
                 return;
             } else if (CLICK_COUNTER == 1 && !lastClicked.piece.inRange(clicked)) {
                 CLICK_COUNTER = 0;
@@ -192,8 +192,8 @@ public class ViewField extends JButton implements IField {
         }
 
         private boolean helperIfBasedOnColor(ViewPiece piece){
-            return (piece.isWhite() && whiteToPlay) ||
-                    (!piece.isWhite() && !whiteToPlay);
+            return (piece.isWhite() && whiteToPlay()) ||
+                    (!piece.isWhite() && !whiteToPlay());
         }
 
     }

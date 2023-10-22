@@ -110,12 +110,13 @@ public class EDT {
         try {
             FenToBoard(fen, getViewBoard());
             switchWhoComes();
-            getViewBoard().rangeUpdater();
+            if (theresOnlyOneAi){
+                getViewBoard().rangeUpdater();
+            }else {
+                startAi(whiteToPlay() ? "WHITE" : "BLACK");
+            }
         } catch (ChessGameException | InterruptedException e) {
             throw new RuntimeException(e);
-        }
-        if (!theresOnlyOneAi){
-            startAi(whiteToPlay ? "BLACK" : "WHITE");
         }
     }
 

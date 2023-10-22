@@ -135,6 +135,7 @@ public class VARS {
             put("blackDownStarter", "rnbkqbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBKQBNR w KQkq -");
             put("whiteDownOnlyKnights", "1N4N1/8/8/8/8/8/8/1n4n1 w ---- -");
             put("whiteDownOnlyBishops", "2F2F2/8/8/8/8/8/8/2f2f2 w ---- -");
+            put("whiteDownOnlyKingsAndRooks", "R3K2R/8/8/8/8/8/8/r3k2r w ---- -");
             put("onlyTwoBishops6x6", "1F4/6/6/6/6/4f1 w ---- -");
             put("onlyTwoRooks6x6", "B5/6/6/6/6/5b w ---- -");
             put("onlyTwoQueens6x6", "2V3/6/6/6/6/3v2 w ---- -");
@@ -238,7 +239,7 @@ public class VARS {
 
         public static ViewPiece pieceToChange;
 
-        public static Boolean whiteToPlay = true;
+        public static Character toPlay = 'w';
 
 //        public static Boolean gameIsOn = false;
 

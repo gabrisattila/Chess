@@ -41,6 +41,8 @@ public class Board implements IBoard {
 
     private Pair<Boolean, String> thereWasEmPassant;
 
+    private Move lastMove;
+
     //endregion
 
 
@@ -54,6 +56,7 @@ public class Board implements IBoard {
         pieces = new ArrayList<>();
         whiteKing = new Piece();
         blackKing = new Piece();
+        lastMove = new Move(this);
     }
 
     public static Board getBoard() throws ChessGameException {
@@ -107,7 +110,8 @@ public class Board implements IBoard {
             if (p.getI() == i && p.getJ() == j)
                 return p;
         }
-        throw new RuntimeException("Nincs figura a(z) " + (this == getAiBoard() ? "aiboard" : "board") + "[" + i + ", " + j + "] mezőn.\n");
+//        System.out.println("Nincs figura a(z) " + (this == getAiBoard() ? "aiboard" : "board") + "[" + i + ", " + j + "] mezőn.\n");
+        return null;
     }
 
     @Override
@@ -159,14 +163,14 @@ public class Board implements IBoard {
                 p.updateRange();
                 for (Location l : p.getPossibleRange()) {
                     ((Piece) p).setLegals(
-                            new Move()
-                            //new Move(
-                            //        this,
-                            //        p,
-                            //        ((Piece) p).getLocation(),
-                            //        l,
-                            //        notNull(getPiece(l)) ? getPiece(l) : null
-                            //)
+//                            new Move()
+                            new Move(
+                                    this,
+                                    p,
+                                    ((Piece) p).getLocation(),
+                                    l,
+                                    notNull(getPiece(l)) ? getPiece(l) : null
+                            )
                     );
                 }
             }
@@ -175,18 +179,19 @@ public class Board implements IBoard {
 
     private void constrainPseudos() throws ChessGameException {
         //Leszűkítés annak függvényében, hogy valamely lépéssel sakkba kerülne az ellenfél vagy én
-        constrainTheCalculatedPseudoLegals(!whiteToPlay);
-        constrainTheCalculatedPseudoLegals(whiteToPlay);
+        constrainTheCalculatedPseudoLegals(!whiteToPlay());
+        constrainTheCalculatedPseudoLegals(whiteToPlay());
     }
 
     private void kingsRanges() throws ChessGameException {
         //A királyok lépéslehetőségeinek leszűkítése a már meghatározott rangek függvényében
-        kingSimpleMoves(!whiteToPlay);
-        kingSimpleMoves(whiteToPlay);
+        kingSimpleMoves(!whiteToPlay());
+        kingSimpleMoves(whiteToPlay());
         //Sáncok lehetőségeink számbavétele
         // Ellenőrizni, hogy van-e lehetőség erre-arra a sáncra
         // Ha igen megnézni, hogy a sánccal megtett király mezők közül bele esik-e valamelyik az ellenfél range-be.
-
+        kingCastle(!whiteToPlay());
+        kingCastle(whiteToPlay());
     }
 
     private void constrainTheCalculatedPseudoLegals(boolean forWhite) throws ChessGameException {
@@ -329,33 +334,116 @@ public class Board implements IBoard {
                 .collect(Collectors.toSet());
     }
 
-    private void kingSimpleMoves(boolean my) throws ChessGameException {
-        getKing(my).setPossibleRange(new HashSet<>());
+    private void kingSimpleMoves(boolean forWhite) throws ChessGameException {
+        getKing(forWhite).setPossibleRange(new HashSet<>());
         for (Location l : matrixChooser.get(K)) {
-            Location possiblePlaceOfMyKing = l.add(getKing(my).getLocation());
-            if (containsLocation(possiblePlaceOfMyKing)){
+            Location possiblePlaceOfMyKing = l.add(getKing(forWhite).getLocation());
+            if (containsLocation(possiblePlaceOfMyKing) &&
+                    (!getField(possiblePlaceOfMyKing).isGotPiece() || getPiece(possiblePlaceOfMyKing).isWhite() != forWhite)){
                 Move myKingMove = new Move(
                         this,
-                        getKing(my),
-                        getKingsPlace(my),
+                        getKing(forWhite),
+                        getKingsPlace(forWhite),
                         possiblePlaceOfMyKing,
-                        hitOnThisLocWith(my, possiblePlaceOfMyKing)
+                        hitOnThisLocWith(forWhite, possiblePlaceOfMyKing)
                 );
-                if (enemyKingNotInNeighbour(possiblePlaceOfMyKing) &&
-                        !attackRangeWithoutKing(!my).contains(possiblePlaceOfMyKing)){
-                    getKing(my).setLegals(myKingMove);
+                if (enemyKingNotInNeighbour(possiblePlaceOfMyKing, !forWhite) &&
+                        !attackRangeWithoutKing(!forWhite).contains(possiblePlaceOfMyKing)){
+                    getKing(forWhite).setLegals(myKingMove);
                 }
             }
         }
     }
 
+    private void kingCastle(boolean forWhite) throws ChessGameException {
+        if (!whiteAiNeeded || !theresOnlyOneAi){
+            if (forWhite){
+                checkCastleOptions(
+                        new Location(0, 6),
+                        new Location(0, 5),
+                        ((Piece)getPiece(0, 7)).getMoveCount() == 0,
+                        new Location(0, 2),
+                        new Location(0, 3),
+                        ((Piece)getPiece(0, 0)).getMoveCount() == 0,
+                        true,
+                        true
+                );
+            }else {
+                checkCastleOptions(
+                        new Location(7, 6),
+                        new Location(7, 5),
+                        ((Piece)getPiece(7, 7)).getMoveCount() == 0,
+                        new Location(7, 2),
+                        new Location(7, 3),
+                        ((Piece)getPiece(7, 0)).getMoveCount() == 0,
+                        false,
+                        true
+                );
+            }
+        }else {
+            if (forWhite){
+                checkCastleOptions(
+                        new Location(7, 1),
+                        new Location(7, 2),
+                        ((Piece)getPiece(7, 0)).getMoveCount() == 0,
+                        new Location(7, 5),
+                        new Location(7, 4),
+                        ((Piece)getPiece(7, 7)).getMoveCount() == 0,
+                        true,
+                        false
+                );
+            }else {
+                checkCastleOptions(
+                        new Location(0, 1),
+                        new Location(0, 2),
+                        ((Piece)getPiece(7, 0)).getMoveCount() == 0,
+                        new Location(0, 5),
+                        new Location(0, 4),
+                        ((Piece)getPiece(7, 7)).getMoveCount() == 0,
+                        false,
+                        false
+                );
+            }
+        }
+    }
 
-    private boolean enemyKingNotInNeighbour(Location placeOfMyKing) {
-        return IntStream.rangeClosed(placeOfMyKing.getI() - 1, placeOfMyKing.getI() + 1)
+    private void checkCastleOptions(Location kingSidePoint, Location kingSideRoad, boolean kingRookIsNotMoved,
+                                    Location queenSidePoint, Location queenSideRoad, boolean queenRookIsNotMoved,
+                                    boolean forWhite, boolean whiteDown){
+
+        if (kingRookIsNotMoved){
+            addCastleMove(kingSidePoint, kingSideRoad, forWhite, true);
+        }
+        if (queenRookIsNotMoved){
+            addCastleMove(
+                    queenSidePoint, queenSideRoad, forWhite,
+                    whiteDown ? !getField(forWhite ? 0 : 7, 1).isGotPiece() : !getField(forWhite ? 0 : 7, 6).isGotPiece());
+        }
+    }
+
+    private void addCastleMove(Location Point, Location Road, boolean forWhite, boolean ifQueenPossibleToMoveWithRook){
+        if (
+                !getField(Point).isGotPiece() && !getField(Road).isGotPiece() &&
+                !attackRangeWithoutKing(!forWhite).contains(Point) && !attackRangeWithoutKing(!forWhite).contains(Road) &&
+                enemyKingNotInNeighbour(Point, forWhite) && enemyKingNotInNeighbour(Road, forWhite) &&
+                ifQueenPossibleToMoveWithRook
+        ){
+            getKing(forWhite).setLegals(new Move(
+                    this,
+                    getKing(forWhite),
+                    getKingsPlace(forWhite),
+                    Point,
+                    forWhite ? (ifQueenPossibleToMoveWithRook ? "Q" : "K") : (ifQueenPossibleToMoveWithRook ? "q" : "k")
+            ));
+        }
+    }
+
+    private boolean enemyKingNotInNeighbour(Location placeToCheck, boolean forWhite) {
+        return IntStream.rangeClosed(placeToCheck.getI() - 1, placeToCheck.getI() + 1)
                 .noneMatch(i ->
-                        IntStream.rangeClosed(placeOfMyKing.getJ() - 1, placeOfMyKing.getJ() + 1)
+                        IntStream.rangeClosed(placeToCheck.getJ() - 1, placeToCheck.getJ() + 1)
                                 .anyMatch(j ->
-                                        getKingsPlace(!whiteToPlay).EQUALS(new Location(i, j))));
+                                        getKingsPlace(forWhite).EQUALS(new Location(i, j))));
     }
 
     private Set<Location> attackRangeWithoutKing(boolean forWhite) {

@@ -4,7 +4,7 @@ public class TODO {
 
     //TODO EmPassant, Átváltozás ViewBoard-ból kommunikálni Board felé
 
-    //TODO whiteToPlay manipulation must based on FEN
+    //TODO Egy always usable ifet kidolgozni mikor léphet egy figura egy adott helyre (contains, same color or not)
 
     //TODO !!!
     // Minimax alatt nem elfelejteni A Castle és az EmPassant helyzeteket lekezelni

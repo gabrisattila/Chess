@@ -4,6 +4,7 @@ import classes.Game.I18N.ChessGameException;
 import classes.Game.I18N.Location;
 import lombok.*;
 
+import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
 
 @Getter
@@ -20,6 +21,8 @@ public class Move {
 
     private IPiece hit;
 
+    private String emPassantOrCastle;
+
     private IBoard boardToMoveOn;
 
     //endregion
@@ -32,6 +35,7 @@ public class Move {
         from = null;
         to = null;
         hit = null;
+        emPassantOrCastle = "-";
     }
 
     public Move(IPiece what, Location from, Location to){
@@ -39,6 +43,7 @@ public class Move {
         this.from = from;
         this.to = to;
         hit = null;
+        emPassantOrCastle = "-";
     }
 
     public Move(IPiece what, Location from, Location to, IPiece hit){
@@ -46,6 +51,15 @@ public class Move {
         this.from = from;
         this.to = to;
         this.hit = hit;
+        emPassantOrCastle = "-";
+    }
+
+    public Move(IPiece what, Location from, Location to, String emPassantOrCastle){
+        this.what = what;
+        this.from = from;
+        this.to = to;
+        hit = null;
+        this.emPassantOrCastle = emPassantOrCastle;
     }
 
     public Move(IBoard boardToMoveOn){
@@ -58,6 +72,16 @@ public class Move {
         this.from = from;
         this.to = to;
         this.hit = hit;
+        emPassantOrCastle = "-";
+    }
+
+    public Move(IBoard boardToMoveOn, IPiece what, Location from, Location to, String emPassantOrCastle){
+        this.boardToMoveOn = boardToMoveOn;
+        this.what = what;
+        this.from = from;
+        this.to = to;
+        hit = null;
+        this.emPassantOrCastle = emPassantOrCastle;
     }
 
     //endregion
@@ -69,10 +93,13 @@ public class Move {
         try {
             to.setPiece(piece);
             from.clean();
+            changeToPlay();
         } catch (ChessGameException e) {
             throw new RuntimeException(e);
         }
     }
+
+
 
     //endregion
 

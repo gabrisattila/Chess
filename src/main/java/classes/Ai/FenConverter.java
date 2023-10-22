@@ -28,8 +28,6 @@ public class FenConverter {
         PieceAttributes piece;
         board.cleanBoard();
 
-        whiteToPlayFenToBoard(separatedFen[1]);
-
         String emPassant = separatedFen[3];
 
         for (int i = 0; i < pieces.length(); i++) {
@@ -112,7 +110,7 @@ public class FenConverter {
 
         fenToReturn.append(' ');
 
-        fenToReturn.append(whiteToPlay ? 'w' : 'b');
+        fenToReturn.append(toPlay);
 
         fenToReturn.append(' ');
 
@@ -229,10 +227,6 @@ public class FenConverter {
         sb.append(".png");
 
         return sb.toString();
-    }
-
-    private static void whiteToPlayFenToBoard(String wB){
-        whiteToPlay = "w".equals(wB);
     }
 
     private static void emPassantFenToBoard(String emPassant, PieceAttributes piece){

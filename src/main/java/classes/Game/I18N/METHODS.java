@@ -12,6 +12,17 @@ import static classes.Game.I18N.VARS.MUTUABLES.*;
 
 public class METHODS {
 
+    public static void changeToPlay(){
+        if ('w' == toPlay)
+            toPlay = 'b';
+        else
+            toPlay = 'w';
+    }
+
+    public static boolean whiteToPlay(){
+        return 'w' == toPlay;
+    }
+
     public static void switchWhoComes(){
         aiTurn = !aiTurn;
         playerTurn = !playerTurn;
@@ -19,10 +30,18 @@ public class METHODS {
 
     public static void convertOneBoardToAnother(IBoard what, IBoard to){
         try {
+//            changeWhiteToPlayInFen(BoardToFen(what))
             FenToBoard(BoardToFen(what), to);
         } catch (ChessGameException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static String changeWhiteToPlayInFen(String boardToFen) {
+        StringBuilder sb = new StringBuilder(boardToFen);
+        int startIndex = boardToFen.indexOf(" ");
+        sb.setCharAt(startIndex + 1, 'w' == boardToFen.charAt(startIndex + 1) ? 'b' : 'w');
+        return sb.toString();
     }
 
     public static <T> boolean collectionNotContains(Collection<T> collection, T element){
