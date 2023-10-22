@@ -36,8 +36,8 @@ public class Window extends JFrame {
         setAiNumberDemand();
 
         frameSetup();
-//        setUpSides();
-        getViewBoard().pieceSetUp(usualFens.get("whiteDownOnlyKingsAndRooks"));
+        setUpSides();
+//        getViewBoard().pieceSetUp(usualFens.get("whiteDownOnlyKingsAndRooks"));
 
         gameBoard = new GameBoard(getViewBoard());
         add(gameBoard);
@@ -68,17 +68,17 @@ public class Window extends JFrame {
 
     private void setAiNumberDemand(){
 
-//        System.out.println("\nSzeretné-e végig nézni a gép csatáját saját maga ellen, vagy inkább ön mérkőzik meg vele? \n (Igen / Nem)");
-//
-//        theresOnlyOneAi = "Nem".equals(new Scanner(System.in).nextLine().trim());
-//
-//        if (theresOnlyOneAi){
-//            System.out.println("Világossal szeretne lenni? (Igen / Nem)");
-//            whiteAiNeeded = "Nem".equals(new Scanner(System.in).nextLine().trim());
-//        }
-//
-        theresOnlyOneAi = true;
-        whiteAiNeeded = false;
+        System.out.println("\nSzeretné-e végig nézni a gép csatáját saját maga ellen, vagy inkább ön mérkőzik meg vele? \n (Igen / Nem)");
+
+        theresOnlyOneAi = "Nem".equals(new Scanner(System.in).nextLine().trim());
+
+        if (theresOnlyOneAi){
+            System.out.println("Világossal szeretne lenni? (Igen / Nem)");
+            whiteAiNeeded = "Nem".equals(new Scanner(System.in).nextLine().trim());
+        }
+
+//        theresOnlyOneAi = true;
+//        whiteAiNeeded = false;
     }
 
     private void setUpSides() throws ChessGameException {

@@ -27,7 +27,7 @@ public class Piece implements IPiece {
 
     private boolean inDefend;
 
-    private int moveCount = 0;
+    private boolean notMovedAlready = false;
 
     private boolean inBinding;
 
@@ -113,12 +113,16 @@ public class Piece implements IPiece {
         return getType() == G ? watchedRange : possibleRange;
     }
 
+    public Location getEmPassantLocation(){
+        return attributes.getEmPassantLoc();
+    }
+
     @Override
     public void setEmpty(){
         attributes = null;
         location = null;
         inDefend = false;
-        moveCount = 0;
+        notMovedAlready = false;
         inBinding = false;
         VALUE = 0;
         possibleRange = null;
@@ -261,9 +265,10 @@ public class Piece implements IPiece {
             } else {
                 if (Math.abs(l.getJ() - getJ()) > 1)
                     throw new RuntimeException("Nem eshet bele a gyalog range-be");
-                //if (board.getThereWasEmPassant().getFirst()){
-                //
-                //} else
+                if (notNull(getEmPassantLocation()) && Math.abs(getEmPassantLocation().getI() - getI()) == 1 &&
+                        Math.abs(getEmPassantLocation().getJ() - getJ()) == 1){
+                    return true;
+                }
                 if (isTherePiece(l)){
                     return enemyColor(l);
                 }
@@ -301,24 +306,6 @@ public class Piece implements IPiece {
         return possibleOrWatched ? pRange : wRange;
     }
 
-    private boolean baseKingRange(Location l) throws ChessGameException {
-        return (!isTherePiece(l)) || (isTherePiece(l) && enemyColor(l));
-    }
-
-    private Set<Location> kingRange(){
-        Set<Location> range = new HashSet<>();
-
-
-
-
-
-        //TODO Az egész updateRange-t erre kihegyezni:
-        // Az eddigiek alapján legyen megszerkesztve a rangeUpdater hiszen ehhez, hogy meglegyen mindennek meg kell lennie.
-
-
-        return range;
-    }
-
     //endregion
 
     //region Helpers for ranges
@@ -342,7 +329,6 @@ public class Piece implements IPiece {
     private Location matrixPlusOriginLoc(Location l){
         return new Location(location.getI() + l.getI(), location.getJ() + l.getJ());
     }
-
 
     //endregion
 

@@ -2,7 +2,10 @@ package classes;
 
 public class TODO {
 
-    //TODO EmPassant, Átváltozás ViewBoard-ból kommunikálni Board felé
+    //TODO EmPassant: megtörténtekor hogy kommunikálom a tovább (thereWasEmPassant manipulation)
+    // Átváltozás ViewBoard-ból kommunikálni Board felé
+
+    //TODO Megoldani azt, hogy a már lépett figura (bástya, király) ne tudjon sáncolni
 
     //TODO Egy always usable ifet kidolgozni mikor léphet egy figura egy adott helyre (contains, same color or not)
 

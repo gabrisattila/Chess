@@ -39,7 +39,7 @@ public class Board implements IBoard {
 
     private Piece blackKing;
 
-    private Pair<Boolean, String> thereWasEmPassant;
+    private Pair<Boolean, String> thereWasEmPassantPossibility;
 
     private Move lastMove;
 
@@ -347,7 +347,7 @@ public class Board implements IBoard {
                         possiblePlaceOfMyKing,
                         hitOnThisLocWith(forWhite, possiblePlaceOfMyKing)
                 );
-                if (enemyKingNotInNeighbour(possiblePlaceOfMyKing, !forWhite) &&
+                if (enemyKingNotInNeighbour(possiblePlaceOfMyKing, forWhite) &&
                         !attackRangeWithoutKing(!forWhite).contains(possiblePlaceOfMyKing)){
                     getKing(forWhite).setLegals(myKingMove);
                 }
@@ -361,10 +361,10 @@ public class Board implements IBoard {
                 checkCastleOptions(
                         new Location(0, 6),
                         new Location(0, 5),
-                        ((Piece)getPiece(0, 7)).getMoveCount() == 0,
+                        ((Piece)getPiece(0, 7)).isNotMovedAlready(),
                         new Location(0, 2),
                         new Location(0, 3),
-                        ((Piece)getPiece(0, 0)).getMoveCount() == 0,
+                        ((Piece)getPiece(0, 0)).isNotMovedAlready(),
                         true,
                         true
                 );
@@ -372,10 +372,10 @@ public class Board implements IBoard {
                 checkCastleOptions(
                         new Location(7, 6),
                         new Location(7, 5),
-                        ((Piece)getPiece(7, 7)).getMoveCount() == 0,
+                        ((Piece)getPiece(7, 7)).isNotMovedAlready(),
                         new Location(7, 2),
                         new Location(7, 3),
-                        ((Piece)getPiece(7, 0)).getMoveCount() == 0,
+                        ((Piece)getPiece(7, 0)).isNotMovedAlready(),
                         false,
                         true
                 );
@@ -385,10 +385,10 @@ public class Board implements IBoard {
                 checkCastleOptions(
                         new Location(7, 1),
                         new Location(7, 2),
-                        ((Piece)getPiece(7, 0)).getMoveCount() == 0,
+                        ((Piece)getPiece(7, 0)).isNotMovedAlready(),
                         new Location(7, 5),
                         new Location(7, 4),
-                        ((Piece)getPiece(7, 7)).getMoveCount() == 0,
+                        ((Piece)getPiece(7, 7)).isNotMovedAlready(),
                         true,
                         false
                 );
@@ -396,10 +396,10 @@ public class Board implements IBoard {
                 checkCastleOptions(
                         new Location(0, 1),
                         new Location(0, 2),
-                        ((Piece)getPiece(7, 0)).getMoveCount() == 0,
+                        ((Piece)getPiece(7, 0)).isNotMovedAlready(),
                         new Location(0, 5),
                         new Location(0, 4),
-                        ((Piece)getPiece(7, 7)).getMoveCount() == 0,
+                        ((Piece)getPiece(7, 7)).isNotMovedAlready(),
                         false,
                         false
                 );
@@ -421,29 +421,34 @@ public class Board implements IBoard {
         }
     }
 
-    private void addCastleMove(Location Point, Location Road, boolean forWhite, boolean ifQueenPossibleToMoveWithRook){
+    private void addCastleMove(Location Point, Location Road, boolean forWhite, boolean queenOrKingSideRook){
         if (
                 !getField(Point).isGotPiece() && !getField(Road).isGotPiece() &&
                 !attackRangeWithoutKing(!forWhite).contains(Point) && !attackRangeWithoutKing(!forWhite).contains(Road) &&
                 enemyKingNotInNeighbour(Point, forWhite) && enemyKingNotInNeighbour(Road, forWhite) &&
-                ifQueenPossibleToMoveWithRook
+                queenOrKingSideRook
         ){
             getKing(forWhite).setLegals(new Move(
                     this,
                     getKing(forWhite),
                     getKingsPlace(forWhite),
                     Point,
-                    forWhite ? (ifQueenPossibleToMoveWithRook ? "Q" : "K") : (ifQueenPossibleToMoveWithRook ? "q" : "k")
+                    forWhite ? (queenOrKingSideRook ? "Q" : "K") : (queenOrKingSideRook ? "q" : "k")
             ));
         }
     }
 
+    /**
+     * @param placeToCheck A location amit ellenőrizni akarok
+     * @param forWhite A saját királyom színe, ennek az ellentétét ellenőrzöm
+     * @return Azt nézi meg, hogy az ellenfél király a kapott lokáció közelében van-e
+     */
     private boolean enemyKingNotInNeighbour(Location placeToCheck, boolean forWhite) {
         return IntStream.rangeClosed(placeToCheck.getI() - 1, placeToCheck.getI() + 1)
                 .noneMatch(i ->
                         IntStream.rangeClosed(placeToCheck.getJ() - 1, placeToCheck.getJ() + 1)
                                 .anyMatch(j ->
-                                        getKingsPlace(forWhite).EQUALS(new Location(i, j))));
+                                        getKingsPlace(!forWhite).EQUALS(new Location(i, j))));
     }
 
     private Set<Location> attackRangeWithoutKing(boolean forWhite) {
