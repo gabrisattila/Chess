@@ -110,7 +110,6 @@ public class Move {
 
     private void logging() throws ChessGameException {
         getLogger().append((what.isWhite() ? "White " : "Black ") + what.getType() + " went from " + from.toString() + " to " + to.toString() + '\n');
-        System.out.println();
     }
 
     private boolean isItCastle(IPiece piece, Location from, Location to){
@@ -137,14 +136,12 @@ public class Move {
                     castleHelper(bigOrSmallCastle, rook, j);
 
                     //Mert egyik megtörténte után nem történhet a másik
-                    if (bigOrSmallCastle){
-                        if (what.isWhite()){
-                            whiteSmallCastleHappened = true;
-                            whiteBigCastleHappened = true;
-                        }else {
-                            blackBigCastleHappened = true;
-                            blackSmallCastleHappened = true;
-                        }
+                    if (what.isWhite()){
+                        whiteSmallCastleHappened = true;
+                        whiteBigCastleHappened = true;
+                    }else {
+                        blackBigCastleHappened = true;
+                        blackSmallCastleHappened = true;
                     }
 
                     break;

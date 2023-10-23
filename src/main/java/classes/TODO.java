@@ -17,5 +17,4 @@ public class TODO {
 
     //TODO Exceptions unification
 
-    //TODO ViewFieldUI kidolgozása
 }

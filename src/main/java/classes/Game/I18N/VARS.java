@@ -231,6 +231,14 @@ public class VARS {
          */
         public static double BOARD_START_Y = (SCREEN_HEIGHT - BOARD_HEIGHT) / 2;
 
+        public static double LOGGER_WIDTH = BOARD_START_X - (BOARD_START_X / 10);
+
+        public static double LOGGER_HEIGHT = SCREEN_HEIGHT;
+
+        public static double LOGGER_START_X = BOARD_START_X + 8 * FIELD_WIDTH + (BOARD_START_X / 25);
+
+        public static double LOGGER_START_Y = 0;
+
         public static int CLICK_COUNTER = 0;
 
         public static ViewField lastClicked;

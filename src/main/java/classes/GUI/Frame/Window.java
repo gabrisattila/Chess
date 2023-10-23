@@ -101,7 +101,7 @@ public class Window extends JFrame {
      */
     private JTextArea loggerBox(){
         JTextArea area = new JTextArea();
-        area.setBounds((int) (BOARD_START_X * 2 + 150), (int) (BOARD_START_Y), 300, 500);
+        area.setBounds((int) (LOGGER_START_X), (int) (LOGGER_START_Y), ((int) LOGGER_WIDTH), ((int) LOGGER_HEIGHT));
         area.setVisible(true);
         area.setEditable(false);
         return area;

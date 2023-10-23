@@ -78,7 +78,7 @@ public class EDT {
             aiW = new AI(color);
             SwingUtilities.invokeLater(() -> {
                 try {
-                    sleep(750);
+                    sleep(2000);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -88,7 +88,7 @@ public class EDT {
             aiB = new AI(color);
             SwingUtilities.invokeLater(() -> {
                 try {
-                    sleep(750);
+                    sleep(2000);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
