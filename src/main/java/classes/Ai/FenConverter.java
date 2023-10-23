@@ -137,12 +137,12 @@ public class FenConverter {
 
         fenToReturn.append(' ');
 
-        if (board instanceof Board)
-            if (((Board) board).getThereWasEmPassantPossibility().getFirst())
-                fenToReturn.append(((Board) board).getThereWasEmPassantPossibility().getSecond());
-            else
-                fenToReturn.append('-');
-        else
+//        if (board instanceof Board)
+//            if (((Board) board).getThereWasEmPassantPossibility().getFirst())
+//                fenToReturn.append(((Board) board).getThereWasEmPassantPossibility().getSecond());
+//            else
+//                fenToReturn.append('-');
+//        else
             fenToReturn.append('-');
 
         return fenToReturn.toString();

@@ -264,10 +264,10 @@ public class Piece implements IPiece {
             } else {
                 if (Math.abs(l.getJ() - getJ()) > 1)
                     throw new RuntimeException("Nem eshet bele a gyalog range-be");
-                if (notNull(getEmPassantLocation()) && Math.abs(getEmPassantLocation().getI() - getI()) == 1 &&
-                        Math.abs(getEmPassantLocation().getJ() - getJ()) == 1){
-                    return true;
-                }
+//                if (notNull(getEmPassantLocation()) && Math.abs(getEmPassantLocation().getI() - getI()) == 1 &&
+//                        Math.abs(getEmPassantLocation().getJ() - getJ()) == 1){
+//                    return true;
+//                }
                 if (isTherePiece(l)){
                     return enemyColor(l);
                 }

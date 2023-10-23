@@ -26,6 +26,8 @@ public class Window extends JFrame {
 
     private GameBoard gameBoard;
 
+    private static JTextArea logger;
+
     //endregion
 
 
@@ -41,6 +43,10 @@ public class Window extends JFrame {
 
         gameBoard = new GameBoard(getViewBoard());
         add(gameBoard);
+
+        logger = loggerBox();
+        add(logger);
+
         setVisible(true);
 
     }
@@ -68,17 +74,17 @@ public class Window extends JFrame {
 
     private void setAiNumberDemand(){
 
-//        System.out.println("\nSzeretné-e végig nézni a gép csatáját saját maga ellen, vagy inkább ön mérkőzik meg vele? \n (Igen / Nem)");
+        System.out.println("\nSzeretné-e végig nézni a gép csatáját saját maga ellen, vagy inkább ön mérkőzik meg vele? \n (Igen / Nem)");
+
+        theresOnlyOneAi = "Nem".equals(new Scanner(System.in).nextLine().trim());
+
+        if (theresOnlyOneAi){
+            System.out.println("Világossal szeretne lenni? (Igen / Nem)");
+            whiteAiNeeded = "Nem".equals(new Scanner(System.in).nextLine().trim());
+        }
 //
-//        theresOnlyOneAi = "Nem".equals(new Scanner(System.in).nextLine().trim());
-//
-//        if (theresOnlyOneAi){
-//            System.out.println("Világossal szeretne lenni? (Igen / Nem)");
-//            whiteAiNeeded = "Nem".equals(new Scanner(System.in).nextLine().trim());
-//        }
-//
-        theresOnlyOneAi = true;
-        whiteAiNeeded = false;
+//        theresOnlyOneAi = false;
+//        whiteAiNeeded = true;
     }
 
     private void setUpSides() throws ChessGameException {
@@ -89,6 +95,21 @@ public class Window extends JFrame {
         );
     }
 
+
+    /**
+     * @return a textField where I document the steps
+     */
+    private JTextArea loggerBox(){
+        JTextArea area = new JTextArea();
+        area.setBounds((int) (BOARD_START_X * 2 + 150), (int) (BOARD_START_Y), 300, 500);
+        area.setVisible(true);
+        area.setEditable(false);
+        return area;
+    }
+
+    public static JTextArea getLogger(){
+        return logger;
+    }
 
     //endregion
 

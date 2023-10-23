@@ -7,6 +7,7 @@ import lombok.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
 import static classes.Game.I18N.PieceType.*;
+import static classes.GUI.Frame.Window.*;
 
 @Getter
 @Setter
@@ -99,14 +100,17 @@ public class Move {
             toField.setPiece(what);
             fromField.clean();
             ifItsCastle(itsCastle, toField);
+//            ifItsEmPassant(itsEmPassant, toField);
+            logging();
             changeToPlay();
         } catch (ChessGameException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private boolean isItEmPassant(IPiece piece, Location from, Location to){
-        return piece.getType() == G && from.getI() != to.getI() && !boardToMoveOn.getField(to).isGotPiece();
+    private void logging() throws ChessGameException {
+        getLogger().append((what.isWhite() ? "White " : "Black ") + what.getType() + " went from " + from.toString() + " to " + to.toString() + '\n');
+        System.out.println();
     }
 
     private boolean isItCastle(IPiece piece, Location from, Location to){
@@ -127,32 +131,50 @@ public class Move {
                     boardToMoveOn.getPiece(to.getI(), j).getType() == B
             ){
                 IPiece rook = boardToMoveOn.getPiece(to.getI(), j);
-                if (possibleToCastleWithRook(rook))
-                    castleHelper(Math.abs(rook.getJ() - to.getJ()) > 1, rook, j);
+                boolean bigOrSmallCastle = Math.abs(rook.getJ() - to.getJ()) > 1;
+                if (possibleToCastleWithRook(rook, bigOrSmallCastle)) {
+
+                    castleHelper(bigOrSmallCastle, rook, j);
+
+                    //Mert egyik megtörténte után nem történhet a másik
+                    if (bigOrSmallCastle){
+                        if (what.isWhite()){
+                            whiteSmallCastleHappened = true;
+                            whiteBigCastleHappened = true;
+                        }else {
+                            blackBigCastleHappened = true;
+                            blackSmallCastleHappened = true;
+                        }
+                    }
+
+                    break;
+                }
             }
         }
     }
 
-    private boolean possibleToCastleWithRook(IPiece rook) {
+    private boolean possibleToCastleWithRook(IPiece rook, boolean bigOrSmallCastle) {
         if (rook.isWhite()){
-            return Math.abs(rook.getJ() - to.getJ()) > 1 ? !whiteSmallCastleHappened : !whiteBigCastleHappened;
+            return bigOrSmallCastle ? !whiteSmallCastleHappened : !whiteBigCastleHappened;
         }else {
-            return Math.abs(rook.getJ() - to.getJ()) > 1 ? !blackSmallCastleHappened : !blackBigCastleHappened;
+            return bigOrSmallCastle ? !blackSmallCastleHappened : !blackBigCastleHappened;
         }
     }
 
-
-    public void emPassantCase(IPiece piece, IField from, IField to){
-
-    }
-
-
-    private void castleHelper(boolean plusOrMinusSideOfKing, IPiece rookToCastleWith, int originJofRook) throws ChessGameException {
+    private void castleHelper(boolean bigOrSmallCastle, IPiece rookToCastleWith, int originJofRook) throws ChessGameException {
         IField fieldForRook;
-        if (plusOrMinusSideOfKing){
-            fieldForRook = boardToMoveOn.getField(to.getI(), to.getJ() + 1);
+        if (whiteAiNeeded){
+            if (bigOrSmallCastle){
+                fieldForRook = boardToMoveOn.getField(to.getI(), to.getJ() - 1);
+            }else {
+                fieldForRook = boardToMoveOn.getField(to.getI(), to.getJ() + 1);
+            }
         }else {
-            fieldForRook = boardToMoveOn.getField(to.getI(), to.getJ() - 1);
+            if (bigOrSmallCastle){
+                fieldForRook = boardToMoveOn.getField(to.getI(), to.getJ() + 1);
+            }else {
+                fieldForRook = boardToMoveOn.getField(to.getI(), to.getJ() - 1);
+            }
         }
         if (fieldForRook.isGotPiece())
             throw new RuntimeException(
@@ -161,6 +183,24 @@ public class Move {
         fieldForRook.setPiece(rookToCastleWith);
         boardToMoveOn.getField(to.getI(), originJofRook).clean();
     }
+
+    private boolean isItEmPassant(IPiece piece, Location from, Location to){
+        return piece.getType() == G && from.getI() != to.getI() && !boardToMoveOn.getField(to).isGotPiece();
+    }
+
+    private void ifItsEmPassant(boolean itsEmPassant, IField toField) throws ChessGameException {
+        if (itsEmPassant)
+            emPassantCase(toField);
+    }
+
+    private void emPassantCase(IField to) throws ChessGameException {
+        if (to.getPiece().getAttributes().getEnemyAndOwnStartRow().getFirst() == 7){
+            boardToMoveOn.getField(getTo().getI() - 1, getTo().getJ()).clean();
+        }else {
+            boardToMoveOn.getField(getTo().getI() + 1, getTo().getJ()).clean();
+        }
+    }
+
 
     //endregion
 

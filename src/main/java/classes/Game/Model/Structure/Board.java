@@ -360,10 +360,10 @@ public class Board implements IBoard {
                 checkCastleOptions(
                         new Location(0, 6),
                         new Location(0, 5),
-                        ((Piece)getPiece(0, 7)).isNotMovedAlready(),
+                        !whiteSmallCastleHappened,
                         new Location(0, 2),
                         new Location(0, 3),
-                        ((Piece)getPiece(0, 0)).isNotMovedAlready(),
+                        !whiteBigCastleHappened,
                         true,
                         true
                 );
@@ -371,10 +371,10 @@ public class Board implements IBoard {
                 checkCastleOptions(
                         new Location(7, 6),
                         new Location(7, 5),
-                        ((Piece)getPiece(7, 7)).isNotMovedAlready(),
+                        !blackSmallCastleHappened,
                         new Location(7, 2),
                         new Location(7, 3),
-                        ((Piece)getPiece(7, 0)).isNotMovedAlready(),
+                        !blackBigCastleHappened,
                         false,
                         true
                 );
@@ -384,10 +384,10 @@ public class Board implements IBoard {
                 checkCastleOptions(
                         new Location(7, 1),
                         new Location(7, 2),
-                        ((Piece)getPiece(7, 0)).isNotMovedAlready(),
+                        !whiteSmallCastleHappened,
                         new Location(7, 5),
                         new Location(7, 4),
-                        ((Piece)getPiece(7, 7)).isNotMovedAlready(),
+                        !whiteBigCastleHappened,
                         true,
                         false
                 );
@@ -395,10 +395,10 @@ public class Board implements IBoard {
                 checkCastleOptions(
                         new Location(0, 1),
                         new Location(0, 2),
-                        ((Piece)getPiece(7, 0)).isNotMovedAlready(),
+                        !blackSmallCastleHappened,
                         new Location(0, 5),
                         new Location(0, 4),
-                        ((Piece)getPiece(7, 7)).isNotMovedAlready(),
+                        !blackBigCastleHappened,
                         false,
                         false
                 );
@@ -424,8 +424,7 @@ public class Board implements IBoard {
         if (
                 !getField(Point).isGotPiece() && !getField(Road).isGotPiece() &&
                 !attackRangeWithoutKing(!forWhite).contains(Point) && !attackRangeWithoutKing(!forWhite).contains(Road) &&
-                enemyKingNotInNeighbour(Point, forWhite) && enemyKingNotInNeighbour(Road, forWhite) &&
-                queenOrKingSideRook
+                enemyKingNotInNeighbour(Point, forWhite) && enemyKingNotInNeighbour(Road, forWhite)
         ){
             getKing(forWhite).setLegals(new Move(
                     this,

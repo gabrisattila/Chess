@@ -136,6 +136,7 @@ public class VARS {
             put("onlyTwoBishops6x6", "1F4/6/6/6/6/4f1 w ---- -");
             put("onlyTwoRooks6x6", "B5/6/6/6/6/5b w ---- -");
             put("onlyTwoQueens6x6", "2V3/6/6/6/6/3v2 w ---- -");
+            put("onlyTwoKings6x6", "2K3/6/6/6/6/3k2 w ---- -");
             put("onlyPawns6x6", "6/GGGGGG/6/6/gggggg/6 w ---- -");
         }};
 
