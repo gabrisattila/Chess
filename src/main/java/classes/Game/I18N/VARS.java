@@ -1,15 +1,12 @@
 package classes.Game.I18N;
 
-import classes.GUI.FrameParts.ViewField;
-import classes.GUI.FrameParts.ViewPiece;
-import classes.Game.Model.Structure.Piece;
+import classes.GUI.FrameParts.*;
+import classes.Game.Model.Structure.*;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
@@ -85,7 +82,7 @@ public class VARS {
         }};
 
         public static final Map<PieceType, ArrayList<Location>> matrixChooser = new HashMap<>(){{
-            put(G, new ArrayList<>(pawnMatrix));
+            put(G, pawnMatrix);
             put(H, knightMatrix);
             put(F, bishopMatrix);
             put(B, rookMatrix);
@@ -135,7 +132,7 @@ public class VARS {
             put("blackDownStarter", "rnbkqbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBKQBNR w KQkq -");
             put("whiteDownOnlyKnights", "1N4N1/8/8/8/8/8/8/1n4n1 w ---- -");
             put("whiteDownOnlyBishops", "2F2F2/8/8/8/8/8/8/2f2f2 w ---- -");
-            put("whiteDownOnlyKingsAndRooks", "R3K2R/8/8/8/8/8/8/r3k2r w ---- -");
+            put("whiteDownOnlyKingsAndRooks", "R3K2R/8/8/8/8/8/8/r3k2r w KQkq -");
             put("onlyTwoBishops6x6", "1F4/6/6/6/6/4f1 w ---- -");
             put("onlyTwoRooks6x6", "B5/6/6/6/6/5b w ---- -");
             put("onlyTwoQueens6x6", "2V3/6/6/6/6/3v2 w ---- -");

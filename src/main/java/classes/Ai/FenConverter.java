@@ -2,6 +2,7 @@ package classes.Ai;
 
 import classes.GUI.FrameParts.*;
 import classes.Game.I18N.*;
+import classes.Game.I18N.Location;
 import classes.Game.Model.Structure.*;
 
 import static classes.Game.I18N.METHODS.*;
@@ -40,7 +41,7 @@ public class FenConverter {
                     if (Character.isDigit(currentChar)){
                         oszlop += Character.getNumericValue(currentChar);
                     }else {
-                        IField f = board.getField(sor, oszlop);
+                        classes.Game.Model.Structure.IField f = board.getField(sor, oszlop);
                         if (! ((f instanceof Field ) || (f instanceof ViewField))){
                             throw new ChessGameException(f, BAD_TYPE_MSG);
                         }
@@ -88,7 +89,7 @@ public class FenConverter {
         StringBuilder fenToReturn = new StringBuilder();
         for (int i = 0; i < MAX_WIDTH; i++) {
             for (int j = 0; j < MAX_HEIGHT; j++) {
-                IField f = board.getFields().get(i).get(j);
+                classes.Game.Model.Structure.IField f = board.getFields().get(i).get(j);
                 if (! ((f instanceof Field ) || (f instanceof ViewField))){
                     throw new ChessGameException(f, BAD_TYPE_MSG);
                 }
@@ -257,13 +258,13 @@ public class FenConverter {
 
     private static void castleCaseFenToBoard(String castleCases){
 
-        whiteSmallCastleHappened = 'K' == castleCases.charAt(0);
+        whiteSmallCastleHappened = 'K' != castleCases.charAt(0);
 
-        whiteBigCastleHappened = 'V' == castleCases.charAt(1);
+        whiteBigCastleHappened = 'V' != castleCases.charAt(1);
 
-        blackSmallCastleHappened = 'k' == castleCases.charAt(2);
+        blackSmallCastleHappened = 'k' != castleCases.charAt(2);
 
-        blackBigCastleHappened = 'v' == castleCases.charAt(3);
+        blackBigCastleHappened = 'v' != castleCases.charAt(3);
 
     }
 

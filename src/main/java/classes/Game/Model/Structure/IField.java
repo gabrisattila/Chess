@@ -1,22 +1,28 @@
 package classes.Game.Model.Structure;
 
 import classes.Game.I18N.ChessGameException;
+import classes.Game.I18N.Location;
 import classes.Game.I18N.PieceAttributes;
 
 public interface IField {
 
-    public int getI();
+     int getI();
 
-    public int getJ();
+     int getJ();
 
-    public IPiece getPiece();
+     Location getLoc();
 
-    public boolean isGotPiece();
+     IPiece getPiece();
 
-    public void setPiece(IPiece piece) throws ChessGameException;
+     boolean isGotPiece();
 
-    public void setPiece(PieceAttributes piece);
+     void setPiece(IPiece piece) throws ChessGameException;
 
-    public void clean() throws ChessGameException;
+     void setPiece(PieceAttributes piece);
 
+     void clean() throws ChessGameException;
+
+     default String toSString(){
+          return " [" + getI() + ", " + getJ() + "] ";
+     }
 }

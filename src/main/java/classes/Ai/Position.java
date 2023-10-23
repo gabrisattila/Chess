@@ -2,6 +2,7 @@ package classes.Ai;
 
 
 import classes.Game.I18N.*;
+import classes.Game.I18N.Location;
 import classes.Game.Model.Structure.*;
 import lombok.*;
 

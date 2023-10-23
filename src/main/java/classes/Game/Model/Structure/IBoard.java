@@ -13,21 +13,21 @@ import static classes.Game.I18N.VARS.MUTUABLES.*;
 
 public interface IBoard {
 
-    default void boardSetUp(IBoard board, ArrayList<ArrayList<IField>> fields){
-        IField field;
+    default void boardSetUp(IBoard board, ArrayList<ArrayList<classes.Game.Model.Structure.IField>> fields){
+        classes.Game.Model.Structure.IField field;
         String fieldColor;
-        Location location;
-        ArrayList<IField> row;
+        Location Location;
+        ArrayList<classes.Game.Model.Structure.IField> row;
 
         for (int i = 0; i < MAX_HEIGHT; i++) {
             row = new ArrayList<>();
             for (int j = 0; j < MAX_WIDTH; j++) {
-                location = new Location(i, j);
+                Location = new Location(i, j);
                 fieldColor = tableIf(WHITE_STRING, BLACK_STRING, i, j);
                 if (board instanceof Board)
-                    field = new Field(location, fieldColor);
+                    field = new Field(Location, fieldColor);
                 else
-                    field = new ViewField(location, fieldColor);
+                    field = new ViewField(Location, fieldColor);
                 row.add(field);
             }
             fields.add(row);
@@ -35,7 +35,11 @@ public interface IBoard {
     }
 
     default void pieceSetUp(String FEN){
-        String fenPieces = FEN.split(" ")[0];
+        String[] fenParts = FEN.split(" ");
+        String fenPieces = fenParts[0];
+        String toPlay = fenParts[1];
+        String castle = fenParts[2];
+        String emPassant = fenParts[3];
         int separateIndex = FEN.indexOf(' ');
         String fenOtherParts = FEN.substring(separateIndex);
 
@@ -43,11 +47,12 @@ public interface IBoard {
             if ('p' == fenPieces.charAt(i) || 'P' == fenPieces.charAt(i) || 'r' == fenPieces.charAt(i) || 'R' == fenPieces.charAt(i) ||
                     'q' == fenPieces.charAt(i) || 'Q' == fenPieces.charAt(i) || 'n' == fenPieces.charAt(i) || 'N' == fenPieces.charAt(i)){
                 fenPieces = translate(fenPieces);
+                castle = translate(castle);
                 break;
             }
         }
 
-        FEN = fenPieces + fenOtherParts;
+        FEN = fenPieces + " " + toPlay + " " + castle + " " + emPassant;
 
         try {
             FenToBoard(FEN, this);
@@ -58,21 +63,21 @@ public interface IBoard {
 
     void cleanBoard() throws ChessGameException;
 
-    ArrayList<ArrayList<IField>> getFields();
+    ArrayList<ArrayList<classes.Game.Model.Structure.IField>> getFields();
 
     ArrayList<IPiece> getPieces();
 
-    IField getField(int i, int j);
+    classes.Game.Model.Structure.IField getField(int i, int j);
 
-    IField getField(Location location);
+    classes.Game.Model.Structure.IField getField(Location Location);
 
-    IField getField(IPiece piece);
+    classes.Game.Model.Structure.IField getField(IPiece piece);
 
     IPiece getPiece(int i, int j) throws ChessGameException;
 
-    IPiece getPiece(Location location) throws ChessGameException;
+    IPiece getPiece(Location Location) throws ChessGameException;
 
-    IPiece getPiece(IField field);
+    IPiece getPiece(classes.Game.Model.Structure.IField field);
 
     void rangeUpdater() throws ChessGameException, InterruptedException;
 }

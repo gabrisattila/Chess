@@ -1,6 +1,7 @@
 package classes.GUI.FrameParts;
 
 import classes.Game.I18N.*;
+import classes.Game.I18N.Location;
 import classes.Game.Model.Structure.*;
 import lombok.*;
 
@@ -22,7 +23,7 @@ public class ViewBoard implements IBoard {
 
     private static ViewBoard viewBoard;
 
-    private ArrayList<ArrayList<IField>> fields;
+    private ArrayList<ArrayList<classes.Game.Model.Structure.IField>> fields;
 
     private ArrayList<IPiece> pieces;
 
@@ -55,17 +56,17 @@ public class ViewBoard implements IBoard {
     //region GetBy
 
     @Override
-    public IField getField(int i, int j){
+    public classes.Game.Model.Structure.IField getField(int i, int j){
         return getFields().get(i).get(j);
     }
 
     @Override
-    public IField getField(Location location){
-        return getField(location.getI(), location.getJ());
+    public classes.Game.Model.Structure.IField getField(Location Location){
+        return getField(Location.getI(), Location.getJ());
     }
 
     @Override
-    public IField getField(IPiece piece){
+    public classes.Game.Model.Structure.IField getField(IPiece piece){
         return getField(piece.getI(), piece.getJ());
     }
 
@@ -79,12 +80,12 @@ public class ViewBoard implements IBoard {
     }
 
     @Override
-    public IPiece getPiece(Location location){
-        return getPiece(location.getI(), location.getJ());
+    public IPiece getPiece(Location Location){
+        return getPiece(Location.getI(), Location.getJ());
     }
 
     @Override
-    public IPiece getPiece(IField field){
+    public IPiece getPiece(classes.Game.Model.Structure.IField field){
         return getField(field.getI(), field.getJ()).getPiece();
     }
 

@@ -1,6 +1,5 @@
 package classes.GUI.FrameParts;
 
-import classes.Game.I18N.ChessGameException;
 import classes.Game.I18N.Location;
 import classes.Game.I18N.PieceAttributes;
 import classes.Game.I18N.PieceType;
@@ -10,7 +9,6 @@ import lombok.*;
 
 import javax.swing.*;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 

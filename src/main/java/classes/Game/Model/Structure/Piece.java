@@ -23,11 +23,11 @@ public class Piece implements IPiece {
 
     protected PieceAttributes attributes;
 
-    private Location location;
+    private Location Location;
 
     private boolean inDefend;
 
-    private boolean notMovedAlready = false;
+    private boolean notMovedAlready = true;
 
     private boolean inBinding;
 
@@ -59,9 +59,9 @@ public class Piece implements IPiece {
         watchedRange = new HashSet<>();
     }
 
-    public Piece(PieceAttributes attributes, Location location, IBoard board) throws ChessGameException {
+    public Piece(PieceAttributes attributes, Location Location, IBoard board) throws ChessGameException {
         this.attributes = attributes;
-        this.location = location;
+        this.Location = Location;
         if (! (board instanceof Board))
             throw new ChessGameException("Nem megfelelő az átadott tábla típusa");
         this.board = (Board) board;
@@ -78,12 +78,12 @@ public class Piece implements IPiece {
 
     @Override
     public int getI(){
-        return location.getI();
+        return Location.getI();
     }
 
     @Override
     public int getJ(){
-        return location.getJ();
+        return Location.getJ();
     }
 
     @Override
@@ -106,7 +106,7 @@ public class Piece implements IPiece {
 
     @Override
     public boolean isEmpty(){
-        return attributes == null && location == null;
+        return attributes == null && Location == null;
     }
 
     public Set<Location> getAttackRange(){
@@ -120,9 +120,8 @@ public class Piece implements IPiece {
     @Override
     public void setEmpty(){
         attributes = null;
-        location = null;
+        Location = null;
         inDefend = false;
-        notMovedAlready = false;
         inBinding = false;
         VALUE = 0;
         possibleRange = null;
@@ -216,7 +215,7 @@ public class Piece implements IPiece {
                 matrixChooser.get(type) :
                 (ArrayList<Location>) locationListTimesN(matrixChooser.get(type), -1);
         for (Location loc : optionsToIterateTrough) {
-            Location locForCalculation = loc.add(location);
+            Location locForCalculation = loc.add(Location);
             if (type == G){
                 if (pawnCase(locForCalculation, posOrWatch)){
                     range.add(locForCalculation);
@@ -283,7 +282,7 @@ public class Piece implements IPiece {
         Set<Location> pRange = new HashSet<>();
         Set<Location> wRange = new HashSet<>();
         while(b && containsLocation(i, j)){
-            if (!(i == location.getI() && j == location.getJ())){
+            if (!(i == Location.getI() && j == Location.getJ())){
                 if (!isTherePiece(i, j)){
                     pRange.add(new Location(i, j));
                 }else {
@@ -310,8 +309,8 @@ public class Piece implements IPiece {
 
     //region Helpers for ranges
 
-    private boolean enemyColor(Location location) throws ChessGameException {
-        return board.getPiece(location).isWhite() != isWhite();
+    private boolean enemyColor(Location Location) throws ChessGameException {
+        return board.getPiece(Location).isWhite() != isWhite();
     }
 
     private boolean enemyColor(int i, int j) throws ChessGameException {
@@ -327,7 +326,7 @@ public class Piece implements IPiece {
     }
 
     private Location matrixPlusOriginLoc(Location l){
-        return new Location(location.getI() + l.getI(), location.getJ() + l.getJ());
+        return new Location(Location.getI() + l.getI(), Location.getJ() + l.getJ());
     }
 
     //endregion

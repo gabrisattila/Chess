@@ -95,8 +95,8 @@ public class Board implements IBoard {
     }
 
     @Override
-    public IField getField(Location location){
-        return getField(location.getI(), location.getJ());
+    public IField getField(Location Location){
+        return getField(Location.getI(), Location.getJ());
     }
 
     @Override
@@ -115,8 +115,8 @@ public class Board implements IBoard {
     }
 
     @Override
-    public IPiece getPiece(Location location) throws ChessGameException {
-        return getPiece(location.getI(), location.getJ());
+    public IPiece getPiece(Location Location) throws ChessGameException {
+        return getPiece(Location.getI(), Location.getJ());
     }
 
     @Override
@@ -163,7 +163,6 @@ public class Board implements IBoard {
                 p.updateRange();
                 for (Location l : p.getPossibleRange()) {
                     ((Piece) p).setLegals(
-//                            new Move()
                             new Move(
                                     this,
                                     p,
@@ -221,14 +220,14 @@ public class Board implements IBoard {
         for (IPiece p : getTisztek(!white)) {
             if (!p.isEmpty()){
                 if (getAddIAddJ(p, white ? WHITE_STRING : BLACK_STRING).First != -100) {
-                    for (Location location : lineToTheKing(p, this, white ? WHITE_STRING : BLACK_STRING)) {
-                        if (!isNull(getPiece(location))) {
-                            if (getPiece(location).isWhite() != white)
+                    for (Location Location : lineToTheKing(p, this, white ? WHITE_STRING : BLACK_STRING)) {
+                        if (!isNull(getPiece(Location))) {
+                            if (getPiece(Location).isWhite() != white)
                                 break;
-                            if (getPiece(location).getType() == PieceType.K)
+                            if (getPiece(Location).getType() == PieceType.K)
                                 break;
                             else {
-                                ownPiece = getPiece(location);
+                                ownPiece = getPiece(Location);
                                 ownPieceCounter++;
                             }
                             if (ownPieceCounter > 1)

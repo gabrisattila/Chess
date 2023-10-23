@@ -52,16 +52,16 @@ public class METHODS {
         return collection.contains(element);
     }
 
-    public static boolean notContainsLocation(Location location){
-        return !containsLocation(location.getI(), location.getJ());
+    public static boolean notContainsLocation(Location Location){
+        return !containsLocation(Location.getI(), Location.getJ());
     }
 
     public static boolean notContainsLocation(int i, int j){
         return !containsLocation(MAX_WIDTH, MAX_HEIGHT, i, j);
     }
 
-    public static boolean containsLocation(Location location){
-        return containsLocation(location.getI(), location.getJ());
+    public static boolean containsLocation(Location Location){
+        return containsLocation(Location.getI(), Location.getJ());
     }
 
     public static boolean containsLocation(int i, int j){
@@ -98,7 +98,7 @@ public class METHODS {
         return o1;
     }
 
-//    public static void pieceChangeOnBoard(IPiece piece, IField from, IField to) {
+//    public static void pieceChangeOnBoard(IPiece piece, Location from, Location to) {
 //        try {
 //            to.setPiece(piece);
 //            from.clean();

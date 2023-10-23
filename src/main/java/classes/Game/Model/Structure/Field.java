@@ -11,11 +11,11 @@ import static classes.Game.I18N.METHODS.*;
 
 @Getter
 @Setter
-public class Field implements IField {
+public class Field implements classes.Game.Model.Structure.IField {
 
     //region Fields
 
-    private Location location;
+    private Location Location;
 
     private String fieldColor;
 
@@ -42,8 +42,8 @@ public class Field implements IField {
         setPiece((Piece) null);
     }
 
-    public Field(Location location) {
-        this.location = location;
+    public Field(Location Location) {
+        this.Location = Location;
         try {
             setPiece((Piece) null);
         } catch (ChessGameException e) {
@@ -53,7 +53,7 @@ public class Field implements IField {
     }
 
     public Field(int i, int j) {
-        location = new Location(i, j);
+        Location = new Location(i, j);
         try {
             setPiece((Piece) null);
         } catch (ChessGameException e) {
@@ -62,8 +62,8 @@ public class Field implements IField {
         setValuesToZero();
     }
 
-    public Field(Location location, String color) {
-        this.location = location;
+    public Field(Location Location, String color) {
+        this.Location = Location;
         fieldColor = color;
         try {
             setPiece((Piece) null);
@@ -73,8 +73,8 @@ public class Field implements IField {
         setValuesToZero();
     }
 
-    public Field(Location location, String color, Piece piece) {
-        this.location = location;
+    public Field(Location Location, String color, Piece piece) {
+        this.Location = Location;
         fieldColor = color;
         try {
             setPiece(piece);
@@ -91,22 +91,30 @@ public class Field implements IField {
 
     // GetBy
 
+    @Override
     public int getI(){
-        return location.getI();
+        return Location.getI();
     }
 
+    @Override
     public int getJ(){
-        return location.getJ();
+        return Location.getJ();
+    }
+
+    @Override
+    public Location getLoc(){
+        return getLocation();
     }
 
     //Pieces
 
+    @Override
     public void setPiece(IPiece piece) throws ChessGameException {
         gotPiece = notNull(piece);
 
         if (gotPiece && piece instanceof Piece) {
             this.piece = (Piece) piece;
-            ((Piece) piece).setLocation(location);
+            ((Piece) piece).setLocation(Location);
         }else {
             this.piece = null;
         }
@@ -115,6 +123,7 @@ public class Field implements IField {
             throw new ChessGameException("Nem megfelelő típus");
     }
 
+    @Override
     public void setPiece(PieceAttributes attributes){
         if (isNull(attributes)) {
             piece = null;
@@ -123,9 +132,10 @@ public class Field implements IField {
         piece = attributes.isWhite() ? firstEmptyWhite() : firstEmptyBlack();
         piece.setAttributes(attributes);
         gotPiece = true;
-        piece.setLocation(location);
+        piece.setLocation(Location);
     }
 
+    @Override
     public void clean() throws ChessGameException {
         gotPiece = false;
         setPiece((Piece) null);
@@ -133,8 +143,8 @@ public class Field implements IField {
 
     public boolean isEnemyKingInNeighbour(boolean white, Board board) {
 
-        for (int i = location.getI() - 1; i < location.getI() + 2; i++) {
-            for (int j = location.getJ() - 1; j < location.getJ() + 2; j++) {
+        for (int i = Location.getI() - 1; i < Location.getI() + 2; i++) {
+            for (int j = Location.getJ() - 1; j < Location.getJ() + 2; j++) {
                 if (containsLocation(i, j) && notNull(board.getField(i, j).getPiece())
                         && board.getField(i, j).getPiece().getType() == PieceType.K){
                     if (board.getField(i, j).getPiece().isWhite() != white){

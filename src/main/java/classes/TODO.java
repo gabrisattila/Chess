@@ -2,6 +2,8 @@ package classes;
 
 public class TODO {
 
+    //TODO Leanimálás már megvan, de utána a megfelelő bool-okat is manipulálni kell rendesen
+
     //TODO EmPassant: megtörténtekor hogy kommunikálom a tovább (thereWasEmPassant manipulation)
     // Átváltozás ViewBoard-ból kommunikálni Board felé
 

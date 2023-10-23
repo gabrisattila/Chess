@@ -4,14 +4,12 @@ import classes.Game.I18N.ChessGameException;
 import classes.Game.I18N.Location;
 import classes.Game.I18N.PieceAttributes;
 
-import classes.Game.Model.Structure.IField;
 import classes.Game.Model.Structure.IPiece;
+import classes.Game.Model.Structure.Move;
 import lombok.*;
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
 import static classes.GUI.FrameParts.ViewBoard.*;
@@ -19,12 +17,10 @@ import static classes.Game.Model.Logic.EDT.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
-import static classes.Game.Model.Structure.Move.*;
-import static classes.Main.*;
 
 @Getter
 @Setter
-public class ViewField extends JButton implements IField {
+public class ViewField extends JButton implements classes.Game.Model.Structure.IField {
 
     //region Fields
 
@@ -62,10 +58,12 @@ public class ViewField extends JButton implements IField {
 
     //region Methods
 
+    @Override
     public int getI(){
         return loc.getI();
     }
 
+    @Override
     public int getJ(){
         return loc.getJ();
     }
@@ -83,6 +81,7 @@ public class ViewField extends JButton implements IField {
         setIcon(piece);
     }
 
+    @Override
     public void setPiece(PieceAttributes attributes) {
         for (ViewPiece p : DICT_FOR_VIEW_PIECE) {
             if (attributes.equals(p.getAttributes())){
@@ -91,6 +90,7 @@ public class ViewField extends JButton implements IField {
         }
     }
 
+    @Override
     public void clean() {
         setPiece((ViewPiece) null);
     }
@@ -137,7 +137,14 @@ public class ViewField extends JButton implements IField {
                 pieceToChange = clicked.piece;
             } else if (CLICK_COUNTER == 1 && lastClicked.isGotPiece() && lastClicked.piece.isWhite() == whiteToPlay() &&
                     lastClicked.piece.inRange(clicked)) {
-                pieceChangeOnBoard(pieceToChange, lastClicked, clicked);
+                Move move = new Move(
+                        getViewBoard(),
+                        pieceToChange,
+                        lastClicked.getLoc(),
+                        clicked.getLoc(),
+                        notNull(clicked.piece) ? clicked.piece : null
+                );
+                move.pieceChangeOnBoard();
                 changeColor(clicked);
                 CLICK_COUNTER = 0;
                 switchWhoComes();

@@ -15,8 +15,6 @@ import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.Model.Logic.EDT.*;
 import static classes.Game.Model.Structure.Board.*;
-import static classes.Game.Model.Structure.Move.*;
-import static classes.Game.I18N.VARS.MUTUABLES.*;
 
 @Getter
 @Setter
@@ -87,20 +85,19 @@ public class AI extends Thread {
         stepper = possibleSteppers.get(random.nextInt(0, possibleSteppers.size()));
 
 
-        ArrayList<Location> ableToStepThereInLocations = new ArrayList<>(stepper.getPossibleRange());
+        ArrayList<Location> ableToStepThereIn = new ArrayList<>(stepper.getPossibleRange());
+        int indexOfChosen = random.nextInt(0, ableToStepThereIn.size());
+        Location toStepOn = ableToStepThereIn.get(indexOfChosen);
 
-        int indexOfChosen = random.nextInt(0, ableToStepThereInLocations.size());
-        ArrayList<Field> ableToStepThere = new ArrayList<>();
-        for (Location l : ableToStepThereInLocations) {
-            ableToStepThere.add((Field) getAiBoard().getField(l));
-        }
-        Field toStepOn = ableToStepThere.get(indexOfChosen);
-
-        pieceChangeOnBoard(
-                            stepper,
-                            getAiBoard().getField(stepper),
-                            toStepOn
+        Move move = new Move(
+                getAiBoard(),
+                stepper,
+                stepper.getLocation(),
+                toStepOn,
+                notNull(getAiBoard().getPiece(toStepOn)) ? getAiBoard().getPiece(toStepOn) : null
         );
+
+        move.pieceChangeOnBoard();
 
         return BoardToFen(getAiBoard());
 

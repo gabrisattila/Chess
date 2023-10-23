@@ -6,6 +6,7 @@ import lombok.*;
 
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
+import static classes.Game.I18N.PieceType.*;
 
 @Getter
 @Setter
@@ -89,17 +90,77 @@ public class Move {
 
     //region Methods
 
-    public static void pieceChangeOnBoard(IPiece piece, IField from, IField to){
+    public void pieceChangeOnBoard(){
+        IField fromField = boardToMoveOn.getField(from);
+        IField toField = boardToMoveOn.getField(to);
+        boolean itsEmPassant = isItEmPassant(what, from, to);
+        boolean itsCastle = isItCastle(what, from, to);
         try {
-            to.setPiece(piece);
-            from.clean();
+            toField.setPiece(what);
+            fromField.clean();
+            ifItsCastle(itsCastle, toField);
             changeToPlay();
         } catch (ChessGameException e) {
             throw new RuntimeException(e);
         }
     }
 
+    private boolean isItEmPassant(IPiece piece, Location from, Location to){
+        return piece.getType() == G && from.getI() != to.getI() && !boardToMoveOn.getField(to).isGotPiece();
+    }
 
+    private boolean isItCastle(IPiece piece, Location from, Location to){
+        return piece.getType() == K && Math.abs(from.getJ() - to.getJ()) > 1;
+    }
+
+    private void ifItsCastle(boolean itsCastle, IField to) throws ChessGameException {
+        if (itsCastle) {
+            castleCase(to);
+        }
+    }
+
+    private void castleCase(IField to) throws ChessGameException {
+        for (int j = to.getJ() - 2; j < to.getJ() + 3; j++) {
+            if (
+                    containsLocation(to.getI(), j) && j != to.getJ() &&
+                    boardToMoveOn.getField(to.getI(), j).isGotPiece() &&
+                    boardToMoveOn.getPiece(to.getI(), j).getType() == B
+            ){
+                IPiece rook = boardToMoveOn.getPiece(to.getI(), j);
+                if (possibleToCastleWithRook(rook))
+                    castleHelper(Math.abs(rook.getJ() - to.getJ()) > 1, rook, j);
+            }
+        }
+    }
+
+    private boolean possibleToCastleWithRook(IPiece rook) {
+        if (rook.isWhite()){
+            return Math.abs(rook.getJ() - to.getJ()) > 1 ? !whiteSmallCastleHappened : !whiteBigCastleHappened;
+        }else {
+            return Math.abs(rook.getJ() - to.getJ()) > 1 ? !blackSmallCastleHappened : !blackBigCastleHappened;
+        }
+    }
+
+
+    public void emPassantCase(IPiece piece, IField from, IField to){
+
+    }
+
+
+    private void castleHelper(boolean plusOrMinusSideOfKing, IPiece rookToCastleWith, int originJofRook) throws ChessGameException {
+        IField fieldForRook;
+        if (plusOrMinusSideOfKing){
+            fieldForRook = boardToMoveOn.getField(to.getI(), to.getJ() + 1);
+        }else {
+            fieldForRook = boardToMoveOn.getField(to.getI(), to.getJ() - 1);
+        }
+        if (fieldForRook.isGotPiece())
+            throw new RuntimeException(
+                    "Valamilyen bábu van ott, ahová a bástya kerülne sánc után." + fieldForRook.toSString()
+            );
+        fieldForRook.setPiece(rookToCastleWith);
+        boardToMoveOn.getField(to.getI(), originJofRook).clean();
+    }
 
     //endregion
 
