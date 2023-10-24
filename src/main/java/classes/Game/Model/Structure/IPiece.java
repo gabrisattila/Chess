@@ -17,6 +17,8 @@ public interface IPiece {
 
      int getJ();
 
+     Location getLocation();
+
      boolean isWhite();
 
      boolean isEmpty();

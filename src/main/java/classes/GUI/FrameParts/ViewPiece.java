@@ -62,6 +62,11 @@ public class ViewPiece extends ImageIcon implements IPiece {
     }
 
     @Override
+    public Location getLocation() {
+        return new Location(i, j);
+    }
+
+    @Override
     public boolean isWhite(){
         return WHITE_STRING.equals(attributes.getColor());
     }

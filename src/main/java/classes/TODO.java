@@ -2,6 +2,8 @@ package classes;
 
 public class TODO {
 
+    //TODO Sakk esetének kifejtése
+
     //TODO EmPassant: megtörténtekor hogy kommunikálom a tovább (thereWasEmPassant manipulation)
     // Átváltozás ViewBoard-ból kommunikálni Board felé
 

@@ -2,9 +2,7 @@ package classes.Game.I18N;
 
 import classes.Game.Model.Structure.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static classes.Ai.FenConverter.*;
@@ -44,6 +42,36 @@ public class METHODS {
         return sb.toString();
     }
 
+    public static <T> Collection<T> union(Collection<T> set1, Collection<T> set2) {
+        Set<T> set = new HashSet<>();
+
+        set.addAll(set1);
+        set.addAll(set2);
+
+        return set;
+    }
+
+    public static <T> Collection<T> intersection(Collection<T> c1, Collection<T> c2){
+        Collection<T> list = new HashSet<>();
+
+        for (T t : c1) {
+            if(c2.contains(t)) {
+                list.add(t);
+            }
+        }
+
+        return list;
+    }
+
+    public static <T> Collection<T> minus(Collection<T> c1, Collection<T> c2){
+        Collection<T> C1MinusC2 = new HashSet<>();
+        for (T t : c1) {
+            if (collectionNotContains(c2, t))
+                C1MinusC2.add(t);
+        }
+        return C1MinusC2;
+    }
+    
     public static <T> boolean collectionNotContains(Collection<T> collection, T element){
         return !collection.contains(element);
     }

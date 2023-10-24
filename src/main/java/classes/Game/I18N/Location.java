@@ -19,6 +19,8 @@ public class Location {
 
     //region Constructor
 
+    public Location(){}
+
     public Location(int i, int j){
         this.i = i;
         this.j = j;
