@@ -4,7 +4,10 @@ import classes.Game.I18N.ChessGameException;
 import classes.Game.I18N.Location;
 import lombok.*;
 
+import java.util.Objects;
+
 import static classes.Game.I18N.METHODS.*;
+import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
 import static classes.Game.I18N.PieceType.*;
 import static classes.GUI.Frame.Window.*;
@@ -23,6 +26,10 @@ public class Move {
 
     private IPiece hit;
 
+    /**
+     * if it was castle: Y (for white) y (for black)
+     * if it made emPassant chance: xy coordinate of the possible emPassant place
+     */
     private String emPassantOrCastle;
 
     private IBoard boardToMoveOn;
@@ -133,8 +140,8 @@ public class Move {
     private void pieceChangeOnBoard(boolean itsNotSupposed){
         IField fromField = boardToMoveOn.getField(from);
         IField toField = boardToMoveOn.getField(to);
-        boolean itsEmPassant = isItEmPassant(what, from, to);
-        boolean itsCastle = isItCastle(what, from, to);
+        boolean itsEmPassant = isItEmPassant();
+        boolean itsCastle = isItCastle();
         try {
             toField.setPiece(what);
             fromField.clean();
@@ -158,8 +165,8 @@ public class Move {
         getLogger().append((what.isWhite() ? "White " : "Black ") + what.getType() + " went from " + from.toString() + " to " + to.toString() + '\n');
     }
 
-    private boolean isItCastle(IPiece piece, Location from, Location to){
-        return piece.getType() == K && Math.abs(from.getJ() - to.getJ()) > 1;
+    private boolean isItCastle(){
+        return !"".equals(emPassantOrCastle) && castleMoveSigns.contains(emPassantOrCastle);
     }
 
     private void ifItsCastle(boolean itsCastle, IField to) throws ChessGameException {
@@ -175,32 +182,29 @@ public class Move {
                     boardToMoveOn.getField(to.getI(), j).isGotPiece() &&
                     boardToMoveOn.getPiece(to.getI(), j).getType() == B
             ){
+
                 IPiece rook = boardToMoveOn.getPiece(to.getI(), j);
                 boolean bigOrSmallCastle = Math.abs(rook.getJ() - to.getJ()) > 1;
-                if (possibleToCastleWithRook(rook, bigOrSmallCastle)) {
 
-                    castleHelper(bigOrSmallCastle, rook, j);
-
-                    //Mert egyik megtörténte után nem történhet a másik
-                    if (what.isWhite()){
-                        whiteSmallCastleHappened = true;
-                        whiteBigCastleHappened = true;
-                    }else {
-                        blackBigCastleHappened = true;
-                        blackSmallCastleHappened = true;
-                    }
-
-                    break;
+                castleHelper(bigOrSmallCastle, rook, j);
+                //Mert egyik megtörténte után nem történhet a másik
+                if (what.isWhite()){
+                    whiteSmallCastleEnabled = false;
+                    whiteBigCastleEnabled = false;
+                }else {
+                    blackBigCastleEnabled = false;
+                    blackSmallCastleEnabled = false;
                 }
+                break;
             }
         }
     }
 
     private boolean possibleToCastleWithRook(IPiece rook, boolean bigOrSmallCastle) {
         if (rook.isWhite()){
-            return bigOrSmallCastle ? !whiteSmallCastleHappened : !whiteBigCastleHappened;
+            return bigOrSmallCastle ? whiteSmallCastleEnabled : whiteBigCastleEnabled;
         }else {
-            return bigOrSmallCastle ? !blackSmallCastleHappened : !blackBigCastleHappened;
+            return bigOrSmallCastle ? blackSmallCastleEnabled : blackBigCastleEnabled;
         }
     }
 
@@ -227,8 +231,8 @@ public class Move {
         boardToMoveOn.getField(to.getI(), originJofRook).clean();
     }
 
-    private boolean isItEmPassant(IPiece piece, Location from, Location to){
-        return piece.getType() == G && from.getI() != to.getI() && !boardToMoveOn.getField(to).isGotPiece();
+    private boolean isItEmPassant(){
+        return !"".equals(emPassantOrCastle) && nums.contains(emPassantOrCastle.charAt(0)) && nums.contains(emPassantOrCastle.charAt(1));
     }
 
     private void ifItsEmPassant(boolean itsEmPassant, IField toField) throws ChessGameException {

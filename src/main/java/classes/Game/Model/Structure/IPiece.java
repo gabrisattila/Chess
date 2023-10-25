@@ -19,6 +19,8 @@ public interface IPiece {
 
      Location getLocation();
 
+     void setLocation(Location location);
+
      boolean isWhite();
 
      boolean isEmpty();

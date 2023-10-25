@@ -21,6 +21,8 @@ public class ViewPiece extends ImageIcon implements IPiece {
 
     //region Fields
 
+    private Location location;
+
     private int i;
 
     private int j;
@@ -59,11 +61,6 @@ public class ViewPiece extends ImageIcon implements IPiece {
     @Override
     public PieceType getType(){
         return attributes.getType();
-    }
-
-    @Override
-    public Location getLocation() {
-        return new Location(i, j);
     }
 
     @Override

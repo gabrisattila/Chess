@@ -39,8 +39,6 @@ public class Board implements IBoard {
 
     private Piece blackKing;
 
-    private Pair<Boolean, String> thereWasEmPassantPossibility;
-
     private Pair<IPiece, IPiece> checkers;
 
     //endregion
@@ -48,7 +46,7 @@ public class Board implements IBoard {
 
     //region Constructor
 
-    private Board(int x, int y) throws ChessGameException {
+    private Board(int x, int y) {
         X = x;
         Y = y;
         fields = new ArrayList<>();
@@ -446,7 +444,6 @@ public class Board implements IBoard {
         return pieces.stream().filter(p -> p.isWhite() == my && p.getType() != G && p.getType() != K).collect(Collectors.toSet());
     }
 
-
     private Set<Move> getLegalMoves(boolean my) {
         return pieces.stream()
                 .filter(p -> (p.getType() != K && p.isWhite() == my))
@@ -479,73 +476,57 @@ public class Board implements IBoard {
         }
     }
 
-    private void kingCastle(boolean forWhite) throws ChessGameException {
-        if (!whiteAiNeeded || !theresOnlyOneAi){
-            if (forWhite){
-                checkCastleOptions(
-                        new Location(0, 6),
-                        new Location(0, 5),
-                        !whiteSmallCastleHappened,
-                        new Location(0, 2),
-                        new Location(0, 3),
-                        !whiteBigCastleHappened,
-                        true,
-                        true
-                );
-            }else {
-                checkCastleOptions(
-                        new Location(7, 6),
-                        new Location(7, 5),
-                        !blackSmallCastleHappened,
-                        new Location(7, 2),
-                        new Location(7, 3),
-                        !blackBigCastleHappened,
-                        false,
-                        true
-                );
-            }
-        }else {
-            if (forWhite){
-                checkCastleOptions(
-                        new Location(7, 1),
-                        new Location(7, 2),
-                        !whiteSmallCastleHappened,
-                        new Location(7, 5),
-                        new Location(7, 4),
-                        !whiteBigCastleHappened,
-                        true,
-                        false
-                );
-            }else {
-                checkCastleOptions(
-                        new Location(0, 1),
-                        new Location(0, 2),
-                        !blackSmallCastleHappened,
-                        new Location(0, 5),
-                        new Location(0, 4),
-                        !blackBigCastleHappened,
-                        false,
-                        false
-                );
-            }
+    private void kingCastle(boolean forWhite) {
+        if (MAX_WIDTH == 8 && MAX_HEIGHT == 8 &&
+                (   (forWhite && (whiteBigCastleEnabled || whiteSmallCastleEnabled)) ||
+                    (!forWhite && (blackBigCastleEnabled || blackSmallCastleEnabled)) ) &&
+                !locationCollectionContains(getAttackRangeWithoutKing(!forWhite), getKingsPlace(forWhite))
+        ){
+
+            boolean whiteDown = !whiteAiNeeded || !theresOnlyOneAi;
+
+            int i = whiteDown ? (forWhite ? 0 : 7) : (forWhite ? 7 : 0);
+            int jKP = whiteDown ? 6 : 1;
+            int jKR = whiteDown ? 5 : 2 ;
+            int jQP = whiteDown ? 2 : 5 ;
+            int jQR = whiteDown ? 3 : 4 ;
+
+            checkCastleOptions(
+                    new Location(i, jKP),
+                    new Location(i, jKR),
+                    new Location(i, jQP),
+                    new Location(i, jQR),
+                    forWhite
+            );
         }
     }
 
-    private void checkCastleOptions(Location kingSidePoint, Location kingSideRoad, boolean kingRookIsNotMoved,
-                                    Location queenSidePoint, Location queenSideRoad, boolean queenRookIsNotMoved,
-                                    boolean forWhite, boolean whiteDown){
+    private void checkCastleOptions(Location kingSidePoint, Location kingSideRoad,
+                                    Location queenSidePoint, Location queenSideRoad, boolean forWhite){
 
-        if (kingRookIsNotMoved){
-            addCastleMove(kingSidePoint, kingSideRoad, forWhite, true);
-        }
-        if (queenRookIsNotMoved){
-            addCastleMove(
-                    queenSidePoint, queenSideRoad, forWhite,
-                    whiteDown ? !getField(forWhite ? 0 : 7, 1).isGotPiece() : !getField(forWhite ? 0 : 7, 6).isGotPiece());
-        }
+        boolean kingSideNotInCheck =
+                enemyKingNotInNeighbour(kingSidePoint, forWhite) &&
+                enemyKingNotInNeighbour(kingSideRoad, forWhite) &&
+                !locationCollectionContains(getAttackRangeWithoutKing(!forWhite), kingSidePoint) &&
+                !locationCollectionContains(getAttackRangeWithoutKing(!forWhite), kingSideRoad);
+
+
+        boolean queenSideNotInCheck =
+                enemyKingNotInNeighbour(queenSidePoint, forWhite) &&
+                enemyKingNotInNeighbour(queenSideRoad, forWhite) &&
+                !locationCollectionContains(getAttackRangeWithoutKing(!forWhite), queenSidePoint) &&
+                !locationCollectionContains(getAttackRangeWithoutKing(!forWhite), queenSideRoad);
+
+        if (((whiteToPlay() && whiteSmallCastleEnabled) || (!whiteToPlay() && blackSmallCastleEnabled)) &&
+            kingSideNotInCheck)
+            addCastleMove(kingSidePoint, kingSideRoad, forWhite);
+
+        if (((whiteToPlay() && whiteBigCastleEnabled) || (!whiteToPlay() && blackBigCastleEnabled)) &&
+            queenSideNotInCheck)
+            addCastleMove(queenSidePoint, queenSideRoad, forWhite);
     }
 
-    private void addCastleMove(Location Point, Location Road, boolean forWhite, boolean queenOrKingSideRook){
+    private void addCastleMove(Location Point, Location Road, boolean forWhite){
         if (
                 !getField(Point).isGotPiece() && !getField(Road).isGotPiece() &&
                 !getAttackRangeWithoutKing(!forWhite).contains(Point) && !getAttackRangeWithoutKing(!forWhite).contains(Road) &&
@@ -556,7 +537,7 @@ public class Board implements IBoard {
                     getKing(forWhite),
                     getKingsPlace(forWhite),
                     Point,
-                    forWhite ? (queenOrKingSideRook ? "Q" : "K") : (queenOrKingSideRook ? "q" : "k")
+                    forWhite ? "Y" : "y"
             ));
         }
     }

@@ -2,12 +2,11 @@ package classes;
 
 public class TODO {
 
-    //TODO Sakk esetének kifejtése
+    //TODO Sánc: alapvetően kész. Visszalépést még levezényelni, hogy a vissza sánc is menjen
 
-    //TODO Sánc: Elég fasza if-et összerakni (csak 8x8 esetén működjön)
+    //TODO Sakk: Elébe lépésnél megnézni, hogy utána is sakkban van-e.
 
-    //TODO EmPassant: megtörténtekor hogy kommunikálom a tovább (thereWasEmPassant manipulation)
-    // Átváltozás ViewBoard-ból kommunikálni Board felé
+    //TODO Átváltozás ViewBoard-ból kommunikálni Board felé
 
     //TODO Egy always usable ifet kidolgozni mikor léphet egy figura egy adott helyre (contains, same color or not)
 

@@ -88,6 +88,12 @@ public class VARS {
             put(K, qkMatrix);
         }};
 
+        public static final ArrayList<String> castleMoveSigns = new ArrayList<>(){{
+            add("Y"); add("y"); 
+            add("K"); add("Q"); 
+            add("k"); add("q");
+        }};
+        
         public final static ArrayList<Character> whiteBlackLetters = new ArrayList<>(){{
             add('W');
             add('B');
@@ -128,15 +134,16 @@ public class VARS {
         public static Map<String, String> usualFens = new HashMap<>(){{
             put("whiteDownStarter", "RNBQKBNR/PPPPPPPP/8/8/8/8/pppppppp/rnbqkbnr w KQkq -");
             put("blackDownStarter", "rnbkqbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBKQBNR w KQkq -");
-            put("whiteDownOnlyKnights", "1N4N1/8/8/8/8/8/8/1n4n1 w ---- -");
-            put("whiteDownOnlyBishops", "2F2F2/8/8/8/8/8/8/2f2f2 w ---- -");
+            put("onlyKnights", "1N4N1/8/8/8/8/8/8/1n4n1 w ---- -");
+            put("onlyBishops", "2F2F2/8/8/8/8/8/8/2f2f2 w ---- -");
             put("whiteDownOnlyKingsAndRooks", "R3K2R/8/8/8/8/8/8/r3k2r w KQkq -");
+            put("whiteUpOnlyKingsAndRooks", "r2k3r/8/8/8/8/8/8/R2K3R w KQkq -");
             put("onlyTwoBishops6x6", "1F4/6/6/6/6/4f1 w ---- -");
             put("onlyTwoRooks6x6", "B5/6/6/6/6/5b w ---- -");
             put("onlyTwoQueens6x6", "2V3/6/6/6/6/3v2 w ---- -");
             put("onlyTwoKings6x6", "2K3/6/6/6/6/3k2 w ---- -");
             put("onlyPawns6x6", "6/GGGGGG/6/6/gggggg/6 w ---- -");
-            put("oneRookTwoKing4x4", "K2R/4/4/k3 w ---- -");
+            put("whiteDownOneRookTwoKing4x4", "K2R/4/4/k3 w ---- -");
         }};
 
         //region PieceViews
@@ -169,9 +176,9 @@ public class VARS {
 
     public static class MUTUABLES{
 
-        public static int MAX_WIDTH = 4;
+        public static int MAX_WIDTH = 8;
 
-        public static int MAX_HEIGHT = 4;
+        public static int MAX_HEIGHT = 8;
 
         public static PieceSet whitePieceSet = new PieceSet(){{
             add(new Piece());
@@ -256,13 +263,13 @@ public class VARS {
 
         public static boolean aiTurn;
 
-        public static boolean whiteSmallCastleHappened = false;
+        public static boolean whiteSmallCastleEnabled = true;
 
-        public static boolean whiteBigCastleHappened = false;
+        public static boolean whiteBigCastleEnabled = true;
 
-        public static boolean blackSmallCastleHappened = false;
+        public static boolean blackSmallCastleEnabled = true;
 
-        public static boolean blackBigCastleHappened = false;
+        public static boolean blackBigCastleEnabled = true;
 
         public static String emPassantPossibility = "-";
 

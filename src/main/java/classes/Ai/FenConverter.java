@@ -115,25 +115,25 @@ public class FenConverter {
 
         fenToReturn.append(' ');
 
-        if (whiteSmallCastleHappened)
-            fenToReturn.append('-');
-        else
+        if (whiteSmallCastleEnabled)
             fenToReturn.append('K');
-
-        if (whiteBigCastleHappened)
-            fenToReturn.append('-');
         else
+            fenToReturn.append('-');
+
+        if (whiteBigCastleEnabled)
             fenToReturn.append('V');
-
-        if (blackSmallCastleHappened)
-            fenToReturn.append('-');
         else
+            fenToReturn.append('-');
+
+        if (blackSmallCastleEnabled)
             fenToReturn.append('k');
-
-        if (blackBigCastleHappened)
-            fenToReturn.append('-');
         else
+            fenToReturn.append('-');
+
+        if (blackBigCastleEnabled)
             fenToReturn.append('v');
+        else
+            fenToReturn.append('-');
 
         fenToReturn.append(' ');
 
@@ -258,13 +258,13 @@ public class FenConverter {
 
     private static void castleCaseFenToBoard(String castleCases){
 
-        whiteSmallCastleHappened = 'K' != castleCases.charAt(0);
+        whiteSmallCastleEnabled = 'K' == castleCases.charAt(0);
 
-        whiteBigCastleHappened = 'V' != castleCases.charAt(1);
+        whiteBigCastleEnabled = 'V' == castleCases.charAt(1);
 
-        blackSmallCastleHappened = 'k' != castleCases.charAt(2);
+        blackSmallCastleEnabled = 'k' == castleCases.charAt(2);
 
-        blackBigCastleHappened = 'v' != castleCases.charAt(3);
+        blackBigCastleEnabled = 'v' == castleCases.charAt(3);
 
     }
 

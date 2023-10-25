@@ -56,17 +56,17 @@ public class ViewBoard implements IBoard {
     //region GetBy
 
     @Override
-    public classes.Game.Model.Structure.IField getField(int i, int j){
+    public IField getField(int i, int j){
         return getFields().get(i).get(j);
     }
 
     @Override
-    public classes.Game.Model.Structure.IField getField(Location Location){
+    public IField getField(Location Location){
         return getField(Location.getI(), Location.getJ());
     }
 
     @Override
-    public classes.Game.Model.Structure.IField getField(IPiece piece){
+    public IField getField(IPiece piece){
         return getField(piece.getI(), piece.getJ());
     }
 
@@ -76,7 +76,7 @@ public class ViewBoard implements IBoard {
             if (p.getI() == i && p.getJ() == j)
                 return p;
         }
-        throw new RuntimeException("Nincs ilyen figura.\n");
+        return null;
     }
 
     @Override

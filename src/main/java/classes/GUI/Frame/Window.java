@@ -40,13 +40,13 @@ public class Window extends JFrame {
 
         frameSetup();
 //        setUpSides();
-        getViewBoard().pieceSetUp(usualFens.get("oneRookTwoKing4x4"));
+        getViewBoard().pieceSetUp(usualFens.get("whiteUpOnlyKingsAndRooks"));
 
         gameBoard = new GameBoard(getViewBoard());
         add(gameBoard);
 
         logger = loggerBox();
-        add(logger);
+//        add(logger);
 
         setVisible(true);
 

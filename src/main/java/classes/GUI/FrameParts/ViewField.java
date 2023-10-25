@@ -13,10 +13,12 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 import static classes.GUI.FrameParts.ViewBoard.*;
+import static classes.Game.I18N.PieceType.*;
 import static classes.Game.Model.Logic.EDT.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
+import static classes.Game.Model.Structure.Board.*;
 
 @Getter
 @Setter
@@ -78,6 +80,8 @@ public class ViewField extends JButton implements classes.Game.Model.Structure.I
     public void setPiece(ViewPiece piece){
         gotPiece = notNull(piece);
         this.piece = piece;
+        if (gotPiece)
+            piece.setLocation(loc);
         setIcon(piece);
     }
 
@@ -161,14 +165,23 @@ public class ViewField extends JButton implements classes.Game.Model.Structure.I
         }
 
         private void moveToClicked(ViewField clicked) throws ChessGameException {
-            Move move = new Move(
-                    getViewBoard(),
-                    pieceToChange,
-                    lastClicked.getLoc(),
-                    clicked.getLoc(),
-                    notNull(clicked.piece) ? clicked.piece : null
-            );
+
+            Move move = new Move(getViewBoard());
+
+            //TODO Ugyanezt bástyára és gyalogra
+            if (pieceToChange.getType() == K){
+                for (Move m : getBoard().getKing(whiteToPlay()).getLegalMoves()) {
+                    if (m.getTo().EQUALS(clicked.getLoc())) {
+                        move.setEveryThing(pieceToChange, m.getTo(), m.getEmPassantOrCastle());
+                        break;
+                    }
+                }
+            }else {
+                move.setEveryThing(pieceToChange, clicked.getLoc());
+            }
+
             move.realMove();
+
             changeColor(clicked);
         }
 
