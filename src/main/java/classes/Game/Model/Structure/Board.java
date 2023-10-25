@@ -214,8 +214,12 @@ public class Board implements IBoard {
         kingCastle(whiteToPlay());
     }
 
+    /**
+     * @param enemy this means who would be the player, who gives check
+     * Alapvetés szerint pedig megnézi sakkban vagyok-e, ha igen, aszerint kalkulálja ki a további lehetőségeim
+     */
     private void inspectCheck(boolean enemy) throws ChessGameException {
-        if (getAttackRangeWithoutKing(enemy).contains(getKingsPlace(!enemy))){
+        if (locationCollectionContains(getAttackRangeWithoutKing(enemy), getKingsPlace(!enemy))){
 
             findCheckers(enemy);
 
@@ -226,9 +230,9 @@ public class Board implements IBoard {
     }
 
     private void findCheckers(boolean enemy){
+        checkers = new Pair<>();
         for (IPiece enemyP : getPieces(enemy)) {
-            if (enemyP.getPossibleRange().contains(getKingsPlace(!enemy))){
-                checkers = new Pair<>();
+            if (locationCollectionContains(enemyP.getPossibleRange(), getKingsPlace(!enemy))){
                 if (isNull(checkers.getFirst())) {
                     checkers.setFirst(enemyP);
                 } else {
@@ -280,8 +284,15 @@ public class Board implements IBoard {
 
         Set<Location> setToCollectRightPlacesToGo = new HashSet<>();
         for (Location l : setThatWeCollectFrom) {
-            if (supposedMoveWith(supposed, p, l, enemy)){
-                setToCollectRightPlacesToGo.add(l);
+            l = p.getLocation().add(l);
+            if (containsLocation(l) && supposedMoveWith(supposed, p, l, enemy)){
+                if (p.getType() == K){
+                    if (enemyKingNotInNeighbour(l, !enemy)){
+                        setToCollectRightPlacesToGo.add(l);
+                    }
+                }else {
+                    setToCollectRightPlacesToGo.add(l);
+                }
             }
         }
         if (p.getPossibleRange() != setToCollectRightPlacesToGo)
@@ -298,7 +309,7 @@ public class Board implements IBoard {
     private boolean supposedMoveWith(Move supposed, IPiece piece, Location to, boolean enemy) throws ChessGameException {
         supposed.setEveryThing(piece, to);
         supposed.supposedMove();
-        boolean placeIsGood = !getAttackRangeWithoutKing(enemy).contains(getKingsPlace(!enemy));
+        boolean placeIsGood = !locationCollectionContains(getAttackRangeWithoutKing(enemy), getKingsPlace(!enemy));
         supposed.supposedMoveBack();
         return placeIsGood;
     }
@@ -431,37 +442,39 @@ public class Board implements IBoard {
         }
     }
 
-    private Set<IPiece> getTisztek(boolean forWhite) {
-        return pieces.stream().filter(p -> p.isWhite() == forWhite && p.getType() != G && p.getType() != K).collect(Collectors.toSet());
+    private Set<IPiece> getTisztek(boolean my) {
+        return pieces.stream().filter(p -> p.isWhite() == my && p.getType() != G && p.getType() != K).collect(Collectors.toSet());
     }
 
 
-    private Set<Move> getLegalMoves(boolean forWhite) {
+    private Set<Move> getLegalMoves(boolean my) {
         return pieces.stream()
-                .filter(p -> (p.getType() != K && p.isWhite() == forWhite))
+                .filter(p -> (p.getType() != K && p.isWhite() == my))
                 .flatMap(p -> ((Piece) p).getLegalMoves().stream())
                 .collect(Collectors.toSet());
     }
 
     //region King Helpers
 
-    private void kingSimpleMoves(boolean forWhite) throws ChessGameException {
-        getKing(forWhite).setPossibleRange(new HashSet<>());
+    private void kingSimpleMoves(boolean my) throws ChessGameException {
+        getKing(my).setPossibleRange(new HashSet<>());
         for (Location l : matrixChooser.get(K)) {
-            Location possiblePlaceOfMyKing = l.add(getKing(forWhite).getLocation());
-            if (containsLocation(possiblePlaceOfMyKing) &&
-                    (!getField(possiblePlaceOfMyKing).isGotPiece() || getPiece(possiblePlaceOfMyKing).isWhite() != forWhite)){
-                Move myKingMove = new Move(
-                        this,
-                        getKing(forWhite),
-                        getKingsPlace(forWhite),
-                        possiblePlaceOfMyKing,
-                        hitOnThisLocWith(forWhite, possiblePlaceOfMyKing)
+            Location possiblePlaceOfMyKing = l.add(getKingsPlace(my));
+            if (
+                    containsLocation(possiblePlaceOfMyKing) &&
+                    (!getField(possiblePlaceOfMyKing).isGotPiece() || getPiece(possiblePlaceOfMyKing).isWhite() != my) &&
+                    enemyKingNotInNeighbour(possiblePlaceOfMyKing, my) &&
+                    !locationCollectionContains(getAttackRangeWithoutKing(!my), possiblePlaceOfMyKing)
+            ){
+                getKing(my).setLegals(
+                        new Move(
+                                this,
+                                getKing(my),
+                                getKingsPlace(my),
+                                possiblePlaceOfMyKing,
+                                hitOnThisLocWith(my, possiblePlaceOfMyKing)
+                        )
                 );
-                if (enemyKingNotInNeighbour(possiblePlaceOfMyKing, forWhite) &&
-                        !getAttackRangeWithoutKing(!forWhite).contains(possiblePlaceOfMyKing)){
-                    getKing(forWhite).setLegals(myKingMove);
-                }
             }
         }
     }
@@ -550,15 +563,15 @@ public class Board implements IBoard {
 
     /**
      * @param placeToCheck A location amit ellenőrizni akarok
-     * @param forWhite A saját királyom színe, ennek az ellentétét ellenőrzöm
+     * @param my A saját királyom színe, ennek az ellentétét ellenőrzöm
      * @return Azt nézi meg, hogy az ellenfél király a kapott lokáció közelében van-e
      */
-    private boolean enemyKingNotInNeighbour(Location placeToCheck, boolean forWhite) {
+    private boolean enemyKingNotInNeighbour(Location placeToCheck, boolean my) {
         return IntStream.rangeClosed(placeToCheck.getI() - 1, placeToCheck.getI() + 1)
                 .noneMatch(i ->
                         IntStream.rangeClosed(placeToCheck.getJ() - 1, placeToCheck.getJ() + 1)
                                 .anyMatch(j ->
-                                        getKingsPlace(!forWhite).EQUALS(new Location(i, j))));
+                                        getKingsPlace(!my).EQUALS(new Location(i, j))));
     }
 
     private IPiece hitOnThisLocWith(boolean my, Location possiblePlaceOfMyKing) throws ChessGameException {

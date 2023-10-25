@@ -4,6 +4,8 @@ public class TODO {
 
     //TODO Sakk esetének kifejtése
 
+    //TODO Sánc: Elég fasza if-et összerakni (csak 8x8 esetén működjön)
+
     //TODO EmPassant: megtörténtekor hogy kommunikálom a tovább (thereWasEmPassant manipulation)
     // Átváltozás ViewBoard-ból kommunikálni Board felé
 

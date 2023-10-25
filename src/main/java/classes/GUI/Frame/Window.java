@@ -34,7 +34,7 @@ public class Window extends JFrame {
 
     //region Constructor
 
-    private Window() throws ChessGameException, IOException {
+    private Window() throws ChessGameException {
 
         setAiNumberDemand();
 
@@ -52,7 +52,7 @@ public class Window extends JFrame {
 
     }
 
-    public static void getWindow() throws ChessGameException, IOException {
+    public static void getWindow() throws ChessGameException {
         if (window == null){
             window = new Window();
         }
@@ -100,7 +100,7 @@ public class Window extends JFrame {
     /**
      * @return a textField where I document the steps
      */
-    private JTextArea loggerBox() throws IOException {
+    private JTextArea loggerBox() {
         JTextArea area = new JTextArea();
         area.setBounds((int) (LOGGER_START_X), (int) (LOGGER_START_Y), ((int) LOGGER_WIDTH), ((int) LOGGER_HEIGHT));
         area.setVisible(true);

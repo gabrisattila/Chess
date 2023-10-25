@@ -145,9 +145,9 @@ public class Piece implements IPiece {
 
     public void setLegals(String newOrNulling){
         if ("new".equals(newOrNulling) || "New".equals(newOrNulling) || "NEW".equals(newOrNulling))
-            pseudoLegals = new HashSet<>();
+            legalMoves = new HashSet<>();
         else if ("null".equals(newOrNulling) || "Null".equals(newOrNulling) || "NULL".equals(newOrNulling))
-            pseudoLegals = null;
+            legalMoves = null;
         else
             throw new RuntimeException("Vagy a paraméter típusa, vagy annak értéke rossz.");
     }
@@ -155,7 +155,7 @@ public class Piece implements IPiece {
     public void setLegals(Move moveToAdd){
         if (isNull(pseudoLegals))
             setLegals("new");
-        pseudoLegals.add(moveToAdd);
+        legalMoves.add(moveToAdd);
         possibleRange.add(moveToAdd.getTo());
     }
 
