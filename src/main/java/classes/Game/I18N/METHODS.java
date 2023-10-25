@@ -136,8 +136,8 @@ public class METHODS {
 //        }
 //    }
 
-    public static List<Location> locationListTimesN(ArrayList<Location> list, int n){
-        return list.stream().map(t -> t.times(n)).collect(Collectors.toList());
+    public static Set<Location> locationSetTimesN(Set<Location> list, int n){
+        return list.stream().map(t -> t.times(n)).collect(Collectors.toSet());
     }
 
     public static String replace(String original, int index, char newChar) {

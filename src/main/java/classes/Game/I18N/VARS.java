@@ -4,9 +4,7 @@ import classes.GUI.FrameParts.*;
 import classes.Game.Model.Structure.*;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
@@ -38,14 +36,14 @@ public class VARS {
         public final static Color BACK_GROUND = new Color(33, 3, 8, 205);
 
 
-        public static final ArrayList<Location> pawnMatrix = new ArrayList<>(){{
+        public static final Set<Location> pawnMatrix = new HashSet<>(){{
             add(new Location(1, -1));
             add(new Location(1, 1));
             add(new Location(1, 0));
             add(new Location(2, 0));
         }};
 
-        public static final ArrayList<Location> knightMatrix = new ArrayList<>(){{
+        public static final Set<Location> knightMatrix = new HashSet<>(){{
             add(new Location(2, -1));
             add(new Location(2, 1));
             add(new Location(1, -2));
@@ -56,21 +54,21 @@ public class VARS {
             add(new Location(-2, 1));
         }};
 
-        public static final ArrayList<Location> bishopMatrix = new ArrayList<>(){{
+        public static final Set<Location> bishopMatrix = new HashSet<>(){{
             add(new Location(1, -1));
             add(new Location(1, 1));
             add(new Location(-1, -1));
             add(new Location(-1, 1));
         }};
 
-        public static final ArrayList<Location> rookMatrix = new ArrayList<>(){{
+        public static final Set<Location> rookMatrix = new HashSet<>(){{
                 add(new Location(1, 0));
                 add(new Location(0, -1));
                 add(new Location(0, 1));
                 add(new Location(-1, 0));
         }};
 
-        public static final ArrayList<Location> qkMatrix = new ArrayList<>(){{
+        public static final Set<Location> qkMatrix = new HashSet<>(){{
                 add(new Location(1, -1));
                 add(new Location(1, 0));
                 add(new Location(1, 1));
@@ -81,7 +79,7 @@ public class VARS {
                 add(new Location(-1, 1));
         }};
 
-        public static final Map<PieceType, ArrayList<Location>> matrixChooser = new HashMap<>(){{
+        public static final Map<PieceType, Set<Location>> matrixChooser = new HashMap<>(){{
             put(G, pawnMatrix);
             put(H, knightMatrix);
             put(F, bishopMatrix);
@@ -138,6 +136,7 @@ public class VARS {
             put("onlyTwoQueens6x6", "2V3/6/6/6/6/3v2 w ---- -");
             put("onlyTwoKings6x6", "2K3/6/6/6/6/3k2 w ---- -");
             put("onlyPawns6x6", "6/GGGGGG/6/6/gggggg/6 w ---- -");
+            put("oneRookTwoKing4x4", "K2R/4/4/k3 w ---- -");
         }};
 
         //region PieceViews
@@ -170,9 +169,9 @@ public class VARS {
 
     public static class MUTUABLES{
 
-        public static int MAX_WIDTH = 8;
+        public static int MAX_WIDTH = 4;
 
-        public static int MAX_HEIGHT = 8;
+        public static int MAX_HEIGHT = 4;
 
         public static PieceSet whitePieceSet = new PieceSet(){{
             add(new Piece());

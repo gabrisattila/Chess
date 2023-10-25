@@ -211,9 +211,9 @@ public class Piece implements IPiece {
 
     private Set<Location> range(PieceType type, boolean posOrWatch) throws ChessGameException {
         Set<Location> range = new HashSet<>();
-        ArrayList<Location> optionsToIterateTrough = type == G && getEnemyStartRow() > getOwnStartRow() ?
+        Set<Location> optionsToIterateTrough = type == G && getEnemyStartRow() > getOwnStartRow() ?
                 matrixChooser.get(type) :
-                (ArrayList<Location>) locationListTimesN(matrixChooser.get(type), -1);
+                locationSetTimesN(matrixChooser.get(type), -1);
         for (Location loc : optionsToIterateTrough) {
             Location locForCalculation = loc.add(Location);
             if (type == G){

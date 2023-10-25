@@ -91,7 +91,46 @@ public class Move {
 
     //region Methods
 
-    public void pieceChangeOnBoard(){
+    public void setEveryThing(IPiece what, Location to) throws ChessGameException {
+        this.what = what;
+        from = what.getLocation();
+        this.to = to;
+        hit = notNull(boardToMoveOn.getPiece(to)) ? boardToMoveOn.getPiece(to) : null;
+        emPassantOrCastle = "";
+    }
+
+    public void setEveryThing(IPiece what, Location to, String emPassantOrCastle) throws ChessGameException {
+        this.what = what;
+        from = what.getLocation();
+        this.to = to;
+        hit = notNull(boardToMoveOn.getPiece(to)) ? boardToMoveOn.getPiece(to) : null;
+        this.emPassantOrCastle = emPassantOrCastle;
+        boardIsMissing();
+    }
+
+    public void realMove(){
+        pieceChangeOnBoard(true);
+    }
+
+
+    public void supposedMove() throws ChessGameException {
+        pieceChangeOnBoard(false);
+        boardRangeUpdate();
+    }
+
+    public void supposedMoveBack() throws ChessGameException {
+        IField fromField = boardToMoveOn.getField(from);
+        IField toField = boardToMoveOn.getField(to);
+        try {
+            fromField.setPiece(what);
+            toField.setPiece(hit);
+        } catch (ChessGameException e) {
+            throw new RuntimeException(e);
+        }
+        boardRangeUpdate();
+    }
+
+    private void pieceChangeOnBoard(boolean itsNotSupposed){
         IField fromField = boardToMoveOn.getField(from);
         IField toField = boardToMoveOn.getField(to);
         boolean itsEmPassant = isItEmPassant(what, from, to);
@@ -99,15 +138,22 @@ public class Move {
         try {
             toField.setPiece(what);
             fromField.clean();
-            ifItsCastle(itsCastle, toField);
+            if (itsNotSupposed) {
+                ifItsCastle(itsCastle, toField);
 //            ifItsEmPassant(itsEmPassant, toField);
-            logging();
-            changeToPlay();
+                logging();
+                changeToPlay();
+            }
         } catch (ChessGameException e) {
             throw new RuntimeException(e);
         }
     }
 
+    private void boardRangeUpdate() throws ChessGameException {
+        ((Board) boardToMoveOn).pseudos();
+        ((Board) boardToMoveOn).constrainPseudos();
+    }
+    
     private void logging() throws ChessGameException {
         getLogger().append((what.isWhite() ? "White " : "Black ") + what.getType() + " went from " + from.toString() + " to " + to.toString() + '\n');
     }
@@ -198,6 +244,10 @@ public class Move {
         }
     }
 
+    private void boardIsMissing() {
+        if (isNull(boardToMoveOn))
+            throw new RuntimeException("A tábla amin lépni kellene nincs megadva.");
+    }
 
     //endregion
 

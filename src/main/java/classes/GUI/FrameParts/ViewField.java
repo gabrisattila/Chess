@@ -137,15 +137,7 @@ public class ViewField extends JButton implements classes.Game.Model.Structure.I
                 pieceToChange = clicked.piece;
             } else if (CLICK_COUNTER == 1 && lastClicked.isGotPiece() && lastClicked.piece.isWhite() == whiteToPlay() &&
                     lastClicked.piece.inRange(clicked)) {
-                Move move = new Move(
-                        getViewBoard(),
-                        pieceToChange,
-                        lastClicked.getLoc(),
-                        clicked.getLoc(),
-                        notNull(clicked.piece) ? clicked.piece : null
-                );
-                move.pieceChangeOnBoard();
-                changeColor(clicked);
+                moveToClicked(clicked);
                 CLICK_COUNTER = 0;
                 switchWhoComes();
             } else if (CLICK_COUNTER == 0 && !clicked.isGotPiece()) {
@@ -166,6 +158,18 @@ public class ViewField extends JButton implements classes.Game.Model.Structure.I
 
         private void MouseExit(ViewField source) {
             changeFieldColor(source);
+        }
+
+        private void moveToClicked(ViewField clicked) throws ChessGameException {
+            Move move = new Move(
+                    getViewBoard(),
+                    pieceToChange,
+                    lastClicked.getLoc(),
+                    clicked.getLoc(),
+                    notNull(clicked.piece) ? clicked.piece : null
+            );
+            move.realMove();
+            changeColor(clicked);
         }
 
         private void changeColor(ViewField field){

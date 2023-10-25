@@ -132,6 +132,14 @@ public class Board implements IBoard {
         return ps;
     }
 
+    public Set<IPiece> myPieces(){
+        return getPieces(whiteToPlay());
+    }
+
+    public Set<IPiece> enemyPieces(){
+        return getPieces(!whiteToPlay());
+    }
+
     public Piece getKing(boolean whiteNeeded){
         return whiteNeeded ? whiteKing : blackKing;
     }
@@ -160,36 +168,38 @@ public class Board implements IBoard {
 
     @Override
     public void rangeUpdater() throws ChessGameException {
-        pseudoLegals();
+
+        clearRangesAndStuffBeforeUpdate();
+        pseudos();
         constrainPseudos();
-        kingsRanges();
+        inspectCheck(!whiteToPlay());
+
+        if (isNull(checkers))
+            kingsRanges();
     }
 
-    private void pseudoLegals() throws ChessGameException {
+    private void clearRangesAndStuffBeforeUpdate(){
+        checkers = null;
         for (IPiece p : pieces) {
-            if (p.getType() != K){
+            ((Piece) p).setPossibleRange(new HashSet<>());
+            ((Piece) p).setLegals("new");
+            ((Piece) p).setPseudoLegals("new");
+        }
+    }
+
+    public void pseudos() throws ChessGameException {
+        for (IPiece p : pieces) {
+            if (p.getType() != K) {
                 p.updateRange();
-                for (Location l : p.getPossibleRange()) {
-                    ((Piece) p).setLegals(
-                            new Move(
-                                    this,
-                                    p,
-                                    ((Piece) p).getLocation(),
-                                    l,
-                                    notNull(getPiece(l)) ? getPiece(l) : null
-                            )
-                    );
-                }
             }
         }
     }
 
-    private void constrainPseudos() throws ChessGameException {
-        //Leszűkítés annak függvényében, hogy valamely lépéssel sakkba kerülne az ellenfél vagy én
-        constrainTheCalculatedPseudoLegals(!whiteToPlay());
-        constrainTheCalculatedPseudoLegals(whiteToPlay());
+    public void constrainPseudos() throws ChessGameException {
+        //Leszűkítés annak függvényében, hogy valamely lépéssel sakk felfedése történne
+        constrainTheCalculatedPseudos(!whiteToPlay());
+        constrainTheCalculatedPseudos(whiteToPlay());
 
-        inspectCheck(!whiteToPlay());
     }
 
 
@@ -206,66 +216,94 @@ public class Board implements IBoard {
 
     private void inspectCheck(boolean enemy) throws ChessGameException {
         if (getAttackRangeWithoutKing(enemy).contains(getKingsPlace(!enemy))){
-            //Innentől find checkers
-            checkers = new Pair<>();
-            for (IPiece enemyP : getPieces(enemy)) {
-                if (enemyP.getPossibleRange().contains(getKingsPlace(!enemy))){
-                    if (isNull(checkers.getFirst())) {
-                        checkers.setFirst(enemyP);
-                    } else {
-                        checkers.setSecond(enemyP);
-                        break;
-                    }
-                }
-            }
 
-            //Innentől döntés, hogy csak király lépéseket számolok, vagy nem.
-            //Ekkor kikapcsolni a későbbi király lépés későbbi számolgatását.
-            Move supposedMove = new Move(this);
-            //Mindegyikhez legyen felhasználva a supposedMove standardan miután történt lépés, ahogy a király kilépésénél
+            findCheckers(enemy);
 
-            if (notNull(checkers.getSecond())){
-                //Király kilépés
-                for (Location l : matrixChooser.get(K)) {
-                    supposedMove.setEveryThingBasedOnTo(l);
-                    supposedMove.supossedMove();
-                    pseudoLegals();
-                    constrainPseudos();
-                    if (getAttackRangeWithoutKing(enemy).contains(getKingsPlace(!enemy))){
-                        supposedMove.supossedMoveBack();
-                    }else {
-                        getKing(!enemy).setLegals(supposedMove);
-                        supposedMove.supossedMoveBack();
-                    }
-                }
-            }else {
-                //Király kilépés
-                for (Location l : matrixChooser.get(K)) {
-                    supposedMove.setEveryThingBasedOnTo(l);
-                    supposedMove.supossedMove();
-                    pseudoLegals();
-                    constrainPseudos();
-                    if (getAttackRangeWithoutKing(enemy).contains(getKingsPlace(!enemy))){
-                        supposedMove.supossedMoveBack();
-                    }else {
-                        getKing(!enemy).setLegals(supposedMove);
-                        supposedMove.supossedMoveBack();
-                    }
-                }
+            if (notNull(checkers.getFirst()))
+                findLegalMovesInCheckCases(enemy);
 
-                //Figura elé, vagy ütni
-                for (IPiece p : getPieces(!enemy)) {
-                    Set<Location> wholePileOfChecker = checkers.getFirst().getPossibleRange();
-                    wholePileOfChecker.add(checkers.getFirst().getLocation());
-                    ((Piece) p).setPossibleRange(
-                            (Set<Location>) intersection(p.getPossibleRange(), wholePileOfChecker)
-                    );
+        }
+    }
+
+    private void findCheckers(boolean enemy){
+        for (IPiece enemyP : getPieces(enemy)) {
+            if (enemyP.getPossibleRange().contains(getKingsPlace(!enemy))){
+                checkers = new Pair<>();
+                if (isNull(checkers.getFirst())) {
+                    checkers.setFirst(enemyP);
+                } else {
+                    checkers.setSecond(enemyP);
+                    break;
                 }
             }
         }
     }
 
-    private void constrainTheCalculatedPseudoLegals(boolean forWhite) throws ChessGameException {
+    private void findLegalMovesInCheckCases(boolean enemy) throws ChessGameException {
+        Move supposedMove = new Move(this);
+
+        if (notNull(checkers.getSecond())){
+
+            kingStepOutFromCheck(supposedMove, enemy);
+        }else {
+
+            kingStepOutFromCheck(supposedMove, enemy);
+
+            blockCheckOrHitChecker(supposedMove, enemy);
+        }
+    }
+
+    private void kingStepOutFromCheck(Move supposedMove, boolean enemy) throws ChessGameException {
+        constrainInsteadOfCheck(matrixChooser.get(K), supposedMove, getKing(!enemy), enemy);
+    }
+
+    private void blockCheckOrHitChecker(Move supposed, boolean enemy) throws ChessGameException {
+
+        Set<Location> wholePileOfChecker = checkers.getFirst().getPossibleRange();
+        wholePileOfChecker.add(checkers.getFirst().getLocation());
+
+        Set<Location> neededIntersection;
+
+        for (IPiece p : getPieces(!enemy)) {
+
+            neededIntersection = (Set<Location>) intersection(p.getPossibleRange(), wholePileOfChecker);
+
+            if (!neededIntersection.isEmpty()) {
+                constrainInsteadOfCheck(neededIntersection, supposed, p, enemy);
+            }
+        }
+        
+    }
+    
+    private void constrainInsteadOfCheck(Set<Location> setThatWeCollectFrom,
+                                         Move supposed, IPiece p, boolean enemy) throws ChessGameException {
+
+        Set<Location> setToCollectRightPlacesToGo = new HashSet<>();
+        for (Location l : setThatWeCollectFrom) {
+            if (supposedMoveWith(supposed, p, l, enemy)){
+                setToCollectRightPlacesToGo.add(l);
+            }
+        }
+        if (p.getPossibleRange() != setToCollectRightPlacesToGo)
+            ((Piece) p).setPossibleRange(setToCollectRightPlacesToGo);
+    }
+
+    /**
+     * @param supposed theMoveObjectThatWeUse
+     * @param piece theMovesWhatParam
+     * @param to theMovesToParam
+     * @param enemy theColorOfEnemy
+     * @return Decides about a place that if my piece moves there the check still remain or not
+     */
+    private boolean supposedMoveWith(Move supposed, IPiece piece, Location to, boolean enemy) throws ChessGameException {
+        supposed.setEveryThing(piece, to);
+        supposed.supposedMove();
+        boolean placeIsGood = !getAttackRangeWithoutKing(enemy).contains(getKingsPlace(!enemy));
+        supposed.supposedMoveBack();
+        return placeIsGood;
+    }
+
+    private void constrainTheCalculatedPseudos(boolean forWhite) throws ChessGameException {
         var set = setBinding(forWhite);
 
         for (var v : set){
@@ -275,8 +313,8 @@ public class Board implements IBoard {
 
     private void cleanRangeIfPieceInBinding(IPiece piece, Set<Location> binding, IPiece checker){
 
-        if (collectionContains(((Piece) piece).getAttackRange(), ((Piece) checker).getLocation()))
-            binding.add(((Piece) checker).getLocation());
+        if (collectionContains(((Piece) piece).getAttackRange(), checker.getLocation()))
+            binding.add(checker.getLocation());
 
         piece.getPossibleRange().removeIf(l -> collectionNotContains(binding, l));
 
@@ -405,6 +443,8 @@ public class Board implements IBoard {
                 .collect(Collectors.toSet());
     }
 
+    //region King Helpers
+
     private void kingSimpleMoves(boolean forWhite) throws ChessGameException {
         getKing(forWhite).setPossibleRange(new HashSet<>());
         for (Location l : matrixChooser.get(K)) {
@@ -521,6 +561,15 @@ public class Board implements IBoard {
                                         getKingsPlace(!forWhite).EQUALS(new Location(i, j))));
     }
 
+    private IPiece hitOnThisLocWith(boolean my, Location possiblePlaceOfMyKing) throws ChessGameException {
+        if (getKing(my).isTherePiece(possiblePlaceOfMyKing) && getPiece(possiblePlaceOfMyKing).isWhite() != my)
+            return getPiece(possiblePlaceOfMyKing);
+        else
+            return null;
+    }
+
+    //endregion
+
     private Set<Location> getAttackRangeWithoutKing(boolean forWhite) {
         return pieces.stream()
                 .filter(p -> (p.getType() != K && p.isWhite() == forWhite))
@@ -528,11 +577,20 @@ public class Board implements IBoard {
                 .collect(Collectors.toSet());
     }
 
-    private IPiece hitOnThisLocWith(boolean my, Location possiblePlaceOfMyKing) throws ChessGameException {
-        if (getKing(my).isTherePiece(possiblePlaceOfMyKing) && getPiece(possiblePlaceOfMyKing).isWhite() != my)
-            return getPiece(possiblePlaceOfMyKing);
-        else
-            return null;
+    private void collectLegalMovesForPieces() throws ChessGameException {
+        for (IPiece p : myPieces()) {
+            if (p.getType() != K){
+                for (Location to : p.getPossibleRange()) {
+                    ((Piece) p).setLegals(new Move(
+                            this,
+                            p,
+                            p.getLocation(),
+                            to,
+                            notNull(getPiece(to)) ? getPiece(to) : null
+                    ));
+                }
+            }
+        }
     }
 
     //endregion

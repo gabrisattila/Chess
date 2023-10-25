@@ -26,6 +26,7 @@ public class Window extends JFrame {
 
     private GameBoard gameBoard;
 
+    @Getter
     private static JTextArea logger;
 
     //endregion
@@ -33,13 +34,13 @@ public class Window extends JFrame {
 
     //region Constructor
 
-    private Window() throws ChessGameException {
+    private Window() throws ChessGameException, IOException {
 
         setAiNumberDemand();
 
         frameSetup();
 //        setUpSides();
-        getViewBoard().pieceSetUp(usualFens.get("whiteDownOnlyKingsAndRooks"));
+        getViewBoard().pieceSetUp(usualFens.get("oneRookTwoKing4x4"));
 
         gameBoard = new GameBoard(getViewBoard());
         add(gameBoard);
@@ -51,7 +52,7 @@ public class Window extends JFrame {
 
     }
 
-    public static void getWindow() throws ChessGameException {
+    public static void getWindow() throws ChessGameException, IOException {
         if (window == null){
             window = new Window();
         }
@@ -99,16 +100,12 @@ public class Window extends JFrame {
     /**
      * @return a textField where I document the steps
      */
-    private JTextArea loggerBox(){
+    private JTextArea loggerBox() throws IOException {
         JTextArea area = new JTextArea();
         area.setBounds((int) (LOGGER_START_X), (int) (LOGGER_START_Y), ((int) LOGGER_WIDTH), ((int) LOGGER_HEIGHT));
         area.setVisible(true);
         area.setEditable(false);
         return area;
-    }
-
-    public static JTextArea getLogger(){
-        return logger;
     }
 
     //endregion

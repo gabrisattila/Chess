@@ -97,7 +97,7 @@ public class AI extends Thread {
                 notNull(getAiBoard().getPiece(toStepOn)) ? getAiBoard().getPiece(toStepOn) : null
         );
 
-        move.pieceChangeOnBoard();
+        move.realMove();
 
         return BoardToFen(getAiBoard());
 
