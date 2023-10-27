@@ -120,15 +120,15 @@ public class VARS {
             add('H');
         }};
 
-        public static final ArrayList<Character> nums = new ArrayList<>(){{
-            add('1');
-            add('2');
-            add('3');
-            add('4');
-            add('5');
-            add('6');
-            add('7');
-            add('8');
+        public static final ArrayList<String> nums = new ArrayList<>(){{
+            add("0");
+            add("1");
+            add("2");
+            add("3");
+            add("4");
+            add("5");
+            add("6");
+            add("7");
         }};
 
         public static Map<String, String> usualFens = new HashMap<>(){{
@@ -142,7 +142,7 @@ public class VARS {
             put("onlyTwoRooks6x6", "B5/6/6/6/6/5b w ---- -");
             put("onlyTwoQueens6x6", "2V3/6/6/6/6/3v2 w ---- -");
             put("onlyTwoKings6x6", "2K3/6/6/6/6/3k2 w ---- -");
-            put("onlyPawns6x6", "6/GGGGGG/6/6/gggggg/6 w ---- -");
+            put("whiteDownPawnsFront", "RNBQKBNR/8/8/PPPPPPPP/8/8/pppppppp/rnbqkbnr w ---- -");
             put("whiteDownOneRookTwoKing4x4", "K2R/4/4/k3 w ---- -");
         }};
 
@@ -271,7 +271,7 @@ public class VARS {
 
         public static boolean blackBigCastleEnabled = true;
 
-        public static String emPassantPossibility = "-";
+        public static String emPassantChance = "-";
 
     }
 

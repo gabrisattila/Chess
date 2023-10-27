@@ -40,7 +40,7 @@ public class Window extends JFrame {
 
         frameSetup();
 //        setUpSides();
-        getViewBoard().pieceSetUp(usualFens.get("whiteDownOnlyKingsAndRooks"));
+        getViewBoard().pieceSetUp(usualFens.get("whiteDownPawnsFront"));
 
         gameBoard = new GameBoard(getViewBoard());
         add(gameBoard);

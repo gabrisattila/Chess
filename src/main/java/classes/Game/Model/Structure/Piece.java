@@ -114,7 +114,7 @@ public class Piece implements IPiece {
     }
 
     public Location getEmPassantLocation(){
-        return attributes.getEmPassantLoc();
+        return notNull(attributes.getEmPassantLoc()) ? attributes.getEmPassantLoc() : null;
     }
 
     @Override
@@ -219,6 +219,7 @@ public class Piece implements IPiece {
             if (type == G){
                 if (pawnCase(locForCalculation, posOrWatch)){
                     range.add(locForCalculation);
+
                 }
             } else if (type == H){
                 if (containsLocation(locForCalculation)){
@@ -264,10 +265,10 @@ public class Piece implements IPiece {
             } else {
                 if (Math.abs(l.getJ() - getJ()) > 1)
                     throw new RuntimeException("Nem eshet bele a gyalog range-be");
-//                if (notNull(getEmPassantLocation()) && Math.abs(getEmPassantLocation().getI() - getI()) == 1 &&
-//                        Math.abs(getEmPassantLocation().getJ() - getJ()) == 1){
-//                    return true;
-//                }
+                if (notNull(attributes.getPossibleEmPassant()) && Math.abs(getEmPassantLocation().getI() - getI()) == 1 &&
+                        Math.abs(getEmPassantLocation().getJ() - getJ()) == 1 && ((getEnemyStartRow() == 7 && getI() == 4) || (getEnemyStartRow() == 0 && getI() == 3))){
+                    return true;
+                }
                 if (isTherePiece(l)){
                     return enemyColor(l);
                 }

@@ -17,8 +17,9 @@ public class PieceAttributes {
 
     private String color;
 
-    /**
-     * 0 and 7 minden figuránál. Nyilván attól függően merre megy
+    /*
+     * enemy: 0 and 7 minden figuránál. Nyilván attól függően merre megy
+     * own:
      */
     private Pair<Integer, Integer> enemyAndOwnStartRow;
 

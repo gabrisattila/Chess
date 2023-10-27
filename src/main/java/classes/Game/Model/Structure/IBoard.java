@@ -13,7 +13,7 @@ import static classes.Game.I18N.VARS.MUTUABLES.*;
 
 public interface IBoard {
 
-    default void boardSetUp(IBoard board, ArrayList<ArrayList<classes.Game.Model.Structure.IField>> fields){
+    default void boardSetUp(IBoard board, ArrayList<ArrayList<IField>> fields){
         classes.Game.Model.Structure.IField field;
         String fieldColor;
         Location Location;
@@ -63,21 +63,21 @@ public interface IBoard {
 
     void cleanBoard() throws ChessGameException;
 
-    ArrayList<ArrayList<classes.Game.Model.Structure.IField>> getFields();
+    ArrayList<ArrayList<IField>> getFields();
 
     ArrayList<IPiece> getPieces();
 
-    classes.Game.Model.Structure.IField getField(int i, int j);
+    IField getField(int i, int j);
 
-    classes.Game.Model.Structure.IField getField(Location Location);
+    IField getField(Location Location);
 
-    classes.Game.Model.Structure.IField getField(IPiece piece);
+    IField getField(IPiece piece);
 
     IPiece getPiece(int i, int j) throws ChessGameException;
 
     IPiece getPiece(Location Location) throws ChessGameException;
 
-    IPiece getPiece(classes.Game.Model.Structure.IField field);
+    IPiece getPiece(IField field) throws ChessGameException;
 
     void rangeUpdater() throws ChessGameException, InterruptedException;
 }

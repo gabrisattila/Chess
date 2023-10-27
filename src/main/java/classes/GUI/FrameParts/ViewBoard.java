@@ -85,7 +85,7 @@ public class ViewBoard implements IBoard {
     }
 
     @Override
-    public IPiece getPiece(classes.Game.Model.Structure.IField field){
+    public IPiece getPiece(IField field){
         return getField(field.getI(), field.getJ()).getPiece();
     }
 

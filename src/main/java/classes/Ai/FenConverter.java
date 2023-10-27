@@ -5,6 +5,8 @@ import classes.Game.I18N.*;
 import classes.Game.I18N.Location;
 import classes.Game.Model.Structure.*;
 
+import java.util.stream.Collectors;
+
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
@@ -12,7 +14,7 @@ import static classes.Game.I18N.VARS.MUTUABLES.*;
 
 /**
  * FEN string structure:
- *  "piecesOnTheBoard WhiteOrBlackToPlay castleCases_OR_-forEachImpossibleCastleOption emPassantPossibility_OR_-"
+ *  "piecesOnTheBoard WhiteOrBlackToPlay castleCases_OR_-forEachImpossibleCastleOption emPassantChance_OR_-"
  */
 public class FenConverter {
 
@@ -137,13 +139,9 @@ public class FenConverter {
 
         fenToReturn.append(' ');
 
-//        if (board instanceof Board)
-//            if (((Board) board).getThereWasEmPassantPossibility().getFirst())
-//                fenToReturn.append(((Board) board).getThereWasEmPassantPossibility().getSecond());
-//            else
-//                fenToReturn.append('-');
-//        else
-            fenToReturn.append('-');
+        fenToReturn.append(emPassantChance);
+
+        fenToReturn.append(' ');
 
         return fenToReturn.toString();
     }
@@ -231,28 +229,32 @@ public class FenConverter {
     }
 
     private static void emPassantFenToBoard(String emPassant, PieceAttributes piece){
-        if (!("-".equals(emPassant)) && piece.getType() == G){
+        if (piece.getType() == G){
+            emPassantHelper(emPassant, piece);
+        }
+    }
+
+    private static void emPassantHelper(String emPassant, PieceAttributes piece){
+        if (!("-".equals(emPassant))){
             char sorInChar = emPassant.charAt(0);
             char oszlopInChar = emPassant.charAt(1);
             piece.setPossibleEmPassant(
                     Integer.parseInt(String.valueOf(sorInChar)),
                     Integer.parseInt(String.valueOf(oszlopInChar))
             );
+        }else {
+            piece.setPossibleEmPassant(null);
         }
     }
 
     private static void enemyAndOwnStartRowFenToBoard(PieceAttributes piece){
-        if (theresOnlyOneAi){
-            piece.setEnemyStartRow(
-                    whiteAiNeeded ?
-                            (piece.isWhite() ? 0 : 7) :
-                            (piece.isWhite() ? 7 : 0)
-            );
+
+        if(!whiteAiNeeded || !theresOnlyOneAi){
+            piece.setEnemyStartRow(piece.isWhite() ? 7 : 0);
         }else {
-            piece.setEnemyStartRow(
-                    piece.isWhite() ? 7 : 0
-            );
+            piece.setEnemyStartRow(piece.isWhite() ? 0 : 7);
         }
+
         piece.setOwnStartRow(piece.getEnemyAndOwnStartRow().getFirst() == 7 ? 1 : 6);
     }
 

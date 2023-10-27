@@ -117,8 +117,8 @@ public class Board implements IBoard {
     }
 
     @Override
-    public IPiece getPiece(IField field){
-        return getField(field.getI(), field.getJ()).getPiece();
+    public IPiece getPiece(IField field) throws ChessGameException {
+        return getPiece(field.getI(), field.getJ());
     }
 
     public Set<IPiece> getPieces(boolean forWhite){
@@ -183,6 +183,7 @@ public class Board implements IBoard {
         if (isNull(checkers)) {
             kingsRanges();
             rookCastleParaming();
+            emPassantCaseSet();
         }
     }
 
@@ -210,6 +211,28 @@ public class Board implements IBoard {
                             notNull(getPiece(l)) ? getPiece(l) : null,
                             whichRook
                     ));
+                }
+            }
+        }
+    }
+
+    private void emPassantCaseSet() throws ChessGameException {
+        String emPassant;
+        for (IPiece p : myPieces()) {
+            if (p.getType() == G){
+                for (Location l : p.getPossibleRange()) {
+                    int i = p.getAttributes().getEnemyAndOwnStartRow().getFirst() == 0 ? l.getI() + 1 : l.getI() - 1;
+                    emPassant = !getField(i, l.getJ()).isGotPiece() &&
+                            locationCollectionContains(getAttackRangeWithoutKing(!p.isWhite()), new Location(i, l.getJ())) &&
+                            Math.abs(l.getI() - p.getI()) > 1 ?
+                            nums.get(i) + nums.get(l.getJ()):
+                            "";
+                    if (!emPassant.isEmpty()) {
+                        if ("-".equals(emPassantChance))
+                            emPassantChance = "";
+                        emPassantChance += emPassant;
+                        emPassantChance += "_";
+                    }
                 }
             }
         }
@@ -498,13 +521,6 @@ public class Board implements IBoard {
 
     private Set<IPiece> getTisztek(boolean my) {
         return pieces.stream().filter(p -> p.isWhite() == my && p.getType() != G && p.getType() != K).collect(Collectors.toSet());
-    }
-
-    private Set<Move> getLegalMoves(boolean my) {
-        return pieces.stream()
-                .filter(p -> (p.getType() != K && p.isWhite() == my))
-                .flatMap(p -> ((Piece) p).getLegalMoves().stream())
-                .collect(Collectors.toSet());
     }
 
     //region King Helpers
