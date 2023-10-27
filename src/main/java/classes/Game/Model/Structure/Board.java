@@ -124,7 +124,7 @@ public class Board implements IBoard {
     public Set<IPiece> getPieces(boolean forWhite){
         Set<IPiece> ps = new HashSet<>();
         for (IPiece p : pieces) {
-            if (p.isWhite() && forWhite)
+            if (p.isWhite() == forWhite)
                 ps.add(p);
         }
         return ps;
@@ -140,6 +140,14 @@ public class Board implements IBoard {
 
     public Piece getKing(boolean whiteNeeded){
         return whiteNeeded ? whiteKing : blackKing;
+    }
+
+    private IPiece getMyKing() {
+        return getKing(whiteToPlay());
+    }
+
+    private IPiece getEnemyKing() {
+        return getKing(!whiteToPlay());
     }
 
     public Location getKingsPlace(boolean forWhite){
@@ -172,8 +180,39 @@ public class Board implements IBoard {
         constrainPseudos();
         inspectCheck(!whiteToPlay());
 
-        if (isNull(checkers))
+        if (isNull(checkers)) {
             kingsRanges();
+            rookCastleParaming();
+        }
+    }
+
+    private void rookCastleParaming() throws ChessGameException {
+        String whichRook = "";
+        for (IPiece p : getTisztek(whiteToPlay())) {
+            if (p.getType() == B){
+                boolean whiteDown = (!whiteAiNeeded || !theresOnlyOneAi);
+                if (p.isWhite() && ((whiteDown && p.getLocation().EQUALS(0, 0)) || (!whiteDown && p.getLocation().EQUALS(0, 7)))){
+                    whichRook = "Q";
+                } else if (p.isWhite() && ((whiteDown && p.getLocation().EQUALS(0, 7)) || (!whiteDown && p.getLocation().EQUALS(0, 0)))) {
+                    whichRook = "K";
+                }
+                if (!p.isWhite() && ((whiteDown && p.getLocation().EQUALS(7, 0)) || (!whiteDown && p.getLocation().EQUALS(7, 7)))){
+                    whichRook = "q";
+                } else if (!p.isWhite() && ((whiteDown && p.getLocation().EQUALS(7, 7)) || (!whiteDown && p.getLocation().EQUALS(7, 0)))) {
+                    whichRook = "k";
+                }
+                for (Location l : p.getPossibleRange()) {
+                    ((Piece) p).setLegals(new Move(
+                            this,
+                            p,
+                            p.getLocation(),
+                            l,
+                            notNull(getPiece(l)) ? getPiece(l) : null,
+                            whichRook
+                    ));
+                }
+            }
+        }
     }
 
     private void clearRangesAndStuffBeforeUpdate(){
@@ -266,24 +305,30 @@ public class Board implements IBoard {
 
         Set<Location> neededIntersection;
 
-        for (IPiece p : getPieces(!enemy)) {
+        for (IPiece p : minus(myPieces(), getMyKing())) {
 
             neededIntersection = (Set<Location>) intersection(p.getPossibleRange(), wholePileOfChecker);
 
             if (!neededIntersection.isEmpty()) {
                 constrainInsteadOfCheck(neededIntersection, supposed, p, enemy);
+            }else {
+                ((Piece) p).setPossibleRange(new HashSet<>());
             }
         }
         
     }
-    
+
     private void constrainInsteadOfCheck(Set<Location> setThatWeCollectFrom,
                                          Move supposed, IPiece p, boolean enemy) throws ChessGameException {
 
         Set<Location> setToCollectRightPlacesToGo = new HashSet<>();
         for (Location l : setThatWeCollectFrom) {
             l = p.getLocation().add(l);
-            if (containsLocation(l) && supposedMoveWith(supposed, p, l, enemy)){
+            if (
+                    containsLocation(l) && enemyKingNotInNeighbour(l, !enemy) &&
+                    ((isNull(getPiece(l)) || notNull(getPiece(l)) && getPiece(l).isWhite() != getKing(!enemy).isWhite())) &&
+                    supposedMoveWith(supposed, p, l, enemy)
+            ){
                 if (p.getType() == K){
                     if (enemyKingNotInNeighbour(l, !enemy)){
                         setToCollectRightPlacesToGo.add(l);
@@ -295,6 +340,17 @@ public class Board implements IBoard {
         }
         if (p.getPossibleRange() != setToCollectRightPlacesToGo)
             ((Piece) p).setPossibleRange(setToCollectRightPlacesToGo);
+        if (p.getType() == K){
+            for (Location l : p.getPossibleRange()) {
+                ((Piece) p).setLegals(new Move(
+                        this,
+                        p,
+                        p.getLocation(),
+                        l,
+                        notNull(getPiece(l)) ? getPiece(l) : null
+                ));
+            }
+        }
     }
 
     /**

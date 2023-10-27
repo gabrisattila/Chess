@@ -1,5 +1,6 @@
 package classes.Game.Model.Structure;
 
+import classes.GUI.FrameParts.ViewBoard;
 import classes.Game.I18N.ChessGameException;
 import classes.Game.I18N.Location;
 import lombok.*;
@@ -11,6 +12,7 @@ import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
 import static classes.Game.I18N.PieceType.*;
 import static classes.GUI.Frame.Window.*;
+import static classes.Game.Model.Structure.Board.getBoard;
 
 @Getter
 @Setter
@@ -93,10 +95,34 @@ public class Move {
         this.emPassantOrCastle = emPassantOrCastle;
     }
 
+    public Move(IBoard boardToMoveOn, IPiece what, Location from, Location to, IPiece hit, String emPassantOrCastle){
+        this.boardToMoveOn = boardToMoveOn;
+        this.what = what;
+        this.from = from;
+        this.to = to;
+        this.hit = hit;
+        this.emPassantOrCastle = emPassantOrCastle;
+    }
+
     //endregion
 
 
     //region Methods
+
+    public static void MOVE(IBoard board, IPiece what, Location to) throws ChessGameException {
+        Move move = new Move(board);
+        if (what.getType() == K || what.getType() == B || what.getType() == G){
+            for (Move m : (board instanceof ViewBoard ? ((Piece) getBoard().getPiece(what.getLocation())) : ((Piece) what)).getLegalMoves() ) {
+                if (m.getTo().EQUALS(to)){
+                    move.setEveryThing(what, m.getTo(), m.getEmPassantOrCastle());
+                    break;
+                }
+            }
+        }else {
+            move.setEveryThing(what, to);
+        }
+        move.realMove();
+    }
 
     public void setEveryThing(IPiece what, Location to) throws ChessGameException {
         this.what = what;

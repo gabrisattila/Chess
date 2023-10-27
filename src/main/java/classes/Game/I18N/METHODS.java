@@ -72,6 +72,10 @@ public class METHODS {
         return C1MinusC2;
     }
 
+    public static <T> Collection<T> minus(Collection<T> c, T t){
+        return c.stream().filter(c1 -> !c1.equals(t)).collect(Collectors.toSet());
+    }
+
     public static boolean locationCollectionContains(Set<Location> set, Location element){
         return set.stream().anyMatch(p -> p.EQUALS(element));
     }

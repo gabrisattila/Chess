@@ -12,9 +12,11 @@ import static classes.Ai.FenConverter.*;
 import static classes.Ai.Position.*;
 import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.METHODS.*;
+import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.Model.Logic.EDT.*;
 import static classes.Game.Model.Structure.Board.*;
+import static classes.Game.Model.Structure.Move.*;
 
 @Getter
 @Setter
@@ -77,8 +79,8 @@ public class AI extends Thread {
 
         Piece stepper;
         ArrayList<Piece> possibleSteppers = new ArrayList<>();
-        for (IPiece p : getAiBoard().getPieces()) {
-            if (p.isWhite() == WHITE_STRING.equals(color) && !p.getPossibleRange().isEmpty()){
+        for (IPiece p : getAiBoard().myPieces()) {
+            if (!p.getPossibleRange().isEmpty()){
                 possibleSteppers.add((Piece) p);
             }
         }
@@ -89,15 +91,8 @@ public class AI extends Thread {
         int indexOfChosen = random.nextInt(0, ableToStepThereIn.size());
         Location toStepOn = ableToStepThereIn.get(indexOfChosen);
 
-        Move move = new Move(
-                getAiBoard(),
-                stepper,
-                stepper.getLocation(),
-                toStepOn,
-                notNull(getAiBoard().getPiece(toStepOn)) ? getAiBoard().getPiece(toStepOn) : null
-        );
+        MOVE(getAiBoard(), stepper, toStepOn);
 
-        move.realMove();
 
         return BoardToFen(getAiBoard());
 

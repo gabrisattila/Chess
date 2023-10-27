@@ -40,6 +40,10 @@ public class Location {
         return i == l.i && j == l.j;
     }
 
+    public boolean EQUALS(int i, int j){
+        return this.EQUALS(new Location(i, j));
+    }
+
     public Location add(Location l){
         return new Location(i + l.i, j + l.j);
     }

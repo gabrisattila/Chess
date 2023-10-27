@@ -6,6 +6,7 @@ import classes.Game.I18N.PieceAttributes;
 
 import classes.Game.Model.Structure.IPiece;
 import classes.Game.Model.Structure.Move;
+import classes.Game.Model.Structure.Piece;
 import lombok.*;
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
@@ -19,6 +20,7 @@ import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
 import static classes.Game.Model.Structure.Board.*;
+import static classes.Game.Model.Structure.Move.*;
 
 @Getter
 @Setter
@@ -166,21 +168,7 @@ public class ViewField extends JButton implements classes.Game.Model.Structure.I
 
         private void moveToClicked(ViewField clicked) throws ChessGameException {
 
-            Move move = new Move(getViewBoard());
-
-            //TODO Ugyanezt bástyára és gyalogra
-            if (pieceToChange.getType() == K){
-                for (Move m : getBoard().getKing(whiteToPlay()).getLegalMoves()) {
-                    if (m.getTo().EQUALS(clicked.getLoc())) {
-                        move.setEveryThing(pieceToChange, m.getTo(), m.getEmPassantOrCastle());
-                        break;
-                    }
-                }
-            }else {
-                move.setEveryThing(pieceToChange, clicked.getLoc());
-            }
-
-            move.realMove();
+            MOVE(getViewBoard(), pieceToChange, clicked.loc);
 
             changeColor(clicked);
         }
