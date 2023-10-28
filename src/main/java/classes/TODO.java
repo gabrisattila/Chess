@@ -2,7 +2,7 @@ package classes;
 
 public class TODO {
 
-    //TODO Watched range for emPassant
+    //TODO changeFieldColor és véges determinisztikus automata minden esethez click-nél
 
     //TODO Sakk: Elébe lépésnél megnézni, hogy utána is sakkban van-e.
 
