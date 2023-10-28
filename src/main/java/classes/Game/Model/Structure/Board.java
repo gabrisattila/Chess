@@ -5,6 +5,7 @@ import classes.Game.I18N.*;
 import lombok.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -669,24 +670,47 @@ public class Board implements IBoard {
     private Set<Location> getAttackRangeWithoutKing(boolean forWhite) {
         return pieces.stream()
                 .filter(p -> (p.getType() != K && p.isWhite() == forWhite))
-                .flatMap(p -> (p.getType() == G ? ((Piece) p).getWatchedRange() :  p.getPossibleRange()).stream())
+                .flatMap(p -> (p.getType() == G ? ((Piece) p).getWatchedRange() : p.getPossibleRange()).stream())
                 .collect(Collectors.toSet());
     }
 
-    private void collectLegalMovesForPieces() throws ChessGameException {
+    public void addLegalMovesToPieces() throws ChessGameException {
         for (IPiece p : myPieces()) {
             if (p.getType() != K){
                 for (Location to : p.getPossibleRange()) {
-                    ((Piece) p).setLegals(new Move(
-                            this,
-                            p,
-                            p.getLocation(),
-                            to,
-                            notNull(getPiece(to)) ? getPiece(to) : null
-                    ));
+                    if (((Piece) p).getLegalMoves().isEmpty()) {
+                        ((Piece) p).setLegals(new Move(
+                                this,
+                                p,
+                                p.getLocation(),
+                                to,
+                                notNull(getPiece(to)) ? getPiece(to) : null
+                        ));
+                    }else {
+                        if (((Piece) p).getLegalMoves().stream().noneMatch(m -> m.getTo().EQUALS(to))){
+                            ((Piece) p).setLegals(new Move(
+                                    this,
+                                    p,
+                                    p.getLocation(),
+                                    to,
+                                    notNull(getPiece(to)) ? getPiece(to) : null
+                            ));
+                        }
+                    }
                 }
             }
         }
+    }
+
+    public HashMap<IPiece, Set<Move>> getAllLegalMoves(boolean forWhite){
+        HashMap<IPiece, Set<Move>> legals = new HashMap<>();
+        for (IPiece p : getPieces(forWhite)) {
+            legals.put(
+                    p,
+                    ((Piece) p).getLegalMoves()
+            );
+        }
+        return legals;
     }
 
     //endregion

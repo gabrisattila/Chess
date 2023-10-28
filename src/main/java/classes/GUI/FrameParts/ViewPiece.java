@@ -87,11 +87,6 @@ public class ViewPiece extends ImageIcon implements IPiece {
     }
 
     @Override
-    public void STEP(Location from, Location to, IBoard board) {
-
-    }
-
-    @Override
     public void updateRange() {
 
     }

@@ -29,8 +29,6 @@ public interface IPiece {
 
      Set<Location> getPossibleRange();
 
-     void STEP(Location from, Location to, IBoard board);
-
      void updateRange() throws ChessGameException;
 
      default boolean EQUALS(IPiece ownPiece) {

@@ -25,6 +25,8 @@ public class PieceAttributes {
 
     private int[] possibleEmPassant;
 
+    private double VALUE;
+
     //endregion
 
 
@@ -34,6 +36,7 @@ public class PieceAttributes {
 
     public PieceAttributes(PieceType pieceType, String color){
         type = pieceType;
+        valueSetting();
         this.color = color;
         enemyAndOwnStartRow = new Pair<>();
     }
@@ -57,6 +60,16 @@ public class PieceAttributes {
 
     public boolean isWhite(){
         return WHITE_STRING.equals(color);
+    }
+
+    public void valueSetting(){
+        switch (getType()){
+            case G -> VALUE = isWhite() ? 1 : -1;
+            case H, F -> VALUE = isWhite() ? 3 : -3;
+            case B -> VALUE = isWhite() ? 5 : -5;
+            case V -> VALUE = isWhite() ? 9 : -9;
+            case K -> VALUE = isWhite() ? 100 : -100;
+        }
     }
 
     public Location getEmPassantLoc(){

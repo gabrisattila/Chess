@@ -102,6 +102,10 @@ public class Piece implements IPiece {
         return attributes.getEnemyAndOwnStartRow().getFirst();
     }
 
+    public double getVALUE(){
+        return attributes.getVALUE();
+    }
+
     @Override
     public boolean isEmpty(){
         return attributes == null && Location == null;
@@ -113,6 +117,10 @@ public class Piece implements IPiece {
 
     public Location getEmPassantLocation(){
         return notNull(attributes.getEmPassantLoc()) ? attributes.getEmPassantLoc() : null;
+    }
+
+    public void setType(PieceType type){
+        attributes.setType(type);
     }
 
     @Override
@@ -160,16 +168,6 @@ public class Piece implements IPiece {
     //endregion
 
     //region Moving
-
-    @Override
-    public void STEP(Location from, Location to, IBoard board) {
-        try {
-            board.getField(to).setPiece(this);
-            board.getField(from).clean();
-        } catch (ChessGameException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     //region Range
 

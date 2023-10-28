@@ -110,6 +110,7 @@ public class Move {
     public static void MOVE(IBoard board, IPiece what, Location to) throws ChessGameException {
         Move move = new Move(board);
         if (what.getType() == K || what.getType() == B){
+            emPassantChance = "-";
             for (Move m : (board instanceof ViewBoard ? ((Piece) getBoard().getPiece(what.getLocation())) : ((Piece) what)).getLegalMoves() ) {
                 if (m.getTo().EQUALS(to)){
                     move.setEveryThing(what, m.getTo(), m.getCastleOrEmPassant());
@@ -129,6 +130,11 @@ public class Move {
             emPassantChance = "-";
             move.setEveryThing(what, to);
         }
+        move.realMove();
+    }
+
+    public static void MOVE(IBoard board, Move move) throws ChessGameException {
+        move.setBoardToMoveOn(board);
         move.realMove();
     }
 
@@ -281,11 +287,15 @@ public class Move {
 
     private void emPassantCase() throws ChessGameException {
         if (what.getAttributes().getEnemyAndOwnStartRow().getFirst() == 7){
-            hit = boardToMoveOn.getPiece(getTo().getI() - 1, getTo().getJ());
-            boardToMoveOn.getField(getTo().getI() - 1, getTo().getJ()).clean();
+            if (containsLocation(getTo().getI() -1, getTo().getJ())) {
+                hit = boardToMoveOn.getPiece(getTo().getI() - 1, getTo().getJ());
+                boardToMoveOn.getField(getTo().getI() - 1, getTo().getJ()).clean();
+            }
         }else {
-            hit = boardToMoveOn.getPiece(getTo().getI() + 1, getTo().getJ());
-            boardToMoveOn.getField(getTo().getI() + 1, getTo().getJ()).clean();
+            if (containsLocation(getTo().getI() + 1, getTo().getJ())) {
+                hit = boardToMoveOn.getPiece(getTo().getI() + 1, getTo().getJ());
+                boardToMoveOn.getField(getTo().getI() + 1, getTo().getJ()).clean();
+            }
         }
         emPassantChance = "-";
     }
