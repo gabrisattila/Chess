@@ -30,7 +30,7 @@ public class Move {
      * if it was castle: Y (for white) y (for black)
      * if it made emPassant chance: xy coordinate of the possible emPassant place
      */
-    private String castle;
+    private String castleOrEmPassant;
 
     private IBoard boardToMoveOn;
 
@@ -44,7 +44,7 @@ public class Move {
         from = null;
         to = null;
         hit = null;
-        castle = "-";
+        castleOrEmPassant = "-";
     }
 
     public Move(IPiece what, Location from, Location to){
@@ -52,7 +52,7 @@ public class Move {
         this.from = from;
         this.to = to;
         hit = null;
-        castle = "-";
+        castleOrEmPassant = "-";
     }
 
     public Move(IPiece what, Location from, Location to, IPiece hit){
@@ -60,15 +60,15 @@ public class Move {
         this.from = from;
         this.to = to;
         this.hit = hit;
-        castle = "-";
+        castleOrEmPassant = "-";
     }
 
-    public Move(IPiece what, Location from, Location to, String castle){
+    public Move(IPiece what, Location from, Location to, String castleOrEmPassant){
         this.what = what;
         this.from = from;
         this.to = to;
         hit = null;
-        this.castle = castle;
+        this.castleOrEmPassant = castleOrEmPassant;
     }
 
     public Move(IBoard boardToMoveOn){
@@ -81,25 +81,25 @@ public class Move {
         this.from = from;
         this.to = to;
         this.hit = hit;
-        castle = "-";
+        castleOrEmPassant = "-";
     }
 
-    public Move(IBoard boardToMoveOn, IPiece what, Location from, Location to, String castle){
+    public Move(IBoard boardToMoveOn, IPiece what, Location from, Location to, String castleOrEmPassant){
         this.boardToMoveOn = boardToMoveOn;
         this.what = what;
         this.from = from;
         this.to = to;
         hit = null;
-        this.castle = castle;
+        this.castleOrEmPassant = castleOrEmPassant;
     }
 
-    public Move(IBoard boardToMoveOn, IPiece what, Location from, Location to, IPiece hit, String castle){
+    public Move(IBoard boardToMoveOn, IPiece what, Location from, Location to, IPiece hit, String castleOrEmPassant){
         this.boardToMoveOn = boardToMoveOn;
         this.what = what;
         this.from = from;
         this.to = to;
         this.hit = hit;
-        this.castle = castle;
+        this.castleOrEmPassant = castleOrEmPassant;
     }
 
     //endregion
@@ -112,11 +112,21 @@ public class Move {
         if (what.getType() == K || what.getType() == B){
             for (Move m : (board instanceof ViewBoard ? ((Piece) getBoard().getPiece(what.getLocation())) : ((Piece) what)).getLegalMoves() ) {
                 if (m.getTo().EQUALS(to)){
-                    move.setEveryThing(what, m.getTo(), m.getCastle());
+                    move.setEveryThing(what, m.getTo(), m.getCastleOrEmPassant());
                     break;
                 }
             }
+        } else if (what.getType() == G &&
+                !(board instanceof ViewBoard ? ((Piece) getBoard().getPiece(what.getLocation())) : ((Piece) what)).getLegalMoves().isEmpty() &&
+                ((Move)(
+                        board instanceof ViewBoard ?
+                                ((Piece) getBoard().getPiece(what.getLocation())) :
+                                ((Piece) what)).getLegalMoves().toArray()[0]
+                ).getTo().EQUALS(to)) {
+            emPassantChance = ((Move)((Piece) what).getLegalMoves().toArray()[0]).getCastleOrEmPassant();
+            move.setEveryThing(what, to, emPassantChance);
         }else {
+            emPassantChance = "-";
             move.setEveryThing(what, to);
         }
         move.realMove();
@@ -127,7 +137,7 @@ public class Move {
         from = what.getLocation();
         this.to = to;
         hit = notNull(boardToMoveOn.getPiece(to)) ? boardToMoveOn.getPiece(to) : null;
-        castle = "";
+        castleOrEmPassant = "";
     }
 
     public void setEveryThing(IPiece what, Location to, String castle) throws ChessGameException {
@@ -135,7 +145,7 @@ public class Move {
         from = what.getLocation();
         this.to = to;
         hit = notNull(boardToMoveOn.getPiece(to)) ? boardToMoveOn.getPiece(to) : null;
-        this.castle = castle;
+        this.castleOrEmPassant = castle;
         boardIsMissing();
     }
 
@@ -171,7 +181,7 @@ public class Move {
             fromField.clean();
             if (itsNotSupposed) {
                 ifItsCastle(itsCastle, toField);
-                ifItsEmPassant(itsEmPassant, toField);
+                ifItsEmPassant(itsEmPassant);
                 logging();
                 changeToPlay();
             }
@@ -190,7 +200,7 @@ public class Move {
     }
 
     private boolean isItCastle(){
-        return !"".equals(castle) && castleMoveSigns.contains(castle) && what.getType() == K && (what.getI() == 0 || what.getI() == 7);
+        return !"".equals(castleOrEmPassant) && castleMoveSigns.contains(castleOrEmPassant) && what.getType() == K && (what.getI() == 0 || what.getI() == 7);
     }
 
     private void ifItsCastle(boolean itsCastle, IField to) throws ChessGameException {
@@ -259,16 +269,18 @@ public class Move {
     }
 
     private boolean isItEmPassant() throws ChessGameException {
+        if (emPassantChance.isEmpty() && from.getJ() != to.getJ() && hit == null)
+            throw new ChessGameException("Elvileg em passant akar lépni, de ez nem lehetséges jelen helyzetben");
         return Math.abs(from.getI() - to.getI()) == 1 && Math.abs(from.getJ() - to.getJ()) == 1 && isNull(boardToMoveOn.getPiece(to));
     }
 
-    private void ifItsEmPassant(boolean itsEmPassant, IField toField) throws ChessGameException {
+    private void ifItsEmPassant(boolean itsEmPassant) throws ChessGameException {
         if (itsEmPassant)
-            emPassantCase(toField);
+            emPassantCase();
     }
 
-    private void emPassantCase(IField to) throws ChessGameException {
-        if (boardToMoveOn.getPiece(to).getAttributes().getEnemyAndOwnStartRow().getFirst() == 7){
+    private void emPassantCase() throws ChessGameException {
+        if (what.getAttributes().getEnemyAndOwnStartRow().getFirst() == 7){
             hit = boardToMoveOn.getPiece(getTo().getI() - 1, getTo().getJ());
             boardToMoveOn.getField(getTo().getI() - 1, getTo().getJ()).clean();
         }else {

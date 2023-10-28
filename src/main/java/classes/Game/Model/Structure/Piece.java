@@ -7,9 +7,7 @@ import classes.Game.I18N.PieceType;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.PieceType.*;
@@ -181,9 +179,6 @@ public class Piece implements IPiece {
     public void updateRange() throws ChessGameException {
         possibleRange = getRange(getType(), true);
         watchedRange = getRange(getType(), false);
-//        if (board.isCheckForCurrent()) {
-//            possibleRange = checkConstraint(possibleRange);
-//        }
     }
 
     private Set<Location> getRange(PieceType type, boolean posOrWatch) throws ChessGameException {
@@ -213,13 +208,12 @@ public class Piece implements IPiece {
         Set<Location> range = new HashSet<>();
         Set<Location> optionsToIterateTrough = type == G && getEnemyStartRow() > getOwnStartRow() ?
                 matrixChooser.get(type) :
-                locationSetTimesN(matrixChooser.get(type), -1);
+                locationSetTimesN(matrixChooser.get(type), - 1);
         for (Location loc : optionsToIterateTrough) {
             Location locForCalculation = loc.add(Location);
             if (type == G){
                 if (pawnCase(locForCalculation, posOrWatch)){
                     range.add(locForCalculation);
-
                 }
             } else if (type == H){
                 if (containsLocation(locForCalculation)){
@@ -265,14 +259,15 @@ public class Piece implements IPiece {
             } else {
                 if (Math.abs(l.getJ() - getJ()) > 1)
                     throw new RuntimeException("Nem eshet bele a gyalog range-be");
-                if (notNull(attributes.getPossibleEmPassant()) && Math.abs(getEmPassantLocation().getI() - getI()) == 1 &&
-                        Math.abs(getEmPassantLocation().getJ() - getJ()) == 1 && ((getEnemyStartRow() == 7 && getI() == 4) || (getEnemyStartRow() == 0 && getI() == 3))){
+                if (posOrWatch){
+                    if (isTherePiece(l)){
+                        return enemyColor(l);
+                    }else {
+                        return notNull(attributes.getPossibleEmPassant()) && l.EQUALS(getEmPassantLocation());
+                    }
+                }else {
                     return true;
                 }
-                if (isTherePiece(l)){
-                    return enemyColor(l);
-                }
-                return !posOrWatch;
             }
         }
         return false;

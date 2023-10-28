@@ -2,7 +2,7 @@ package classes;
 
 public class TODO {
 
-    //TODO Sánc: alapvetően kész. Visszalépést még levezényelni, hogy a vissza sánc is menjen
+    //TODO Watched range for emPassant
 
     //TODO Sakk: Elébe lépésnél megnézni, hogy utána is sakkban van-e.
 

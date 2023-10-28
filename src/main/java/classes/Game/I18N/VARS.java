@@ -142,7 +142,9 @@ public class VARS {
             put("onlyTwoRooks6x6", "B5/6/6/6/6/5b w ---- -");
             put("onlyTwoQueens6x6", "2V3/6/6/6/6/3v2 w ---- -");
             put("onlyTwoKings6x6", "2K3/6/6/6/6/3k2 w ---- -");
-            put("whiteDownPawnsFront", "RNBQKBNR/8/8/PPPPPPPP/8/8/pppppppp/rnbqkbnr w ---- -");
+            put("whiteDownPawnsFront", "8/8/8/PPPPPPPP/8/8/pppppppp/8 w ---- -");
+            put("blackDownPawnsFront", "8/8/8/pppppppp/8/8/PPPPPPPP/8 w ---- -");
+            put("whiteDown2x3Pawn", "8/8/8/P3P3/8/8/3ppp2/8 w ---- -");
             put("whiteDownOneRookTwoKing4x4", "K2R/4/4/k3 w ---- -");
         }};
 

@@ -5,6 +5,7 @@ import classes.Game.I18N.*;
 import classes.Game.I18N.Location;
 import classes.Game.Model.Structure.*;
 
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 import static classes.Game.I18N.METHODS.*;
@@ -43,7 +44,7 @@ public class FenConverter {
                     if (Character.isDigit(currentChar)){
                         oszlop += Character.getNumericValue(currentChar);
                     }else {
-                        classes.Game.Model.Structure.IField f = board.getField(sor, oszlop);
+                        IField f = board.getField(sor, oszlop);
                         if (! ((f instanceof Field ) || (f instanceof ViewField))){
                             throw new ChessGameException(f, BAD_TYPE_MSG);
                         }
@@ -64,17 +65,16 @@ public class FenConverter {
                                     ((Board) board).setBlackKing(pieceForParams);
                             }
 
-                            emPassantFenToBoard(emPassant, piece);
+                            if (!"-".equals(emPassant))
+                                emPassantFenToBoard(emPassant, piece, sor, oszlop);
 
                             board.getPieces().add(pieceForParams);
                             board.getField(sor, oszlop).setPiece(pieceForParams);
                         } else {
-                            ViewPiece pieceForParams = new ViewPiece(createSourceStringFromGotAttributes(piece));
+                            ViewPiece pieceForParams = new ViewPiece(createSourceStringFromGotAttributes(piece), piece);
                             pieceForParams.setI(sor);
                             pieceForParams.setJ(oszlop);
-                            board.getPieces().add(
-                                    pieceForParams
-                            );
+                            board.getPieces().add(pieceForParams);
                             board.getField(sor, oszlop).setPiece(pieceForParams);
                         }
                         oszlop++;
@@ -228,23 +228,22 @@ public class FenConverter {
         return sb.toString();
     }
 
-    private static void emPassantFenToBoard(String emPassant, PieceAttributes piece){
-        if (piece.getType() == G){
+    private static void emPassantFenToBoard(String emPassant, PieceAttributes piece, int sor, int oszlop){
+        if (piece.isWhite() == whiteToPlay() &&
+                piece.getType() == G &&
+                Math.abs(sor - Integer.parseInt(String.valueOf(emPassantChance.charAt(0)))) == 1 &&
+                Math.abs(oszlop - Integer.parseInt(String.valueOf(emPassantChance.charAt(1)))) == 1
+        )
             emPassantHelper(emPassant, piece);
-        }
     }
 
     private static void emPassantHelper(String emPassant, PieceAttributes piece){
-        if (!("-".equals(emPassant))){
             char sorInChar = emPassant.charAt(0);
             char oszlopInChar = emPassant.charAt(1);
             piece.setPossibleEmPassant(
                     Integer.parseInt(String.valueOf(sorInChar)),
                     Integer.parseInt(String.valueOf(oszlopInChar))
             );
-        }else {
-            piece.setPossibleEmPassant(null);
-        }
     }
 
     private static void enemyAndOwnStartRowFenToBoard(PieceAttributes piece){

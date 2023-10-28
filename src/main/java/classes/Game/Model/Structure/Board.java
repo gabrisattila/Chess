@@ -177,14 +177,20 @@ public class Board implements IBoard {
 
         clearRangesAndStuffBeforeUpdate();
         pseudos();
-        constrainPseudos();
-        inspectCheck(!whiteToPlay());
+        if (theBoardHasKings()){
+            constrainPseudos();
+            inspectCheck(!whiteToPlay());
 
-        if (isNull(checkers)) {
-            kingsRanges();
-            rookCastleParaming();
-            emPassantCaseSet();
+            if (isNull(checkers)) {
+                kingsRanges();
+            }
         }
+        rookCastleParaming();
+        emPassantCaseSet();
+    }
+
+    private boolean theBoardHasKings() {
+        return pieces.stream().anyMatch(p -> p.getType() == K);
     }
 
     private void rookCastleParaming() throws ChessGameException {
@@ -217,25 +223,49 @@ public class Board implements IBoard {
     }
 
     private void emPassantCaseSet() throws ChessGameException {
-        String emPassant;
+        StringBuilder emPassant = new StringBuilder();
         for (IPiece p : myPieces()) {
             if (p.getType() == G){
                 for (Location l : p.getPossibleRange()) {
-                    int i = p.getAttributes().getEnemyAndOwnStartRow().getFirst() == 0 ? l.getI() + 1 : l.getI() - 1;
-                    emPassant = !getField(i, l.getJ()).isGotPiece() &&
-                            locationCollectionContains(getAttackRangeWithoutKing(!p.isWhite()), new Location(i, l.getJ())) &&
-                            Math.abs(l.getI() - p.getI()) > 1 ?
-                            nums.get(i) + nums.get(l.getJ()):
-                            "";
-                    if (!emPassant.isEmpty()) {
-                        if ("-".equals(emPassantChance))
-                            emPassantChance = "";
-                        emPassantChance += emPassant;
-                        emPassantChance += "_";
+
+                    Location neighbour1 = new Location(l.getI(), l.getJ() - 1),
+                            neighbour2 = new Location(l.getI(), l.getJ() + 1);
+
+                    if (emPassantIf(p, l, neighbour1) || emPassantIf(p, l, neighbour2)){
+                        Location middle = getTheMiddleLocation(p.getLocation(), l);
+                        assert middle != null;
+                        emPassant.append(nums.get(middle.getI()));
+                        emPassant.append(nums.get(middle.getJ()));
+                        ((Piece) p).setLegals(new Move(
+                                this,
+                                p,
+                                p.getLocation(),
+                                l,
+                                notNull(getPiece(l)) ? getPiece(l) : null,
+                                emPassant.toString()
+                        ));
+                        emPassant = new StringBuilder();
                     }
                 }
             }
         }
+    }
+
+    private boolean emPassantIf(IPiece p, Location l, Location neighbour) throws ChessGameException {
+        return Math.abs(p.getI() - l.getI()) > 1 && containsLocation(neighbour) &&
+                notNull(getPiece(neighbour)) && getPiece(neighbour).getType() == G &&
+                getPiece(neighbour).isWhite() != p.isWhite() &&
+                locationCollectionContains(
+                        ((Piece)getPiece(neighbour)).getWatchedRange(),
+                        getTheMiddleLocation(p.getLocation(), l)
+                );
+    }
+
+    private Location getTheMiddleLocation(Location first, Location last){
+        if (first.getJ() == last.getJ()){
+            return new Location((first.getI() + last.getI()) / 2, first.getJ());
+        }
+        return null;
     }
 
     private void clearRangesAndStuffBeforeUpdate(){

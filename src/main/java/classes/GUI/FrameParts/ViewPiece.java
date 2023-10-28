@@ -53,6 +53,14 @@ public class ViewPiece extends ImageIcon implements IPiece {
         possibleRange = new HashSet<>();
     }
 
+    public ViewPiece(String source, PieceAttributes attributes){
+        super(source);
+
+        this.attributes = attributes;
+
+        possibleRange = new HashSet<>();
+    }
+
     //endregion
 
 
