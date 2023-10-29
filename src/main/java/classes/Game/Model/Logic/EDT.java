@@ -109,8 +109,8 @@ public class EDT {
     public static void receivedMoveFromAi(String fen){
         try {
             FenToBoard(fen, getViewBoard());
-            switchWhoComes();
             if (theresOnlyOneAi){
+                switchWhoComes();
                 getViewBoard().rangeUpdater();
             }else {
                 startAi(whiteToPlay() ? "WHITE" : "BLACK");

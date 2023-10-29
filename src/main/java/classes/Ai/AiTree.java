@@ -47,8 +47,8 @@ public class AiTree {
 
     //region Methods
 
-    public static boolean isGameEndInPos(AiTree aiTree){
-        return false;
+    public boolean isGameEndInPos() throws ChessGameException {
+        return getAiBoard().getCheckMateFor().getFirst();
     }
 
     public Set<String> collectPossibilities() throws ChessGameException {
@@ -63,8 +63,6 @@ public class AiTree {
 
     private HashMap<IPiece, Set<Move>> collectLegalMoves() throws ChessGameException {
         HashMap<IPiece, Set<Move>> legals;
-        FenToBoard(fen, getAiBoard());
-        getAiBoard().rangeUpdater();
         getAiBoard().addLegalMovesToPieces();
         legals = getAiBoard().getAllLegalMoves(whiteToPlay());
         return legals;

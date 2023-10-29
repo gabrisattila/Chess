@@ -93,10 +93,18 @@ public class AI extends Thread {
 
     private double miniMax(AiTree starterPos, int depth, boolean maxNeeded, double alpha, double beta) throws ChessGameException {
 
-        if (depth == MINIMAX_DEPTH || isGameEndInPos(starterPos)){
+        FenToBoard(starterPos.getFen(), getAiBoard());
+        getAiBoard().rangeUpdater();
 
-            if (isGameEndInPos(starterPos)){
+        if (depth == MINIMAX_DEPTH || starterPos.isGameEndInPos()){
 
+            if (starterPos.isGameEndInPos()){
+                if (getAiBoard().getCheckMateFor().getSecond())
+                    //Sötét nyert, mert világos kapott mattot
+                    return -5000;
+                else
+                    //Világos nyert, mert sötét kapott mattot
+                    return 5000;
             }
 
             return evaluate(starterPos);

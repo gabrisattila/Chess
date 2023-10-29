@@ -42,6 +42,12 @@ public class Board implements IBoard {
 
     private Pair<IPiece, IPiece> checkers;
 
+    /**
+     * The first one is true if someone got check mate in the current situation. The second one is true if this one is white
+     * Annyi bizonyos, hogy ez esetben mindig a sakkot kapott játékos lépése során derül ki, ha ő éppen mattot kapott.
+     */
+    private Pair<Boolean, Boolean> checkMateFor;
+
     //endregion
 
 
@@ -55,6 +61,7 @@ public class Board implements IBoard {
         pieces = new ArrayList<>();
         whiteKing = new Piece();
         blackKing = new Piece();
+        checkMateFor = new Pair<>(false, false);
     }
 
     public static Board getBoard() throws ChessGameException {
@@ -184,6 +191,10 @@ public class Board implements IBoard {
 
             if (isNull(checkers)) {
                 kingsRanges();
+            }else {
+                if(amIGotCheckMate()){
+                    checkMateFor = new Pair<>(true, whiteToPlay());
+                }
             }
         }
         rookCastleParaming();
@@ -271,6 +282,7 @@ public class Board implements IBoard {
 
     private void clearRangesAndStuffBeforeUpdate(){
         checkers = null;
+        checkMateFor.setFirst(false);
         for (IPiece p : pieces) {
             ((Piece) p).setPossibleRange(new HashSet<>());
             ((Piece) p).setLegals("new");
@@ -293,6 +305,13 @@ public class Board implements IBoard {
 
     }
 
+    public boolean amIGotCheckMate(){
+        if (notNull(checkers.getSecond())){
+            return ((Piece) getMyKing()).getLegalMoves().isEmpty();
+        }else {
+            return pieces.stream().allMatch(p -> p.getPossibleRange().isEmpty());
+        }
+    }
 
     private void kingsRanges() throws ChessGameException {
         //A királyok lépéslehetőségeinek leszűkítése a már meghatározott rangek függvényében

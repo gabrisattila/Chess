@@ -145,7 +145,8 @@ public class VARS {
         public static Map<String, String> usualFens = new HashMap<>(){{
             put("whiteDownStarter", "RNBQKBNR/PPPPPPPP/8/8/8/8/pppppppp/rnbqkbnr w KQkq -");
             put("blackDownStarter", "rnbkqbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBKQBNR w KQkq -");
-            put("onlyKnights", "1N4N1/8/8/8/8/8/8/1n4n1 w ---- -");
+            put("onlyTwoKnights8x8", "1N4N1/8/8/8/8/8/8/1n4n1 w ---- -");
+            put("onlyKnights4x4", "1N2/4/4/2n1 w ---- -");
             put("onlyBishops", "2F2F2/8/8/8/8/8/8/2f2f2 w ---- -");
             put("whiteDownOnlyKingsAndRooks", "R3K2R/8/8/8/8/8/8/r3k2r w KQkq -");
             put("whiteUpOnlyKingsAndRooks", "r2k3r/8/8/8/8/8/8/R2K3R w KQkq -");
@@ -195,7 +196,7 @@ public class VARS {
 
         public static int MAX_HEIGHT = 8;
 
-        public static int MINIMAX_DEPTH = 6;
+        public static int MINIMAX_DEPTH = 2;
 
         public static PieceSet whitePieceSet = new PieceSet(){{
             add(new Piece());
