@@ -113,7 +113,7 @@ public class EDT {
                 switchWhoComes();
                 getViewBoard().rangeUpdater();
             }else {
-                startAi(whiteToPlay() ? "WHITE" : "BLACK");
+                startAi(whiteToPlay ? "WHITE" : "BLACK");
             }
         } catch (ChessGameException | InterruptedException e) {
             throw new RuntimeException(e);

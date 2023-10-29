@@ -10,6 +10,7 @@ import java.util.*;
 
 import static classes.Ai.FenConverter.*;
 import static classes.Game.I18N.METHODS.*;
+import static classes.Game.I18N.VARS.MUTUABLES.*;
 import static classes.Game.Model.Structure.Board.*;
 import static classes.Game.Model.Structure.Move.*;
 
@@ -64,7 +65,7 @@ public class AiTree {
     private HashMap<IPiece, Set<Move>> collectLegalMoves() throws ChessGameException {
         HashMap<IPiece, Set<Move>> legals;
         getAiBoard().addLegalMovesToPieces();
-        legals = getAiBoard().getAllLegalMoves(whiteToPlay());
+        legals = getAiBoard().getAllLegalMoves(whiteToPlay);
         return legals;
     }
 

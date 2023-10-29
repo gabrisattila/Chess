@@ -10,15 +10,11 @@ import static classes.Game.I18N.VARS.MUTUABLES.*;
 
 public class METHODS {
 
-    public static void changeToPlay(){
-        if ('w' == toPlay)
-            toPlay = 'b';
+    public static void changeEvenOrOddStep(){
+        if (evenOrOddStep == 0)
+            evenOrOddStep = 1;
         else
-            toPlay = 'w';
-    }
-
-    public static boolean whiteToPlay(){
-        return 'w' == toPlay;
+            evenOrOddStep = 0;
     }
 
     public static void switchWhoComes(){

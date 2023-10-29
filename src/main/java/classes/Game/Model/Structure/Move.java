@@ -10,7 +10,7 @@ import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTUABLES.*;
 import static classes.Game.I18N.PieceType.*;
 import static classes.GUI.Frame.Window.*;
-import static classes.Game.Model.Structure.Board.getBoard;
+import static classes.Game.Model.Structure.Board.*;
 
 @Getter
 @Setter
@@ -24,15 +24,27 @@ public class Move {
 
     private Location to;
 
-    private IPiece secondPiece;
+    private IPiece hit;
 
-    private Location secondTo;
 
     /**
      * if it was castle: Y (for white) y (for black)
      * if it made emPassant chance: xy coordinate of the possible emPassant place
      */
     private String castleOrEmPassant;
+
+
+    private Location castleRookOrigin;
+
+    private Location castleRookTo;
+
+    private IPiece castleRook;
+
+
+    private Location emPassantTakenPawnLoc;
+
+    private IPiece emPassantTakenPawn;
+
 
     private IBoard boardToMoveOn;
 
@@ -45,7 +57,7 @@ public class Move {
         what = null;
         from = null;
         to = null;
-        secondPiece = null;
+        hit = null;
         castleOrEmPassant = "-";
     }
 
@@ -53,15 +65,15 @@ public class Move {
         this.what = what;
         this.from = from;
         this.to = to;
-        secondPiece = null;
+        hit = null;
         castleOrEmPassant = "-";
     }
 
-    public Move(IPiece what, Location from, Location to, IPiece secondPiece){
+    public Move(IPiece what, Location from, Location to, IPiece hit){
         this.what = what;
         this.from = from;
         this.to = to;
-        this.secondPiece = secondPiece;
+        this.hit = hit;
         castleOrEmPassant = "-";
     }
 
@@ -69,7 +81,7 @@ public class Move {
         this.what = what;
         this.from = from;
         this.to = to;
-        secondPiece = null;
+        hit = null;
         this.castleOrEmPassant = castleOrEmPassant;
     }
 
@@ -77,12 +89,12 @@ public class Move {
         this.boardToMoveOn = boardToMoveOn;
     }
 
-    public Move(IBoard boardToMoveOn, IPiece what, Location from, Location to, IPiece secondPiece){
+    public Move(IBoard boardToMoveOn, IPiece what, Location from, Location to, IPiece hit){
         this.boardToMoveOn = boardToMoveOn;
         this.what = what;
         this.from = from;
         this.to = to;
-        this.secondPiece = secondPiece;
+        this.hit = hit;
         castleOrEmPassant = "-";
     }
 
@@ -91,16 +103,16 @@ public class Move {
         this.what = what;
         this.from = from;
         this.to = to;
-        secondPiece = null;
+        hit = null;
         this.castleOrEmPassant = castleOrEmPassant;
     }
 
-    public Move(IBoard boardToMoveOn, IPiece what, Location from, Location to, IPiece secondPiece, String castleOrEmPassant){
+    public Move(IBoard boardToMoveOn, IPiece what, Location from, Location to, IPiece hit, String castleOrEmPassant){
         this.boardToMoveOn = boardToMoveOn;
         this.what = what;
         this.from = from;
         this.to = to;
-        this.secondPiece = secondPiece;
+        this.hit = hit;
         this.castleOrEmPassant = castleOrEmPassant;
     }
 
@@ -147,7 +159,7 @@ public class Move {
         this.what = what;
         from = what.getLocation();
         this.to = to;
-        secondPiece = notNull(boardToMoveOn.getPiece(to)) ? boardToMoveOn.getPiece(to) : null;
+        hit = notNull(boardToMoveOn.getPiece(to)) ? boardToMoveOn.getPiece(to) : null;
         castleOrEmPassant = "";
     }
 
@@ -155,7 +167,7 @@ public class Move {
         this.what = what;
         from = what.getLocation();
         this.to = to;
-        secondPiece = notNull(boardToMoveOn.getPiece(to)) ? boardToMoveOn.getPiece(to) : null;
+        hit = notNull(boardToMoveOn.getPiece(to)) ? boardToMoveOn.getPiece(to) : null;
         this.castleOrEmPassant = castle;
         boardIsMissing();
     }
@@ -175,7 +187,7 @@ public class Move {
         IField toField = boardToMoveOn.getField(to);
         try {
             fromField.setPiece(what);
-            toField.setPiece(secondPiece);
+            toField.setPiece(hit);
         } catch (ChessGameException e) {
             throw new RuntimeException(e);
         }
@@ -194,7 +206,7 @@ public class Move {
                 ifItsCastle(itsCastle, toField);
                 ifItsEmPassant(itsEmPassant);
                 logging();
-                changeToPlay();
+                changeEvenOrOddStep();
             }
         } catch (ChessGameException e) {
             throw new RuntimeException(e);
@@ -216,10 +228,12 @@ public class Move {
 
     private void ifItsCastle(boolean itsCastle, IField to) throws ChessGameException {
         if (itsCastle) {
+
             if (what.getType() != K && (what.getI() != 0 || what.getI() != 7))
                 throw new RuntimeException("Nem megfelelő figura (" + what.getType() + ") próbál sáncolni, vagy a király már elmozdult (jelen helye: " + from.toString() + ") az eredeti helyéről ahonnan tudott volna.");
 
             castleCase(to);
+
         }
     }
 
@@ -231,10 +245,10 @@ public class Move {
                     boardToMoveOn.getPiece(to.getI(), j).getType() == B
             ){
 
-                secondPiece = boardToMoveOn.getPiece(to.getI(), j);
-                boolean bigOrSmallCastle = Math.abs(secondPiece.getJ() - to.getJ()) > 1;
+                hit = boardToMoveOn.getPiece(to.getI(), j);
+                boolean bigOrSmallCastle = Math.abs(hit.getJ() - to.getJ()) > 1;
 
-                castleHelper(bigOrSmallCastle, secondPiece, j);
+                castleHelper(bigOrSmallCastle, hit, j);
                 //Mert egyik megtörténte után nem történhet a másik
                 if (what.isWhite()){
                     whiteSmallCastleEnabled = false;
@@ -262,18 +276,21 @@ public class Move {
         i = to.getI();
         j = whiteAiNeeded ? (bigOrSmallCastle ? - 1 : 1) : (bigOrSmallCastle ? 1 : - 1);
         j += to.getJ();
-        secondTo = new Location(i, j);
-        fieldForRook = boardToMoveOn.getField(secondTo);
+        castleRookOrigin = new Location(to.getI(), originJofRook);
+        castleRookTo = new Location(i, j);
+        castleRook = rookToCastleWith;
+
+        fieldForRook = boardToMoveOn.getField(castleRookOrigin);
 
         if (fieldForRook.isGotPiece())
             throw new RuntimeException("Valamilyen bábu van ott, ahová a bástya kerülne sánc után." + fieldForRook.toSString());
 
-        fieldForRook.setPiece(rookToCastleWith);
-        boardToMoveOn.getField(to.getI(), originJofRook).clean();
+        fieldForRook.setPiece(castleRook);
+        boardToMoveOn.getField(castleRookOrigin).clean();
     }
 
     private boolean isItEmPassant() throws ChessGameException {
-        if (emPassantChance.isEmpty() && from.getJ() != to.getJ() && secondPiece == null)
+        if (emPassantChance.isEmpty() && from.getJ() != to.getJ() && hit == null)
             throw new ChessGameException("Elvileg em passant akar lépni, de ez nem lehetséges jelen helyzetben");
         return Math.abs(from.getI() - to.getI()) == 1 && Math.abs(from.getJ() - to.getJ()) == 1 && isNull(boardToMoveOn.getPiece(to));
     }
@@ -284,17 +301,18 @@ public class Move {
     }
 
     private void emPassantCase() throws ChessGameException {
-        if (what.getAttributes().getEnemyAndOwnStartRow().getFirst() == 7){
-            if (containsLocation(getTo().getI() -1, getTo().getJ())) {
-                secondPiece = boardToMoveOn.getPiece(getTo().getI() - 1, getTo().getJ());
-                boardToMoveOn.getField(getTo().getI() - 1, getTo().getJ()).clean();
-            }
+        int i, j;
+        i = what.getAttributes().getEnemyAndOwnStartRow().getFirst() == 7 ?
+                (containsLocation(getTo().getI() - 1, getTo().getJ()) ? getTo().getI() - 1 : - 1) :
+                (containsLocation(getTo().getI() + 1, getTo().getJ()) ? getTo().getI() + 1 : - 1);
+        j = getTo().getJ();
+        emPassantTakenPawnLoc = new Location(i, j);
+        if (i != -1){
+            emPassantTakenPawn = boardToMoveOn.getPiece(emPassantTakenPawnLoc);
         }else {
-            if (containsLocation(getTo().getI() + 1, getTo().getJ())) {
-                secondPiece = boardToMoveOn.getPiece(getTo().getI() + 1, getTo().getJ());
-                boardToMoveOn.getField(getTo().getI() + 1, getTo().getJ()).clean();
-            }
+            throw new ChessGameException("Nem Megfelelő helyről akarunk emPassant által figurát levenni.");
         }
+
         emPassantChance = "-";
     }
 

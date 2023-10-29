@@ -40,8 +40,8 @@ public interface IBoard {
         String toPlay = fenParts[1];
         String castle = fenParts[2];
         String emPassant = fenParts[3];
-        int separateIndex = FEN.indexOf(' ');
-        String fenOtherParts = FEN.substring(separateIndex);
+        String stepNum = fenParts[4];
+        String evenOrOddStep = fenParts[5];
 
         for (int i = 0; i < fenPieces.length(); i++) {
             if ('p' == fenPieces.charAt(i) || 'P' == fenPieces.charAt(i) || 'r' == fenPieces.charAt(i) || 'R' == fenPieces.charAt(i) ||
@@ -52,7 +52,7 @@ public interface IBoard {
             }
         }
 
-        FEN = fenPieces + " " + toPlay + " " + castle + " " + emPassant;
+        FEN = fenPieces + " " + toPlay + " " + castle + " " + emPassant + " " + stepNum + " " + evenOrOddStep;
 
         try {
             FenToBoard(FEN, this);

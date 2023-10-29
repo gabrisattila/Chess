@@ -143,23 +143,23 @@ public class VARS {
         }};
 
         public static Map<String, String> usualFens = new HashMap<>(){{
-            put("whiteDownStarter", "RNBQKBNR/PPPPPPPP/8/8/8/8/pppppppp/rnbqkbnr w KQkq -");
-            put("blackDownStarter", "rnbkqbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBKQBNR w KQkq -");
-            put("onlyTwoKnights8x8", "1N4N1/8/8/8/8/8/8/1n4n1 w ---- -");
-            put("onlyKnights4x4", "1N2/4/4/2n1 w ---- -");
-            put("onlyBishops", "2F2F2/8/8/8/8/8/8/2f2f2 w ---- -");
-            put("whiteDownOnlyKingsAndRooks", "R3K2R/8/8/8/8/8/8/r3k2r w KQkq -");
-            put("whiteUpOnlyKingsAndRooks", "r2k3r/8/8/8/8/8/8/R2K3R w KQkq -");
-            put("onlyTwoBishops6x6", "1F4/6/6/6/6/4f1 w ---- -");
-            put("onlyTwoRooks6x6", "B5/6/6/6/6/5b w ---- -");
-            put("onlyTwoQueens6x6", "2V3/6/6/6/6/3v2 w ---- -");
-            put("onlyTwoKings6x6", "2K3/6/6/6/6/3k2 w ---- -");
-            put("whiteDownPawnsFrontEmPassant", "8/8/8/PPPPPPPP/8/8/pppppppp/8 w ---- -");
-            put("blackDownPawnsFrontEmPassant", "8/8/8/pppppppp/8/8/PPPPPPPP/8 w ---- -");
-            put("whiteDownPawnsFront", "8/PPPPPPPP/8/8/8/8/pppppppp/8 w ---- -");
-            put("blackDownPawnsFront", "8/pppppppp/8/8/8/8/PPPPPPPP/8 w ---- -");
-            put("whiteDown2x3Pawn", "8/8/8/P3P3/8/8/3ppp2/8 w ---- -");
-            put("whiteDownOneRookTwoKing4x4", "K2R/4/4/k3 w ---- -");
+            put("whiteDownStarter", "RNBQKBNR/PPPPPPPP/8/8/8/8/pppppppp/rnbqkbnr w KQkq - 1 0");
+            put("blackDownStarter", "rnbkqbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBKQBNR w KQkq - 1 0");
+            put("onlyTwoKnights8x8", "1N4N1/8/8/8/8/8/8/1n4n1 w ---- - 1 0");
+            put("onlyKnights4x4", "1N2/4/4/2n1 w ---- - 1 0");
+            put("onlyBishops", "2F2F2/8/8/8/8/8/8/2f2f2 w ---- - 1 0");
+            put("whiteDownOnlyKingsAndRooks", "R3K2R/8/8/8/8/8/8/r3k2r w KQkq - 1 0");
+            put("whiteUpOnlyKingsAndRooks", "r2k3r/8/8/8/8/8/8/R2K3R w KQkq - 1 0");
+            put("onlyTwoBishops6x6", "1F4/6/6/6/6/4f1 w ---- - 1 0");
+            put("onlyTwoRooks6x6", "B5/6/6/6/6/5b w ---- - 1 0");
+            put("onlyTwoQueens6x6", "2V3/6/6/6/6/3v2 w ---- - 1 0");
+            put("onlyTwoKings6x6", "2K3/6/6/6/6/3k2 w ---- - 1 0");
+            put("whiteDownPawnsFrontEmPassant", "8/8/8/PPPPPPPP/8/8/pppppppp/8 w ---- - 1 0");
+            put("blackDownPawnsFrontEmPassant", "8/8/8/pppppppp/8/8/PPPPPPPP/8 w ---- - 1 0");
+            put("whiteDownPawnsFront", "8/PPPPPPPP/8/8/8/8/pppppppp/8 w ---- - 1 0");
+            put("blackDownPawnsFront", "8/pppppppp/8/8/8/8/PPPPPPPP/8 w ---- - 1 0");
+            put("whiteDown2x3Pawn", "8/8/8/P3P3/8/8/3ppp2/8 w ---- - 1 0");
+            put("whiteDownOneRookTwoKing4x4", "K2R/4/4/k3 w ---- - 1 0");
         }};
 
         //region PieceViews
@@ -269,9 +269,9 @@ public class VARS {
 
         public static ViewPiece pieceToChange;
 
-        public static Character toPlay = 'w';
+        public static boolean whiteToPlay;
 
-//        public static Boolean gameIsOn = false;
+        public static Boolean gameIsOn = true;
 
         public static boolean theresOnlyOneAi = false;
 
@@ -290,6 +290,10 @@ public class VARS {
         public static boolean blackBigCastleEnabled = true;
 
         public static String emPassantChance = "-";
+
+        public static int stepNumber = 1;
+
+        public static int evenOrOddStep = 0;
 
     }
 

@@ -76,7 +76,7 @@ public class AI extends Thread {
 
         AiTree tree = new AiTree(BoardToFen(getAiBoard()));
 
-        double best = miniMax(tree, 0, whiteToPlay(), -350, 350);
+        double best = miniMax(tree, 0, whiteToPlay, -350, 350);
 
         String bestChildsFen = "";
 

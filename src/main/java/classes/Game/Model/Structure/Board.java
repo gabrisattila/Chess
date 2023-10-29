@@ -139,11 +139,11 @@ public class Board implements IBoard {
     }
 
     public Set<IPiece> myPieces(){
-        return getPieces(whiteToPlay());
+        return getPieces(whiteToPlay);
     }
 
     public Set<IPiece> enemyPieces(){
-        return getPieces(!whiteToPlay());
+        return getPieces(!whiteToPlay);
     }
 
     public Piece getKing(boolean whiteNeeded){
@@ -151,11 +151,11 @@ public class Board implements IBoard {
     }
 
     private IPiece getMyKing() {
-        return getKing(whiteToPlay());
+        return getKing(whiteToPlay);
     }
 
     private IPiece getEnemyKing() {
-        return getKing(!whiteToPlay());
+        return getKing(!whiteToPlay);
     }
 
     public Location getKingsPlace(boolean forWhite){
@@ -187,13 +187,13 @@ public class Board implements IBoard {
         pseudos();
         if (theBoardHasKings()){
             constrainPseudos();
-            inspectCheck(!whiteToPlay());
+            inspectCheck(!whiteToPlay);
 
             if (isNull(checkers)) {
                 kingsRanges();
             }else {
                 if(amIGotCheckMate()){
-                    checkMateFor = new Pair<>(true, whiteToPlay());
+                    checkMateFor = new Pair<>(true, whiteToPlay);
                 }
             }
         }
@@ -207,7 +207,7 @@ public class Board implements IBoard {
 
     private void rookCastleParaming() throws ChessGameException {
         String whichRook = "";
-        for (IPiece p : getTisztek(whiteToPlay())) {
+        for (IPiece p : getTisztek(whiteToPlay)) {
             if (p.getType() == B){
                 boolean whiteDown = (!whiteAiNeeded || !theresOnlyOneAi);
                 if (p.isWhite() && ((whiteDown && p.getLocation().EQUALS(0, 0)) || (!whiteDown && p.getLocation().EQUALS(0, 7)))){
@@ -300,8 +300,8 @@ public class Board implements IBoard {
 
     public void constrainPseudos() throws ChessGameException {
         //Leszűkítés annak függvényében, hogy valamely lépéssel sakk felfedése történne
-        constrainTheCalculatedPseudos(!whiteToPlay());
-        constrainTheCalculatedPseudos(whiteToPlay());
+        constrainTheCalculatedPseudos(!whiteToPlay);
+        constrainTheCalculatedPseudos(whiteToPlay);
 
     }
 
@@ -315,13 +315,13 @@ public class Board implements IBoard {
 
     private void kingsRanges() throws ChessGameException {
         //A királyok lépéslehetőségeinek leszűkítése a már meghatározott rangek függvényében
-        kingSimpleMoves(!whiteToPlay());
-        kingSimpleMoves(whiteToPlay());
+        kingSimpleMoves(!whiteToPlay);
+        kingSimpleMoves(whiteToPlay);
         //Sáncok lehetőségeink számbavétele
         // Ellenőrizni, hogy van-e lehetőség erre-arra a sáncra
         // Ha igen megnézni, hogy a sánccal megtett király mezők közül bele esik-e valamelyik az ellenfél range-be.
-        kingCastle(!whiteToPlay());
-        kingCastle(whiteToPlay());
+        kingCastle(!whiteToPlay);
+        kingCastle(whiteToPlay);
     }
 
     /**
@@ -639,11 +639,11 @@ public class Board implements IBoard {
                 !locationCollectionContains(getAttackRangeWithoutKing(!forWhite), queenSidePoint) &&
                 !locationCollectionContains(getAttackRangeWithoutKing(!forWhite), queenSideRoad);
 
-        if (((whiteToPlay() && whiteSmallCastleEnabled) || (!whiteToPlay() && blackSmallCastleEnabled)) &&
+        if (((whiteToPlay && whiteSmallCastleEnabled) || (!whiteToPlay && blackSmallCastleEnabled)) &&
             kingSideNotInCheck)
             addCastleMove(kingSidePoint, kingSideRoad, forWhite);
 
-        if (((whiteToPlay() && whiteBigCastleEnabled) || (!whiteToPlay() && blackBigCastleEnabled)) &&
+        if (((whiteToPlay && whiteBigCastleEnabled) || (!whiteToPlay && blackBigCastleEnabled)) &&
             queenSideNotInCheck)
             addCastleMove(queenSidePoint, queenSideRoad, forWhite);
     }

@@ -2,8 +2,6 @@ package classes;
 
 public class TODO {
 
-    //TODO whiteToPlay és MOVE back kapcsolata.
-    // Move back kell a minimaxhoz. Vagy Újra visszaírni a fen alapján -> ekkor kell a whiteToPlay-en gondolkodni
     //TODO !!!
     // Minimax alatt nem elfelejteni A Castle és az EmPassant helyzeteket lekezelni
 

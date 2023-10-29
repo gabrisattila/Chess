@@ -15,7 +15,7 @@ import static classes.Game.I18N.VARS.MUTUABLES.*;
 
 /**
  * FEN string structure:
- *  "piecesOnTheBoard WhiteOrBlackToPlay castleCases_OR_-forEachImpossibleCastleOption emPassantChance_OR_-"
+ *  "piecesOnTheBoard WhiteOrBlackToPlay castleCases emPassantChance stepCount evenOrOddStep"
  */
 public class FenConverter {
 
@@ -31,6 +31,8 @@ public class FenConverter {
         int sor = 0, oszlop = 0;
         PieceAttributes piece;
         board.cleanBoard();
+
+        whiteToPlay = 'w' == separatedFen[1].charAt(0);
 
         String emPassant = separatedFen[3];
 
@@ -84,6 +86,8 @@ public class FenConverter {
         }
 
         castleCaseFenToBoard(separatedFen[2]);
+
+        evenOrOddStep = '1' == separatedFen[5].charAt(0) ? 1 : 0;
     }
 
     public static String BoardToFen(IBoard board) throws ChessGameException {
@@ -113,6 +117,7 @@ public class FenConverter {
 
         fenToReturn.append(' ');
 
+        Character toPlay = evenOrOddStep == 0 ? 'w' : 'b';
         fenToReturn.append(toPlay);
 
         fenToReturn.append(' ');
@@ -140,6 +145,15 @@ public class FenConverter {
         fenToReturn.append(' ');
 
         fenToReturn.append(emPassantChance);
+
+        fenToReturn.append(' ');
+
+        fenToReturn.append(stepNumber);
+
+        fenToReturn.append(' ');
+
+        evenOrOddStep = 'w' == toPlay ? 0 : 1;
+        fenToReturn.append(evenOrOddStep);
 
         fenToReturn.append(' ');
 
@@ -229,7 +243,7 @@ public class FenConverter {
     }
 
     private static void emPassantFenToBoard(String emPassant, PieceAttributes piece, int sor, int oszlop){
-        if (piece.isWhite() == whiteToPlay() &&
+        if (piece.isWhite() == whiteToPlay &&
                 piece.getType() == G &&
                 Math.abs(sor - Integer.parseInt(String.valueOf(emPassantChance.charAt(0)))) == 1 &&
                 Math.abs(oszlop - Integer.parseInt(String.valueOf(emPassantChance.charAt(1)))) == 1
