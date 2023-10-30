@@ -9,7 +9,7 @@ import java.awt.*;
 import java.util.ArrayList;
 
 import static classes.Game.I18N.VARS.FINALS.*;
-import static classes.Game.I18N.VARS.MUTUABLES.*;
+import static classes.Game.I18N.VARS.MUTABLE.*;
 
 @Getter
 @Setter

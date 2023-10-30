@@ -34,4 +34,8 @@ public interface IPiece {
      default boolean EQUALS(IPiece ownPiece) {
           return isWhite() == ownPiece.isWhite() && getAttributes().equals(ownPiece.getAttributes());
      }
+
+     default String toSString(){
+          return (isWhite() ? "W " : "B ") + getType().toString() + " on [" + getI() + ", " + getJ() + "] ";
+     }
 }

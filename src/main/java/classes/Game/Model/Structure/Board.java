@@ -14,7 +14,7 @@ import java.util.stream.IntStream;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
-import static classes.Game.I18N.VARS.MUTUABLES.*;
+import static classes.Game.I18N.VARS.MUTABLE.*;
 
 
 /**
@@ -187,15 +187,15 @@ public class Board implements IBoard {
         pseudos();
         if (theBoardHasKings()){
             constrainPseudos();
-            inspectCheck(!whiteToPlay);
-
-            if (isNull(checkers)) {
+//            inspectCheck(!whiteToPlay);
+//
+//            if (isNull(checkers)) {
                 kingsRanges();
-            }else {
-                if(amIGotCheckMate()){
-                    checkMateFor = new Pair<>(true, whiteToPlay);
-                }
-            }
+//            }else {
+//                if(amIGotCheckMate()){
+//                    checkMateFor = new Pair<>(true, whiteToPlay);
+//                }
+//            }
         }
         rookCastleParaming();
         emPassantCaseSet();
@@ -695,9 +695,17 @@ public class Board implements IBoard {
 
     public void addLegalMovesToPieces() throws ChessGameException {
         for (IPiece p : myPieces()) {
-            if (p.getType() != K){
-                for (Location to : p.getPossibleRange()) {
-                    if (((Piece) p).getLegalMoves().isEmpty()) {
+            for (Location to : p.getPossibleRange()) {
+                if (((Piece) p).getLegalMoves().isEmpty()) {
+                    ((Piece) p).setLegals(new Move(
+                            this,
+                            p,
+                            p.getLocation(),
+                            to,
+                            notNull(getPiece(to)) ? getPiece(to) : null
+                    ));
+                }else {
+                    if (((Piece) p).getLegalMoves().stream().noneMatch(m -> m.getTo().EQUALS(to))){
                         ((Piece) p).setLegals(new Move(
                                 this,
                                 p,
@@ -705,16 +713,6 @@ public class Board implements IBoard {
                                 to,
                                 notNull(getPiece(to)) ? getPiece(to) : null
                         ));
-                    }else {
-                        if (((Piece) p).getLegalMoves().stream().noneMatch(m -> m.getTo().EQUALS(to))){
-                            ((Piece) p).setLegals(new Move(
-                                    this,
-                                    p,
-                                    p.getLocation(),
-                                    to,
-                                    notNull(getPiece(to)) ? getPiece(to) : null
-                            ));
-                        }
                     }
                 }
             }
@@ -724,10 +722,12 @@ public class Board implements IBoard {
     public HashMap<IPiece, Set<Move>> getAllLegalMoves(boolean forWhite){
         HashMap<IPiece, Set<Move>> legals = new HashMap<>();
         for (IPiece p : getPieces(forWhite)) {
-            legals.put(
-                    p,
-                    ((Piece) p).getLegalMoves()
-            );
+            if (!((Piece) p).getLegalMoves().isEmpty()) {
+                legals.put(
+                        p,
+                        ((Piece) p).getLegalMoves()
+                );
+            }
         }
         return legals;
     }

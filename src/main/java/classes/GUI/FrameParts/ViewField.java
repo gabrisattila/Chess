@@ -5,8 +5,6 @@ import classes.Game.I18N.Location;
 import classes.Game.I18N.PieceAttributes;
 
 import classes.Game.Model.Structure.IPiece;
-import classes.Game.Model.Structure.Move;
-import classes.Game.Model.Structure.Piece;
 import lombok.*;
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
@@ -14,12 +12,10 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 import static classes.GUI.FrameParts.ViewBoard.*;
-import static classes.Game.I18N.PieceType.*;
 import static classes.Game.Model.Logic.EDT.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
-import static classes.Game.I18N.VARS.MUTUABLES.*;
-import static classes.Game.Model.Structure.Board.*;
+import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Game.Model.Structure.Move.*;
 
 @Getter

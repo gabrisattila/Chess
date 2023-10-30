@@ -8,16 +8,14 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Set;
-import java.util.stream.DoubleStream;
 
 import static classes.Ai.FenConverter.*;
-import static classes.Ai.AiTree.*;
 import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.Model.Logic.EDT.*;
 import static classes.Game.Model.Structure.Board.*;
-import static classes.Game.Model.Structure.Move.*;
-import static classes.Game.I18N.VARS.MUTUABLES.*;
+import static classes.Game.I18N.VARS.MUTABLE.*;
+import static classes.Game.Model.Structure.Move.MOVE;
 
 @Getter
 @Setter
@@ -74,6 +72,37 @@ public class AI extends Thread {
 
     public String Move() throws ChessGameException, InterruptedException {
 
+        return moveWithSimpleAi();
+//        return moveWithMiniMaxAi();
+
+    }
+
+    public String moveWithSimpleAi() throws ChessGameException {
+
+        Random random = new Random();
+        getAiBoard().rangeUpdater();
+
+        Piece stepper;
+        ArrayList<Piece> possibleSteppers = new ArrayList<>();
+        for (IPiece p : getAiBoard().myPieces()) {
+            if (!p.getPossibleRange().isEmpty()){
+                possibleSteppers.add((Piece) p);
+            }
+        }
+        stepper = possibleSteppers.get(random.nextInt(0, possibleSteppers.size()));
+
+
+        ArrayList<Location> ableToStepThereIn = new ArrayList<>(stepper.getPossibleRange());
+        int indexOfChosen = random.nextInt(0, ableToStepThereIn.size());
+        Location toStepOn = ableToStepThereIn.get(indexOfChosen);
+
+        MOVE(getAiBoard(), stepper, toStepOn);
+
+
+        return BoardToFen(getAiBoard());
+    }
+
+    private String moveWithMiniMaxAi() throws ChessGameException {
         AiTree tree = new AiTree(BoardToFen(getAiBoard()));
 
         double best = miniMax(tree, 0, whiteToPlay, -350, 350);
@@ -88,13 +117,11 @@ public class AI extends Thread {
         }
 
         return bestChildsFen;
-
     }
 
     private double miniMax(AiTree starterPos, int depth, boolean maxNeeded, double alpha, double beta) throws ChessGameException {
 
-        FenToBoard(starterPos.getFen(), getAiBoard());
-        getAiBoard().rangeUpdater();
+
 
         if (depth == MINIMAX_DEPTH || starterPos.isGameEndInPos()){
 
@@ -109,6 +136,9 @@ public class AI extends Thread {
 
             return evaluate(starterPos);
         }
+
+        FenToBoard(starterPos.getFen(), getAiBoard());
+        getAiBoard().rangeUpdater();
 
         Set<String> possibilities = starterPos.collectPossibilities();
 

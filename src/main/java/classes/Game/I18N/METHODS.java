@@ -6,7 +6,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static classes.Ai.FenConverter.*;
-import static classes.Game.I18N.VARS.MUTUABLES.*;
+import static classes.Game.I18N.VARS.MUTABLE.*;
 
 public class METHODS {
 
@@ -129,16 +129,6 @@ public class METHODS {
         }
         return o1;
     }
-
-//    public static void pieceChangeOnBoard(IPiece piece, Location from, Location to) {
-//        try {
-//            to.setPiece(piece);
-//            from.clean();
-//            whiteToPlay = !whiteToPlay;
-//        } catch (ChessGameException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
 
     public static Set<Location> locationSetTimesN(Set<Location> list, int n){
         return list.stream().map(t -> t.times(n)).collect(Collectors.toSet());

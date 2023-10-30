@@ -5,13 +5,10 @@ import classes.Game.I18N.*;
 import classes.Game.I18N.Location;
 import classes.Game.Model.Structure.*;
 
-import java.util.ArrayList;
-import java.util.stream.Collectors;
-
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
-import static classes.Game.I18N.VARS.MUTUABLES.*;
+import static classes.Game.I18N.VARS.MUTABLE.*;
 
 /**
  * FEN string structure:

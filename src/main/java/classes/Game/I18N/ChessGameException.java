@@ -3,9 +3,6 @@ package classes.Game.I18N;
 
 import lombok.*;
 
-import static classes.Game.I18N.METHODS.*;
-import static classes.Game.I18N.VARS.MUTUABLES.MAX_HEIGHT;
-
 @Getter
 @Setter
 public class ChessGameException extends Exception{

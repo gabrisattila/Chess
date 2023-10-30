@@ -6,15 +6,11 @@ import lombok.*;
 
 import javax.swing.*;
 
-import java.awt.*;
-import java.util.Scanner;
-
-import java.io.IOException;
 import java.util.Scanner;
 
 import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.VARS.FINALS.*;
-import static classes.Game.I18N.VARS.MUTUABLES.*;
+import static classes.Game.I18N.VARS.MUTABLE.*;
 
 @Getter
 @Setter
@@ -39,8 +35,8 @@ public class Window extends JFrame {
         setAiNumberDemand();
 
         frameSetup();
-        setUpSides();
-//        getViewBoard().pieceSetUp(usualFens.get("onlyKnights4x4"));
+//        setUpSides();
+        getViewBoard().pieceSetUp(usualFens.get("whiteDownOnlyKingsAndRooks"));
 
         gameBoard = new GameBoard(getViewBoard());
         add(gameBoard);

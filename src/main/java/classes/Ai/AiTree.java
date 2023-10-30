@@ -4,13 +4,13 @@ package classes.Ai;
 import classes.Game.I18N.*;
 import classes.Game.Model.Structure.IPiece;
 import classes.Game.Model.Structure.Move;
+import classes.Game.Model.Structure.Piece;
 import lombok.*;
 
 import java.util.*;
 
 import static classes.Ai.FenConverter.*;
-import static classes.Game.I18N.METHODS.*;
-import static classes.Game.I18N.VARS.MUTUABLES.*;
+import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Game.Model.Structure.Board.*;
 import static classes.Game.Model.Structure.Move.*;
 
@@ -66,6 +66,13 @@ public class AiTree {
         HashMap<IPiece, Set<Move>> legals;
         getAiBoard().addLegalMovesToPieces();
         legals = getAiBoard().getAllLegalMoves(whiteToPlay);
+        for (IPiece p : legals.keySet()) {
+            System.out.print(p.toSString() + " to: ");
+            for (Move m : ((Piece) p).getLegalMoves()) {
+                System.out.print(m.getTo().toString());
+            }
+            System.out.println();
+        }
         return legals;
     }
 
@@ -74,7 +81,7 @@ public class AiTree {
             for (Move m : legalMoves.get(p)) {
                 MOVE(getAiBoard(), m);
                 possibilities.add(BoardToFen(getAiBoard()));
-                FenToBoard(fen, getAiBoard());
+                 FenToBoard(fen, getAiBoard());
             }
         }
     }

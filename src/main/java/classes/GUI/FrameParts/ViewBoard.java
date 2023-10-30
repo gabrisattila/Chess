@@ -8,7 +8,7 @@ import lombok.*;
 import java.util.*;
 
 import static classes.Game.I18N.METHODS.*;
-import static classes.Game.I18N.VARS.MUTUABLES.*;
+import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Game.Model.Structure.Board.*;
 
 @Getter

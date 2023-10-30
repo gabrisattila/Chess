@@ -190,13 +190,13 @@ public class VARS {
 
     }
 
-    public static class MUTUABLES{
+    public static class MUTABLE {
 
         public static int MAX_WIDTH = 8;
 
         public static int MAX_HEIGHT = 8;
 
-        public static int MINIMAX_DEPTH = 2;
+        public static int MINIMAX_DEPTH = 4;
 
         public static PieceSet whitePieceSet = new PieceSet(){{
             add(new Piece());
