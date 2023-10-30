@@ -36,7 +36,7 @@ public class Window extends JFrame {
 
         frameSetup();
 //        setUpSides();
-        getViewBoard().pieceSetUp(usualFens.get("whiteDownOnlyKingsAndRooks"));
+        getViewBoard().pieceSetUp(usualFens.get("whiteDownOneRookTwoKing4x4"));
 
         gameBoard = new GameBoard(getViewBoard());
         add(gameBoard);

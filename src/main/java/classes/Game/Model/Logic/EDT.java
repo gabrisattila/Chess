@@ -62,18 +62,22 @@ public class EDT {
             if (whiteAiNeeded) {
                 aiTurn = true;
                 playerTurn = false;
-                startAi("WHITE");
+                startAI();
             }
             else {
                 aiTurn = false;
                 playerTurn = true;
             }
         }else {
-            startAi("WHITE");
+            startAI();
         }
     }
 
-    public static void startAi(String color){
+    public static void startAI(){
+        startAnAi(whiteToPlay ? "WHITE" : "BLACK");
+    }
+
+    public static void startAnAi(String color){
         if (WHITE_STRING.equals(color)){
             aiW = new AI(color);
             SwingUtilities.invokeLater(() -> {
@@ -113,7 +117,7 @@ public class EDT {
                 switchWhoComes();
                 getViewBoard().rangeUpdater();
             }else {
-                startAi(whiteToPlay ? "WHITE" : "BLACK");
+                startAI();
             }
         } catch (ChessGameException | InterruptedException e) {
             throw new RuntimeException(e);

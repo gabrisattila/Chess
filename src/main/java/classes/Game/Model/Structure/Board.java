@@ -15,6 +15,7 @@ import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
+import static classes.Game.Model.Structure.GameOver.*;
 
 
 /**
@@ -43,10 +44,12 @@ public class Board implements IBoard {
     private Pair<IPiece, IPiece> checkers;
 
     /**
-     * The first one is true if someone got check mate in the current situation. The second one is true if this one is white
+     * The first one is true if the one who comes got check mate in the current situation.
      * Annyi bizonyos, hogy ez esetben mindig a sakkot kapott játékos lépése során derül ki, ha ő éppen mattot kapott.
      */
-    private Pair<Boolean, Boolean> checkMateFor;
+    private boolean CheckMate;
+
+    private boolean Draw;
 
     //endregion
 
@@ -61,7 +64,8 @@ public class Board implements IBoard {
         pieces = new ArrayList<>();
         whiteKing = new Piece();
         blackKing = new Piece();
-        checkMateFor = new Pair<>(false, false);
+        CheckMate = false;
+        Draw = false;
     }
 
     public static Board getBoard() throws ChessGameException {
@@ -150,7 +154,7 @@ public class Board implements IBoard {
         return whiteNeeded ? whiteKing : blackKing;
     }
 
-    private IPiece getMyKing() {
+    public IPiece getMyKing() {
         return getKing(whiteToPlay);
     }
 
@@ -187,15 +191,20 @@ public class Board implements IBoard {
         pseudos();
         if (theBoardHasKings()){
             constrainPseudos();
-//            inspectCheck(!whiteToPlay);
-//
-//            if (isNull(checkers)) {
+            inspectCheck(!whiteToPlay);
+
+            if (isNull(checkers)) {
                 kingsRanges();
-//            }else {
-//                if(amIGotCheckMate()){
-//                    checkMateFor = new Pair<>(true, whiteToPlay);
-//                }
-//            }
+            }else {
+                GameOver gameOver = gameEnd(this);
+                if(notNull(gameOver)){
+                    if (gameOver == GameOver.CheckMate){
+                        CheckMate = true;
+                    }else {
+                        Draw = true;
+                    }
+                }
+            }
         }
         rookCastleParaming();
         emPassantCaseSet();
@@ -282,7 +291,8 @@ public class Board implements IBoard {
 
     private void clearRangesAndStuffBeforeUpdate(){
         checkers = null;
-        checkMateFor.setFirst(false);
+        CheckMate = false;
+        Draw = false;
         for (IPiece p : pieces) {
             ((Piece) p).setPossibleRange(new HashSet<>());
             ((Piece) p).setLegals("new");
@@ -303,14 +313,6 @@ public class Board implements IBoard {
         constrainTheCalculatedPseudos(!whiteToPlay);
         constrainTheCalculatedPseudos(whiteToPlay);
 
-    }
-
-    public boolean amIGotCheckMate(){
-        if (notNull(checkers.getSecond())){
-            return ((Piece) getMyKing()).getLegalMoves().isEmpty();
-        }else {
-            return pieces.stream().allMatch(p -> p.getPossibleRange().isEmpty());
-        }
     }
 
     private void kingsRanges() throws ChessGameException {

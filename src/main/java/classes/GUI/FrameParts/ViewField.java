@@ -112,7 +112,7 @@ public class ViewField extends JButton implements classes.Game.Model.Structure.I
                 if (theresOnlyOneAi){
                     PlayerClick((ViewField) e.getSource());
                     if (aiTurn) {
-                        startAi(whiteToPlay ? "WHITE" : "BLACK");
+                        startAI();
                     }
                 }
             } catch (ChessGameException | InterruptedException ex) {

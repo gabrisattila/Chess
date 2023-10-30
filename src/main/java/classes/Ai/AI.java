@@ -72,8 +72,8 @@ public class AI extends Thread {
 
     public String Move() throws ChessGameException, InterruptedException {
 
-        return moveWithSimpleAi();
-//        return moveWithMiniMaxAi();
+//        return moveWithSimpleAi();
+        return moveWithMiniMaxAi();
 
     }
 
@@ -121,24 +121,28 @@ public class AI extends Thread {
 
     private double miniMax(AiTree starterPos, int depth, boolean maxNeeded, double alpha, double beta) throws ChessGameException {
 
-
+        FenToBoard(starterPos.getFen(), getAiBoard());
+        getAiBoard().rangeUpdater();
 
         if (depth == MINIMAX_DEPTH || starterPos.isGameEndInPos()){
 
             if (starterPos.isGameEndInPos()){
-                if (getAiBoard().getCheckMateFor().getSecond())
-                    //Sötét nyert, mert világos kapott mattot
-                    return -5000;
-                else
-                    //Világos nyert, mert sötét kapott mattot
-                    return 5000;
+                if (getAiBoard().isCheckMate()) {
+                    if (whiteToPlay) {
+                        //Sötét nyert, mert világos kapott mattot
+                        return -5000;
+                    } else {
+                        //Világos nyert, mert sötét kapott mattot
+                        return 5000;
+                    }
+                }else if (getAiBoard().isDraw()) {
+                    //TODO Kitalálni kinek hogyan súlyozzam adott helyzethez mérten
+                    return 0;
+                }
             }
 
             return evaluate(starterPos);
         }
-
-        FenToBoard(starterPos.getFen(), getAiBoard());
-        getAiBoard().rangeUpdater();
 
         Set<String> possibilities = starterPos.collectPossibilities();
 

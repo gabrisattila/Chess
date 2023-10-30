@@ -49,7 +49,7 @@ public class AiTree {
     //region Methods
 
     public boolean isGameEndInPos() throws ChessGameException {
-        return getAiBoard().getCheckMateFor().getFirst();
+        return getAiBoard().isDraw() || getAiBoard().isCheckMate();
     }
 
     public Set<String> collectPossibilities() throws ChessGameException {
@@ -67,7 +67,6 @@ public class AiTree {
         getAiBoard().addLegalMovesToPieces();
         legals = getAiBoard().getAllLegalMoves(whiteToPlay);
         for (IPiece p : legals.keySet()) {
-            System.out.print(p.toSString() + " to: ");
             for (Move m : ((Piece) p).getLegalMoves()) {
                 System.out.print(m.getTo().toString());
             }
