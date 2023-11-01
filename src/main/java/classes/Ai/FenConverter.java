@@ -171,7 +171,8 @@ public class FenConverter {
                         lengthOfPart++;
                     }
                 }
-                if (MAX_HEIGHT != lengthOfPart){
+
+                if (MAX_WIDTH != lengthOfPart){
                     fenIsWrong = true;
                 }
                 lengthOfPart = 0;

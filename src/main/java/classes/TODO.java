@@ -2,6 +2,9 @@ package classes;
 
 public class TODO {
 
+    //TODO Matt és Patt esetének lekezelése.
+    // Akár AI -> ez akkor van ugye ha az a final lehetőség
+    // akár Ember kerül bele -> ez meg ha simán olyan fen-t kap a View-ba a player.
 
     //TODO !!!
     // Minimax alatt nem elfelejteni A Castle és az EmPassant helyzeteket lekezelni

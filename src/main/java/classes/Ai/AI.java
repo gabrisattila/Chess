@@ -184,9 +184,13 @@ public class AI extends Thread {
 
         FenToBoard(aiTree.getFen(), getAiBoard());
 
-        return getAiBoard().getPieces().stream()
-                .mapToDouble(p -> ((Piece) p).getVALUE())
-                .sum();
+        double sum = 0;
+
+        for (IPiece p : getAiBoard().getPieces()) {
+            sum += ((Piece) p).getVALUE();
+        }
+
+        return sum;
     }
 
 

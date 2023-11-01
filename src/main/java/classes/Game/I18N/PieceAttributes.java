@@ -36,8 +36,8 @@ public class PieceAttributes {
 
     public PieceAttributes(PieceType pieceType, String color){
         type = pieceType;
-        valueSetting();
         this.color = color;
+        valueSetting();
         enemyAndOwnStartRow = new Pair<>();
     }
 

@@ -66,12 +66,12 @@ public class AiTree {
         HashMap<IPiece, Set<Move>> legals;
         getAiBoard().addLegalMovesToPieces();
         legals = getAiBoard().getAllLegalMoves(whiteToPlay);
-        for (IPiece p : legals.keySet()) {
-            for (Move m : ((Piece) p).getLegalMoves()) {
-                System.out.print(m.getTo().toString());
-            }
-            System.out.println();
-        }
+//        for (IPiece p : legals.keySet()) {
+//            for (Move m : ((Piece) p).getLegalMoves()) {
+//                System.out.print(m.getTo().toString());
+//            }
+//            System.out.println();
+//        }
         return legals;
     }
 
