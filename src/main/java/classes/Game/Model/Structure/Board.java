@@ -189,11 +189,14 @@ public class Board implements IBoard {
 
         clearRangesAndStuffBeforeUpdate();
         pseudos();
-        GameOver gameOver = gameEnd(this);
+        GameOver gameOver;
         if (theBoardHasKings()){
             constrainPseudos();
             inspectCheck(!whiteToPlay);
-
+            if (isNull(checkers)) {
+                kingsRanges();
+            }
+            gameOver = gameEnd(this);
             if (notNull(gameOver)){
                 if (gameOver == GameOver.CheckMate){
                     CheckMate = true;
@@ -203,9 +206,7 @@ public class Board implements IBoard {
                 return;
             }
 
-            if (isNull(checkers)) {
-                kingsRanges();
-            }
+
         }
 
         rookCastleParaming();

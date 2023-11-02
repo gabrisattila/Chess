@@ -2,9 +2,13 @@ package classes;
 
 public class TODO {
 
+    //TODO MiniMax megérteni
+
     //TODO Matt és Patt esetének lekezelése.
     // Akár AI -> ez akkor van ugye ha az a final lehetőség
-    // akár Ember kerül bele -> ez meg ha simán olyan fen-t kap a View-ba a player.
+    // akár Ember kerül bele -> ez meg ha simán olyan fen-t kap a View-ba a player
+
+    //TODO Kideríteni, miért nem megy fel a finalVal a kezdő alatti szintre miniMax-ban
 
     //TODO !!!
     // Minimax alatt nem elfelejteni A Castle és az EmPassant helyzeteket lekezelni

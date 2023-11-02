@@ -105,21 +105,65 @@ public class AI extends Thread {
     private String moveWithMiniMaxAi() throws ChessGameException {
         AiTree tree = new AiTree(BoardToFen(getAiBoard()));
 
-        double best = miniMax(tree, 0, whiteToPlay, -350, 350);
+        double best = newMiniMax(tree, MINIMAX_DEPTH, -350, 350);
 
         String bestChildsFen = "";
 
         for (AiTree child : tree.getChildren()) {
             if (best == child.getFinalValue()){
                 bestChildsFen = child.getFen();
+                FenToBoard(bestChildsFen, getAiBoard());
                 break;
             }
         }
 
+        if (getAiBoard().isDraw() || getAiBoard().isCheckMate()){
+            //TODO GameOver lekezelése
+        }
         return bestChildsFen;
     }
 
-    private double miniMax(AiTree starterPos, int depth, boolean maxNeeded, double alpha, double beta) throws ChessGameException {
+    private double newMiniMax(AiTree starterPos, int depth, double alpha, double beta) throws ChessGameException {
+
+        FenToBoard(starterPos.getFen(), getAiBoard());
+        getAiBoard().rangeUpdater();
+
+        if (depth == 0){
+            return evaluate(starterPos);
+        }
+
+        if (starterPos.isGameEndInPos()){
+            if (getAiBoard().isCheckMate()){
+                return -5000;
+            }else {
+                return 0;
+            }
+        }
+
+        Set<String> possibilities = starterPos.collectPossibilities();
+
+        AiTree nextChild;
+        for (String child : possibilities) {
+
+            nextChild = new AiTree(child);
+            starterPos.getChildren().add(nextChild);
+
+            double evaluation = -newMiniMax(nextChild, depth - 1, -beta, -alpha);
+
+            if (evaluation >= beta){
+                break;
+            }
+
+            alpha = Math.max(alpha, evaluation);
+
+        }
+
+        starterPos.setFinalValue(alpha);
+        return alpha;
+
+    }
+
+    private double oldMiniMax(AiTree starterPos, int depth, boolean maxNeeded, double alpha, double beta) throws ChessGameException {
 
         FenToBoard(starterPos.getFen(), getAiBoard());
         getAiBoard().rangeUpdater();
@@ -153,7 +197,7 @@ public class AI extends Thread {
 
                 nextChild = new AiTree(child);
                 starterPos.getChildren().add(nextChild);
-                double evaluatedMiniMax = miniMax(nextChild, depth < MINIMAX_DEPTH ? depth + 1 : depth, false, alpha, beta);
+                double evaluatedMiniMax = oldMiniMax(nextChild, depth < MINIMAX_DEPTH ? depth + 1 : depth, false, alpha, beta);
 
                 possibleMax = Math.max(possibleMax, evaluatedMiniMax);
                 alpha = Math.max(alpha, evaluatedMiniMax);
@@ -168,7 +212,7 @@ public class AI extends Thread {
 
                 nextChild = new AiTree(child);
                 starterPos.getChildren().add(nextChild);
-                double evaluatedMiniMax = miniMax(nextChild, depth < MINIMAX_DEPTH ? depth + 1 : depth, true, alpha, beta);
+                double evaluatedMiniMax = oldMiniMax(nextChild, depth < MINIMAX_DEPTH ? depth + 1 : depth, true, alpha, beta);
 
                 possibleMin = Math.min(possibleMin, evaluatedMiniMax);
                 beta = Math.min(beta, evaluatedMiniMax);

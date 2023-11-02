@@ -159,7 +159,8 @@ public class VARS {
             put("whiteDownPawnsFront", "8/PPPPPPPP/8/8/8/8/pppppppp/8 w ---- - 1 0");
             put("blackDownPawnsFront", "8/pppppppp/8/8/8/8/PPPPPPPP/8 w ---- - 1 0");
             put("whiteDown2x3Pawn", "8/8/8/P3P3/8/8/3ppp2/8 w ---- - 1 0");
-            put("whiteDownOneRookTwoKing4x4", "4/K12/4/k2R b ---- - 1 1");
+            put("whiteDownOneRookTwoKing4x4", "K3/1R2/4/k3 b ---- - 1 1");
+            put("whiteDownOneRookTwoKing3x3", "K1R/3/1k1 w ---- - 1 0");
         }};
 
         //region PieceViews
@@ -192,11 +193,11 @@ public class VARS {
 
     public static class MUTABLE {
 
-        public static int MAX_WIDTH = 4;
+        public static int MAX_WIDTH = 3;
 
-        public static int MAX_HEIGHT = 4;
+        public static int MAX_HEIGHT = 3;
 
-        public static int MINIMAX_DEPTH = 2;
+        public static int MINIMAX_DEPTH = 6;
 
         public static PieceSet whitePieceSet = new PieceSet(){{
             add(new Piece());

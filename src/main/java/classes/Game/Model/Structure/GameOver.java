@@ -2,8 +2,8 @@ package classes.Game.Model.Structure;
 
 import lombok.*;
 
-import static classes.Game.I18N.METHODS.isNull;
-import static classes.Game.I18N.METHODS.notNull;
+import static classes.Game.I18N.METHODS.*;
+import static classes.Game.I18N.PieceType.*;
 
 @Getter
 public enum GameOver {
@@ -21,7 +21,7 @@ public enum GameOver {
                     board.myPieces().stream().allMatch(p -> p.getPossibleRange().isEmpty())) {
                 return CheckMate;
             }
-        } else if (board.myPieces().stream().allMatch(p -> p.getPossibleRange().isEmpty())){
+        } else if (board.getPieces().stream().allMatch(p -> p.getType() == K) || board.myPieces().stream().allMatch(p ->((Piece) p).getLegalMoves().isEmpty())){
             return Draw;
         }
 
