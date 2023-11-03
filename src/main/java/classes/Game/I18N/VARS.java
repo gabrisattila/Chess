@@ -8,6 +8,7 @@ import java.util.*;
 
 import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
+import static classes.Game.I18N.VARS.MUTABLE.*;
 
 public class VARS {
 
@@ -18,6 +19,42 @@ public class VARS {
         public static final int FIELD_WIDTH = 75;
 
         public static final int FIELD_HEIGHT = 75;
+
+        public static final double SCREEN_HEIGHT = screenSize.getHeight();
+
+        public static final double SCREEN_WIDTH = screenSize.getWidth();;
+
+        public static final double BOARD_HEIGHT = FIELD_HEIGHT * MAX_HEIGHT;
+
+        public static final double BOARD_WIDTH = FIELD_WIDTH * MAX_WIDTH;
+
+
+        /**
+         * This is the X coordinate where the board starts. It's used in calculate the position of the board.
+         */
+        public static final double BOARD_START_X = (SCREEN_WIDTH - BOARD_WIDTH) / 2;
+
+        /**
+         * This is the Y coordinate where the board starts. It's used in calculate the position of the board.
+         */
+        public static final double BOARD_START_Y = (SCREEN_HEIGHT - BOARD_HEIGHT) / 2;
+
+        public static final double LOGGER_WIDTH = BOARD_START_X - (BOARD_START_X / 10);
+
+        public static final double LOGGER_HEIGHT = SCREEN_HEIGHT;
+
+        public static final double LOGGER_START_X = BOARD_START_X + 8 * FIELD_WIDTH + (BOARD_START_X / 25);
+
+        public static final double LOGGER_START_Y = 0;
+
+        public static final double HORIZONTAL_SIDE_LABEL_WIDTH = FIELD_WIDTH;
+
+        public static final double HORIZONTAL_SIDE_LABEL_HEIGHT = 15;
+
+        public static final double VERTICAL_SIDE_LABEL_WIDTH = 15;
+
+        public static final double VERTICAL_SIDE_LABEL_HEIGHT = FIELD_HEIGHT;
+
 
         public static final String WHITE_STRING = "WHITE";
 
@@ -236,33 +273,6 @@ public class VARS {
             add(new Piece());
             add(new Piece());
         }};
-
-        public static double SCREEN_HEIGHT = screenSize.getHeight();
-
-        public static double SCREEN_WIDTH = screenSize.getWidth();;
-
-        public static double BOARD_HEIGHT = FIELD_HEIGHT * MAX_HEIGHT;
-
-        public static double BOARD_WIDTH = FIELD_WIDTH * MAX_WIDTH;
-
-
-        /**
-         * This is the X coordinate where the board starts. It's used in calculate the position of the board.
-         */
-        public static double BOARD_START_X = (SCREEN_WIDTH - BOARD_WIDTH) / 2;
-
-        /**
-         * This is the Y coordinate where the board starts. It's used in calculate the position of the board.
-         */
-        public static double BOARD_START_Y = (SCREEN_HEIGHT - BOARD_HEIGHT) / 2;
-
-        public static double LOGGER_WIDTH = BOARD_START_X - (BOARD_START_X / 10);
-
-        public static double LOGGER_HEIGHT = SCREEN_HEIGHT;
-
-        public static double LOGGER_START_X = BOARD_START_X + 8 * FIELD_WIDTH + (BOARD_START_X / 25);
-
-        public static double LOGGER_START_Y = 0;
 
         public static int CLICK_COUNTER = 0;
 
