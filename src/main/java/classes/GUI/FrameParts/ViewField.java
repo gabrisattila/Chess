@@ -5,6 +5,8 @@ import classes.Game.I18N.Location;
 import classes.Game.I18N.PieceAttributes;
 
 import classes.Game.Model.Structure.IPiece;
+import classes.Game.Model.Structure.Move;
+import classes.Game.Model.Structure.Piece;
 import lombok.*;
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
@@ -12,10 +14,12 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 import static classes.GUI.FrameParts.ViewBoard.*;
+import static classes.Game.I18N.PieceType.*;
 import static classes.Game.Model.Logic.EDT.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
+import static classes.Game.Model.Structure.Board.getBoard;
 import static classes.Game.Model.Structure.Move.*;
 
 @Getter
@@ -163,6 +167,21 @@ public class ViewField extends JButton implements classes.Game.Model.Structure.I
         }
 
         private void moveToClicked(ViewField clicked) throws ChessGameException {
+
+            if (pieceToChange.getType() == G && (clicked.getI() == 0 || clicked.getI() == 7)){
+
+                //TODO pop up megcsinálni. Milyen type legyen. Ezután ebből string készítése
+
+                ((Piece) getBoard().getPiece(pieceToChange.getLocation())).getLegalMoves().add(new Move(
+                        getViewBoard(),
+                        getBoard().getPiece(pieceToChange.getLocation()),
+                        lastClicked.getLoc(),
+                        clicked.getLoc(),
+                        notNull(getBoard().getPiece(pieceToChange.getLocation())) ? getBoard().getPiece(pieceToChange.getLocation()) : null,
+                        "p_V"
+                ));
+
+            }
 
             MOVE(getViewBoard(), pieceToChange, clicked.loc);
 

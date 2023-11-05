@@ -234,7 +234,7 @@ public class VARS {
 
         public static int MAX_HEIGHT = 3;
 
-        public static int MINIMAX_DEPTH = 6;
+        public static int MINIMAX_DEPTH = 4;
 
         public static PieceSet whitePieceSet = new PieceSet(){{
             add(new Piece());
