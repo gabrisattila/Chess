@@ -48,6 +48,18 @@ public class AiTree {
 
     //region Methods
 
+    //region Tree Methods
+
+    public static void addToContinuousTree(String fen) throws ChessGameException {
+        AiTree child = new AiTree(fen);
+        child.setFinalValue(evaluate(child));
+        for (AiTree next = continuousTree; !next.getChildren().isEmpty(); next = ((AiTree)next.getChildren().toArray()[0])){
+            next.getChildren().add(child);
+        }
+    }
+
+    //endregion
+
     public boolean isGameEndInPos() throws ChessGameException {
         return getAiBoard().isDraw() || getAiBoard().isCheckMate();
     }

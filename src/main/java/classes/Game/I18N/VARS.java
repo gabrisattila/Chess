@@ -1,5 +1,6 @@
 package classes.Game.I18N;
 
+import classes.Ai.AiTree;
 import classes.GUI.FrameParts.*;
 import classes.Game.Model.Structure.*;
 
@@ -8,7 +9,6 @@ import java.awt.*;
 import java.util.*;
 
 import static classes.Game.I18N.PieceType.*;
-import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 
 public class VARS {
@@ -250,6 +250,14 @@ public class VARS {
         public static int MAX_HEIGHT = 1;
 
         public static int MINIMAX_DEPTH = 2;
+
+        public static String starterFen = "whiteDownStarter";
+
+        public static AiTree continuousTree = new AiTree(starterFen);
+
+        public static AiTree storeTree = new AiTree();
+
+        public static HashSet<String> alreadyEvaluatedFens = new HashSet<>();
 
         public static PieceSet whitePieceSet = new PieceSet(){{
             add(new Piece());

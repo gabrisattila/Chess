@@ -2,6 +2,10 @@ package classes;
 
 public class TODO {
 
+    //TODO TODO-k összegzése, átírása ÖSSZESZEDÉSE
+
+    //TODO Miképpen is működjék az AiTree
+
     //TODO PawnGotIn case lekezelni még a Piece-ben. Azt megfelelő string-ként lekommunikálni, átgondolni hogy lenne jó.
 
     //TODO MiniMax megérteni

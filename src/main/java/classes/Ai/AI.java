@@ -9,10 +9,11 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Set;
 
+import static classes.Ai.AiTree.*;
 import static classes.Ai.FenConverter.*;
 import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.METHODS.*;
-import static classes.Game.I18N.PieceType.G;
+import static classes.Game.I18N.PieceType.*;
 import static classes.Game.Model.Logic.EDT.*;
 import static classes.Game.Model.Structure.Board.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
@@ -65,6 +66,7 @@ public class AI extends Thread {
         String fen;
         try {
             fen = Move();
+            addToContinuousTree(fen);
         } catch (ChessGameException | InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -99,7 +101,6 @@ public class AI extends Thread {
 
         boolean gonnaBePawnGotIn = checkIfItsPawnGotIn(stepper, toStepOn);
         MOVE(getAiBoard(), stepper, toStepOn, gonnaBePawnGotIn);
-
 
         return BoardToFen(getAiBoard());
     }
@@ -236,7 +237,7 @@ public class AI extends Thread {
         }
     }
 
-    private double evaluate(AiTree aiTree) throws ChessGameException {
+    public static double evaluate(AiTree aiTree) throws ChessGameException {
 
         FenToBoard(aiTree.getFen(), getAiBoard());
 
