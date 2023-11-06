@@ -90,9 +90,9 @@ public class FenConverter {
     public static String BoardToFen(IBoard board) throws ChessGameException {
         int counterForRows = 0;
         StringBuilder fenToReturn = new StringBuilder();
-        for (int i = 0; i < MAX_WIDTH; i++) {
-            for (int j = 0; j < MAX_HEIGHT; j++) {
-                classes.Game.Model.Structure.IField f = board.getFields().get(i).get(j);
+        for (int i = 0; i < MAX_HEIGHT; i++) {
+            for (int j = 0; j < MAX_WIDTH; j++) {
+                IField f = board.getFields().get(i).get(j);
                 if (! ((f instanceof Field ) || (f instanceof ViewField))){
                     throw new ChessGameException(f, BAD_TYPE_MSG);
                 }

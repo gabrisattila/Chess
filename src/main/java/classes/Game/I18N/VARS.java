@@ -245,9 +245,9 @@ public class VARS {
 
     public static class MUTABLE {
 
-        public static int MAX_WIDTH = 8;
+        public static int MAX_WIDTH = 1;
 
-        public static int MAX_HEIGHT = 8;
+        public static int MAX_HEIGHT = 1;
 
         public static int MINIMAX_DEPTH = 2;
 
@@ -320,6 +320,10 @@ public class VARS {
         public static int stepNumber = 1;
 
         public static int evenOrOddStep = 0;
+
+        public static int abcLabelCounter = 0;
+
+        public static int numLabelCounter = 0;
 
     }
 

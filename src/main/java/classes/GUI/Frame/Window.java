@@ -32,19 +32,31 @@ public class Window extends JFrame {
 
     private Window() throws ChessGameException {
 
+        addButtons();
+        addLogger();
+
         setAiNumberDemand();
 
         frameSetup();
 //        setUpSides();
-        getViewBoard().pieceSetUp(usualFens.get("whiteDownPawnsFront"));
+//        getViewBoard().pieceSetUp(usualFens.get("whiteDownPawnsFront"));
 
-        gameBoard = new GameBoard(getViewBoard());
+        gameBoard = new GameBoard();
         add(gameBoard);
 
         logger = loggerBox();
 //        add(logger);
 
+
         setVisible(true);
+
+    }
+
+    private void addButtons() {
+
+    }
+
+    private void addLogger() {
 
     }
 

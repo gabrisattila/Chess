@@ -1,8 +1,11 @@
 package classes.GUI.FrameParts;
 
+import classes.Game.I18N.Location;
 import lombok.*;
 
 import javax.swing.*;
+
+import java.awt.*;
 
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
@@ -22,7 +25,25 @@ public class SideLabel extends JLabel {
 
     //region Constructor
 
+    public SideLabel(Location location, boolean vertical){
+        new SideLabel(location.getI(), location.getJ(), vertical);
+    }
+
     public SideLabel(int x, int y, boolean vertical){
+
+        setText((vertical ? számok.get(numLabelCounter) : abc.get(abcLabelCounter)) + " ");
+        if (vertical)
+            numLabelCounter++;
+        else
+            abcLabelCounter++;
+
+        setBackground(BLACK);
+        setForeground(WHITE);
+        setVerticalAlignment(CENTER);
+        setHorizontalAlignment(CENTER);
+        setFont(new Font("Source Code Pro", Font.BOLD, 20));
+        setVisible(true);
+
         setBounds(
                 x, y,
                 (int) (vertical ? VERTICAL_SIDE_LABEL_WIDTH : HORIZONTAL_SIDE_LABEL_WIDTH),
@@ -34,20 +55,6 @@ public class SideLabel extends JLabel {
 
 
     //region Methods
-
-    public static void setUpLabels(){
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < MAX_WIDTH; j++) {
-
-                if (i % 2 == 0) /* Horizontal - Vízszintes */ {
-
-                }else /* Vertical - Függőleges */ {
-
-                }
-
-            }
-        }
-    }
 
     //endregion
 

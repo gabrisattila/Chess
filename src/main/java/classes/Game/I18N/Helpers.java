@@ -9,10 +9,10 @@ import static classes.Game.I18N.VARS.MUTABLE.*;
 
 public class Helpers {
 
-    public static void fieldNums(ArrayList<ArrayList<ViewField>> fields){
+    public static void fieldNumPrinter(IBoard board){
         for (int i = 0; i < MAX_HEIGHT; i++) {
             for (int j = 0; j < MAX_WIDTH; j++) {
-                fields.get(i).get(j).setText(i + " " + j);
+                ((ViewField)board.getField(i, j)).setText(i + " " + j);
             }
         }
     }

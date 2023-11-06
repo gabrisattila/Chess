@@ -25,7 +25,7 @@ public class BackgroundAndInvokeLaterExample {
             panel.add(button);
             panel.add(resultLabel);
 
-            frame.add(panel);
+            frame.add(panel)
             frame.pack();
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setVisible(true);
