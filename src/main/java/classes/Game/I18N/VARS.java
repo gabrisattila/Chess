@@ -3,6 +3,7 @@ package classes.Game.I18N;
 import classes.GUI.FrameParts.*;
 import classes.Game.Model.Structure.*;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 
@@ -224,17 +225,31 @@ public class VARS {
 
         }};
 
+        public final static ArrayList<ImageIcon> WhitePieceChoiceInsteadOfPawnGotIn = new ArrayList<>(){{
+            add(new ImageIcon("src\\main\\resources\\Figura_Images\\w_huszar.png"));
+            add(new ImageIcon("src\\main\\resources\\Figura_Images\\w_futo.png"));
+            add(new ImageIcon("src\\main\\resources\\Figura_Images\\w_bastya.png"));
+            add(new ImageIcon("src\\main\\resources\\Figura_Images\\w_vezer.png"));
+        }};
+
+        public final static ArrayList<ImageIcon> BlackPieceChoiceInsteadOfPawnGotIn = new ArrayList<>(){{
+            add(new ImageIcon("src\\main\\resources\\Figura_Images\\b_huszar.png"));
+            add(new ImageIcon("src\\main\\resources\\Figura_Images\\b_futo.png"));
+            add(new ImageIcon("src\\main\\resources\\Figura_Images\\b_bastya.png"));
+            add(new ImageIcon("src\\main\\resources\\Figura_Images\\b_vezer.png"));
+        }};
+
         //endregion
 
     }
 
     public static class MUTABLE {
 
-        public static int MAX_WIDTH = 3;
+        public static int MAX_WIDTH = 8;
 
-        public static int MAX_HEIGHT = 3;
+        public static int MAX_HEIGHT = 8;
 
-        public static int MINIMAX_DEPTH = 4;
+        public static int MINIMAX_DEPTH = 2;
 
         public static PieceSet whitePieceSet = new PieceSet(){{
             add(new Piece());

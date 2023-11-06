@@ -1,9 +1,10 @@
 package classes.Game.Model.Structure;
 
 import classes.GUI.FrameParts.ViewBoard;
-import classes.GUI.FrameParts.ViewPiece;
+import classes.GUI.FrameParts.ViewField;
 import classes.Game.I18N.ChessGameException;
 import classes.Game.I18N.Location;
+import classes.Game.I18N.PieceType;
 import lombok.*;
 
 import static classes.Ai.FenConverter.*;
@@ -147,7 +148,7 @@ public class Move {
 
     //region Move main
 
-    public static void MOVE(IBoard board, IPiece what, Location to) throws ChessGameException {
+    public static void MOVE(IBoard board, IPiece what, Location to, boolean itsAiPawnGotIn) throws ChessGameException {
         Move move = new Move(board);
         if (what.getType() == K || what.getType() == B){
             emPassantChance = "-";
@@ -169,6 +170,10 @@ public class Move {
                 ).getTo().EQUALS(to)) {
             emPassantChance = ((Move)((Piece) what).getLegalMoves().toArray()[0]).getEmPassantCastlePawnGotIn();
             move.setEveryThing(what, to, emPassantChance);
+        } else if (itsAiPawnGotIn) {
+            pawnGotInCaseBackground(what, board.getField(what.getLocation()), board.getField(to), board, V);
+            ((Move)((Piece) what).getLegalMoves().toArray()[0]).realMove();
+            return;
         }else {
             emPassantChance = "-";
             move.setEveryThing(what, to);
@@ -176,9 +181,15 @@ public class Move {
         move.realMove();
     }
 
-    public static void MOVE(IBoard board, Move move) throws ChessGameException {
+    public static void MOVE(IBoard board, Move move, boolean itsAiPawnGotIn) throws ChessGameException {
+
         move.setBoardToMoveOn(board);
+
+        if (itsAiPawnGotIn)
+            pawnGotInCaseBackground(move.what, board.getField(move.from), board.getField(move.to), board, V);
+
         move.realMove();
+
     }
 
     public void setEveryThing(IPiece what, Location to) throws ChessGameException {
@@ -243,6 +254,7 @@ public class Move {
             if (itsNotSupposed) {
                 ifItsCastle(castle, toField);
                 ifItsEmPassant(emPassant);
+                ifItIsPawnGotIn(pawnGotIn);
                 logging();
                 changeEvenOrOddStep();
             }
@@ -376,15 +388,43 @@ public class Move {
 
     private void pawnGotInCase(){
         if (emPassantCastlePawnGotIn.isEmpty() ||
-            emPassantCastlePawnGotIn.charAt(0) != 'c' || emPassantCastlePawnGotIn.charAt(1) != '_'){
+            emPassantCastlePawnGotIn.charAt(0) != 'g' || emPassantCastlePawnGotIn.charAt(1) != '_'){
             throw new RuntimeException("Nem gyalogra akarunk gyalogbemenetelt végrehajtani");
         }
         char newType = emPassantCastlePawnGotIn.charAt(2);
         what.getAttributes().setType(charToPieceType(newType));
         what.getAttributes().valueSetting();
-        if (what instanceof ViewPiece){
-            //Icon change
-            //TODO Elgondolni mi legyen azzal, hogy lehessen rendesen működik-e majd ez így?
+    }
+
+    /**
+     * @param what    pawn who goes into the final line
+     * @param from    the field where it steps from
+     * @param to      the field where it changes its type
+     * @param board   the board where the step happens
+     * @param newType the new piece type of the pawn
+     */
+    public static void pawnGotInCaseBackground(IPiece what, IField from, IField to, IBoard board, PieceType newType) throws ChessGameException {
+
+        String pawnGotIn = "g_" + newType.toString();
+
+        if (to instanceof ViewField){
+            ((Piece) getBoard().getPiece(what.getLocation())).getLegalMoves().add(new Move(
+                    board,
+                    getBoard().getPiece(what.getLocation()),
+                    from.getLoc(),
+                    to.getLoc(),
+                    notNull(getBoard().getPiece(to.getLoc())) ? getBoard().getPiece(to.getLoc()) : null,
+                    pawnGotIn
+            ));
+        }else {
+            ((Piece) what).getLegalMoves().add(new Move(
+                    board,
+                    board.getPiece(what.getLocation()),
+                    from.getLoc(),
+                    to.getLoc(),
+                    notNull(board.getPiece(to.getLoc())) ? board.getPiece(to.getLoc()) : null,
+                    pawnGotIn
+            ));
         }
     }
 

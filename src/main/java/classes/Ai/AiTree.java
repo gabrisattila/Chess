@@ -4,11 +4,11 @@ package classes.Ai;
 import classes.Game.I18N.*;
 import classes.Game.Model.Structure.IPiece;
 import classes.Game.Model.Structure.Move;
-import classes.Game.Model.Structure.Piece;
 import lombok.*;
 
 import java.util.*;
 
+import static classes.Ai.AI.*;
 import static classes.Ai.FenConverter.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Game.Model.Structure.Board.*;
@@ -78,7 +78,8 @@ public class AiTree {
     private void doAllLegalMoves(HashMap<IPiece, Set<Move>> legalMoves, Set<String> possibilities) throws ChessGameException {
         for (IPiece p : legalMoves.keySet()) {
             for (Move m : legalMoves.get(p)) {
-                MOVE(getAiBoard(), m);
+                boolean gonnaBePawnGotIn = checkIfItsPawnGotIn(m);
+                MOVE(getAiBoard(), m, gonnaBePawnGotIn);
                 possibilities.add(BoardToFen(getAiBoard()));
                  FenToBoard(fen, getAiBoard());
             }

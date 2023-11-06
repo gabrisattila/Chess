@@ -2,6 +2,8 @@ package classes;
 
 public class TODO {
 
+    //TODO PawnGotIn case lekezelni még a Piece-ben. Azt megfelelő string-ként lekommunikálni, átgondolni hogy lenne jó.
+
     //TODO MiniMax megérteni
 
     //TODO Matt és Patt esetének lekezelése.
@@ -18,7 +20,6 @@ public class TODO {
 
     //TODO Sakk: Elébe lépésnél megnézni, hogy utána is sakkban van-e.
 
-    //TODO Átváltozás ViewBoard-ból kommunikálni Board felé
     //TODO Megcsinálni a tábla szélének feliratait
     //TODO Levett figurák kirakása a tábla mellé
 

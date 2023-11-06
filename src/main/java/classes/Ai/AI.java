@@ -12,10 +12,11 @@ import java.util.Set;
 import static classes.Ai.FenConverter.*;
 import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.METHODS.*;
+import static classes.Game.I18N.PieceType.G;
 import static classes.Game.Model.Logic.EDT.*;
 import static classes.Game.Model.Structure.Board.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
-import static classes.Game.Model.Structure.Move.MOVE;
+import static classes.Game.Model.Structure.Move.*;
 
 @Getter
 @Setter
@@ -96,10 +97,21 @@ public class AI extends Thread {
         int indexOfChosen = random.nextInt(0, ableToStepThereIn.size());
         Location toStepOn = ableToStepThereIn.get(indexOfChosen);
 
-        MOVE(getAiBoard(), stepper, toStepOn);
+        boolean gonnaBePawnGotIn = checkIfItsPawnGotIn(stepper, toStepOn);
+        MOVE(getAiBoard(), stepper, toStepOn, gonnaBePawnGotIn);
 
 
         return BoardToFen(getAiBoard());
+    }
+
+    public static boolean checkIfItsPawnGotIn(Move move){
+        return checkIfItsPawnGotIn(move.getWhat(), move.getTo());
+    }
+
+    private static boolean checkIfItsPawnGotIn(IPiece stepper, Location to){
+        return stepper.getType() == G && (
+                to.getI() == stepper.getAttributes().getEnemyAndOwnStartRow().getFirst() ||
+                to.getI() == 7 || to.getI() == 0);
     }
 
     private String moveWithMiniMaxAi() throws ChessGameException {

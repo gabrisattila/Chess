@@ -4,9 +4,8 @@ import classes.Game.I18N.ChessGameException;
 import classes.Game.I18N.Location;
 import classes.Game.I18N.PieceAttributes;
 
+import classes.Game.I18N.PieceType;
 import classes.Game.Model.Structure.IPiece;
-import classes.Game.Model.Structure.Move;
-import classes.Game.Model.Structure.Piece;
 import lombok.*;
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
@@ -19,7 +18,6 @@ import static classes.Game.Model.Logic.EDT.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
-import static classes.Game.Model.Structure.Board.getBoard;
 import static classes.Game.Model.Structure.Move.*;
 
 @Getter
@@ -168,22 +166,9 @@ public class ViewField extends JButton implements classes.Game.Model.Structure.I
 
         private void moveToClicked(ViewField clicked) throws ChessGameException {
 
-            if (pieceToChange.getType() == G && (clicked.getI() == 0 || clicked.getI() == 7)){
+            pawnGotInCase(clicked);
 
-                //TODO pop up megcsinálni. Milyen type legyen. Ezután ebből string készítése
-
-                ((Piece) getBoard().getPiece(pieceToChange.getLocation())).getLegalMoves().add(new Move(
-                        getViewBoard(),
-                        getBoard().getPiece(pieceToChange.getLocation()),
-                        lastClicked.getLoc(),
-                        clicked.getLoc(),
-                        notNull(getBoard().getPiece(pieceToChange.getLocation())) ? getBoard().getPiece(pieceToChange.getLocation()) : null,
-                        "p_V"
-                ));
-
-            }
-
-            MOVE(getViewBoard(), pieceToChange, clicked.loc);
+            MOVE(getViewBoard(), pieceToChange, clicked.loc, false);
 
             changeColor(clicked);
         }
@@ -222,6 +207,40 @@ public class ViewField extends JButton implements classes.Game.Model.Structure.I
             return (piece.isWhite() && whiteToPlay) ||
                     (!piece.isWhite() && !whiteToPlay);
         }
+
+        private void pawnGotInCase(ViewField clicked) throws ChessGameException {
+
+            if (pieceToChange.getType() == G && (clicked.getI() == 0 || clicked.getI() == 7)){
+                PieceType newType = pawnGotInCaseView();
+                pawnGotInCaseBackground(pieceToChange, lastClicked, clicked, getViewBoard(), newType);
+            }
+        }
+
+        private PieceType pawnGotInCaseView(){
+            int result = JOptionPane.showOptionDialog(null, "Válassz melyik figurát szeretnéd.", "Lehetőségek.",
+                    JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null,
+                    pieceToChange.isWhite() ?
+                            WhitePieceChoiceInsteadOfPawnGotIn.toArray() :
+                            BlackPieceChoiceInsteadOfPawnGotIn.toArray(),
+                    null);
+            PieceType newType;
+            switch (result){
+                case 0 -> newType = H;
+                case 1 -> newType = F;
+                case 2 -> newType = B;
+                case 3 -> newType = V;
+                default -> throw new IllegalStateException("Unexpected value: " + result);
+            }
+            pieceToChange.getAttributes().setType(newType);
+
+            pieceToChange.setImage(
+                    pieceToChange.isWhite() ?
+                            WhitePieceChoiceInsteadOfPawnGotIn.get(result).getImage() :
+                            BlackPieceChoiceInsteadOfPawnGotIn.get(result).getImage()
+            );
+            return newType;
+        }
+
 
     }
 
