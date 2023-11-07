@@ -28,6 +28,16 @@ public class ViewField extends JButton implements classes.Game.Model.Structure.I
 
     private Location loc;
 
+    /**
+     * The x coordinate of the upper right corner. (Where it start drawn.)
+     */
+    private int x;
+
+    /**
+     * The y coordinate of the upper right corner. (Where it start drawn.)
+     */
+    private int y;
+
     private String fieldColor;
 
     private ViewPiece piece;
@@ -97,6 +107,14 @@ public class ViewField extends JButton implements classes.Game.Model.Structure.I
     @Override
     public void clean() {
         setPiece((ViewPiece) null);
+    }
+
+    @Override
+    public void setBounds(int x, int y, int width, int height){
+        super.setBounds(x, y, width, height);
+
+        this.x = x;
+        this.y = y;
     }
 
     //endregion

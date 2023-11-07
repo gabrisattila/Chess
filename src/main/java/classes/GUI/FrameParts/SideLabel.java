@@ -31,7 +31,10 @@ public class SideLabel extends JLabel {
 
     public SideLabel(int x, int y, boolean vertical){
 
-        setText((vertical ? számok.get(numLabelCounter) : abc.get(abcLabelCounter)) + " ");
+        String text = " " + (vertical ? számok.get(numLabelCounter) : abc.get(abcLabelCounter)) + " ";
+
+        setText(text);
+
         if (vertical)
             numLabelCounter++;
         else
@@ -43,12 +46,16 @@ public class SideLabel extends JLabel {
         setHorizontalAlignment(CENTER);
         setFont(new Font("Source Code Pro", Font.BOLD, 20));
         setVisible(true);
+        setOpaque(false);
 
         setBounds(
                 x, y,
                 (int) (vertical ? VERTICAL_SIDE_LABEL_WIDTH : HORIZONTAL_SIDE_LABEL_WIDTH),
                 (int) (vertical ? VERTICAL_SIDE_LABEL_HEIGHT : HORIZONTAL_SIDE_LABEL_HEIGHT)
         );
+
+        setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+        setVisible(true);
     }
 
     //endregion
