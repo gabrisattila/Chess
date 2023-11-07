@@ -20,13 +20,13 @@ public class CornerSquare extends JLabel {
                 setBounds(0, 0, 20, 20);
             }
             case "UR" ->{
-                setBounds((int) (BOARD_HEIGHT + 20), 0, 20, 20);
+                setBounds((int) (BOARD_WIDTH + 20), 0, 20, 20);
             }
             case "DL" ->{
-                setBounds(0, (int) (BOARD_WIDTH + 20), 20, 20);
+                setBounds(0, (int) (BOARD_HEIGHT + 20), 20, 20);
             }
             case "DR" ->{
-                setBounds((int) (BOARD_HEIGHT + 20), (int) (BOARD_WIDTH + 20), 20, 20);
+                setBounds((int) (BOARD_WIDTH + 20), (int) (BOARD_HEIGHT + 20), 20, 20);
             }
         }
     }
