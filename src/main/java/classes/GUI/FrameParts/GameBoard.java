@@ -62,7 +62,7 @@ public class GameBoard extends JLayeredPane {
     }
 
     private void setBoardCoordinates(){
-        setBounds((int) BOARD_START_X, (int) BOARD_START_Y, MAX_WIDTH * FIELD_WIDTH, MAX_HEIGHT * FIELD_HEIGHT);
+        setBounds((int) BOARD_START_X - 20, (int) BOARD_START_Y - 20, MAX_WIDTH * FIELD_WIDTH + 40, MAX_HEIGHT * FIELD_HEIGHT + 40);
     }
 
     private void rotateBoard(){
@@ -71,8 +71,8 @@ public class GameBoard extends JLayeredPane {
             for (int j = 0; j < MAX_WIDTH; j++) {
                 Point rotatedPosition = rotateAntiClockwise(new Point(i, j), MAX_HEIGHT);
 
-                int newI = rotatedPosition.x * FIELD_HEIGHT;
-                int newJ = rotatedPosition.y * FIELD_WIDTH;
+                int newI = rotatedPosition.x * FIELD_HEIGHT + 20;
+                int newJ = rotatedPosition.y * FIELD_WIDTH + 20;
 
                 ((ViewField)parentBoard.getField(i, j)).setBounds(
                         newI,
@@ -106,8 +106,10 @@ public class GameBoard extends JLayeredPane {
     }
 
     private boolean fieldGonnaBeOnEdge(int newI, int newJ) {
-        return newI == BOARD_START_X || newI == BOARD_START_X + FIELD_HEIGHT * (MAX_HEIGHT - 1) ||
-                newJ == BOARD_START_Y || newJ == BOARD_START_Y + FIELD_WIDTH * (MAX_WIDTH - 1);
+
+        return newI == 0 || newI == FIELD_HEIGHT * (MAX_HEIGHT - 1) ||
+                newJ == 0 || newJ == FIELD_WIDTH * (MAX_WIDTH - 1);
+
     }
 
 
@@ -122,19 +124,16 @@ public class GameBoard extends JLayeredPane {
     private void addLabels() {
         SideLabel label = null;
         for (Location l : edgeCoordinates) {
-            if (l.getI() == BOARD_START_X){
-                label = new SideLabel(l.getI() - 20, l.getJ(), true);
-                labels.add(label);
-            } else if (l.getI() == BOARD_START_X + FIELD_WIDTH * (MAX_WIDTH - 1)) {
+            if (l.getI() == 0){
+                label = new SideLabel(0, l.getJ(), true);
+            } else if (l.getI() == MAX_HEIGHT * (MAX_HEIGHT - 1)) {
                 label = new SideLabel(l.getI() + FIELD_WIDTH + 20, l.getJ(), true);
-                labels.add(label);
-            } else if (l.getJ() == BOARD_START_Y) {
-                label = new SideLabel(l.getI(), l.getJ() - 20, false);
-                labels.add(label);
-            } else if (l.getJ() == BOARD_START_Y + FIELD_WIDTH * (MAX_HEIGHT - 1)) {
+            } else if (l.getJ() == 0) {
+                label = new SideLabel(l.getI(), 0, false);
+            } else if (l.getJ() == FIELD_WIDTH * (MAX_WIDTH - 1)) {
                 label = new SideLabel(l.getI(), l.getJ() + FIELD_HEIGHT + 20, false);
-                labels.add(label);
             }
+            labels.add(label);
             this.add(label);
         }
     }
