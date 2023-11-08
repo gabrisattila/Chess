@@ -1,11 +1,13 @@
 package classes.GUI.Frame;
 
+import classes.GUI.FrameParts.ChessGameButton;
 import classes.GUI.FrameParts.GameBoard;
 import classes.Game.I18N.ChessGameException;
 import lombok.*;
 
 import javax.swing.*;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -26,7 +28,8 @@ public class Window extends JFrame {
     @Getter
     private static JTextArea logger;
 
-    private ArrayList<JButton> buttons;
+    @Getter
+    private static ArrayList<ChessGameButton> buttons = buttons();
 
     //endregion
 
@@ -34,9 +37,6 @@ public class Window extends JFrame {
     //region Constructor
 
     private Window() throws ChessGameException {
-
-        addButtons();
-        addLogger();
 
         setAiNumberDemand();
 
@@ -47,28 +47,10 @@ public class Window extends JFrame {
         gameBoard = new GameBoard();
         add(gameBoard);
 
-        logger = loggerBox();
-//        add(logger);
+        addButtonsAndMayBeTheLoggerToo();
 
 
         setVisible(true);
-
-    }
-
-    private void createAndAddButtons(){
-        createButtons();
-        addButtons();
-    }
-
-    private void createButtons() {
-
-    }
-
-    private void addButtons() {
-
-    }
-
-    private void addLogger() {
 
     }
 
@@ -116,6 +98,88 @@ public class Window extends JFrame {
         );
     }
 
+
+
+    private void addButtonsAndMayBeTheLoggerToo() {
+        addButtons();
+        if (canBeLogger)
+            addLogger();
+    }
+
+    private void addButtons() {
+        for (JButton b : buttons) {
+            this.add(b);
+        }
+    }
+
+    public static ArrayList<ChessGameButton> buttons(){
+        ArrayList<ChessGameButton> buttons = new ArrayList<>(6);
+        for (int i = 0; i < 6; i++) {
+            buttons.add(new ChessGameButton());
+        }
+
+        double buttonHeight;
+        double buttonWidth;
+
+        if (WHITE_TAKEN_PIECES_FIRST_ROW_START_X >= 150){
+
+            buttons.get(0).setText("Új játék");
+            buttons.get(1).setText("Szünet");
+            buttons.get(2).setText("Mentés");
+            buttons.get(3).setText("Betöltés");
+            buttons.get(4).setText("Feladás");
+            buttons.get(5).setText("Döntetlen");
+
+            buttonWidth = WHITE_TAKEN_PIECES_FIRST_ROW_START_X - 50;
+            buttonHeight = FIELD_HEIGHT;
+
+            for (int i = 0; i < 4; i++) {
+                buttons.get(i).setBounds(20, (int) (BUTTON_PLACE_START_Y + i * 2 * buttonHeight), (int) buttonWidth, (int) buttonHeight);
+            }
+
+            buttons.get(4).setBounds(
+                    (int) (SCREEN_WIDTH - buttonWidth - 20),
+                    (int) BUTTON_PLACE_START_Y,
+                    (int) buttonWidth,
+                    (int) buttonHeight
+            );
+
+            buttons.get(5).setBounds(
+                    (int) (SCREEN_WIDTH - buttonWidth - 20),
+                    (int) BUTTON_PLACE_START_Y + 2 * FIELD_WIDTH,
+                    (int) buttonWidth,
+                    (int) buttonHeight
+            );
+            buttons.get(5).setFont(new Font("Source Code Pro", Font.BOLD, 18));
+
+            canBeLogger = true;
+
+        }else {
+
+            buttons.get(0).setText("Mentés");
+            buttons.get(1).setText("Betöltés");
+            buttons.get(2).setText("Új játék");
+            buttons.get(3).setText("Szünet");
+            buttons.get(4).setText("Feladás");
+            buttons.get(5).setText("Döntetlen");
+
+            buttonWidth = (SCREEN_WIDTH - 140) / 6;
+            buttonHeight = BOARD_START_Y - 40;
+
+            for (int i = 0; i < 6; i++) {
+                buttons.get(i).setBounds((int) (i * (buttonWidth + 20)) + 20, 10, (int) buttonWidth, (int) buttonHeight);
+            }
+
+            canBeLogger = false;
+        }
+
+        return buttons;
+    }
+
+    private void addLogger() {
+        logger = loggerBox();
+        this.add(logger);
+    }
 
     /**
      * @return a textField where I document the steps

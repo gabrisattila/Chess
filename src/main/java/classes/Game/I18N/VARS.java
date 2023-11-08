@@ -29,7 +29,6 @@ public class VARS {
 
         public static final double BOARD_WIDTH = FIELD_WIDTH * MAX_WIDTH;
 
-
         /**
          * This is the X coordinate where the board starts. It's used in calculate the position of the board.
          */
@@ -40,13 +39,36 @@ public class VARS {
          */
         public static final double BOARD_START_Y = (SCREEN_HEIGHT - BOARD_HEIGHT) / 2;
 
-        public static final double LOGGER_WIDTH = BOARD_START_X - (BOARD_START_X / 10);
+        public static final double BOARD_PLACE_START_X = (SCREEN_WIDTH - FIELD_WIDTH * 8) / 2 - 20;
 
-        public static final double LOGGER_HEIGHT = SCREEN_HEIGHT;
+        public static final double BOARD_PLACE_START_Y = (SCREEN_HEIGHT - FIELD_HEIGHT * 8) / 2 - 20;
 
-        public static final double LOGGER_START_X = BOARD_START_X + 8 * FIELD_WIDTH + (BOARD_START_X / 25);
+        public static final double BOARD_PLACE_END_X = BOARD_PLACE_START_X + FIELD_WIDTH * 8 + 40;
 
-        public static final double LOGGER_START_Y = 0;
+
+        public static final double WHITE_TAKEN_PIECES_FIRST_ROW_START_X = BOARD_PLACE_START_X - 150;
+
+        public static final double WHITE_TAKEN_PIECES_FIRST_ROW_START_Y = BOARD_PLACE_START_Y;
+
+        public static final double WHITE_TAKEN_PIECES_SECOND_ROW_START_X = BOARD_PLACE_START_X - 75;
+
+        public static final double BLACK_TAKEN_PIECES_FIRST_ROW_START_X = BOARD_PLACE_END_X;
+
+        public static final double BLACK_TAKEN_PIECES_SECOND_ROW_START_Y = BOARD_START_Y;
+
+        public static final double BLACK_TAKEN_PIECES_SECOND_ROW_START_X = BOARD_PLACE_END_X + 75;
+
+
+        public static final double BUTTON_PLACE_START_Y = WHITE_TAKEN_PIECES_SECOND_ROW_START_X >= 150 ?
+                BOARD_PLACE_START_Y : 0;
+
+        public static final double LOGGER_WIDTH = WHITE_TAKEN_PIECES_FIRST_ROW_START_X - 50;
+
+        public static final double LOGGER_HEIGHT = 4 * FIELD_HEIGHT;
+
+        public static final double LOGGER_START_X = SCREEN_WIDTH - LOGGER_WIDTH - 20;
+
+        public static final double LOGGER_START_Y = BUTTON_PLACE_START_Y + 4 * FIELD_HEIGHT;
 
         public static final double HORIZONTAL_SIDE_LABEL_WIDTH = FIELD_WIDTH;
 
@@ -330,6 +352,8 @@ public class VARS {
         public static int evenOrOddStep = 0;
 
         public static int labelCounter = 0;
+
+        public static boolean canBeLogger;
 
     }
 
