@@ -29,6 +29,8 @@ public class SideLabel extends JLabel {
     //region Constructor
 
     public SideLabel(int x, int y, boolean vertical){
+
+        //TODO nem mindegy sötéttel vagy világossal vagyunk.
         setText(labelTextList.get(labelCounter));
         labelCounter++;
 
@@ -48,7 +50,6 @@ public class SideLabel extends JLabel {
         setBorder(BorderFactory.createLineBorder(WHITE, 2));
         setVisible(true);
     }
-
 
     //endregion
 

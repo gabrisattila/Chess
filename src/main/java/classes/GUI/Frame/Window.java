@@ -6,6 +6,7 @@ import lombok.*;
 
 import javax.swing.*;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import static classes.GUI.FrameParts.ViewBoard.*;
@@ -24,6 +25,8 @@ public class Window extends JFrame {
 
     @Getter
     private static JTextArea logger;
+
+    private ArrayList<JButton> buttons;
 
     //endregion
 
@@ -49,6 +52,15 @@ public class Window extends JFrame {
 
 
         setVisible(true);
+
+    }
+
+    private void createAndAddButtons(){
+        createButtons();
+        addButtons();
+    }
+
+    private void createButtons() {
 
     }
 

@@ -245,9 +245,9 @@ public class VARS {
 
     public static class MUTABLE {
 
-        public static int MAX_WIDTH = 3;
+        public static int MAX_WIDTH = 8;
 
-        public static int MAX_HEIGHT = 3;
+        public static int MAX_HEIGHT = 8;
 
         public static int MINIMAX_DEPTH = 2;
 
