@@ -6,6 +6,7 @@ import lombok.*;
 import javax.swing.*;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
@@ -20,33 +21,23 @@ public class SideLabel extends JLabel {
 
     private int yCoordinate;
 
+    ArrayList<String> labelTextList = collectProperLabelTexts();
+
     //endregion
 
 
     //region Constructor
 
-    public SideLabel(Location location, boolean vertical){
-        new SideLabel(location.getI(), location.getJ(), vertical);
-    }
-
     public SideLabel(int x, int y, boolean vertical){
-
-        String text = " " + (vertical ? számok.get(numLabelCounter) : abc.get(abcLabelCounter)) + " ";
-
-        setText(text);
-
-        if (vertical)
-            numLabelCounter++;
-        else
-            abcLabelCounter++;
+        setText(labelTextList.get(labelCounter));
+        labelCounter++;
 
         setBackground(BLACK);
         setForeground(WHITE);
         setVerticalAlignment(CENTER);
         setHorizontalAlignment(CENTER);
         setFont(new Font("Source Code Pro", Font.BOLD, 20));
-        setVisible(true);
-        setOpaque(false);
+        setOpaque(true);
 
         setBounds(
                 x, y,
@@ -54,14 +45,32 @@ public class SideLabel extends JLabel {
                 (int) (vertical ? VERTICAL_SIDE_LABEL_HEIGHT : HORIZONTAL_SIDE_LABEL_HEIGHT)
         );
 
-        setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+        setBorder(BorderFactory.createLineBorder(WHITE, 2));
         setVisible(true);
     }
+
 
     //endregion
 
 
     //region Methods
+
+    public static ArrayList<String> collectProperLabelTexts(){
+        ArrayList<String> labelTextList = new ArrayList<>();
+        for (int i = 0; i < MAX_HEIGHT; i++) {
+            labelTextList.add(String.valueOf(számok.get(i)));
+        }
+        for (int i = 0; i < MAX_WIDTH; i++) {
+            labelTextList.add(" " + abc.get(i) + " ");
+        }
+        for (int i = MAX_HEIGHT - 1; i >= 0; i--) {
+            labelTextList.add(String.valueOf(számok.get(i)));
+        }
+        for (int i = MAX_WIDTH - 1; i >= 0; i--) {
+            labelTextList.add(" " + abc.get(i) + " ");
+        }
+        return labelTextList;
+    }
 
     //endregion
 

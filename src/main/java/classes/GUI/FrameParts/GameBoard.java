@@ -55,7 +55,7 @@ public class GameBoard extends JLayeredPane {
 
         rotateBoard();
         addFieldsAtTheirFinalForm();
-//        fieldNumPrinter(getViewBoard());
+        fieldNumPrinter(getViewBoard());
 
         addCorners();
         addLabels();
@@ -121,38 +121,47 @@ public class GameBoard extends JLayeredPane {
 
         int lastNum = 0;
 
+        //TODO 0-tól újraindexelve megoldani.
+
         for (int j = 1; j <= MAX_HEIGHT; j++) {
-            edgeCoordinates.add(new Location(0, j * FIELD_HEIGHT));
+            edgeCoordinates.add(new Location(0, (j * FIELD_HEIGHT) + 20));
 
             if (j == MAX_HEIGHT)
                 lastNum = j * FIELD_HEIGHT;
         }
         for (int j = 1; j <= MAX_WIDTH; j++) {
-            edgeCoordinates.add(new Location(j * FIELD_WIDTH, lastNum));
+            edgeCoordinates.add(new Location(j * FIELD_WIDTH, lastNum + 20));
 
             if (j == MAX_WIDTH)
                 lastNum = j * FIELD_WIDTH;
         }
         for (int j = MAX_HEIGHT - 1; j >= 0; j--){
-            edgeCoordinates.add(new Location(lastNum, j * FIELD_HEIGHT));
+            edgeCoordinates.add(new Location(lastNum, j * FIELD_HEIGHT - 20));
 
             if (j == 0)
                 lastNum = 0;
         }
 
         for (int j = MAX_WIDTH - 1; j > 0; j--){
-            edgeCoordinates.add(new Location(j * FIELD_WIDTH, lastNum));
+            edgeCoordinates.add(new Location(j * FIELD_WIDTH + 20, lastNum));
         }
 
     }
 
     private void addLabelsByLocation() {
 
-        //TODO Azt megoldani, hogy a sarkok,
-        // már a következő oldalhoz tartozzanak logikailag.
-        // Koordináták összegével - különbségével érdemes próbálkozni
+        int helperCounterForLabels = 0;
+        boolean vertical = true;
+        SideLabel label;
         for (Location l : edgeCoordinates) {
-            add(new SideLabel(l, l.getI() == 0 || l.getI() == MAX_HEIGHT * FIELD_HEIGHT));
+
+            if (helperCounterForLabels != 0 && (vertical ? (helperCounterForLabels % MAX_HEIGHT) : (helperCounterForLabels % MAX_WIDTH)) == 0){
+                vertical = ! vertical;
+            }
+            label = new SideLabel(l.getI(), l.getJ(), vertical);
+            labels.add(label);
+            this.add(label);
+            helperCounterForLabels++;
         }
 
     }

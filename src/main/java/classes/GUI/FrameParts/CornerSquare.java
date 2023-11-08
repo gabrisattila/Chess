@@ -15,7 +15,7 @@ public class CornerSquare extends JLabel {
     }
 
     private void setUpCorner(String where) {
-        setBackground(BLACK);
+        setBackground(WHITE);
         setOpaque(true);
         setVisible(true);
         switch (where){

@@ -50,9 +50,9 @@ public class VARS {
 
         public static final double HORIZONTAL_SIDE_LABEL_WIDTH = FIELD_WIDTH;
 
-        public static final double HORIZONTAL_SIDE_LABEL_HEIGHT = 15;
+        public static final double HORIZONTAL_SIDE_LABEL_HEIGHT = 20;
 
-        public static final double VERTICAL_SIDE_LABEL_WIDTH = 15;
+        public static final double VERTICAL_SIDE_LABEL_WIDTH = 20;
 
         public static final double VERTICAL_SIDE_LABEL_HEIGHT = FIELD_HEIGHT;
 
@@ -329,9 +329,7 @@ public class VARS {
 
         public static int evenOrOddStep = 0;
 
-        public static int abcLabelCounter = 0;
-
-        public static int numLabelCounter = 0;
+        public static int labelCounter = 0;
 
     }
 
