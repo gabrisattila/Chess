@@ -11,13 +11,13 @@ public class CornerSquare extends JLabel {
 
     public CornerSquare(String where){
         setUpCorner(where);
-        setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
-    }
-
-    private void setUpCorner(String where) {
+        setBorder(BorderFactory.createEmptyBorder());
         setBackground(WHITE);
         setOpaque(true);
         setVisible(true);
+    }
+
+    private void setUpCorner(String where) {
         switch (where){
             case "UL" -> setBounds(0, 0, 20, 20);
             case "UR" -> setBounds((int) (BOARD_WIDTH + 20), 0, 20, 20);

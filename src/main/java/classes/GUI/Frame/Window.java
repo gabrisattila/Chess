@@ -2,12 +2,17 @@ package classes.GUI.Frame;
 
 import classes.GUI.FrameParts.ChessGameButton;
 import classes.GUI.FrameParts.GameBoard;
+import classes.GUI.FrameParts.ViewField;
 import classes.Game.I18N.ChessGameException;
+import classes.Game.I18N.Pair;
 import lombok.*;
 
 import javax.swing.*;
+import javax.swing.plaf.basic.BasicButtonUI;
 
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -31,6 +36,8 @@ public class Window extends JFrame {
     @Getter
     private static ArrayList<ChessGameButton> buttons = buttons();
 
+    private static Pair<ArrayList<ViewField>, ArrayList<ViewField>> takenPiecePlaces = new Pair<>(new ArrayList<>(16), new ArrayList<>(16));
+
     //endregion
 
 
@@ -48,6 +55,7 @@ public class Window extends JFrame {
         add(gameBoard);
 
         addButtonsAndMayBeTheLoggerToo();
+        setUpTakenPiecePlaces();
 
 
         setVisible(true);
@@ -190,6 +198,59 @@ public class Window extends JFrame {
         area.setVisible(true);
         area.setEditable(false);
         return area;
+    }
+
+    private void setUpTakenPiecePlaces(){
+        setUpASideForTakenPieces(true);
+        setUpASideForTakenPieces(false);
+        for (ViewField f : takenPiecePlaces.getFirst()) {
+            this.add(f);
+        }
+        for (ViewField f : takenPiecePlaces.getSecond()) {
+            this.add(f);
+        }
+    }
+
+    private void setUpASideForTakenPieces(boolean whiteSide){
+        ViewField fieldForTaken;
+        for (int i = 0; i < 16; i++) {
+
+            fieldForTaken = new ViewField();
+
+            int startX = (int)
+                    (whiteSide ?
+                            (i < 8 ? WHITE_TAKEN_PIECES_FIRST_ROW_START_X : WHITE_TAKEN_PIECES_SECOND_ROW_START_X) :
+                            (i < 8 ? BLACK_TAKEN_PIECES_FIRST_ROW_START_X : BLACK_TAKEN_PIECES_SECOND_ROW_START_X)
+                    );
+            int startY = (int) (i < 8 ? (BOARD_START_Y + i * FIELD_HEIGHT) : (BOARD_START_Y + (i - 8) * FIELD_HEIGHT));
+
+            fieldForTaken.setBounds(
+                    startX,
+                    startY,
+                    FIELD_WIDTH,
+                    FIELD_HEIGHT
+            );
+
+            fieldForTaken.setBackground(BACK_GROUND);
+            fieldForTaken.setBorder(BorderFactory.createLineBorder(WHITE));
+            fieldForTaken.setOpaque(true);
+            fieldForTaken.setFocusable(false);
+            fieldForTaken.setVisible(true);
+            fieldForTaken.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    // Ne csinálj semmit, amikor az egér belép a gomb területére
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    // Ne csinálj semmit, amikor az egér elhagyja a gomb területét
+                }
+            });
+
+            (whiteSide ? takenPiecePlaces.getFirst() : takenPiecePlaces.getSecond()).add(fieldForTaken);
+
+        }
     }
 
     //endregion

@@ -51,6 +51,8 @@ public class ViewField extends JButton implements classes.Game.Model.Structure.I
 
     //region Constructor
 
+    public ViewField(){}
+
     public ViewField(Location loc, String fieldColor){
         this.loc = loc;
         this.fieldColor = fieldColor;

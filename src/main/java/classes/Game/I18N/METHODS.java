@@ -6,6 +6,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static classes.Ai.FenConverter.*;
+import static classes.GUI.FrameParts.ViewBoard.getViewBoard;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 
 public class METHODS {
@@ -22,9 +23,12 @@ public class METHODS {
         playerTurn = !playerTurn;
     }
 
+    public static void viewBoardToAnother(IBoard to) throws ChessGameException {
+        convertOneBoardToAnother(getViewBoard(), to);
+    }
+
     public static void convertOneBoardToAnother(IBoard what, IBoard to){
         try {
-//            changeWhiteToPlayInFen(BoardToFen(what))
             FenToBoard(BoardToFen(what), to);
         } catch (ChessGameException e) {
             throw new RuntimeException(e);
