@@ -1,10 +1,15 @@
 package classes.Game.Model.Logic;
 
 import classes.Ai.AI;
+import classes.GUI.FrameParts.ChessGameButton;
 import classes.Game.I18N.*;
 import lombok.*;
 
 import javax.swing.*;
+
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import static classes.Ai.FenConverter.FenToBoard;
 import static classes.GUI.Frame.Window.*;
