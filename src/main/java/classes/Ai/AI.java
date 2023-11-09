@@ -75,8 +75,8 @@ public class AI extends Thread {
 
     public String Move() throws ChessGameException, InterruptedException {
 
-//        return moveWithSimpleAi();
-        return moveWithMiniMaxAi();
+        return moveWithSimpleAi();
+//        return moveWithMiniMaxAi();
 
     }
 
@@ -100,6 +100,7 @@ public class AI extends Thread {
         Location toStepOn = ableToStepThereIn.get(indexOfChosen);
 
         boolean gonnaBePawnGotIn = checkIfItsPawnGotIn(stepper, toStepOn);
+
         MOVE(getAiBoard(), stepper, toStepOn, gonnaBePawnGotIn);
 
         return BoardToFen(getAiBoard());

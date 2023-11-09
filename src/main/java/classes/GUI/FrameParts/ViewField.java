@@ -188,7 +188,14 @@ public class ViewField extends JButton implements classes.Game.Model.Structure.I
 
             pawnGotInCase(clicked);
 
+            ViewPiece hit = null;
+            if (clicked.isGotPiece())
+                hit = clicked.getPiece();
+
             MOVE(getViewBoard(), pieceToChange, clicked.loc, false);
+
+            if (notNull(hit))
+                putTakenPieceToItsPlace(hit);
 
             changeColor(clicked);
         }

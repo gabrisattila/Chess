@@ -17,7 +17,7 @@ import static classes.Game.I18N.VARS.FINALS.*;
 
 @Getter
 @Setter
-public class ViewPiece extends ImageIcon implements IPiece {
+public class ViewPiece extends ImageIcon implements IPiece, Comparable<ViewPiece>{
 
     //region Fields
 
@@ -35,6 +35,8 @@ public class ViewPiece extends ImageIcon implements IPiece {
 
 
     //region Constructor
+
+    public ViewPiece(){}
 
     public ViewPiece(String source){
         super(source);
@@ -97,6 +99,16 @@ public class ViewPiece extends ImageIcon implements IPiece {
                 return true;
         }
         return false;
+    }
+
+    @Override
+    public int compareTo(ViewPiece p1) {
+        int result = Character.compare(getType().toLowerCase(), p1.getType().toLowerCase());
+        //if (result == 0)
+        //    result = Integer.compare(getI(), p1.getI());
+        //if (result == 0)
+        //    result = Integer.compare(getJ(), p1.getJ());
+        return Integer.compare(hashCode(), p1.hashCode());
     }
 
     //endregion

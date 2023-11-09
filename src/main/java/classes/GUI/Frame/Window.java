@@ -48,7 +48,7 @@ public class Window extends JFrame {
         setAiNumberDemand();
 
         frameSetup();
-//        setUpSides();
+        setUpSides();
 //        getViewBoard().pieceSetUp(usualFens.get("whiteDownPawnsFront"));
 
         gameBoard = new GameBoard();
@@ -72,6 +72,8 @@ public class Window extends JFrame {
 
 
     //region Methods
+
+    //region Frame Basics
 
     private void frameSetup(){
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -106,7 +108,10 @@ public class Window extends JFrame {
         );
     }
 
+    //endregion
 
+
+    //region Game Buttons
 
     private void addButtonsAndMayBeTheLoggerToo() {
         addButtons();
@@ -184,6 +189,11 @@ public class Window extends JFrame {
         return buttons;
     }
 
+    //endregion
+
+
+    //region Logger
+
     private void addLogger() {
         logger = loggerBox();
         this.add(logger);
@@ -198,6 +208,28 @@ public class Window extends JFrame {
         area.setVisible(true);
         area.setEditable(false);
         return area;
+    }
+
+    //endregion
+
+
+    //region TakenPiecePlaces
+
+    public static ViewField getNextFreePlaceForTakenPiece(boolean forWhite){
+        for(ViewField f : (forWhite ? getWhiteTakenPiecesPlace() : getBlackTakenPiecesPlace())){
+            if (!f.isGotPiece()){
+                return f;
+            }
+        }
+        return null;
+    }
+
+    public static ArrayList<ViewField> getWhiteTakenPiecesPlace(){
+        return takenPiecePlaces.getFirst();
+    }
+
+    public static ArrayList<ViewField> getBlackTakenPiecesPlace(){
+        return takenPiecePlaces.getSecond();
     }
 
     private void setUpTakenPiecePlaces(){
@@ -231,27 +263,18 @@ public class Window extends JFrame {
                     FIELD_HEIGHT
             );
 
-            fieldForTaken.setBackground(BACK_GROUND);
-            fieldForTaken.setBorder(BorderFactory.createLineBorder(WHITE));
+            fieldForTaken.setBackground(whiteSide ? BLACK : WHITE);
+            fieldForTaken.setBorder(BorderFactory.createLineBorder(whiteSide ? WHITE : BLACK));
             fieldForTaken.setOpaque(true);
             fieldForTaken.setFocusable(false);
             fieldForTaken.setVisible(true);
-            fieldForTaken.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseEntered(MouseEvent e) {
-                    // Ne csinálj semmit, amikor az egér belép a gomb területére
-                }
-
-                @Override
-                public void mouseExited(MouseEvent e) {
-                    // Ne csinálj semmit, amikor az egér elhagyja a gomb területét
-                }
-            });
 
             (whiteSide ? takenPiecePlaces.getFirst() : takenPiecePlaces.getSecond()).add(fieldForTaken);
 
         }
     }
+
+    //endregion
 
     //endregion
 

@@ -1,11 +1,18 @@
 package classes.Game.Model.Logic;
 
 import classes.Ai.AI;
+import classes.GUI.FrameParts.ViewPiece;
 import classes.Game.I18N.*;
+import classes.Game.Model.Structure.IPiece;
 import lombok.*;
 
 import javax.swing.*;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+
+import static classes.Ai.FenConverter.BoardToFen;
 import static classes.Ai.FenConverter.FenToBoard;
 import static classes.GUI.Frame.Window.*;
 import static classes.GUI.FrameParts.ViewBoard.*;
@@ -112,7 +119,7 @@ public class EDT {
 
     public static void receivedMoveFromAi(String fen){
         try {
-            FenToBoard(fen, getViewBoard());
+            setUpViewBoard(fen);
             if (theresOnlyOneAi){
                 switchWhoComes();
                 getViewBoard().rangeUpdater();
@@ -123,6 +130,15 @@ public class EDT {
             throw new RuntimeException(e);
         }
     }
+
+    private static void setUpViewBoard(String fen) throws ChessGameException {
+
+        putTakenPieceToItsPlace(fen.split(" ")[0], BoardToFen(getViewBoard()).split(" ")[0]);
+
+        FenToBoard(fen, getViewBoard());
+
+    }
+
 
     //endregion
 

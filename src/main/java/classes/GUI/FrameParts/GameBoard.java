@@ -55,7 +55,7 @@ public class GameBoard extends JLayeredPane {
 
         rotateBoard();
         addFieldsAtTheirFinalForm();
-        fieldNumPrinter(getViewBoard());
+//        fieldNumPrinter(getViewBoard());
 
         addCorners();
         addLabels();

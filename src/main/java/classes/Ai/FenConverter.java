@@ -220,7 +220,7 @@ public class FenConverter {
         return pieceChar;
     }
 
-    private static String createSourceStringFromGotAttributes(PieceAttributes attributes){
+    public static String createSourceStringFromGotAttributes(PieceAttributes attributes){
         StringBuilder sb = new StringBuilder();
         sb.append("src\\main\\resources\\Figura_Images\\");
 

@@ -1,5 +1,7 @@
 package classes.Game.I18N;
 
+import classes.Ai.FenConverter;
+import classes.GUI.FrameParts.ViewPiece;
 import classes.Game.Model.Structure.*;
 
 import java.util.*;
@@ -8,6 +10,7 @@ import java.util.stream.Collectors;
 import static classes.Ai.FenConverter.*;
 import static classes.GUI.FrameParts.ViewBoard.getViewBoard;
 import static classes.Game.I18N.VARS.MUTABLE.*;
+import static classes.GUI.Frame.Window.*;
 
 public class METHODS {
 
@@ -23,8 +26,39 @@ public class METHODS {
         playerTurn = !playerTurn;
     }
 
-    public static void viewBoardToAnother(IBoard to) throws ChessGameException {
-        convertOneBoardToAnother(getViewBoard(), to);
+    public static void putTakenPieceToItsPlace(String fenOfCurrentState, String fenOfPreviousState) throws ChessGameException {
+        ArrayList<Character> prev = new ArrayList<>();
+        ArrayList<Character> current = new ArrayList<>();
+
+        for (int i = 0; i < fenOfPreviousState.length(); i++) {
+            if (Character.isLetter(fenOfCurrentState.charAt(i)))
+                prev.add(fenOfPreviousState.charAt(i));
+        }
+
+        for (int i = 0; i < fenOfCurrentState.length(); i++) {
+            if (Character.isLetter(fenOfCurrentState.charAt(i)))
+                current.add(fenOfCurrentState.charAt(i));
+        }
+
+        if (current.size() != prev.size()){
+
+            Collections.sort(prev);
+            Collections.sort(current);
+            char thePiece = '0';
+            for (int i = 0; i < prev.size(); i++) {
+                if (prev.get(i) != current.get(i)){
+                    thePiece = prev.get(i);
+                    break;
+                }
+            }
+            PieceAttributes piece = charToPieceAttributes(thePiece);
+            ViewPiece hit = new ViewPiece(createSourceStringFromGotAttributes(piece), piece);
+            putTakenPieceToItsPlace(hit);
+        }
+    }
+
+    public static void putTakenPieceToItsPlace(ViewPiece hit) throws ChessGameException {
+        Objects.requireNonNull(getNextFreePlaceForTakenPiece(hit.isWhite())).setPiece(hit);
     }
 
     public static void convertOneBoardToAnother(IBoard what, IBoard to){
