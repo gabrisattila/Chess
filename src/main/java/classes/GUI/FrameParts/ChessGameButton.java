@@ -47,6 +47,7 @@ public class ChessGameButton extends JButton {
         setOpaque(true);
         setFocusable(false);
         setBorderPainted(false);
+        addMouseListener(new ChessButtonMouseListener());
     }
 
 
@@ -61,6 +62,23 @@ public class ChessGameButton extends JButton {
             } catch (ChessGameException ex) {
                 throw new RuntimeException(ex);
             }
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e){
+            swapColors(e);
+        }
+
+
+        @Override
+        public void mouseExited(MouseEvent e){
+            swapColors(e);
+        }
+
+        private void swapColors(MouseEvent e) {
+            Color tmp = ((ChessGameButton) e.getSource()).getForeground();
+            ((ChessGameButton) e.getSource()).setForeground(((ChessGameButton) e.getSource()).getBackground());
+            ((ChessGameButton) e.getSource()).setBackground(tmp);
         }
 
         private void manageClick(MouseEvent e) throws ChessGameException {
@@ -109,14 +127,25 @@ public class ChessGameButton extends JButton {
         }
 
         private void newGameClicked() {
-            JFrame newGameFrame = new JFrame("Új játék kiválasztása");
-            newGameFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            newGameFrame.setLayout(new GridLayout(2, 2));
+            JDialog newGameDialog = new JDialog();
+            newGameDialog.setTitle("Új játék kiválasztása");
+            newGameDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+            newGameDialog.setLayout(new GridLayout(2, 2));
 
-            ChessGameButton blackAi = new ChessGameButton("Világossal szeretnék lenni");
-            ChessGameButton whiteAi = new ChessGameButton("Sötéttel szeretnék lenni");
-            ChessGameButton aiVsAi = new ChessGameButton("Ai vs Ai");
-            ChessGameButton test = new ChessGameButton("Teszt");
+            ChessGameButton blackAi = new ChessGameButton("<html><div style='text-align: center;'>Világossal<br>szeretnék lenni</div></html>");
+            ChessGameButton whiteAi = new ChessGameButton("<html><div style='text-align: center;'>Sötéttel<br>szeretnék lenni</div></html>");
+            ChessGameButton aiVsAi = new ChessGameButton("<html><div style='text-align: center;'>Ai vs Ai</div></html>");
+            ChessGameButton test = new ChessGameButton("<html><div style='text-align: center;'>Teszt</div></html>");
+
+            blackAi.setBorder(BorderFactory.createLineBorder(BLACK, 13));
+            whiteAi.setBorder(BorderFactory.createLineBorder(BLACK, 13));
+            aiVsAi.setBorder(BorderFactory.createLineBorder(BLACK, 13));
+            test.setBorder(BorderFactory.createLineBorder(BLACK, 13));
+
+            blackAi.setBorderPainted(true);
+            whiteAi.setBorderPainted(true);
+            aiVsAi.setBorderPainted(true);
+            test.setBorderPainted(true);
 
             blackAi.addActionListener(e -> {
                 try {
@@ -124,31 +153,33 @@ public class ChessGameButton extends JButton {
                 } catch (ChessGameException ex) {
                     throw new RuntimeException(ex);
                 }
-                newGameFrame.dispose();
+                newGameDialog.dispose();
             });
 
             whiteAi.addActionListener(e -> {
                 newGameWhiteAiClicked();
-                newGameFrame.dispose();
+                newGameDialog.dispose();
             });
 
             aiVsAi.addActionListener(e -> {
                 newGameAiVsAiClicked();
-                newGameFrame.dispose();
+                newGameDialog.dispose();
             });
 
             test.addActionListener(e -> {
                 newGameTestClicked();
-                newGameFrame.dispose();
+                newGameDialog.dispose();
             });
 
-            newGameFrame.add(blackAi);
-            newGameFrame.add(whiteAi);
-            newGameFrame.add(aiVsAi);
-            newGameFrame.add(test);
+            newGameDialog.add(blackAi);
+            newGameDialog.add(whiteAi);
+            newGameDialog.add(aiVsAi);
+            newGameDialog.add(test);
 
-            newGameFrame.pack();
-            newGameFrame.setVisible(true);
+            newGameDialog.setBounds((int) NEW_GAME_WINDOW_START_X, (int) NEW_GAME_WINDOW_START_Y, (int) NEW_GAME_WINDOW_WIDTH, (int) NEW_GAME_WINDOW_HEIGHT); // középre pozícionálás
+            newGameDialog.setModal(true); // modális beállítás
+
+            newGameDialog.setVisible(true);
         }
 
         private void newGameBlackAiClicked() throws ChessGameException {

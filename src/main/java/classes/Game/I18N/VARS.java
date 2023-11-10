@@ -46,6 +46,14 @@ public class VARS {
         public static final double BOARD_PLACE_END_X = BOARD_PLACE_START_X + FIELD_WIDTH * 8 + 40;
 
 
+        public static final double NEW_GAME_WINDOW_WIDTH = 6 * FIELD_WIDTH;
+
+        public static final double NEW_GAME_WINDOW_HEIGHT = 6 * FIELD_HEIGHT;
+
+        public static final double NEW_GAME_WINDOW_START_X = ((SCREEN_WIDTH - NEW_GAME_WINDOW_WIDTH) / 2) + 10;
+
+        public static final double NEW_GAME_WINDOW_START_Y = (SCREEN_HEIGHT - NEW_GAME_WINDOW_HEIGHT) / 2 + 30;
+
         public static final double WHITE_TAKEN_PIECES_FIRST_ROW_START_X = BOARD_PLACE_START_X - 150;
 
         public static final double WHITE_TAKEN_PIECES_FIRST_ROW_START_Y = BOARD_PLACE_START_Y;
