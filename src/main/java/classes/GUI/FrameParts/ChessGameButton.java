@@ -56,10 +56,14 @@ public class ChessGameButton extends JButton {
 
         @Override
         public void mouseClicked(MouseEvent e){
-            manageClick(e);
+            try {
+                manageClick(e);
+            } catch (ChessGameException ex) {
+                throw new RuntimeException(ex);
+            }
         }
 
-        private void manageClick(MouseEvent e) {
+        private void manageClick(MouseEvent e) throws ChessGameException {
             switch (((ChessGameButton)e.getSource()).getText()){
                 case "Új játék":{
                     newGameClicked();
@@ -115,7 +119,11 @@ public class ChessGameButton extends JButton {
             ChessGameButton test = new ChessGameButton("Teszt");
 
             blackAi.addActionListener(e -> {
-                newGameBlackAiClicked();
+                try {
+                    newGameBlackAiClicked();
+                } catch (ChessGameException ex) {
+                    throw new RuntimeException(ex);
+                }
                 newGameFrame.dispose();
             });
 
@@ -129,12 +137,9 @@ public class ChessGameButton extends JButton {
                 newGameFrame.dispose();
             });
 
-            test.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    newGameTestClicked();
-                    newGameFrame.dispose();
-                }
+            test.addActionListener(e -> {
+                newGameTestClicked();
+                newGameFrame.dispose();
             });
 
             newGameFrame.add(blackAi);

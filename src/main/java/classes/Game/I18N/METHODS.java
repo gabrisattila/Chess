@@ -27,18 +27,17 @@ public class METHODS {
     }
 
     public static void putTakenPieceToItsPlace(String fenOfCurrentState, String fenOfPreviousState) throws ChessGameException {
-        ArrayList<Character> prev = new ArrayList<>();
-        ArrayList<Character> current = new ArrayList<>();
 
-        for (int i = 0; i < fenOfPreviousState.length(); i++) {
-            if (Character.isLetter(fenOfCurrentState.charAt(i)))
-                prev.add(fenOfPreviousState.charAt(i));
-        }
-
-        for (int i = 0; i < fenOfCurrentState.length(); i++) {
-            if (Character.isLetter(fenOfCurrentState.charAt(i)))
-                current.add(fenOfCurrentState.charAt(i));
-        }
+        ArrayList<Character> prev = (ArrayList<Character>) fenOfPreviousState
+                .chars()
+                .filter(Character::isLetter)
+                .mapToObj(c -> (char) c)
+                .collect(Collectors.toList());
+        ArrayList<Character> current = (ArrayList<Character>) fenOfCurrentState
+                .chars()
+                .filter(Character::isLetter)
+                .mapToObj(c -> (char) c)
+                .collect(Collectors.toList());
 
         if (current.size() != prev.size()){
 
