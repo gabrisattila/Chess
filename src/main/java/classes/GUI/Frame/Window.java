@@ -10,10 +10,7 @@ import lombok.*;
 import javax.swing.*;
 
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.VARS.FINALS.*;
@@ -42,29 +39,24 @@ public class Window extends JFrame {
 
     //region Constructor
 
-    private Window(boolean twoAi, boolean whiteAi, boolean test) throws ChessGameException {
-
-        setAiNumberDemand();
+    private Window(boolean oneAi, boolean whiteAi, boolean test, boolean firstStart) throws ChessGameException {
 
         frameSetup();
-        setUpSides();
-//        getViewBoard().pieceSetUp(usualFens.get("whiteDownPawnsFront"));
+        addGameBoard();
+        setVisible(true);
 
-        gameBoard = new GameBoard();
-        add(gameBoard);
+        setAiNumberDemand(oneAi, whiteAi, test, firstStart);
+        setUpSides(firstStart);
 
-        addButtonsAndMayBeTheLoggerToo();
+        addButtonsAndMayBeTheLoggerToo(firstStart);
         setUpTakenPiecePlaces();
 
 
-        setVisible(true);
 
     }
 
-    public static void getWindow() throws ChessGameException {
-        if (window == null){
-            window = new Window(false, false, false);
-        }
+    public static void getWindow(boolean firstStart, boolean oneAi, boolean whiteAi, boolean test) throws ChessGameException {
+        window = new Window(oneAi, whiteAi, test, firstStart);
     }
 
     //endregion
@@ -84,27 +76,36 @@ public class Window extends JFrame {
         setLocationRelativeTo(null);
     }
 
-    private void setAiNumberDemand(){
+    private void setAiNumberDemand(boolean oneAi, boolean whiteAi, boolean test, boolean firstTurn) throws ChessGameException {
 
-        System.out.println("\nSzeretné-e végig nézni a gép csatáját saját maga ellen, vagy inkább ön mérkőzik meg vele? \n (Igen / Nem)");
 
-        theresOnlyOneAi = "Nem".equals(new Scanner(System.in).nextLine().trim());
+        if (firstTurn)
+            return;
 
-        if (theresOnlyOneAi){
-            System.out.println("Világossal szeretne lenni? (Igen / Nem)");
-            whiteAiNeeded = "Nem".equals(new Scanner(System.in).nextLine().trim());
+//        System.out.println("\nSzeretné-e végig nézni a gép csatáját saját maga ellen, vagy inkább ön mérkőzik meg vele? \n (Igen / Nem)");
+
+        theresOnlyOneAi = oneAi;
+        whiteAiNeeded = whiteAi;
+
+        if (test){
+            getViewBoard().pieceSetUp(usualFens.get("whiteDownPawnsFront"));
         }
-//
-//        theresOnlyOneAi = false;
-//        whiteAiNeeded = true;
+
     }
 
-    private void setUpSides() throws ChessGameException {
-        getViewBoard().pieceSetUp(usualFens.get(
-                theresOnlyOneAi ? (whiteAiNeeded ? "blackDownStarter" : "whiteDownStarter") :
-                                  "whiteDownStarter"
-            )
-        );
+    private void setUpSides(boolean firstStart) throws ChessGameException {
+        if (!firstStart) {
+            getViewBoard().pieceSetUp(usualFens.get(
+                            theresOnlyOneAi ? (whiteAiNeeded ? "blackDownStarter" : "whiteDownStarter") :
+                                    "whiteDownStarter"
+                    )
+            );
+        }
+    }
+
+    private void addGameBoard() throws ChessGameException {
+        gameBoard = new GameBoard();
+        this.add(gameBoard);
     }
 
     //endregion
@@ -112,15 +113,20 @@ public class Window extends JFrame {
 
     //region Game Buttons
 
-    private void addButtonsAndMayBeTheLoggerToo() {
-        addButtons();
+    private void addButtonsAndMayBeTheLoggerToo(boolean firstStart) {
+        addButtons(firstStart);
+
         if (canBeLogger)
             addLogger();
     }
 
-    private void addButtons() {
+    private void addButtons(boolean firstTurn) {
         for (JButton b : buttons) {
             this.add(b);
+        }
+        for (ChessGameButton b : buttons) {
+            if (!"Új játék".equals(b.getText()))
+                b.setEnabled(!firstTurn);
         }
     }
 

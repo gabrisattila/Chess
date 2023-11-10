@@ -1,22 +1,12 @@
 package classes.Game.Model.Logic;
 
 import classes.Ai.AI;
-import classes.GUI.FrameParts.ChessGameButton;
-import classes.GUI.FrameParts.ViewPiece;
 import classes.Game.I18N.*;
-import classes.Game.Model.Structure.IPiece;
 import lombok.*;
 
 import javax.swing.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-
 import static classes.Ai.FenConverter.BoardToFen;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 import static classes.Ai.FenConverter.FenToBoard;
 import static classes.GUI.Frame.Window.*;
@@ -62,7 +52,7 @@ public class EDT {
 
 
     private void initialization() throws ChessGameException, InterruptedException {
-        getWindow();
+        getWindow(true, false, false, false);
         SwingUtilities.invokeLater(this::initializeAis);
 
         if (theresOnlyOneAi && !whiteAiNeeded)

@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -157,17 +156,29 @@ public class ChessGameButton extends JButton {
             });
 
             whiteAi.addActionListener(e -> {
-                newGameWhiteAiClicked();
+                try {
+                    newGameWhiteAiClicked();
+                } catch (ChessGameException ex) {
+                    throw new RuntimeException(ex);
+                }
                 newGameDialog.dispose();
             });
 
             aiVsAi.addActionListener(e -> {
-                newGameAiVsAiClicked();
+                try {
+                    newGameAiVsAiClicked();
+                } catch (ChessGameException ex) {
+                    throw new RuntimeException(ex);
+                }
                 newGameDialog.dispose();
             });
 
             test.addActionListener(e -> {
-                newGameTestClicked();
+                try {
+                    newGameTestClicked();
+                } catch (ChessGameException ex) {
+                    throw new RuntimeException(ex);
+                }
                 newGameDialog.dispose();
             });
 
@@ -183,19 +194,19 @@ public class ChessGameButton extends JButton {
         }
 
         private void newGameBlackAiClicked() throws ChessGameException {
-            getWindow();
+            getWindow(false, true, false, false);
         }
 
-        private void newGameWhiteAiClicked() {
-
+        private void newGameWhiteAiClicked() throws ChessGameException {
+            getWindow(false, true, true, false);
         }
 
-        private void newGameAiVsAiClicked() {
-
+        private void newGameAiVsAiClicked() throws ChessGameException {
+            getWindow(false, false, false, false);
         }
 
-        private void newGameTestClicked() {
-
+        private void newGameTestClicked() throws ChessGameException {
+            getWindow(false, true, false, true);
         }
 
         private void pauseClicked() {
