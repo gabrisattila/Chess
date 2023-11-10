@@ -1,6 +1,7 @@
 package classes.Game.Model.Logic;
 
 import classes.Ai.AI;
+import classes.GUI.FrameParts.ChessGameButton;
 import classes.GUI.FrameParts.ViewPiece;
 import classes.Game.I18N.*;
 import classes.Game.Model.Structure.IPiece;
@@ -13,6 +14,10 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import static classes.Ai.FenConverter.BoardToFen;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
 import static classes.Ai.FenConverter.FenToBoard;
 import static classes.GUI.Frame.Window.*;
 import static classes.GUI.FrameParts.ViewBoard.*;

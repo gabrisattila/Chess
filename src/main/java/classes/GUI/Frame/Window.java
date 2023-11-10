@@ -8,7 +8,6 @@ import classes.Game.I18N.Pair;
 import lombok.*;
 
 import javax.swing.*;
-import javax.swing.plaf.basic.BasicButtonUI;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -43,7 +42,7 @@ public class Window extends JFrame {
 
     //region Constructor
 
-    private Window() throws ChessGameException {
+    private Window(boolean twoAi, boolean whiteAi, boolean test) throws ChessGameException {
 
         setAiNumberDemand();
 
@@ -64,7 +63,7 @@ public class Window extends JFrame {
 
     public static void getWindow() throws ChessGameException {
         if (window == null){
-            window = new Window();
+            window = new Window(false, false, false);
         }
     }
 
