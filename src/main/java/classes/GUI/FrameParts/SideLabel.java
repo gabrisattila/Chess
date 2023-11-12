@@ -1,12 +1,14 @@
 package classes.GUI.FrameParts;
 
-import classes.Game.I18N.Location;
 import lombok.*;
 
 import javax.swing.*;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
@@ -21,16 +23,17 @@ public class SideLabel extends JLabel {
 
     private int yCoordinate;
 
-    ArrayList<String> labelTextList = collectProperLabelTexts();
+    ArrayList<String> labelTextList;
 
     //endregion
 
 
     //region Constructor
 
-    public SideLabel(int x, int y, boolean vertical){
+    public SideLabel(int x, int y, boolean vertical, boolean whiteDown){
 
         //TODO nem mindegy sötéttel vagy világossal vagyunk.
+        labelTextList = collectProperLabelTexts(whiteDown);
         setText(labelTextList.get(labelCounter));
         labelCounter++;
 
@@ -56,19 +59,26 @@ public class SideLabel extends JLabel {
 
     //region Methods
 
-    public static ArrayList<String> collectProperLabelTexts(){
+    public ArrayList<String> collectProperLabelTexts(boolean whiteDown){
         ArrayList<String> labelTextList = new ArrayList<>();
+        List<Character> számokSubList = számok.subList(0, MAX_HEIGHT);
+        List<Character> abcSubList = abc.subList(0, MAX_WIDTH);
+        if (!whiteDown){
+            Collections.reverse(abcSubList);
+        }else {
+            Collections.reverse(számokSubList);
+        }
         for (int i = 0; i < MAX_HEIGHT; i++) {
-            labelTextList.add(String.valueOf(számok.get(i)));
+            labelTextList.add(String.valueOf(számokSubList.get(i)));
         }
         for (int i = 0; i < MAX_WIDTH; i++) {
-            labelTextList.add(" " + abc.get(i) + " ");
+            labelTextList.add(" " + abcSubList.get(i) + " ");
         }
         for (int i = MAX_HEIGHT - 1; i >= 0; i--) {
-            labelTextList.add(String.valueOf(számok.get(i)));
+            labelTextList.add(String.valueOf(számokSubList.get(i)));
         }
         for (int i = MAX_WIDTH - 1; i >= 0; i--) {
-            labelTextList.add(" " + abc.get(i) + " ");
+            labelTextList.add(" " + abcSubList.get(i) + " ");
         }
         return labelTextList;
     }

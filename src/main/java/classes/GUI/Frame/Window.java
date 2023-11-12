@@ -25,7 +25,7 @@ public class Window extends JFrame {
 
     private static Window window;
 
-    private GameBoard gameBoard;
+    private static GameBoard gameBoard;
 
     @Getter
     private static JTextArea logger;
@@ -40,7 +40,7 @@ public class Window extends JFrame {
 
     //region Constructor
 
-    private Window(boolean firstStart) throws ChessGameException {
+    private Window() throws ChessGameException {
 
         frameSetup();
         addGameBoard();
@@ -52,9 +52,13 @@ public class Window extends JFrame {
 
     }
 
-    public static void getWindow(boolean firstStart) throws ChessGameException {
+    public static void getWindow() throws ChessGameException {
         if (isNull(window))
-            window = new Window(firstStart);
+            window = new Window();
+    }
+
+    public static GameBoard getGameBoard(){
+        return gameBoard;
     }
 
     //endregion
@@ -76,7 +80,7 @@ public class Window extends JFrame {
 
     public static void setUpSides() throws ChessGameException {
         if (isTest) {
-            getViewBoard().pieceSetUp(usualFens.get("whiteDownPawnsFront"));
+            getViewBoard().pieceSetUp(usualFens.get("onlyKnights4x4"));
             return;
         }
         if (!isFirstOpen) {

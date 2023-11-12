@@ -10,8 +10,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-import static classes.Game.I18N.Helpers.*;
-import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.GUI.FrameParts.ViewBoard.*;
@@ -26,9 +24,9 @@ public class GameBoard extends JLayeredPane {
 
     private JComboBox<JButton> whatToPlay;
 
-    private ArrayList<Location> edgeCoordinates = new ArrayList<>();
+    private static ArrayList<Location> edgeCoordinates = new ArrayList<>();
 
-    private ArrayList<SideLabel> labels = new ArrayList<>(MAX_WIDTH * 2 + MAX_HEIGHT * 2);
+    private static ArrayList<SideLabel> labels = new ArrayList<>(MAX_WIDTH * 2 + MAX_HEIGHT * 2);
 
     private ArrayList<CornerSquare> corners = new ArrayList<>(4);
 
@@ -111,7 +109,7 @@ public class GameBoard extends JLayeredPane {
     private void addLabels() {
 
         collectEdges();
-        addLabelsByLocation();
+        addLabelsByLocation(true, this);
 
     }
 
@@ -148,7 +146,7 @@ public class GameBoard extends JLayeredPane {
 
     }
 
-    private void addLabelsByLocation() {
+    public static void addLabelsByLocation(boolean whiteDown, GameBoard board) {
 
         int helperCounterForLabels = 0;
         boolean vertical = true;
@@ -158,9 +156,9 @@ public class GameBoard extends JLayeredPane {
             if (helperCounterForLabels != 0 && (vertical ? (helperCounterForLabels % MAX_HEIGHT) : (helperCounterForLabels % MAX_WIDTH)) == 0){
                 vertical = ! vertical;
             }
-            label = new SideLabel(l.getI(), l.getJ(), vertical);
+            label = new SideLabel(l.getI(), l.getJ(), vertical, whiteDown);
             labels.add(label);
-            this.add(label);
+            board.add(label);
             helperCounterForLabels++;
         }
 

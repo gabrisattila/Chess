@@ -53,7 +53,7 @@ public class EDT {
 
     public static void initialization() throws ChessGameException, InterruptedException {
         if (isFirstOpen){
-            getWindow(true);
+            getWindow();
         }else {
             SwingUtilities.invokeLater(EDT::initializeAis);
 
