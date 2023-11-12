@@ -258,8 +258,8 @@ public class Board implements IBoard {
                     if (emPassantIf(p, l, neighbour1) || emPassantIf(p, l, neighbour2)){
                         Location middle = getTheMiddleLocation(p.getLocation(), l);
                         assert middle != null;
-                        emPassant.append(nums.get(middle.getI()));
-                        emPassant.append(nums.get(middle.getJ()));
+                        emPassant.append(numsForPrinting.get(middle.getI()));
+                        emPassant.append(numsForPrinting.get(middle.getJ()));
                         ((Piece) p).setLegals(new Move(
                                 this,
                                 p,

@@ -188,7 +188,7 @@ public class VARS {
             add('H');
         }};
 
-        public static final ArrayList<Character> számok = new ArrayList<>(){{
+        public static final ArrayList<Character> nums = new ArrayList<>(){{
             add('1');
             add('2');
             add('3');
@@ -199,7 +199,7 @@ public class VARS {
             add('8');
         }};
 
-        public static final ArrayList<String> nums = new ArrayList<>(){{
+        public static final ArrayList<String> numsForPrinting = new ArrayList<>(){{
             add("0");
             add("1");
             add("2");

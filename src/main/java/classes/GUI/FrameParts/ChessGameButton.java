@@ -10,7 +10,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 import static classes.GUI.Frame.Window.*;
-import static classes.GUI.FrameParts.GameBoard.addLabelsByLocation;
+import static classes.GUI.FrameParts.GameBoard.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Game.Model.Logic.EDT.*;
@@ -215,10 +215,10 @@ public class ChessGameButton extends JButton {
             theresOnlyOneAi = oneAi;
             whiteAiNeeded = whiteAi;
             isTest = test;
-            addLabelsByLocation(!oneAi || !whiteAi, getGameBoard());
             setUpSides();
             buttonsEnabled();
             initialization();
+            labelTexting(!oneAi || !whiteAi);
         }
 
     }

@@ -10,6 +10,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
+import static classes.GUI.FrameParts.SideLabel.collectProperLabelTexts;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.GUI.FrameParts.ViewBoard.*;
@@ -27,6 +28,8 @@ public class GameBoard extends JLayeredPane {
     private static ArrayList<Location> edgeCoordinates = new ArrayList<>();
 
     private static ArrayList<SideLabel> labels = new ArrayList<>(MAX_WIDTH * 2 + MAX_HEIGHT * 2);
+
+    private static ArrayList<String> labelTextList;
 
     private ArrayList<CornerSquare> corners = new ArrayList<>(4);
 
@@ -109,7 +112,7 @@ public class GameBoard extends JLayeredPane {
     private void addLabels() {
 
         collectEdges();
-        addLabelsByLocation(true, this);
+        addLabelsByLocation(this);
 
     }
 
@@ -146,22 +149,32 @@ public class GameBoard extends JLayeredPane {
 
     }
 
-    public static void addLabelsByLocation(boolean whiteDown, GameBoard board) {
+    public static void addLabelsByLocation(GameBoard board) {
 
         int helperCounterForLabels = 0;
         boolean vertical = true;
         SideLabel label;
+
         for (Location l : edgeCoordinates) {
 
             if (helperCounterForLabels != 0 && (vertical ? (helperCounterForLabels % MAX_HEIGHT) : (helperCounterForLabels % MAX_WIDTH)) == 0){
                 vertical = ! vertical;
             }
-            label = new SideLabel(l.getI(), l.getJ(), vertical, whiteDown);
+            label = new SideLabel(l.getI(), l.getJ(), vertical);
             labels.add(label);
             board.add(label);
             helperCounterForLabels++;
         }
 
+    }
+
+    public static void labelTexting(boolean whiteDown){
+        labelTextList = collectProperLabelTexts(whiteDown);
+        int i = 0;
+        for (SideLabel label : labels) {
+            label.setText(labelTextList.get(i));
+            i++;
+        }
     }
 
     //endregion
