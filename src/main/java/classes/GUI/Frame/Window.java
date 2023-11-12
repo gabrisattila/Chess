@@ -52,9 +52,10 @@ public class Window extends JFrame {
 
     }
 
-    public static void getWindow() throws ChessGameException {
+    public static Window getWindow() throws ChessGameException {
         if (isNull(window))
             window = new Window();
+        return window;
     }
 
     public static GameBoard getGameBoard(){

@@ -106,8 +106,8 @@ public class EDT {
         }
     }
 
-    public static void interruptAi(String color){
-        if (WHITE_STRING.equals(color)){
+    public static void interruptAi(boolean forWhite){
+        if (forWhite){
             aiW.interrupt();
         }else {
             aiB.interrupt();

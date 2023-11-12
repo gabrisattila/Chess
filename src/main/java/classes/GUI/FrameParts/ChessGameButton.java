@@ -1,5 +1,6 @@
 package classes.GUI.FrameParts;
 
+import classes.GUI.Frame.Window;
 import classes.Game.I18N.ChessGameException;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,15 +20,7 @@ public class ChessGameButton extends JButton {
 
     //region Fields
 
-    private static ChessGameButton blackAi;
-
-    private static ChessGameButton whiteAi;
-
-    private static ChessGameButton aiVsAi;
-
-    private static ChessGameButton test;
-
-
+    private static final JDialog pauseDialog = new JDialog();
 
     //endregion
 
@@ -103,6 +96,8 @@ public class ChessGameButton extends JButton {
                 case "Betöltés" -> loadClicked();
                 case "Feladás" -> submissionClicked();
                 case "Döntetlen" -> drawClicked();
+                case "Folytatás" -> continueClicked();
+                case "Kilépés" -> exitClicked(getWindow());
             }
         }
 
@@ -113,10 +108,10 @@ public class ChessGameButton extends JButton {
             newGameDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             newGameDialog.setLayout(new GridLayout(2, 2));
 
-            blackAi = new ChessGameButton("<html><div style='text-align: center;'>Világossal<br>szeretnék lenni</div></html>");
-            whiteAi = new ChessGameButton("<html><div style='text-align: center;'>Sötéttel<br>szeretnék lenni</div></html>");
-            aiVsAi = new ChessGameButton("<html><div style='text-align: center;'>Ai vs Ai</div></html>");
-            test = new ChessGameButton("<html><div style='text-align: center;'>Teszt</div></html>");
+            ChessGameButton blackAi = new ChessGameButton("<html><div style='text-align: center;'>Világossal<br>szeretnék lenni</div></html>");
+            ChessGameButton whiteAi = new ChessGameButton("<html><div style='text-align: center;'>Sötéttel<br>szeretnék lenni</div></html>");
+            ChessGameButton aiVsAi = new ChessGameButton("<html><div style='text-align: center;'>Ai vs Ai</div></html>");
+            ChessGameButton test = new ChessGameButton("<html><div style='text-align: center;'>Teszt</div></html>");
 
             blackAi.setBorder(BorderFactory.createLineBorder(BLACK, 13));
             whiteAi.setBorder(BorderFactory.createLineBorder(BLACK, 13));
@@ -193,6 +188,28 @@ public class ChessGameButton extends JButton {
 
         private void pauseClicked() {
 
+            pauseDialog.setTitle("Szeretné folytatni?");
+            pauseDialog.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+            pauseDialog.setLayout(new FlowLayout());
+
+            ChessGameButton continueButton = new ChessGameButton("Folytatás");
+            ChessGameButton exitButton = new ChessGameButton("Kilépés");
+
+            if (theresOnlyOneAi) {
+                interruptAi(whiteToPlay);
+            }else {
+                interruptAi(true);
+                interruptAi(false);
+            }
+
+            pauseDialog.add(continueButton);
+            pauseDialog.add(exitButton);
+            pauseDialog.getContentPane().setBackground(BACK_GROUND);
+
+            pauseDialog.pack();
+            pauseDialog.setModal(true);
+            pauseDialog.setLocationRelativeTo(null); // A képernyő közepére helyezi az ablakot
+            pauseDialog.setVisible(true);
         }
 
         private void saveClicked() {
@@ -209,6 +226,22 @@ public class ChessGameButton extends JButton {
 
         private void drawClicked() {
 
+        }
+
+        private void continueClicked(){
+            pauseDialog.dispose();
+            if (whiteToPlay){
+                if (!theresOnlyOneAi || whiteAiNeeded)
+                    startAI();
+            } else {
+                if (!whiteAiNeeded)
+                    startAI();
+            }
+        }
+
+        private void exitClicked(Window window){
+            pauseDialog.dispose();
+            window.dispose();
         }
 
         private void newGameInitialization(boolean oneAi, boolean whiteAi, boolean test) throws ChessGameException, InterruptedException {
