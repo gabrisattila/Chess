@@ -51,15 +51,18 @@ public class EDT {
     //region Methods
 
 
-    private void initialization() throws ChessGameException, InterruptedException {
-        getWindow(true, false, false, false);
-        SwingUtilities.invokeLater(this::initializeAis);
+    public static void initialization() throws ChessGameException, InterruptedException {
+        if (isFirstOpen){
+            getWindow(true);
+        }else {
+            SwingUtilities.invokeLater(EDT::initializeAis);
 
-        if (theresOnlyOneAi && !whiteAiNeeded)
-            getViewBoard().rangeUpdater();
+            if (theresOnlyOneAi && !whiteAiNeeded)
+                getViewBoard().rangeUpdater();
+        }
     }
 
-    private void initializeAis(){
+    private static void initializeAis(){
         if (theresOnlyOneAi){
             if (whiteAiNeeded) {
                 aiTurn = true;

@@ -9,12 +9,22 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-import static classes.GUI.Frame.Window.getWindow;
+import static classes.GUI.Frame.Window.*;
 import static classes.Game.I18N.VARS.FINALS.*;
+import static classes.Game.I18N.VARS.MUTABLE.*;
+import static classes.Game.Model.Logic.EDT.*;
 
 public class ChessGameButton extends JButton {
 
     //region Fields
+
+    private static ChessGameButton blackAi;
+
+    private static ChessGameButton whiteAi;
+
+    private static ChessGameButton aiVsAi;
+
+    private static ChessGameButton test;
 
 
 
@@ -58,7 +68,7 @@ public class ChessGameButton extends JButton {
         public void mouseClicked(MouseEvent e){
             try {
                 manageClick(e);
-            } catch (ChessGameException ex) {
+            } catch (ChessGameException | InterruptedException ex) {
                 throw new RuntimeException(ex);
             }
         }
@@ -80,61 +90,32 @@ public class ChessGameButton extends JButton {
             ((ChessGameButton) e.getSource()).setBackground(tmp);
         }
 
-        private void manageClick(MouseEvent e) throws ChessGameException {
-            switch (((ChessGameButton)e.getSource()).getText()){
-                case "Új játék":{
-                    newGameClicked();
-                    break;
-                }
-                case "Világossal szeretnék lenni":{
-                    newGameBlackAiClicked();
-                    break;
-                }
-                case "Sötéttel szeretnék lenni":{
-                    newGameWhiteAiClicked();
-                    break;
-                }
-                case "Ai vs Ai":{
-                    newGameAiVsAiClicked();
-                    break;
-                }
-                case "Test":{
-                    newGameTestClicked();
-                    break;
-                }
-                case "Szünet":{
-                    pauseClicked();
-                    break;
-                }
-                case "Mentés":{
-                    saveClicked();
-                    break;
-                }
-                case "Betöltés":{
-                    loadClicked();
-                    break;
-                }
-                case "Feladás":{
-                    submissionClicked();
-                    break;
-                }
-                case "Döntetlen":{
-                    drawClicked();
-                    break;
-                }
+        private void manageClick(MouseEvent e) throws ChessGameException, InterruptedException {
+            switch (((ChessGameButton) e.getSource()).getText()) {
+                case "Új játék" -> newGameClicked();
+                case "Világossal szeretnék lenni" -> newGameBlackAiClicked();
+                case "Sötéttel szeretnék lenni" -> newGameWhiteAiClicked();
+                case "Ai vs Ai" -> newGameAiVsAiClicked();
+                case "Test" -> newGameTestClicked();
+                case "Szünet" -> pauseClicked();
+                case "Mentés" -> saveClicked();
+                case "Betöltés" -> loadClicked();
+                case "Feladás" -> submissionClicked();
+                case "Döntetlen" -> drawClicked();
             }
         }
 
         private void newGameClicked() {
+            isFirstOpen = false;
             JDialog newGameDialog = new JDialog();
             newGameDialog.setTitle("Új játék kiválasztása");
             newGameDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             newGameDialog.setLayout(new GridLayout(2, 2));
 
-            ChessGameButton blackAi = new ChessGameButton("<html><div style='text-align: center;'>Világossal<br>szeretnék lenni</div></html>");
-            ChessGameButton whiteAi = new ChessGameButton("<html><div style='text-align: center;'>Sötéttel<br>szeretnék lenni</div></html>");
-            ChessGameButton aiVsAi = new ChessGameButton("<html><div style='text-align: center;'>Ai vs Ai</div></html>");
-            ChessGameButton test = new ChessGameButton("<html><div style='text-align: center;'>Teszt</div></html>");
+            blackAi = new ChessGameButton("<html><div style='text-align: center;'>Világossal<br>szeretnék lenni</div></html>");
+            whiteAi = new ChessGameButton("<html><div style='text-align: center;'>Sötéttel<br>szeretnék lenni</div></html>");
+            aiVsAi = new ChessGameButton("<html><div style='text-align: center;'>Ai vs Ai</div></html>");
+            test = new ChessGameButton("<html><div style='text-align: center;'>Teszt</div></html>");
 
             blackAi.setBorder(BorderFactory.createLineBorder(BLACK, 13));
             whiteAi.setBorder(BorderFactory.createLineBorder(BLACK, 13));
@@ -149,7 +130,7 @@ public class ChessGameButton extends JButton {
             blackAi.addActionListener(e -> {
                 try {
                     newGameBlackAiClicked();
-                } catch (ChessGameException ex) {
+                } catch (ChessGameException | InterruptedException ex) {
                     throw new RuntimeException(ex);
                 }
                 newGameDialog.dispose();
@@ -158,7 +139,7 @@ public class ChessGameButton extends JButton {
             whiteAi.addActionListener(e -> {
                 try {
                     newGameWhiteAiClicked();
-                } catch (ChessGameException ex) {
+                } catch (ChessGameException | InterruptedException ex) {
                     throw new RuntimeException(ex);
                 }
                 newGameDialog.dispose();
@@ -167,7 +148,7 @@ public class ChessGameButton extends JButton {
             aiVsAi.addActionListener(e -> {
                 try {
                     newGameAiVsAiClicked();
-                } catch (ChessGameException ex) {
+                } catch (ChessGameException | InterruptedException ex) {
                     throw new RuntimeException(ex);
                 }
                 newGameDialog.dispose();
@@ -176,7 +157,7 @@ public class ChessGameButton extends JButton {
             test.addActionListener(e -> {
                 try {
                     newGameTestClicked();
-                } catch (ChessGameException ex) {
+                } catch (ChessGameException | InterruptedException ex) {
                     throw new RuntimeException(ex);
                 }
                 newGameDialog.dispose();
@@ -193,20 +174,20 @@ public class ChessGameButton extends JButton {
             newGameDialog.setVisible(true);
         }
 
-        private void newGameBlackAiClicked() throws ChessGameException {
-            getWindow(false, true, false, false);
+        private void newGameBlackAiClicked() throws ChessGameException, InterruptedException {
+            newGameInitialization(true, false, false);
         }
 
-        private void newGameWhiteAiClicked() throws ChessGameException {
-            getWindow(false, true, true, false);
+        private void newGameWhiteAiClicked() throws ChessGameException, InterruptedException {
+            newGameInitialization(true, true, false);
         }
 
-        private void newGameAiVsAiClicked() throws ChessGameException {
-            getWindow(false, false, false, false);
+        private void newGameAiVsAiClicked() throws ChessGameException, InterruptedException {
+            newGameInitialization(false, false, false);
         }
 
-        private void newGameTestClicked() throws ChessGameException {
-            getWindow(false, true, false, true);
+        private void newGameTestClicked() throws ChessGameException, InterruptedException {
+            newGameInitialization(false, false, true);
         }
 
         private void pauseClicked() {
@@ -227,6 +208,15 @@ public class ChessGameButton extends JButton {
 
         private void drawClicked() {
 
+        }
+
+        private void newGameInitialization(boolean oneAi, boolean whiteAi, boolean test) throws ChessGameException, InterruptedException {
+            theresOnlyOneAi = oneAi;
+            whiteAiNeeded = whiteAi;
+            isTest = test;
+            setUpSides();
+            buttonsEnabled();
+            initialization();
         }
 
     }

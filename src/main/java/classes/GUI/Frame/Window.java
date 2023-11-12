@@ -13,6 +13,7 @@ import java.awt.*;
 import java.util.ArrayList;
 
 import static classes.GUI.FrameParts.ViewBoard.*;
+import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 
@@ -39,24 +40,21 @@ public class Window extends JFrame {
 
     //region Constructor
 
-    private Window(boolean oneAi, boolean whiteAi, boolean test, boolean firstStart) throws ChessGameException {
+    private Window(boolean firstStart) throws ChessGameException {
 
         frameSetup();
         addGameBoard();
-        setVisible(true);
 
-        setAiNumberDemand(oneAi, whiteAi, test, firstStart);
-        setUpSides(firstStart);
-
-        addButtonsAndMayBeTheLoggerToo(firstStart);
+        addButtonsAndMayBeTheLoggerToo();
         setUpTakenPiecePlaces();
 
-
+        setVisible(true);
 
     }
 
-    public static void getWindow(boolean firstStart, boolean oneAi, boolean whiteAi, boolean test) throws ChessGameException {
-        window = new Window(oneAi, whiteAi, test, firstStart);
+    public static void getWindow(boolean firstStart) throws ChessGameException {
+        if (isNull(window))
+            window = new Window(firstStart);
     }
 
     //endregion
@@ -76,25 +74,12 @@ public class Window extends JFrame {
         setLocationRelativeTo(null);
     }
 
-    private void setAiNumberDemand(boolean oneAi, boolean whiteAi, boolean test, boolean firstTurn) throws ChessGameException {
-
-
-        if (firstTurn)
-            return;
-
-//        System.out.println("\nSzeretné-e végig nézni a gép csatáját saját maga ellen, vagy inkább ön mérkőzik meg vele? \n (Igen / Nem)");
-
-        theresOnlyOneAi = oneAi;
-        whiteAiNeeded = whiteAi;
-
-        if (test){
+    public static void setUpSides() throws ChessGameException {
+        if (isTest) {
             getViewBoard().pieceSetUp(usualFens.get("whiteDownPawnsFront"));
+            return;
         }
-
-    }
-
-    private void setUpSides(boolean firstStart) throws ChessGameException {
-        if (!firstStart) {
+        if (!isFirstOpen) {
             getViewBoard().pieceSetUp(usualFens.get(
                             theresOnlyOneAi ? (whiteAiNeeded ? "blackDownStarter" : "whiteDownStarter") :
                                     "whiteDownStarter"
@@ -113,20 +98,24 @@ public class Window extends JFrame {
 
     //region Game Buttons
 
-    private void addButtonsAndMayBeTheLoggerToo(boolean firstStart) {
-        addButtons(firstStart);
+    private void addButtonsAndMayBeTheLoggerToo() {
+        addButtons();
+        buttonsEnabled();
 
         if (canBeLogger)
             addLogger();
     }
 
-    private void addButtons(boolean firstTurn) {
+    private void addButtons() {
         for (JButton b : buttons) {
             this.add(b);
         }
+    }
+
+    public static void buttonsEnabled(){
         for (ChessGameButton b : buttons) {
             if (!"Új játék".equals(b.getText()))
-                b.setEnabled(!firstTurn);
+                b.setEnabled(!isFirstOpen);
         }
     }
 
