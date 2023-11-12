@@ -118,32 +118,28 @@ public class GameBoard extends JLayeredPane {
 
     private void collectEdges() {
 
-        edgeCoordinates.add(new Location(0, 0));
-
         int lastNum = 0;
 
-        //TODO 0-tól újraindexelve megoldani.
-
-        for (int j = 1; j <= MAX_HEIGHT; j++) {
+        for (int j = 0; j < MAX_HEIGHT; j++) {
             edgeCoordinates.add(new Location(0, (j * FIELD_HEIGHT) + 20));
 
-            if (j == MAX_HEIGHT)
-                lastNum = j * FIELD_HEIGHT;
+            if (j == MAX_HEIGHT - 1) {
+                lastNum = (j + 1) * FIELD_HEIGHT;
+            }
         }
-        for (int j = 1; j <= MAX_WIDTH; j++) {
-            edgeCoordinates.add(new Location(j * FIELD_WIDTH, lastNum + 20));
+        for (int j = 0; j < MAX_WIDTH; j++) {
+            edgeCoordinates.add(new Location(j * FIELD_WIDTH + 20, lastNum + 20));
 
-            if (j == MAX_WIDTH)
-                lastNum = j * FIELD_WIDTH;
+            if (j == MAX_WIDTH - 1)
+                lastNum = (j + 1) * FIELD_WIDTH;
         }
         for (int j = MAX_HEIGHT - 1; j >= 0; j--){
-            edgeCoordinates.add(new Location(lastNum, j * FIELD_HEIGHT - 20));
+            edgeCoordinates.add(new Location(lastNum + 20, j * FIELD_HEIGHT + 20));
 
             if (j == 0)
                 lastNum = 0;
         }
-
-        for (int j = MAX_WIDTH - 1; j > 0; j--){
+        for (int j = MAX_WIDTH - 1; j >= 0; j--){
             edgeCoordinates.add(new Location(j * FIELD_WIDTH + 20, lastNum));
         }
 

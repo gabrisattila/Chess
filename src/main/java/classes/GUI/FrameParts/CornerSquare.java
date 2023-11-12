@@ -12,7 +12,7 @@ public class CornerSquare extends JLabel {
     public CornerSquare(String where){
         setUpCorner(where);
         setBorder(BorderFactory.createEmptyBorder());
-        setBackground(WHITE);
+        setBackground(Color.BLACK);
         setOpaque(true);
         setVisible(true);
     }

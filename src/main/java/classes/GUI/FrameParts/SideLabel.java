@@ -45,7 +45,7 @@ public class SideLabel extends JLabel {
                 (int) (vertical ? VERTICAL_SIDE_LABEL_HEIGHT : HORIZONTAL_SIDE_LABEL_HEIGHT)
         );
 
-        setBorder(BorderFactory.createLineBorder(WHITE, 2));
+        setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
         setVisible(true);
     }
 
