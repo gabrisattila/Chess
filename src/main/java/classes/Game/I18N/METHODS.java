@@ -4,11 +4,17 @@ import classes.Ai.FenConverter;
 import classes.GUI.FrameParts.ViewPiece;
 import classes.Game.Model.Structure.*;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.*;
+import javax.swing.Timer;
 import java.util.stream.Collectors;
 
 import static classes.Ai.FenConverter.*;
-import static classes.GUI.FrameParts.ViewBoard.getViewBoard;
+import static classes.GUI.FrameParts.ViewBoard.*;
+import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.GUI.Frame.Window.*;
 
@@ -227,6 +233,31 @@ public class METHODS {
 
     public static ArrayList<Location> getCastleMatrixFor(boolean isWhite){
         return castleMatrix(isWhite, (theresOnlyOneAi || !whiteAiNeeded));
+    }
+
+    public static void showFlashFrame(String message, int durationInSeconds){
+
+        JFrame flashFrame = new JFrame("Mentés");
+        flashFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        flashFrame.setSize(400, 200);
+        flashFrame.getContentPane().setBackground(BLACK);
+
+        JLabel label = new JLabel(message);
+        label.setForeground(WHITE);
+        label.setVerticalAlignment(SwingConstants.CENTER);
+        label.setHorizontalAlignment(SwingConstants.CENTER);
+        label.setFont(new Font("Source Code Pro", Font.BOLD, 20));
+
+        flashFrame.add(label);
+        flashFrame.setLocationRelativeTo(null);
+
+        Timer timer = new Timer(durationInSeconds * 1000, e -> flashFrame.dispose());
+
+        timer.setRepeats(false);
+
+        flashFrame.setVisible(true);
+        timer.start();
+
     }
 
     private static ArrayList<Location> castleMatrix(boolean isWhite, boolean whiteDown){

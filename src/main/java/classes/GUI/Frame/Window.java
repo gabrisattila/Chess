@@ -79,7 +79,10 @@ public class Window extends JFrame {
         setLocationRelativeTo(null);
     }
 
-    public static void setUpSides() throws ChessGameException {
+    public static void setUpSides(String setUpFen) throws ChessGameException {
+
+        getViewBoard().pieceSetUp(setUpFen);
+
         if (isTest) {
             getViewBoard().pieceSetUp(usualFens.get("onlyKnights4x4"));
             return;

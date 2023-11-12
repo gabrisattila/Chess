@@ -54,7 +54,7 @@ public class EDT {
     public static void initialization() throws ChessGameException, InterruptedException {
         if (isFirstOpen){
             getWindow();
-        }else {
+        } else {
             SwingUtilities.invokeLater(EDT::initializeAis);
 
             if (theresOnlyOneAi && !whiteAiNeeded)

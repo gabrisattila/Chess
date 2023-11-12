@@ -2,19 +2,24 @@ package classes.GUI.FrameParts;
 
 import classes.GUI.Frame.Window;
 import classes.Game.I18N.ChessGameException;
-import lombok.Getter;
-import lombok.Setter;
+import classes.Game.Model.Structure.IBoard;
+import lombok.*;
 
 import javax.swing.*;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
+import java.util.Date;
 
+import static classes.Ai.FenConverter.*;
 import static classes.GUI.Frame.Window.*;
 import static classes.GUI.FrameParts.GameBoard.*;
+import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Game.Model.Logic.EDT.*;
+import static classes.Game.I18N.METHODS.*;
 
 public class ChessGameButton extends JButton {
 
@@ -62,7 +67,7 @@ public class ChessGameButton extends JButton {
         public void mouseClicked(MouseEvent e){
             try {
                 manageClick(e);
-            } catch (ChessGameException | InterruptedException ex) {
+            } catch (ChessGameException | InterruptedException | IOException ex) {
                 throw new RuntimeException(ex);
             }
         }
@@ -84,7 +89,7 @@ public class ChessGameButton extends JButton {
             ((ChessGameButton) e.getSource()).setBackground(tmp);
         }
 
-        private void manageClick(MouseEvent e) throws ChessGameException, InterruptedException {
+        private void manageClick(MouseEvent e) throws ChessGameException, InterruptedException, IOException {
             switch (((ChessGameButton) e.getSource()).getText()) {
                 case "Új játék" -> newGameClicked();
                 case "Világossal szeretnék lenni" -> newGameBlackAiClicked();
@@ -171,19 +176,19 @@ public class ChessGameButton extends JButton {
         }
 
         private void newGameBlackAiClicked() throws ChessGameException, InterruptedException {
-            newGameInitialization(true, false, false);
+            newGameInitialization(true, false, false, "");
         }
 
         private void newGameWhiteAiClicked() throws ChessGameException, InterruptedException {
-            newGameInitialization(true, true, false);
+            newGameInitialization(true, true, false, "");
         }
 
         private void newGameAiVsAiClicked() throws ChessGameException, InterruptedException {
-            newGameInitialization(false, false, false);
+            newGameInitialization(false, false, false, "");
         }
 
         private void newGameTestClicked() throws ChessGameException, InterruptedException {
-            newGameInitialization(false, false, true);
+            newGameInitialization(false, false, true, "");
         }
 
         private void pauseClicked() {
@@ -212,12 +217,62 @@ public class ChessGameButton extends JButton {
             pauseDialog.setVisible(true);
         }
 
-        private void saveClicked() {
-
+        private void saveClicked() throws ChessGameException {
+            saveBoard(getViewBoard());
         }
 
-        private void loadClicked() {
+        private void loadClicked() throws IOException, ChessGameException, InterruptedException {
+            JFileChooser fileChooser = new JFileChooser("src/main/java/Mentett_állások/");
 
+            int result = fileChooser.showOpenDialog(null);
+
+            if (result == JFileChooser.APPROVE_OPTION) {
+
+                File selectedFile = fileChooser.getSelectedFile();
+
+                JOptionPane.showMessageDialog(null, "A kiválasztott fájl: " + selectedFile.getAbsolutePath());
+                // Ai vs Ai
+                int whiteSideOption = - 1; int aiVsAiOption = JOptionPane.showOptionDialog(
+                        null,
+                        "Ai vs Ai?",
+                        "Ai vs Ai választás",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,
+                        new Object[]{"Igen", "Nem"},
+                        null
+                );
+
+                if (aiVsAiOption == JOptionPane.YES_OPTION) {
+                    JOptionPane.showMessageDialog(null, "Ai vs Ai választás: Igen");
+                } else {
+                    // Sötéttel szeretnél lenni?
+                    whiteSideOption = JOptionPane.showOptionDialog(
+                            null,
+                            "Világossal szeretnél lenni?",
+                            "Szín válssztás",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.QUESTION_MESSAGE,
+                            null,
+                            new Object[]{"Igen", "Nem"},
+                            null
+                    );
+
+                    if (whiteSideOption == JOptionPane.YES_OPTION) {
+                        JOptionPane.showMessageDialog(null, "Világossal szeretnél lenni: Igen");
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Világossal szeretnél lenni: Nem");
+                    }
+                }
+                BufferedReader reader = new BufferedReader(new FileReader(selectedFile));
+                String fen = reader.readLine();
+                newGameInitialization(
+                        0 == aiVsAiOption, 1 == whiteSideOption,
+                        false,
+                        fen);
+            } else {
+                JOptionPane.showMessageDialog(null, "Fájl kiválasztás megszakítva.");
+            }
         }
 
         private void submissionClicked() {
@@ -244,14 +299,33 @@ public class ChessGameButton extends JButton {
             window.dispose();
         }
 
-        private void newGameInitialization(boolean oneAi, boolean whiteAi, boolean test) throws ChessGameException, InterruptedException {
+        private void newGameInitialization(boolean oneAi, boolean whiteAi, boolean test, String setUpFen) throws ChessGameException, InterruptedException {
             theresOnlyOneAi = oneAi;
             whiteAiNeeded = whiteAi;
             isTest = test;
-            setUpSides();
+            if (!isFirstOpen && "".equals(setUpFen)){
+                setUpFen = usualFens.get(theresOnlyOneAi ?
+                                (whiteAiNeeded ? "blackDownStarter" : "whiteDownStarter") :
+                                "whiteDownStarter");
+            }
+            setUpSides(setUpFen);
             buttonsEnabled();
             initialization();
             labelTexting(!oneAi || !whiteAi);
+        }
+
+        private void saveBoard(IBoard board) throws ChessGameException {
+
+            String fen = BoardToFen(board);
+            String save = String.valueOf(new Date());
+            String savePath = "src\\main\\java\\Saved_Games\\" + save + ".txt";
+
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(savePath))) {
+                writer.write(fen);
+                showFlashFrame("A mentés megtörtént a src\\main\\java\\Mentett_állások helyre\n save néven.", 3);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
     }
