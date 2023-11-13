@@ -1,6 +1,5 @@
 package classes.GUI.FrameParts;
 
-import classes.GUI.Frame.Window;
 import classes.Game.I18N.ChessGameException;
 import classes.Game.Model.Structure.IBoard;
 import lombok.*;
@@ -90,19 +89,21 @@ public class ChessGameButton extends JButton {
         }
 
         private void manageClick(MouseEvent e) throws ChessGameException, InterruptedException, IOException {
-            switch (((ChessGameButton) e.getSource()).getText()) {
-                case "Új játék" -> newGameClicked();
-                case "Világossal szeretnék lenni" -> newGameBlackAiClicked();
-                case "Sötéttel szeretnék lenni" -> newGameWhiteAiClicked();
-                case "Ai vs Ai" -> newGameAiVsAiClicked();
-                case "Test" -> newGameTestClicked();
-                case "Szünet" -> pauseClicked();
-                case "Mentés" -> saveClicked();
-                case "Betöltés" -> loadClicked();
-                case "Feladás" -> submissionClicked();
-                case "Döntetlen" -> drawClicked();
-                case "Folytatás" -> continueClicked();
-                case "Kilépés" -> exitClicked(getWindow());
+            if (((ChessGameButton)e.getSource()).isEnabled()) {
+                switch (((ChessGameButton) e.getSource()).getText()) {
+                    case "Új játék" -> newGameClicked();
+                    case "Világossal szeretnék lenni" -> newGameBlackAiClicked();
+                    case "Sötéttel szeretnék lenni" -> newGameWhiteAiClicked();
+                    case "Ai vs Ai" -> newGameAiVsAiClicked();
+                    case "Test" -> newGameTestClicked();
+                    case "Szünet" -> pauseClicked();
+                    case "Mentés" -> saveClicked();
+                    case "Betöltés" -> loadClicked();
+                    case "Feladás" -> submissionClicked();
+                    case "Döntetlen" -> drawClicked();
+                    case "Folytatás" -> continueClicked();
+                    case "Kilépés" -> exitClicked(getWindow());
+                }
             }
         }
 
@@ -131,37 +132,37 @@ public class ChessGameButton extends JButton {
             blackAi.addActionListener(e -> {
                 try {
                     newGameBlackAiClicked();
+                    newGameDialog.dispose();
                 } catch (ChessGameException | InterruptedException ex) {
                     throw new RuntimeException(ex);
                 }
-                newGameDialog.dispose();
             });
 
             whiteAi.addActionListener(e -> {
                 try {
                     newGameWhiteAiClicked();
+                    newGameDialog.dispose();
                 } catch (ChessGameException | InterruptedException ex) {
                     throw new RuntimeException(ex);
                 }
-                newGameDialog.dispose();
             });
 
             aiVsAi.addActionListener(e -> {
                 try {
                     newGameAiVsAiClicked();
+                    newGameDialog.dispose();
                 } catch (ChessGameException | InterruptedException ex) {
                     throw new RuntimeException(ex);
                 }
-                newGameDialog.dispose();
             });
 
             test.addActionListener(e -> {
                 try {
                     newGameTestClicked();
+                    newGameDialog.dispose();
                 } catch (ChessGameException | InterruptedException ex) {
                     throw new RuntimeException(ex);
                 }
-                newGameDialog.dispose();
             });
 
             newGameDialog.add(blackAi);
@@ -222,7 +223,9 @@ public class ChessGameButton extends JButton {
         }
 
         private void loadClicked() throws IOException, ChessGameException, InterruptedException {
-            JFileChooser fileChooser = new JFileChooser("src/main/java/Mentett_állások/");
+            isFirstOpen = false;
+
+            JFileChooser fileChooser = new JFileChooser("src/main/Saved_Games/");
 
             int result = fileChooser.showOpenDialog(null);
 
@@ -317,12 +320,14 @@ public class ChessGameButton extends JButton {
         private void saveBoard(IBoard board) throws ChessGameException {
 
             String fen = BoardToFen(board);
-            String save = String.valueOf(new Date());
-            String savePath = "src\\main\\java\\Saved_Games\\" + save + ".txt";
-
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(savePath))) {
+            String save = dateToString(new Date());
+            String savePath = "src\\main\\Saved_Games\\" + save + ".txt";
+            File file = new File(savePath);
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
                 writer.write(fen);
-                showFlashFrame("A mentés megtörtént a src\\main\\java\\Mentett_állások helyre\n save néven.", 3);
+                showFlashFrame("<html><div style='text-align: center;'>A mentés megtörtént a<br>" +
+                        "src\\main\\java\\Saved_Games helyre<br>" +
+                        save +".txt</div></html>", 3);
             } catch (IOException e) {
                 e.printStackTrace();
             }

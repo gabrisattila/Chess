@@ -25,6 +25,7 @@ public class Window extends JFrame {
 
     private static Window window;
 
+    @Getter
     private static GameBoard gameBoard;
 
     @Getter
@@ -56,10 +57,6 @@ public class Window extends JFrame {
         if (isNull(window))
             window = new Window();
         return window;
-    }
-
-    public static GameBoard getGameBoard(){
-        return gameBoard;
     }
 
     //endregion
@@ -122,7 +119,7 @@ public class Window extends JFrame {
 
     public static void buttonsEnabled(){
         for (ChessGameButton b : buttons) {
-            if (!"Új játék".equals(b.getText()))
+            if (!"Új játék".equals(b.getText()) && !"Betöltés".equals(b.getText()))
                 b.setEnabled(!isFirstOpen);
         }
     }

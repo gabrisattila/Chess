@@ -62,7 +62,24 @@ public class METHODS {
         }
     }
 
-    public static void putTakenPieceToItsPlace(ViewPiece hit) throws ChessGameException {
+    public static String dateToString(Date date){
+
+        String[] dateParts = String.valueOf(date).split(" ");
+        String month = dateParts[1], day = dateParts[2], hourMinSec = dateParts[3], year =  dateParts[5];
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(year);
+        sb.append("_");
+        sb.append(month);
+        sb.append("_");
+        sb.append(day);
+        sb.append("_");
+        sb.append(hourMinSec.replace(':', '-'));
+
+        return sb.toString();
+    }
+
+    public static void putTakenPieceToItsPlace(ViewPiece hit)  {
         Objects.requireNonNull(getNextFreePlaceForTakenPiece(hit.isWhite())).setPiece(hit);
     }
 
