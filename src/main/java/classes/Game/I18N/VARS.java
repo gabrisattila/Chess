@@ -7,6 +7,7 @@ import classes.Game.Model.Structure.*;
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
@@ -366,6 +367,8 @@ public class VARS {
         public static int labelCounter = 0;
 
         public static boolean canBeLogger;
+
+        public static final AtomicBoolean pauseFlag = new AtomicBoolean(false);
 
     }
 

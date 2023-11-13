@@ -8,6 +8,7 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Set;
+import java.util.function.Function;
 
 import static classes.Ai.AiTree.*;
 import static classes.Ai.FenConverter.*;
@@ -18,6 +19,7 @@ import static classes.Game.Model.Logic.EDT.*;
 import static classes.Game.Model.Structure.Board.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Game.Model.Structure.Move.*;
+import static classes.GUI.Frame.Window.*;
 
 @Getter
 @Setter
@@ -46,7 +48,7 @@ public class AI extends Thread {
         try {
             String fen = aiMove();
             receivedMoveFromAi(fen);
-        } catch (InterruptedException | ChessGameException e) {
+        } catch (ChessGameException e) {
             throw new RuntimeException(e);
         }
     }
@@ -54,7 +56,7 @@ public class AI extends Thread {
     /**
      * @return the Fen String of the best option what minimax chosen
      */
-    public String aiMove() throws ChessGameException, InterruptedException {
+    public String aiMove() throws ChessGameException {
         convertOneBoardToAnother(getViewBoard(), getAiBoard());
         return calculate();
     }
@@ -67,13 +69,13 @@ public class AI extends Thread {
         try {
             fen = Move();
             addToContinuousTree(fen);
-        } catch (ChessGameException | InterruptedException e) {
+        } catch (ChessGameException e) {
             throw new RuntimeException(e);
         }
         return fen;
     }
 
-    public String Move() throws ChessGameException, InterruptedException {
+    public String Move() throws ChessGameException {
 
         return moveWithSimpleAi();
 //        return moveWithMiniMaxAi();
@@ -82,28 +84,38 @@ public class AI extends Thread {
 
     public String moveWithSimpleAi() throws ChessGameException {
 
-        Random random = new Random();
-        getAiBoard().rangeUpdater();
-
-        Piece stepper;
-        ArrayList<Piece> possibleSteppers = new ArrayList<>();
-        for (IPiece p : getAiBoard().myPieces()) {
-            if (!p.getPossibleRange().isEmpty()){
-                possibleSteppers.add((Piece) p);
+        synchronized (pauseFlag){
+            while (pauseFlag.get()) {
+                try {
+                    pauseFlag.wait();
+                } catch (InterruptedException ignored) {}
             }
+
+            Random random = new Random();
+            getAiBoard().rangeUpdater();
+
+            Piece stepper;
+            ArrayList<Piece> possibleSteppers = new ArrayList<>();
+            for (IPiece p : getAiBoard().myPieces()) {
+                if (!p.getPossibleRange().isEmpty()){
+                    possibleSteppers.add((Piece) p);
+                }
+            }
+            stepper = possibleSteppers.get(random.nextInt(0, possibleSteppers.size()));
+
+
+            ArrayList<Location> ableToStepThereIn = new ArrayList<>(stepper.getPossibleRange());
+            int indexOfChosen = random.nextInt(0, ableToStepThereIn.size());
+            Location toStepOn = ableToStepThereIn.get(indexOfChosen);
+
+            boolean gonnaBePawnGotIn = checkIfItsPawnGotIn(stepper, toStepOn);
+
+            MOVE(getAiBoard(), stepper, toStepOn, gonnaBePawnGotIn);
+
+            return BoardToFen(getAiBoard());
+
         }
-        stepper = possibleSteppers.get(random.nextInt(0, possibleSteppers.size()));
 
-
-        ArrayList<Location> ableToStepThereIn = new ArrayList<>(stepper.getPossibleRange());
-        int indexOfChosen = random.nextInt(0, ableToStepThereIn.size());
-        Location toStepOn = ableToStepThereIn.get(indexOfChosen);
-
-        boolean gonnaBePawnGotIn = checkIfItsPawnGotIn(stepper, toStepOn);
-
-        MOVE(getAiBoard(), stepper, toStepOn, gonnaBePawnGotIn);
-
-        return BoardToFen(getAiBoard());
     }
 
     public static boolean checkIfItsPawnGotIn(Move move){
@@ -139,41 +151,52 @@ public class AI extends Thread {
 
     private double newMiniMax(AiTree starterPos, int depth, double alpha, double beta) throws ChessGameException {
 
-        FenToBoard(starterPos.getFen(), getAiBoard());
-        getAiBoard().rangeUpdater();
+        synchronized (pauseFlag){
 
-        if (depth == 0){
-            return evaluate(starterPos);
-        }
-
-        if (starterPos.isGameEndInPos()){
-            if (getAiBoard().isCheckMate()){
-                return -5000;
-            }else {
-                return 0;
-            }
-        }
-
-        Set<String> possibilities = starterPos.collectPossibilities();
-
-        AiTree nextChild;
-        for (String child : possibilities) {
-
-            nextChild = new AiTree(child);
-            starterPos.getChildren().add(nextChild);
-
-            double evaluation = -newMiniMax(nextChild, depth - 1, -beta, -alpha);
-
-            if (evaluation >= beta){
-                break;
+            while(pauseFlag.get()) {
+                try {
+                    pauseFlag.wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
 
-            alpha = Math.max(alpha, evaluation);
+            FenToBoard(starterPos.getFen(), getAiBoard());
+            getAiBoard().rangeUpdater();
 
+            if (depth == 0){
+                return evaluate(starterPos);
+            }
+
+            if (starterPos.isGameEndInPos()){
+                if (getAiBoard().isCheckMate()){
+                    return -5000;
+                }else {
+                    return 0;
+                }
+            }
+
+            Set<String> possibilities = starterPos.collectPossibilities();
+
+            AiTree nextChild;
+            for (String child : possibilities) {
+
+                nextChild = new AiTree(child);
+                starterPos.getChildren().add(nextChild);
+
+                double evaluation = -newMiniMax(nextChild, depth - 1, -beta, -alpha);
+
+                if (evaluation >= beta){
+                    break;
+                }
+
+                alpha = Math.max(alpha, evaluation);
+
+            }
+
+            starterPos.setFinalValue(alpha);
+            return alpha;
         }
-
-        starterPos.setFinalValue(alpha);
-        return alpha;
 
     }
 

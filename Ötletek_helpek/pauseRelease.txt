@@ -1,0 +1,48 @@
+while( !moveIsDecided ){
+    if( Thread.currentThread().isInterrupted() ){
+         synchronized(pauseFlag){
+                while( pauseFlag.get() ) pauseFlag.wait();
+          }
+    }
+    evaluateNextNodeInTree();
+}
+void pause( boolean pauseW, boolean pauseB ){
+      synchronized(pauseFlag){
+            pauseFlag.set(true);
+      }
+      if( pauseW ){
+          aiW.interrupt();
+      }
+      if( pauseB ){
+          aiB.interrupt();
+      }
+}
+ 
+void releasePause(){
+      synchronized(pauseFlag){
+            pauseFlag.set(false);
+            pauseFlag.notifyAll();
+      }
+}
+class Node<K,C> {
+     K value; C cost;
+     Set<Node> nextNodes, prevNodes;
+}
+ 
+Map<T,Node<T>> visited = new HashMap<>();
+ 
+void evolve( Node<T> node ){
+       for( T next: computeNextStates(node.value) ){
+            Node<T> n = visited.get(next);
+            if( null == n ){
+                  n = new Node(next);
+                   n.prevNodes.add(node);
+            }
+            nextNodes.add(n);'
+      }
+}
+class DirectedGraph<T,C> {
+      Node<T,C> root;
+      Map<T,Node<T,C>> visited;
+}
+DirectedGraph<FEN,Integer> gameState;

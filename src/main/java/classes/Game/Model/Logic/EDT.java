@@ -106,15 +106,6 @@ public class EDT {
         }
     }
 
-    public static void interruptAi(boolean forWhite){
-        if (forWhite){
-            aiW.interrupt();
-        }else {
-            aiB.interrupt();
-        }
-    }
-
-
     public static void receivedMoveFromAi(String fen){
         try {
             setUpViewBoard(fen);

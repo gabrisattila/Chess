@@ -24,7 +24,11 @@ public class ChessGameButton extends JButton {
 
     //region Fields
 
-    private static final JDialog pauseDialog = new JDialog();
+    private static JDialog pauseDialog;
+
+    private static ChessGameButton continueButton;
+
+    private static ChessGameButton exitButton;
 
     //endregion
 
@@ -76,11 +80,11 @@ public class ChessGameButton extends JButton {
             swapColors(e);
         }
 
-
         @Override
         public void mouseExited(MouseEvent e){
             swapColors(e);
         }
+
 
         private void swapColors(MouseEvent e) {
             Color tmp = ((ChessGameButton) e.getSource()).getForeground();
@@ -194,28 +198,24 @@ public class ChessGameButton extends JButton {
 
         private void pauseClicked() {
 
+            pauseDialog = new JDialog();
             pauseDialog.setTitle("Szeretné folytatni?");
             pauseDialog.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
             pauseDialog.setLayout(new FlowLayout());
 
-            ChessGameButton continueButton = new ChessGameButton("Folytatás");
-            ChessGameButton exitButton = new ChessGameButton("Kilépés");
+            continueButton = new ChessGameButton("Folytatás");
+            exitButton = new ChessGameButton("Kilépés");
 
-            if (theresOnlyOneAi) {
-                interruptAi(whiteToPlay);
-            }else {
-                interruptAi(true);
-                interruptAi(false);
-            }
+            pause();
 
             pauseDialog.add(continueButton);
             pauseDialog.add(exitButton);
             pauseDialog.getContentPane().setBackground(BACK_GROUND);
-
             pauseDialog.pack();
             pauseDialog.setModal(true);
             pauseDialog.setLocationRelativeTo(null); // A képernyő közepére helyezi az ablakot
             pauseDialog.setVisible(true);
+
         }
 
         private void saveClicked() throws ChessGameException {
@@ -235,7 +235,8 @@ public class ChessGameButton extends JButton {
 
                 JOptionPane.showMessageDialog(null, "A kiválasztott fájl: " + selectedFile.getAbsolutePath());
                 // Ai vs Ai
-                int whiteSideOption = - 1; int aiVsAiOption = JOptionPane.showOptionDialog(
+                int whiteSideOption = - 1;
+                int aiVsAiOption = JOptionPane.showOptionDialog(
                         null,
                         "Ai vs Ai?",
                         "Ai vs Ai választás",
@@ -288,18 +289,13 @@ public class ChessGameButton extends JButton {
 
         private void continueClicked(){
             pauseDialog.dispose();
-            if (whiteToPlay){
-                if (!theresOnlyOneAi || whiteAiNeeded)
-                    startAI();
-            } else {
-                if (!whiteAiNeeded)
-                    startAI();
-            }
+            releasePause();
         }
 
         private void exitClicked(Window window){
             pauseDialog.dispose();
             window.dispose();
+            System.exit(0);
         }
 
         private void newGameInitialization(boolean oneAi, boolean whiteAi, boolean test, String setUpFen) throws ChessGameException, InterruptedException {
@@ -330,6 +326,19 @@ public class ChessGameButton extends JButton {
                         save +".txt</div></html>", 3);
             } catch (IOException e) {
                 e.printStackTrace();
+            }
+        }
+
+        void pause(){
+            synchronized(pauseFlag){
+                pauseFlag.set(true);
+            }
+        }
+
+        void releasePause(){
+            synchronized(pauseFlag){
+                pauseFlag.set(false);
+                pauseFlag.notifyAll();
             }
         }
 
