@@ -336,8 +336,6 @@ public class VARS {
 
         public static boolean whiteToPlay;
 
-        public static Boolean gameIsOn = true;
-
         public static boolean isFirstOpen = true;
 
         public static boolean theresOnlyOneAi = false;

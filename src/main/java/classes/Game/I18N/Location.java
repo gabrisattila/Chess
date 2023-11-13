@@ -4,6 +4,10 @@ package classes.Game.I18N;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Collections;
+
+import static classes.Game.I18N.VARS.FINALS.*;
+
 @Getter
 @Setter
 public class Location {
@@ -58,6 +62,14 @@ public class Location {
 
     public String toString(){
         return "[" + i + ", " + j + "] ";
+    }
+
+    public String toLoggerString(){
+        if (nums.get(0) == '8')
+            Collections.reverse(nums);
+        String loc = Character.toString(Character.toLowerCase(abc.get(i)));
+        loc += nums.get(j);
+        return loc;
     }
 
     //endregion

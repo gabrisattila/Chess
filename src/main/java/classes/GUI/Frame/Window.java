@@ -2,6 +2,7 @@ package classes.GUI.Frame;
 
 import classes.GUI.FrameParts.ChessGameButton;
 import classes.GUI.FrameParts.GameBoard;
+import classes.GUI.FrameParts.Logger;
 import classes.GUI.FrameParts.ViewField;
 import classes.Game.I18N.ChessGameException;
 import classes.Game.I18N.Pair;
@@ -10,7 +11,7 @@ import lombok.*;
 import javax.swing.*;
 
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.*;
 
 import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.METHODS.*;
@@ -29,7 +30,7 @@ public class Window extends JFrame {
     private static GameBoard gameBoard;
 
     @Getter
-    private static JTextArea logger;
+    private static Logger logger;
 
     @Getter
     private static ArrayList<ChessGameButton> buttons = buttons();
@@ -201,12 +202,8 @@ public class Window extends JFrame {
     /**
      * @return a textField where I document the steps
      */
-    private JTextArea loggerBox() {
-        JTextArea area = new JTextArea();
-        area.setBounds((int) (LOGGER_START_X), (int) (LOGGER_START_Y), ((int) LOGGER_WIDTH), ((int) LOGGER_HEIGHT));
-        area.setVisible(true);
-        area.setEditable(false);
-        return area;
+    private Logger loggerBox() {
+        return new Logger();
     }
 
     //endregion

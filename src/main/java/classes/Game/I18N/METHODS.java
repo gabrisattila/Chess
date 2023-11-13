@@ -91,13 +91,6 @@ public class METHODS {
         }
     }
 
-    private static String changeWhiteToPlayInFen(String boardToFen) {
-        StringBuilder sb = new StringBuilder(boardToFen);
-        int startIndex = boardToFen.indexOf(" ");
-        sb.setCharAt(startIndex + 1, 'w' == boardToFen.charAt(startIndex + 1) ? 'b' : 'w');
-        return sb.toString();
-    }
-
     public static <T> Collection<T> union(Collection<T> set1, Collection<T> set2) {
         Set<T> set = new HashSet<>();
 

@@ -10,7 +10,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-import static classes.GUI.FrameParts.SideLabel.collectProperLabelTexts;
+import static classes.GUI.FrameParts.SideLabel.*;
+import static classes.Game.I18N.Helpers.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.GUI.FrameParts.ViewBoard.*;
@@ -56,7 +57,7 @@ public class GameBoard extends JLayeredPane {
 
         rotateBoard();
         addFieldsAtTheirFinalForm();
-//        fieldNumPrinter(getViewBoard());
+        fieldNumPrinter(getViewBoard());
 
         addCorners();
         addLabels();

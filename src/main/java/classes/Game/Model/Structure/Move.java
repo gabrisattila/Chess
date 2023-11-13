@@ -149,12 +149,14 @@ public class Move {
     //region Move main
 
     public static void MOVE(IBoard board, IPiece what, Location to, boolean itsAiPawnGotIn) throws ChessGameException {
+        String exceptionHelper = "";
         Move move = new Move(board);
         if (what.getType() == K || what.getType() == B){
             emPassantChance = "-";
             for (Move m : (board instanceof ViewBoard ? ((Piece) getBoard().getPiece(what.getLocation())) : ((Piece) what)).getLegalMoves() ) {
                 if (m.getTo().EQUALS(to)){
                     move.setEveryThing(what, m.getTo(), m.getEmPassantCastlePawnGotIn());
+                    exceptionHelper = "castle";
                     break;
                 }
             }
@@ -170,15 +172,18 @@ public class Move {
                 ).getTo().EQUALS(to)) {
             emPassantChance = ((Move)((Piece) what).getLegalMoves().toArray()[0]).getEmPassantCastlePawnGotIn();
             move.setEveryThing(what, to, emPassantChance);
+            exceptionHelper = "emPassant";
         } else if (itsAiPawnGotIn) {
+            emPassantChance = "-";
             pawnGotInCaseBackground(what, board.getField(what.getLocation()), board.getField(to), board, V);
-            ((Move)((Piece) what).getLegalMoves().toArray()[0]).realMove();
+            exceptionHelper = "pawnGotIn";
+            ((Move)((Piece) what).getLegalMoves().toArray()[0]).realMove(exceptionHelper);
             return;
         }else {
             emPassantChance = "-";
             move.setEveryThing(what, to);
         }
-        move.realMove();
+        move.realMove(exceptionHelper);
     }
 
     public static void MOVE(IBoard board, Move move, boolean itsAiPawnGotIn) throws ChessGameException {
@@ -188,7 +193,7 @@ public class Move {
         if (itsAiPawnGotIn)
             pawnGotInCaseBackground(move.what, board.getField(move.from), board.getField(move.to), board, V);
 
-        move.realMove();
+        move.realMove("");
 
     }
 
@@ -214,16 +219,17 @@ public class Move {
             throw new RuntimeException("A tábla amin lépni kellene nincs megadva.");
     }
 
-    public void realMove() throws ChessGameException {
-        pieceChangeOnBoard(true);
+    public void realMove(String causedBy) throws ChessGameException {
+        pieceChangeOnBoard(true, causedBy);
     }
 
     public void supposedMove() throws ChessGameException {
-        pieceChangeOnBoard(false);
+        pieceChangeOnBoard(false, "supposedMove" + what.getType() + to.toString());
         boardRangeUpdate();
     }
 
     public void supposedMoveBack() {
+
         IField fromField = boardToMoveOn.getField(from);
         IField toField = boardToMoveOn.getField(to);
         try {
@@ -242,25 +248,41 @@ public class Move {
         }
     }
 
-    private void pieceChangeOnBoard(boolean itsNotSupposed) throws ChessGameException {
-        IField fromField = boardToMoveOn.getField(from);
-        IField toField = boardToMoveOn.getField(to);
-        emPassant = isItEmPassant();
-        castle = isItCastle();
-        pawnGotIn = isItPawnGotIn();
+    private void pieceChangeOnBoard(boolean itsNotSupposed, String causedBy) throws ChessGameException {
+
         try {
-            toField.setPiece(what);
-            fromField.clean();
-            if (itsNotSupposed) {
-                ifItsCastle(castle, toField);
-                ifItsEmPassant(emPassant);
-                ifItIsPawnGotIn(pawnGotIn);
-                logging();
-                changeEvenOrOddStep();
+            IField fromField = boardToMoveOn.getField(from);
+            IField toField = boardToMoveOn.getField(to);
+            emPassant = isItEmPassant();
+            castle = isItCastle();
+            pawnGotIn = isItPawnGotIn();
+            try {
+                toField.setPiece(what);
+                fromField.clean();
+                if (itsNotSupposed) {
+                    ifItsCastle(castle, toField);
+                    ifItsEmPassant(emPassant);
+                    ifItIsPawnGotIn(pawnGotIn);
+                    logging();
+                    changeEvenOrOddStep();
+                }
+            } catch (ChessGameException e) {
+                throw new RuntimeException(e);
             }
-        } catch (ChessGameException e) {
-            throw new RuntimeException(e);
+        }catch (Exception e){
+            if ("castle".equals(causedBy)){
+                System.out.println("The error caused by castle move, \nthe king wanted go from " + from.toString() + " to: " + to.toString());
+            } else if ("emPassant".equals(causedBy)) {
+                System.out.println("The error caused by emPassant move, \n" +
+                        "the a pawn wanted go from " + from.toString() + " to: " + to.toString() + " \nand wanted to hit take down another one on " +
+                        emPassantTakenPawnLoc.toString());
+            } else if ("pawnGotIn".equals(causedBy)) {
+                System.out.println("The error caused by pawnGotIn move, \n" +
+                        "the a pawn wanted go from " + from.toString() + " to: " + to.toString());
+            }
+            System.err.println(e.getMessage());
         }
+
     }
 
     private void boardRangeUpdate() throws ChessGameException {
@@ -269,7 +291,17 @@ public class Move {
     }
     
     private void logging() throws ChessGameException {
-        getLogger().append((what.isWhite() ? "White " : "Black ") + what.getType() + " went from " + from.toString() + " to " + to.toString() + '\n');
+        if (castle){
+            getLogger().log((what.isWhite() ? "" : " - ") +
+                    (Math.abs(castleRookTo.getJ() - castleRookOrigin.getJ()) > 2 ? "0 - 0 - 0" : "0 - 0")
+                    + (what.isWhite() ? "" : "\n"));
+        } else if (emPassant) {
+
+        } else if (pawnGotIn) {
+
+        }else {
+            getLogger().log((what.isWhite() ? "" : " - ") + what.getType() + to.toLoggerString() + (what.isWhite() ? "" : "\n"));
+        }
     }
 
     //endregion
