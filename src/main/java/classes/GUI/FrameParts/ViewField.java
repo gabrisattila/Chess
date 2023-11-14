@@ -38,6 +38,10 @@ public class ViewField extends JButton implements classes.Game.Model.Structure.I
      */
     private int y;
 
+    private char row;
+
+    private char col;
+
     private String fieldColor;
 
     private ViewPiece piece;

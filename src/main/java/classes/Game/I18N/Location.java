@@ -1,12 +1,16 @@
 package classes.Game.I18N;
 
 
+import classes.GUI.FrameParts.ViewField;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Collections;
 
+import static classes.GUI.FrameParts.ViewBoard.getViewBoard;
 import static classes.Game.I18N.VARS.FINALS.*;
+import static classes.Game.I18N.VARS.MUTABLE.theresOnlyOneAi;
+import static classes.Game.I18N.VARS.MUTABLE.whiteAiNeeded;
 
 @Getter
 @Setter
@@ -64,14 +68,11 @@ public class Location {
         return "[" + i + ", " + j + "] ";
     }
 
-    public String toLoggerString(){
-        if (nums.get(0) == '8')
-            Collections.reverse(nums);
-        if (abc.get(0) == 'H')
-            Collections.reverse(abc);
+    public String toLoggerString() throws ChessGameException {
 
-        String loc = abc.get(j).toString();
-        loc += Character.toLowerCase(nums.get(i));
+        String loc = "";
+        loc += ((ViewField)getViewBoard().getField(this)).getRow();
+        loc += ((ViewField)getViewBoard().getField(this)).getCol();
         return loc;
     }
 

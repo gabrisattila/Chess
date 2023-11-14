@@ -9,6 +9,7 @@ import javax.swing.*;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import static classes.GUI.FrameParts.SideLabel.*;
 import static classes.Game.I18N.Helpers.*;
@@ -165,12 +166,23 @@ public class GameBoard extends JLayeredPane {
 
     }
 
-    public static void labelTexting(boolean whiteDown){
+    public static void labelTexting(boolean whiteDown) throws ChessGameException {
         labelTextList = collectProperLabelTexts(whiteDown);
         int i = 0;
         for (SideLabel label : labels) {
             label.setText(labelTextList.get(i));
             i++;
+        }
+
+        if (nums.get(0) == '8')
+            Collections.reverse(nums);
+        if (abc.get(0) == 'H')
+            Collections.reverse(abc);
+        for (int j = 0; j < MAX_HEIGHT; j++) {
+            for (int k = 0; k < MAX_WIDTH; k++) {
+                ((ViewField) getViewBoard().getField(j, k)).setCol(whiteDown ? nums.get(j) : nums.get(MAX_HEIGHT - (j + 1)));
+                ((ViewField) getViewBoard().getField(j, k)).setRow(whiteDown ? abc.get(k) : abc.get(MAX_HEIGHT - (k + 1)));
+            }
         }
     }
 

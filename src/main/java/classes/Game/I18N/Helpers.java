@@ -5,6 +5,7 @@ import classes.Game.Model.Structure.*;
 
 import java.util.*;
 
+import static classes.GUI.FrameParts.ViewBoard.getViewBoard;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 
 public class Helpers {
@@ -14,6 +15,54 @@ public class Helpers {
             for (int j = 0; j < MAX_WIDTH; j++) {
                 ((ViewField)board.getField(i, j)).setText(i + " " + j);
             }
+        }
+    }
+
+    public static void viewFieldPrinter(ArrayList<String> whatNeeded) throws ChessGameException {
+        String fieldInString = "";
+        ViewField field;
+        for (int i = 0; i < MAX_HEIGHT; i++) {
+            for (int j = 0; j < MAX_WIDTH; j++) {
+                field = ((ViewField) getViewBoard().getField(i, j));
+
+                if (whatNeeded.contains("loc")){
+                    fieldInString += field.getLoc().toString();
+                    fieldInString += " ";
+                }
+                if (whatNeeded.contains("X")){
+                    fieldInString += field.getX();
+                    fieldInString += " ";
+                }
+                if (whatNeeded.contains("Y")){
+                    fieldInString += field.getY();
+                    fieldInString += " ";
+                }
+                if (whatNeeded.contains("row")) {
+                    fieldInString += field.getRow();
+                    fieldInString += " ";
+                }
+                if (whatNeeded.contains("col")){
+                    fieldInString += field.getCol();
+                    fieldInString += " ";
+                }
+                if (whatNeeded.contains("color")){
+                    fieldInString += field.getFieldColor();
+                    fieldInString += " ";
+                }
+                if (whatNeeded.contains("piece")){
+                    if (field.isGotPiece()){
+                        fieldInString += getViewBoard().getPiece(i, j).isWhite() ? "w_" : "b_";
+                        fieldInString += getViewBoard().getPiece(i, j).getType();
+                    }else {
+                        fieldInString += "null";
+                    }
+                    fieldInString += " ";
+                }
+
+                System.out.print("[" + fieldInString + "]");
+                fieldInString = "";
+            }
+            System.out.println("\n");
         }
     }
 
