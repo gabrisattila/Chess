@@ -9,6 +9,7 @@ import java.awt.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static classes.Game.I18N.METHODS.dateToString;
 import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 
@@ -86,6 +87,9 @@ public class VARS {
         public static final double VERTICAL_SIDE_LABEL_WIDTH = 20;
 
         public static final double VERTICAL_SIDE_LABEL_HEIGHT = FIELD_HEIGHT;
+
+
+        public static final String LOG_FILE_PATH = "src\\main\\Saves\\log"+dateToString(new Date())+".txt";
 
 
         public static final String WHITE_STRING = "WHITE";

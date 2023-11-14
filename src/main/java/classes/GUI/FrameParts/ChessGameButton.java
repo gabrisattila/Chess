@@ -225,7 +225,7 @@ public class ChessGameButton extends JButton {
         private void loadClicked() throws IOException, ChessGameException, InterruptedException {
             isFirstOpen = false;
 
-            JFileChooser fileChooser = new JFileChooser("src/main/Saved_Games/");
+            JFileChooser fileChooser = new JFileChooser("src/main/Saves/");
 
             int result = fileChooser.showOpenDialog(null);
 
@@ -317,12 +317,12 @@ public class ChessGameButton extends JButton {
 
             String fen = BoardToFen(board);
             String save = dateToString(new Date());
-            String savePath = "src\\main\\Saved_Games\\" + save + ".txt";
+            String savePath = "src\\main\\Saves\\" + save + ".txt";
             File file = new File(savePath);
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
                 writer.write(fen);
                 showFlashFrame("<html><div style='text-align: center;'>A mentés megtörtént a<br>" +
-                        "src\\main\\java\\Saved_Games helyre<br>" +
+                        "src\\main\\java\\Saves helyre<br>" +
                         save +".txt</div></html>", 3);
             } catch (IOException e) {
                 e.printStackTrace();

@@ -2,15 +2,17 @@ package classes.GUI.FrameParts;
 
 import javax.swing.*;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
+import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 
 public class Logger extends JTextArea {
-
-    //TODO Megoldani, hogy log+Date legyen a file neve
-    private static final String LOG_FILE_PATH = "src\\main\\java\\Saved_Games\\log.txt";
 
 
     public Logger() {
@@ -25,6 +27,16 @@ public class Logger extends JTextArea {
     }
 
     private void initializeLogFile() {
+
+        File logger = new File(LOG_FILE_PATH);
+        try {
+            if (logger.createNewFile()){
+                System.out.println("Log file created.");
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(LOG_FILE_PATH))) {
             writer.write("");
         } catch (IOException e) {
