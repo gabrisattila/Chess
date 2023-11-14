@@ -67,8 +67,11 @@ public class Location {
     public String toLoggerString(){
         if (nums.get(0) == '8')
             Collections.reverse(nums);
-        String loc = Character.toString(Character.toLowerCase(abc.get(i)));
-        loc += nums.get(j);
+        if (abc.get(0) == 'H')
+            Collections.reverse(abc);
+
+        String loc = abc.get(j).toString();
+        loc += Character.toLowerCase(nums.get(i));
         return loc;
     }
 

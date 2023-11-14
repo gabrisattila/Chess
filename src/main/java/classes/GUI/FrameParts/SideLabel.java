@@ -29,7 +29,6 @@ public class SideLabel extends JLabel {
 
     public SideLabel(int x, int y, boolean vertical){
 
-        //TODO nem mindegy sötéttel vagy világossal vagyunk.
         labelCounter++;
 
         setBackground(BLACK);
