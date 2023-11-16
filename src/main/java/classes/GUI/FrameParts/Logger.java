@@ -21,6 +21,7 @@ public class Logger extends JTextArea {
 
     private void initializeLogger() {
         setBounds((int) (LOGGER_START_X), (int) (LOGGER_START_Y), ((int) LOGGER_WIDTH), ((int) LOGGER_HEIGHT));
+        setAlignmentX(JComponent.CENTER_ALIGNMENT);
         setVisible(true);
         setEditable(false);
         initializeLogFile();

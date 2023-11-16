@@ -112,6 +112,9 @@ public class ChessGameButton extends JButton {
         }
 
         private void newGameClicked() {
+            if (notNull(getLogger())) {
+                getLogger().setText("");
+            }
             isFirstOpen = false;
             JDialog newGameDialog = new JDialog();
             newGameDialog.setTitle("Új játék kiválasztása");
