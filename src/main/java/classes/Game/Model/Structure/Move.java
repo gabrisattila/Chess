@@ -146,6 +146,30 @@ public class Move {
 
     //region Methods
 
+    //region Move reBrained
+
+    //TODO Egy adott Move objektum tartalmazza:
+    // - Mivel
+    // - Honnan
+    // - Hová
+
+    //TODO Ebből kiszámítani:
+    // - Sánc-e (Király lépéstáv alapján)
+    // - EmPassant-e (gyalog-e, megfelel-e a loc a emPassantChance-nek)
+    // - PawnGotIn-e (gyalog-e, enemyStartRow-ra érkezett-e) (Itt a view-t megkülönböztetni)
+
+    //TODO Stringben dokumentálni, mi történt az adott move-ban. A nagybetűk és a: '_' lesznek egy-egy karakterek
+    // Move_Doc_String: ColorType_fromXfromY_toXtoY_pluszfiguraColorpluszfiguraType_pluszfigurahonnanXpluszfigurahonnanY_
+    //                  plusfigurahovaXpluszfigurahovaY_bigCastlechangesmallCastlechange_possibleempassantXpossibleempassantY
+    // Ennek a stringnek a visszaconvertálásával működjön a move-back.
+
+    //endregion
+
+
+
+
+
+
     //region Move main
 
     public static void MOVE(IBoard board, IPiece what, Location to, boolean itsAiPawnGotIn) throws ChessGameException {
