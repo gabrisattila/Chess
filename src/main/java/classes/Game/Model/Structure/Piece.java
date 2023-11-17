@@ -111,6 +111,16 @@ public class Piece implements IPiece {
         return attributes == null && Location == null;
     }
 
+    public void setPossibleRange(Set<Location> possibleRange){
+        this.possibleRange = possibleRange;
+    }
+
+    public void setPossibleRange(Location l){
+        if (isNull(possibleRange))
+            possibleRange = new HashSet<>();
+        possibleRange.add(l);
+    }
+
     public Set<Location> getAttackRange(){
         return getType() == G ? watchedRange : possibleRange;
     }

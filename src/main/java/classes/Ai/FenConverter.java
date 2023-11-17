@@ -260,7 +260,7 @@ public class FenConverter {
 
     private static void enemyAndOwnStartRowFenToBoard(PieceAttributes piece){
 
-        if(!whiteAiNeeded || !theresOnlyOneAi){
+        if(whiteDown){
             piece.setEnemyStartRow(piece.isWhite() ? 7 : 0);
         }else {
             piece.setEnemyStartRow(piece.isWhite() ? 0 : 7);

@@ -348,6 +348,8 @@ public class VARS {
 
         public static boolean isTest = false;
 
+        public static boolean whiteDown = true;
+
         public static boolean playerTurn;
 
         public static boolean aiTurn;

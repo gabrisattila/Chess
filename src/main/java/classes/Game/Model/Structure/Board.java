@@ -590,19 +590,24 @@ public class Board implements IBoard {
                     enemyKingNotInNeighbour(possiblePlaceOfMyKing, my) &&
                     !locationCollectionContains(getAttackRangeWithoutKing(!my), possiblePlaceOfMyKing)
             ){
-                getKing(my).setLegals(
-                        new Move(
-                                this,
-                                getKing(my),
-                                getKingsPlace(my),
-                                possiblePlaceOfMyKing,
-                                hitOnThisLocWith(my, possiblePlaceOfMyKing)
-                        )
-                );
+                getKing(my).setPossibleRange(l);
+
+                //getKing(my).setLegals(
+                //        new Move(
+                //                this,
+                //                getKing(my),
+                //                getKingsPlace(my),
+                //                possiblePlaceOfMyKing,
+                //                hitOnThisLocWith(my, possiblePlaceOfMyKing)
+                //        )
+                //);
             }
         }
     }
 
+    /**
+     * @param forWhite in that case forWhite simbolize my color (Me is who count the step)
+     */
     private void kingCastle(boolean forWhite) {
         if (MAX_WIDTH == 8 && MAX_HEIGHT == 8 &&
                 (   (forWhite && (whiteBigCastleEnabled || whiteSmallCastleEnabled)) ||
@@ -610,62 +615,54 @@ public class Board implements IBoard {
                 !locationCollectionContains(getAttackRangeWithoutKing(!forWhite), getKingsPlace(forWhite))
         ){
 
-            boolean whiteDown = !whiteAiNeeded || !theresOnlyOneAi;
+            int bigCastlePointPlus = (whiteDown ? -2 : 2);
+            int bigCastleRoadPlus = (whiteDown ? -1 : 1);
+            Location bigCastlePointLocation = getKingsPlace(forWhite).add(new Location(getKingsPlace(forWhite).getI(), bigCastlePointPlus));
+            Location bigCastleRoadLocation = getKingsPlace(forWhite).add(new Location(getKingsPlace(forWhite).getI(), bigCastleRoadPlus));
 
-            int i = whiteDown ? (forWhite ? 0 : 7) : (forWhite ? 7 : 0);
-            int jKP = whiteDown ? 6 : 1;
-            int jKR = whiteDown ? 5 : 2 ;
-            int jQP = whiteDown ? 2 : 5 ;
-            int jQR = whiteDown ? 3 : 4 ;
+            int smallCastlePointPlus = (whiteDown ? 2 : -2);
+            int smallCastleRoadPlus = (whiteDown ? 1 : -1);
+            Location smallCastlePointLocation = getKingsPlace(forWhite).add(new Location(getKingsPlace(forWhite).getI(), smallCastlePointPlus));
+            Location smallCastleRoadLocation = getKingsPlace(forWhite).add(new Location(getKingsPlace(forWhite).getI(), smallCastleRoadPlus));
 
-            checkCastleOptions(
-                    new Location(i, jKP),
-                    new Location(i, jKR),
-                    new Location(i, jQP),
-                    new Location(i, jQR),
-                    forWhite
+            castleHelper(
+                    forWhite,
+                    bigCastlePointLocation,
+                    bigCastleRoadLocation,
+                    smallCastlePointLocation,
+                    smallCastleRoadLocation,
+                    getKing(forWhite).isWhite() ? whiteBigCastleEnabled : blackBigCastleEnabled,
+                    getKing(forWhite).isWhite() ? whiteSmallCastleEnabled : blackSmallCastleEnabled
             );
+
         }
     }
 
-    private void checkCastleOptions(Location kingSidePoint, Location kingSideRoad,
-                                    Location queenSidePoint, Location queenSideRoad, boolean forWhite){
-
-        boolean kingSideNotInCheck =
-                enemyKingNotInNeighbour(kingSidePoint, forWhite) &&
-                enemyKingNotInNeighbour(kingSideRoad, forWhite) &&
-                !locationCollectionContains(getAttackRangeWithoutKing(!forWhite), kingSidePoint) &&
-                !locationCollectionContains(getAttackRangeWithoutKing(!forWhite), kingSideRoad);
-
-
-        boolean queenSideNotInCheck =
-                enemyKingNotInNeighbour(queenSidePoint, forWhite) &&
-                enemyKingNotInNeighbour(queenSideRoad, forWhite) &&
-                !locationCollectionContains(getAttackRangeWithoutKing(!forWhite), queenSidePoint) &&
-                !locationCollectionContains(getAttackRangeWithoutKing(!forWhite), queenSideRoad);
-
-        if (((whiteToPlay && whiteSmallCastleEnabled) || (!whiteToPlay && blackSmallCastleEnabled)) &&
-            kingSideNotInCheck)
-            addCastleMove(kingSidePoint, kingSideRoad, forWhite);
-
-        if (((whiteToPlay && whiteBigCastleEnabled) || (!whiteToPlay && blackBigCastleEnabled)) &&
-            queenSideNotInCheck)
-            addCastleMove(queenSidePoint, queenSideRoad, forWhite);
-    }
-
-    private void addCastleMove(Location Point, Location Road, boolean forWhite){
+    private void castleHelper(boolean forWhite,
+                              Location bigCastlePointLocation,
+                              Location bigCastleRoadLocation,
+                              Location smallCastlePointLocation,
+                              Location smallCastleRoadLocation,
+                              boolean bigCastleEnabled,
+                              boolean whiteSmallCastleEnabled) {
         if (
-                !getField(Point).isGotPiece() && !getField(Road).isGotPiece() &&
-                !getAttackRangeWithoutKing(!forWhite).contains(Point) && !getAttackRangeWithoutKing(!forWhite).contains(Road) &&
-                enemyKingNotInNeighbour(Point, forWhite) && enemyKingNotInNeighbour(Road, forWhite)
-        ){
-            getKing(forWhite).setLegals(new Move(
-                    this,
-                    getKing(forWhite),
-                    getKingsPlace(forWhite),
-                    Point,
-                    forWhite ? "Y" : "y"
-            ));
+                bigCastleEnabled &&
+                !locationCollectionContains(getAttackRangeWithoutKing(!forWhite), bigCastleRoadLocation) &&
+                !locationCollectionContains(getAttackRangeWithoutKing(!forWhite), bigCastlePointLocation) &&
+                enemyKingNotInNeighbour(bigCastleRoadLocation, forWhite) &&
+                enemyKingNotInNeighbour(bigCastlePointLocation, forWhite)
+        ) {
+            getKing(forWhite).setPossibleRange(bigCastlePointLocation);
+        }
+
+        if (
+                whiteSmallCastleEnabled &&
+                !locationCollectionContains(getAttackRangeWithoutKing(!forWhite), smallCastleRoadLocation) &&
+                !locationCollectionContains(getAttackRangeWithoutKing(!forWhite), smallCastlePointLocation) &&
+                enemyKingNotInNeighbour(smallCastleRoadLocation, forWhite) &&
+                enemyKingNotInNeighbour(smallCastlePointLocation, forWhite)
+        ) {
+            getKing(forWhite).setPossibleRange(smallCastlePointLocation);
         }
     }
 

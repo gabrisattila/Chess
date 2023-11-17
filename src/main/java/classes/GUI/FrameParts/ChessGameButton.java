@@ -322,6 +322,8 @@ public class ChessGameButton extends JButton {
             MAX_HEIGHT = widthHeight;
             MAX_WIDTH = widthHeight;
 
+            whiteDown = (!theresOnlyOneAi || !whiteAiNeeded) || isTest; //TODO Teszt átszervezésekor javítani
+
             addGameBoard(getWindow());
             setUpSides(setUpFen);
             buttonsEnabled();
