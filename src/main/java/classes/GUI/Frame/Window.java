@@ -45,7 +45,7 @@ public class Window extends JFrame {
     private Window() throws ChessGameException {
 
         frameSetup();
-        addGameBoard();
+        addGameBoard(this);
 
         addButtonsAndMayBeTheLoggerToo();
         setUpTakenPiecePlaces();
@@ -81,22 +81,14 @@ public class Window extends JFrame {
 
         getViewBoard().pieceSetUp(setUpFen);
 
-        if (isTest) {
-            getViewBoard().pieceSetUp(usualFens.get("onlyKnights4x4"));
-            return;
-        }
-        if (!isFirstOpen) {
-            getViewBoard().pieceSetUp(usualFens.get(
-                            theresOnlyOneAi ? (whiteAiNeeded ? "blackDownStarter" : "whiteDownStarter") :
-                                    "whiteDownStarter"
-                    )
-            );
-        }
     }
 
-    private void addGameBoard() throws ChessGameException {
+    public static void addGameBoard(Window window) throws ChessGameException {
+        deleteViewBoard();
+        if (notNull(gameBoard))
+            window.remove(gameBoard);
         gameBoard = new GameBoard();
-        this.add(gameBoard);
+        window.add(gameBoard);
     }
 
     //endregion

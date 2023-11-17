@@ -10,6 +10,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static classes.Ai.FenConverter.*;
 import static classes.GUI.Frame.Window.*;
@@ -184,19 +185,19 @@ public class ChessGameButton extends JButton {
         }
 
         private void newGameBlackAiClicked() throws ChessGameException, InterruptedException {
-            newGameInitialization(true, false, false, "");
+            newGameInitialization(true, false, false);
         }
 
         private void newGameWhiteAiClicked() throws ChessGameException, InterruptedException {
-            newGameInitialization(true, true, false, "");
+            newGameInitialization(true, true, false);
         }
 
         private void newGameAiVsAiClicked() throws ChessGameException, InterruptedException {
-            newGameInitialization(false, false, false, "");
+            newGameInitialization(false, false, false);
         }
 
         private void newGameTestClicked() throws ChessGameException, InterruptedException {
-            newGameInitialization(false, false, true, "");
+            newGameInitialization(true, false, true);
         }
 
         private void pauseClicked() {
@@ -275,8 +276,8 @@ public class ChessGameButton extends JButton {
                 String fen = reader.readLine();
                 newGameInitialization(
                         0 == aiVsAiOption, 1 == whiteSideOption,
-                        false,
-                        fen);
+                        false
+                );
             } else {
                 JOptionPane.showMessageDialog(null, "Fájl kiválasztás megszakítva.");
             }
@@ -301,15 +302,27 @@ public class ChessGameButton extends JButton {
             System.exit(0);
         }
 
-        private void newGameInitialization(boolean oneAi, boolean whiteAi, boolean test, String setUpFen) throws ChessGameException, InterruptedException {
+        private void newGameInitialization(boolean oneAi, boolean whiteAi, boolean test) throws ChessGameException, InterruptedException {
             theresOnlyOneAi = oneAi;
             whiteAiNeeded = whiteAi;
             isTest = test;
+            String setUpFen = "";
+
+            if (isTest){
+                setUpFen = usualFens.get("onlyTwoBishops6x6");
+            }
+
             if (!isFirstOpen && "".equals(setUpFen)){
                 setUpFen = usualFens.get(theresOnlyOneAi ?
                                 (whiteAiNeeded ? "blackDownStarter" : "whiteDownStarter") :
                                 "whiteDownStarter");
             }
+
+            int widthHeight = setUpFen.split("/").length;
+            MAX_HEIGHT = widthHeight;
+            MAX_WIDTH = widthHeight;
+
+            addGameBoard(getWindow());
             setUpSides(setUpFen);
             buttonsEnabled();
             initialization();

@@ -47,6 +47,9 @@ public class ViewBoard implements IBoard {
         return viewBoard;
     }
 
+    public static void deleteViewBoard(){
+        viewBoard = null;
+    }
 
     //endregion
 

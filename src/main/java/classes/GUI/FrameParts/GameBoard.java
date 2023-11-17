@@ -41,6 +41,7 @@ public class GameBoard extends JLayeredPane {
     //region Constructor
 
     public GameBoard() throws ChessGameException {
+        deleteViewBoard();
         parentBoard = getViewBoard();
         gameBoardSetUp();
     }
@@ -50,9 +51,7 @@ public class GameBoard extends JLayeredPane {
 
     //region Methods
 
-    private void gameBoardSetUp() throws ChessGameException {
-
-        setVisible(true);
+    private void gameBoardSetUp() {
 
         setBoardCoordinates();
 
@@ -62,6 +61,7 @@ public class GameBoard extends JLayeredPane {
 
         addCorners();
         addLabels();
+        setVisible(true);
     }
 
     private void setBoardCoordinates(){
@@ -120,6 +120,8 @@ public class GameBoard extends JLayeredPane {
 
     private void collectEdges() {
 
+        edgeCoordinates = new ArrayList<>();
+
         int lastNum = 0;
 
         for (int j = 0; j < MAX_HEIGHT; j++) {
@@ -152,6 +154,7 @@ public class GameBoard extends JLayeredPane {
         int helperCounterForLabels = 0;
         boolean vertical = true;
         SideLabel label;
+        labels = new ArrayList<>();
 
         for (Location l : edgeCoordinates) {
 
