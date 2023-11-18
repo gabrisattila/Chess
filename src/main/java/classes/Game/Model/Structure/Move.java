@@ -109,15 +109,7 @@ public class Move {
 
     public static void Step(Move move) throws ChessGameException {
         
-        String moveCase = move.detectSpecialCase();
-        if ("castle".equals(moveCase)){
-            move.setItIsCastle(true);
-        } else if ("emPassant".equals(moveCase)) {
-            move.setItIsEmPassant(true);
-        } else if ("pawnGotIn".equals(moveCase)) {
-            move.setItIsPawnGotIn(true);
-        }
-        
+        move.moveCaseExploreAndSet();
         move.collectPlusPiece();
         move.pieceChangeOnBoard();
         move.doAfterChangeEffects();
@@ -130,6 +122,16 @@ public class Move {
             throw new RuntimeException("A " + move.what + " bábu " + move.to.toString() +
                     " -re készülő lépéséhez nem tartozik docString" +
                     " ami alapján meg lehetne tenni a visszalépést." );
+    }
+    
+    private void moveCaseExploreAndSet(){
+        String moveCase = detectSpecialCase();
+        switch (moveCase) {
+            case "castle" -> setItIsCastle(true);
+            case "emPassantAut" -> setItIsEmPassantAuthorization(true);
+            case "emPassant" -> setItIsEmPassant(true);
+            case "pawnGotIn" -> setItIsPawnGotIn(true);
+        }
     }
 
     private void collectPlusPiece() throws ChessGameException {
@@ -189,12 +191,28 @@ public class Move {
         }
     }
     
-    private void pieceChangeOnBoard(){
-        
+    private void pieceChangeOnBoard() throws ChessGameException {
+
+        IField fromField = boardToMoveOn.getField(what);
+        IField toField = boardToMoveOn.getField(to);
+
+        toField.setPiece(what);
+        fromField.clean();
+
     }
 
     private void doAfterChangeEffects(){
+        if (itIsCastle){
 
+        } else if (itIsEmPassant) {
+
+        } else if (itIsEmPassantAuthorization) {
+
+        } else if (itIsPawnGotIn) {
+
+        }
+
+        moveDocString = createDocumentationString();
     }
 
     /**
