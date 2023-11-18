@@ -137,13 +137,29 @@ public class Move {
         
         if (itIsCastle){
 
-            //TODO CastleCase ellenőrzés befejezése
-
             IPiece neededRook;
 
-            for (int i = to.getI() + 1; i < to.getI() + 2; i++) {
+            if (Math.abs(to.getJ()) < Math.abs(7 - to.getJ()))
+                neededRook = boardToMoveOn.getPiece(to.getI(), 0);
+            else
+                neededRook = boardToMoveOn.getPiece(to.getI(), 7);
 
-            }
+
+            int rookRoadLength = to.getJ() - neededRook.getJ();
+
+            if (rookRoadLength < 0)
+                rookRoadLength--;
+            else
+                rookRoadLength++;
+
+            plusPiece.setFirst(new Pair<>(
+                    what.isWhite(), B
+            ));
+
+            plusPiece.setSecond(new Pair<>(
+                    new Location(neededRook.getLocation()),
+                    new Location(neededRook.getI(), neededRook.getJ() + rookRoadLength)
+            ));
 
         } else if (itIsEmPassant) {
             
