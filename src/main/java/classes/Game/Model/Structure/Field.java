@@ -114,12 +114,12 @@ public class Field implements classes.Game.Model.Structure.IField {
 
         if (gotPiece && piece instanceof Piece) {
             this.piece = (Piece) piece;
-            ((Piece) piece).setLocation(Location);
+            piece.setLocation(Location);
         }else {
             this.piece = null;
         }
 
-        if (piece != null && ! (piece instanceof Piece))
+        if (piece != null && !(piece instanceof Piece))
             throw new ChessGameException("Nem megfelelő típus");
     }
 

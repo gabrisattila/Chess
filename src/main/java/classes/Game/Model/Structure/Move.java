@@ -1,8 +1,10 @@
 package classes.Game.Model.Structure;
 
+import classes.GUI.FrameParts.ViewPiece;
 import classes.Game.I18N.*;
 import lombok.*;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,6 +12,8 @@ import java.util.stream.Collectors;
 import static classes.Game.I18N.Location.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.PieceType.*;
+import static classes.Game.I18N.VARS.FINALS.BlackPieceChoiceInsteadOfPawnGotIn;
+import static classes.Game.I18N.VARS.FINALS.WhitePieceChoiceInsteadOfPawnGotIn;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 
 @Getter
@@ -33,7 +37,7 @@ public class Move {
      * Else the first pair means isWhite and pieceType
      *      and the second pair means from to. (If it was taken, then to is null)
      */
-    private Pair<Pair<Boolean, PieceType>, Pair<Location, Location>> plusPiece;
+    private IPiece plusPiece;
 
 
     private boolean itIsCastle;
@@ -107,7 +111,7 @@ public class Move {
 
     //region Methods
 
-    public static void Step(Move move) throws ChessGameException {
+    public static void Step(Move move) throws ChessGameException, InterruptedException {
         
         move.moveCaseExploreAndSet();
         move.collectPlusPiece();
@@ -135,57 +139,24 @@ public class Move {
     }
 
     private void collectPlusPiece() throws ChessGameException {
-        plusPiece = new Pair<>();
-        
+
         if (itIsCastle){
 
-            IPiece neededRook;
-
             if (Math.abs(to.getJ()) < Math.abs(7 - to.getJ()))
-                neededRook = boardToMoveOn.getPiece(to.getI(), 0);
+                plusPiece = boardToMoveOn.getPiece(to.getI(), 0);
             else
-                neededRook = boardToMoveOn.getPiece(to.getI(), 7);
-
-
-            int rookRoadLength = to.getJ() - neededRook.getJ();
-
-            if (rookRoadLength < 0)
-                rookRoadLength--;
-            else
-                rookRoadLength++;
-
-            plusPiece.setFirst(new Pair<>(
-                    what.isWhite(), B
-            ));
-
-            plusPiece.setSecond(new Pair<>(
-                    new Location(neededRook.getLocation()),
-                    new Location(neededRook.getI(), neededRook.getJ() + rookRoadLength)
-            ));
+                plusPiece = boardToMoveOn.getPiece(to.getI(), 7);
 
         } else if (itIsEmPassant) {
             
             int plusI = what.isWhite() ? (whiteDown ? -1 : 1) : (whiteDown ? 1 : -1);
-            
-            plusPiece.setFirst(
-                    new Pair<>(!what.isWhite(), G)
-            );
-            
-            plusPiece.setSecond(
-                    new Pair<>(new Location(to.getI() + plusI, to.getJ()), null)
-            );
-                        
+
+            plusPiece = boardToMoveOn.getPiece(to.getI() + plusI, to.getJ());
+
         } else if (notNull(boardToMoveOn.getPiece(to))) {
             
-            IPiece taken = boardToMoveOn.getPiece(to);
-            
-            plusPiece.setFirst(
-                    new Pair<>(taken.isWhite(), taken.getType())
-            );
-            plusPiece.setSecond(
-                    new Pair<>(taken.getLocation(), null)
-            );
-            
+            plusPiece = boardToMoveOn.getPiece(to);
+
         }else {
             plusPiece = null;
         }
@@ -201,18 +172,54 @@ public class Move {
 
     }
 
-    private void doAfterChangeEffects(){
+    private void doAfterChangeEffects() throws ChessGameException, InterruptedException {
+
         if (itIsCastle){
+
+            int rookRoadLength = to.getJ() - plusPiece.getJ();
+
+            if (rookRoadLength < 0)
+                rookRoadLength--;
+            else
+                rookRoadLength++;
+
+            Location rookOriginPlace = new Location(plusPiece.getLocation());
+            Location rookNewPlace = new Location(
+                    to.getI(),
+                    plusPiece.getJ() + rookRoadLength
+            );
+
+            boardToMoveOn.getField(rookNewPlace).setPiece(plusPiece);
+            boardToMoveOn.getField(rookOriginPlace).clean();
 
         } else if (itIsEmPassant) {
 
+            boardToMoveOn.getField(plusPiece).clean();
+
         } else if (itIsEmPassantAuthorization) {
+
+            Location middleLocOfPawnStep = getTheMiddleLocation(from, to);
+            assert middleLocOfPawnStep != null;
+            emPassantChance +=  middleLocOfPawnStep.getI();
+            emPassantChance += middleLocOfPawnStep.getJ();
 
         } else if (itIsPawnGotIn) {
 
+            PieceType newType;
+
+            if (what instanceof ViewPiece){
+                newType = pawnGotInCaseView();
+            }else {
+                newType = V;
+            }
+
+            what.getAttributes().setType(newType);
+
         }
 
-        moveDocString = createDocumentationString();
+        boardToMoveOn.rangeUpdater();
+
+        createDocumentationString();
     }
 
     /**
@@ -261,15 +268,80 @@ public class Move {
      * <p>
      *      ColorType_fromXfromY_toXtoY_
      *      pluszfiguraColorpluszfiguraType_
-     *      pluszfigurahonnanXpluszfigurahonnanX_pluszfigurahonnanXpluszfigurahonnanY_
-     *      plusfigurahovaXpluszfigurahovaX_plusfigurahovaXpluszfigurahovaY_
+     *      pluszfigurahonnanXpluszfigurahonnanX_plusfigurahovaXpluszfigurahovaY_
      *      bigCastlechangesmallCastlechange_possibleempassantXpossibleempassantY
      *
      *      In the description above the capital letters are the ones that mark a char
      */
-    private String createDocumentationString(){
+    private void createDocumentationString(){
+
+        moveDocString += what.isWhite() ? "W" : "B";
+        moveDocString += what.getType();
+        moveDocString += "_";
+        moveDocString += from.getI();
+        moveDocString += from.getJ();
+        moveDocString += "_";
+        moveDocString += to.getI();
+        moveDocString += to.getJ();
+        moveDocString += notNull(plusPiece) ? (plusPiece.isWhite() ? "W" : "B") : "-";
+        moveDocString += notNull(plusPiece) ? plusPiece.getType() : "-";
+        moveDocString += "_";
+        //TODO Megnézni, hogy a field.clean közben eltűnik-e a piece.
+        moveDocString += plusPieceFrom().getI();
+        moveDocString += plusPieceFrom().getJ();
+        moveDocString += "_";
+        moveDocString += plusPieceTo().getI();
+        moveDocString += plusPieceTo().getJ();
+        moveDocString += "_";
+        moveDocString += bigCastleChangeAfterMove();
+        moveDocString += smallCastleChangeAfterMove();
+        moveDocString += "_";
+        moveDocString += emPassantChance;
+
+    }
+
+    private Location plusPieceFrom() {
+        return null;
+    }
+
+    private Location plusPieceTo() {
+        return null;
+    }
+
+    private String bigCastleChangeAfterMove() {
         return "";
     }
+
+    private String smallCastleChangeAfterMove() {
+        return "";
+    }
+
+
+    private PieceType pawnGotInCaseView(){
+        int result = JOptionPane.showOptionDialog(null, "Válassz melyik figurát szeretnéd.", "Lehetőségek.",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null,
+                pieceToChange.isWhite() ?
+                        WhitePieceChoiceInsteadOfPawnGotIn.toArray() :
+                        BlackPieceChoiceInsteadOfPawnGotIn.toArray(),
+                null);
+        PieceType newType;
+        switch (result){
+            case 0 -> newType = H;
+            case 1 -> newType = F;
+            case 2 -> newType = B;
+            case 3 -> newType = V;
+            default -> throw new IllegalStateException("Unexpected value: " + result);
+        }
+        pieceToChange.getAttributes().setType(newType);
+
+        pieceToChange.setImage(
+                pieceToChange.isWhite() ?
+                        WhitePieceChoiceInsteadOfPawnGotIn.get(result).getImage() :
+                        BlackPieceChoiceInsteadOfPawnGotIn.get(result).getImage()
+        );
+        return newType;
+    }
+
 
     //endregion
 

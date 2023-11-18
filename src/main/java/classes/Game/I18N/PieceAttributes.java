@@ -62,6 +62,11 @@ public class PieceAttributes {
         return WHITE_STRING.equals(color);
     }
 
+    public void setType(PieceType type){
+        this.type = type;
+        valueSetting();
+    }
+
     public void valueSetting(){
         switch (getType()){
             case G -> VALUE = isWhite() ? 1 : -1;
