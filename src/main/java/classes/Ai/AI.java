@@ -8,7 +8,6 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Set;
-import java.util.function.Function;
 
 import static classes.Ai.AiTree.*;
 import static classes.Ai.FenConverter.*;
@@ -18,8 +17,7 @@ import static classes.Game.I18N.PieceType.*;
 import static classes.Game.Model.Logic.EDT.*;
 import static classes.Game.Model.Structure.Board.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
-import static classes.Game.Model.Structure.Move.*;
-import static classes.GUI.Frame.Window.*;
+import static classes.Game.Model.Structure.Move_.*;
 
 @Getter
 @Setter
@@ -118,7 +116,7 @@ public class AI extends Thread {
 
     }
 
-    public static boolean checkIfItsPawnGotIn(Move move){
+    public static boolean checkIfItsPawnGotIn(Move_ move){
         return checkIfItsPawnGotIn(move.getWhat(), move.getTo());
     }
 

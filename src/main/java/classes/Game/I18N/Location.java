@@ -76,5 +76,17 @@ public class Location {
         return loc;
     }
 
+    public static Location stringToLocation(String location){
+        if (
+                location.length() != 2 ||
+                !Character.isDigit(location.charAt(0)) ||
+                !Character.isDigit(location.charAt(1))
+        )
+            throw new RuntimeException("A megadott ("+ location +") string nem írható át location-re.");
+
+        return new Location(Character.getNumericValue(location.charAt(0)),
+                            Character.getNumericValue(location.charAt(1)));
+    }
+
     //endregion
 }

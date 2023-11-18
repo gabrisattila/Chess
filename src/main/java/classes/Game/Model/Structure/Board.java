@@ -233,7 +233,7 @@ public class Board implements IBoard {
                     whichRook = "k";
                 }
                 for (Location l : p.getPossibleRange()) {
-                    ((Piece) p).setLegals(new Move(
+                    ((Piece) p).setLegals(new Move_(
                             this,
                             p,
                             p.getLocation(),
@@ -260,7 +260,7 @@ public class Board implements IBoard {
                         assert middle != null;
                         emPassant.append(numsForPrinting.get(middle.getI()));
                         emPassant.append(numsForPrinting.get(middle.getJ()));
-                        ((Piece) p).setLegals(new Move(
+                        ((Piece) p).setLegals(new Move_(
                                 this,
                                 p,
                                 p.getLocation(),
@@ -359,7 +359,7 @@ public class Board implements IBoard {
     }
 
     private void findLegalMovesInCheckCases(boolean enemy) throws ChessGameException {
-        Move supposedMove = new Move(this);
+        Move_ supposedMove = new Move_(this);
 
         if (notNull(checkers.getSecond())){
 
@@ -372,11 +372,11 @@ public class Board implements IBoard {
         }
     }
 
-    private void kingStepOutFromCheck(Move supposedMove, boolean enemy) throws ChessGameException {
+    private void kingStepOutFromCheck(Move_ supposedMove, boolean enemy) throws ChessGameException {
         constrainInsteadOfCheck(matrixChooser.get(K), supposedMove, getKing(!enemy), enemy);
     }
 
-    private void blockCheckOrHitChecker(Move supposed, boolean enemy) throws ChessGameException {
+    private void blockCheckOrHitChecker(Move_ supposed, boolean enemy) throws ChessGameException {
 
         Set<Location> wholePileOfChecker = checkers.getFirst().getPossibleRange();
         wholePileOfChecker.add(checkers.getFirst().getLocation());
@@ -397,7 +397,7 @@ public class Board implements IBoard {
     }
 
     private void constrainInsteadOfCheck(Set<Location> setThatWeCollectFrom,
-                                         Move supposed, IPiece p, boolean enemy) throws ChessGameException {
+                                         Move_ supposed, IPiece p, boolean enemy) throws ChessGameException {
 
         Set<Location> setToCollectRightPlacesToGo = new HashSet<>();
         for (Location l : setThatWeCollectFrom) {
@@ -420,7 +420,7 @@ public class Board implements IBoard {
             ((Piece) p).setPossibleRange(setToCollectRightPlacesToGo);
         if (p.getType() == K){
             for (Location l : p.getPossibleRange()) {
-                ((Piece) p).setLegals(new Move(
+                ((Piece) p).setLegals(new Move_(
                         this,
                         p,
                         p.getLocation(),
@@ -438,7 +438,7 @@ public class Board implements IBoard {
      * @param enemy theColorOfEnemy
      * @return Decides about a place that if my piece moves there the check still remain or not
      */
-    private boolean supposedMoveWith(Move supposed, IPiece piece, Location to, boolean enemy) throws ChessGameException {
+    private boolean supposedMoveWith(Move_ supposed, IPiece piece, Location to, boolean enemy) throws ChessGameException {
         supposed.setEveryThing(piece, to);
         supposed.supposedMove();
         boolean placeIsGood = !locationCollectionContains(getAttackRangeWithoutKing(enemy), getKingsPlace(!enemy));
@@ -593,7 +593,7 @@ public class Board implements IBoard {
                 getKing(my).setPossibleRange(l);
 
                 //getKing(my).setLegals(
-                //        new Move(
+                //        new Move_(
                 //                this,
                 //                getKing(my),
                 //                getKingsPlace(my),
@@ -699,7 +699,7 @@ public class Board implements IBoard {
         for (IPiece p : myPieces()) {
             for (Location to : p.getPossibleRange()) {
                 if (((Piece) p).getLegalMoves().isEmpty()) {
-                    ((Piece) p).setLegals(new Move(
+                    ((Piece) p).setLegals(new Move_(
                             this,
                             p,
                             p.getLocation(),
@@ -708,7 +708,7 @@ public class Board implements IBoard {
                     ));
                 }else {
                     if (((Piece) p).getLegalMoves().stream().noneMatch(m -> m.getTo().EQUALS(to))){
-                        ((Piece) p).setLegals(new Move(
+                        ((Piece) p).setLegals(new Move_(
                                 this,
                                 p,
                                 p.getLocation(),
@@ -721,8 +721,8 @@ public class Board implements IBoard {
         }
     }
 
-    public HashMap<IPiece, Set<Move>> getAllLegalMoves(boolean forWhite){
-        HashMap<IPiece, Set<Move>> legals = new HashMap<>();
+    public HashMap<IPiece, Set<Move_>> getAllLegalMoves(boolean forWhite){
+        HashMap<IPiece, Set<Move_>> legals = new HashMap<>();
         for (IPiece p : getPieces(forWhite)) {
             if (!((Piece) p).getLegalMoves().isEmpty()) {
                 legals.put(

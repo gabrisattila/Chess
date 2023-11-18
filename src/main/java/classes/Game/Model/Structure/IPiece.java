@@ -27,6 +27,14 @@ public interface IPiece {
 
      void setEmpty();
 
+     default int getEnemyStartRow(){
+          return getAttributes().getEnemyAndOwnStartRow().getFirst();
+     }
+
+     default int getOwnStartRow(){
+          return getAttributes().getEnemyAndOwnStartRow().getSecond();
+     }
+
      Set<Location> getPossibleRange();
 
      void updateRange() throws ChessGameException;
