@@ -3,6 +3,10 @@ package classes.Game.Model.Structure;
 import classes.Game.I18N.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static classes.Game.I18N.Location.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.PieceType.*;
@@ -184,13 +188,11 @@ public class Move {
      */
     private String detectSpecialCase(){
 
-        //TODO EmPassantAut megírása
-
         if (what.getType() == K && Math.abs(from.getJ() - to.getJ()) == 2){
             return "castle";
         } else if (what.getType() == G && to.EQUALS(stringToLocation(emPassantChance))) {
             return "emPassant";
-        } else if (what.getType() == G && to.EQUALS(stringToLocation(emPassantChance))) {
+        } else if (emPassantAuthorizationIf()) {
             return "emPassantAut";
         } else if (what.getType() == G && to.getI() == what.getEnemyStartRow()) {
             return "pawnGotIn";
@@ -199,6 +201,26 @@ public class Move {
         }
 
     }
+
+    private boolean emPassantAuthorizationIf(){
+        return what.getType() == G && Math.abs(what.getI() - to.getI()) == 2 &&
+                locationCollectionContains(
+                        //Itt azt nézzük meg, hogy a közbülső mezőt tartalmazza-e bármely ellenfél gyalog watchRange-e
+                        boardToMoveOn.getPieces().stream()
+                                .filter(p -> p.isWhite() != what.isWhite() && p.getType() == G)
+                                .flatMap(p -> ((Piece) p).getWatchedRange().stream())
+                                .collect(Collectors.toSet()),
+                        getTheMiddleLocation(what.getLocation(), to)
+                );
+    }
+
+    private Location getTheMiddleLocation(Location first, Location last){
+        if (first.getJ() == last.getJ()){
+            return new Location((first.getI() + last.getI()) / 2, first.getJ());
+        }
+        return null;
+    }
+
 
     /**
      * @return the moveDocString which format is:
