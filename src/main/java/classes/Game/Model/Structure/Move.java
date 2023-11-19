@@ -264,13 +264,12 @@ public class Move {
 
 
     /**
-     * @return the moveDocString which format is:
      * <p>
      *      ColorType_fromXfromY_toXtoY_
      *      pluszfiguraColorpluszfiguraType_
      *      pluszfigurahonnanXpluszfigurahonnanX_plusfigurahovaXpluszfigurahovaY_
      *      bigCastlechangesmallCastlechange_possibleempassantXpossibleempassantY
-     *
+     * <p>
      *      In the description above the capital letters are the ones that mark a char
      */
     private void createDocumentationString(){
@@ -301,6 +300,14 @@ public class Move {
     }
 
     private Location plusPieceFrom() {
+        if (itIsCastle){
+            return new Location(to.getI(), Math.abs(to.getJ()) < Math.abs(7 - to.getJ()) ? 0 : 7);
+        } else if (itIsEmPassant) {
+            int plusI = what.isWhite() ? (whiteDown ? -1 : 1) : (whiteDown ? 1 : -1);
+            return new Location(to.getI() + plusI, to.getJ());
+        } else if (notNull(plusPiece)) {
+            return to;
+        }
         return null;
     }
 
