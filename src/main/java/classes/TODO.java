@@ -3,8 +3,7 @@ package classes;
 public class TODO {
 
     //TODO Új Move-ba:
-    // Kerüljön be a sánc esetén a char változások. Azt fűzni hozzá a moveDocString-hez.
-    // Lekezelni, hogyha nem volt akkor emPassantChance = -
+    // Hogyan kerüljenek be a moveDoc-ba a különböző location-ök
     // StepBack moveDocString alapján
     // !!! plusPiece levétel esetén eltárolódik-e valahol?
 

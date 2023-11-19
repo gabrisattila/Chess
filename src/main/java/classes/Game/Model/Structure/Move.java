@@ -12,8 +12,7 @@ import java.util.stream.Collectors;
 import static classes.Game.I18N.Location.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.PieceType.*;
-import static classes.Game.I18N.VARS.FINALS.BlackPieceChoiceInsteadOfPawnGotIn;
-import static classes.Game.I18N.VARS.FINALS.WhitePieceChoiceInsteadOfPawnGotIn;
+import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 
 @Getter
@@ -37,7 +36,7 @@ public class Move {
      * Else the first pair means isWhite and pieceType
      *      and the second pair means from to. (If it was taken, then to is null)
      */
-    private IPiece plusPiece;
+    private Pair<PieceAttributes, Pair<Location, Location>> plusPiece;
 
 
     private boolean itIsCastle;
@@ -139,23 +138,23 @@ public class Move {
     }
 
     private void collectPlusPiece() throws ChessGameException {
+        plusPiece = new Pair<>();
 
         if (itIsCastle){
 
-            if (Math.abs(to.getJ()) < Math.abs(7 - to.getJ()))
-                plusPiece = boardToMoveOn.getPiece(to.getI(), 0);
-            else
-                plusPiece = boardToMoveOn.getPiece(to.getI(), 7);
+            plusPiece.setFirst(new PieceAttributes(B, what.isWhite() ? "WHITE" : "BLACK"));
+            plusPiece.setSecond(new Pair<>(plusPieceFrom(), plusPieceTo()));
 
         } else if (itIsEmPassant) {
-            
-            int plusI = what.isWhite() ? (whiteDown ? -1 : 1) : (whiteDown ? 1 : -1);
 
-            plusPiece = boardToMoveOn.getPiece(to.getI() + plusI, to.getJ());
+            plusPiece.setFirst(new PieceAttributes(G, !what.isWhite() ? "WHITE" : "BLACK"));
+            plusPiece.setSecond(new Pair<>(plusPieceFrom(), plusPieceTo()));
 
         } else if (notNull(boardToMoveOn.getPiece(to))) {
             
-            plusPiece = boardToMoveOn.getPiece(to);
+            plusPiece.setFirst(new PieceAttributes(
+                    boardToMoveOn.getPiece(to).getType(),
+                    !what.isWhite() ? "WHITE" : "BLACK"));
 
         }else {
             plusPiece = null;
@@ -176,25 +175,12 @@ public class Move {
 
         if (itIsCastle){
 
-            int rookRoadLength = to.getJ() - plusPiece.getJ();
-
-            if (rookRoadLength < 0)
-                rookRoadLength--;
-            else
-                rookRoadLength++;
-
-            Location rookOriginPlace = new Location(plusPiece.getLocation());
-            Location rookNewPlace = new Location(
-                    to.getI(),
-                    plusPiece.getJ() + rookRoadLength
-            );
-
-            boardToMoveOn.getField(rookNewPlace).setPiece(plusPiece);
-            boardToMoveOn.getField(rookOriginPlace).clean();
+            boardToMoveOn.getField(plusPiece.getSecond().getSecond()).setPiece(plusPiece.getFirst());
+            boardToMoveOn.getField(plusPiece.getSecond().getFirst()).clean();
 
         } else if (itIsEmPassant) {
 
-            boardToMoveOn.getField(plusPiece).clean();
+            boardToMoveOn.getField(plusPiece.getSecond().getFirst()).clean();
 
         } else if (itIsEmPassantAuthorization) {
 
@@ -202,6 +188,7 @@ public class Move {
             assert middleLocOfPawnStep != null;
             emPassantChance +=  middleLocOfPawnStep.getI();
             emPassantChance += middleLocOfPawnStep.getJ();
+
 
         } else if (itIsPawnGotIn) {
 
@@ -217,9 +204,9 @@ public class Move {
 
         }
 
+        castleChanceChanges();
+        emPassantChanceChanges();
         boardToMoveOn.rangeUpdater();
-
-        createDocumentationString();
     }
 
     /**
@@ -263,7 +250,76 @@ public class Move {
     }
 
 
+    private void castleChanceChanges() {
+        if (what.getType() == B){
+            if (whiteDown){
+                if (from.getJ() > 4){
+                    if (what.isWhite()) {
+                        whiteSmallCastleEnabled = false;
+                        documentationStringCreation('K');
+                    }
+                    else {
+                        blackSmallCastleEnabled = false;
+                        documentationStringCreation('k');
+                    }
+                }else {
+                    if (what.isWhite()) {
+                        whiteBigCastleEnabled = false;
+                        documentationStringCreation('V');
+                    }
+                    else {
+                        blackBigCastleEnabled = false;
+                        documentationStringCreation('v');
+                    }
+                }
+            }else {
+                if (from.getJ() < 4){
+                    if (what.isWhite()) {
+                        whiteSmallCastleEnabled = false;
+                        documentationStringCreation('K');
+                    }
+                    else {
+                        blackSmallCastleEnabled = false;
+                        documentationStringCreation('k');
+                    }
+                }else {
+                    if (what.isWhite()) {
+                        whiteBigCastleEnabled = false;
+                        documentationStringCreation('V');
+                    }
+                    else {
+                        blackBigCastleEnabled = false;
+                        documentationStringCreation('v');
+                    }
+                }
+            }
+        } else if (what.getType() == K) {
+            if (what.isWhite()){
+                whiteSmallCastleEnabled = false;
+                whiteBigCastleEnabled = false;
+                documentationStringCreation('K');
+                documentationStringCreation('V');
+            }else {
+                blackSmallCastleEnabled = false;
+                blackBigCastleEnabled = false;
+                documentationStringCreation('k');
+                documentationStringCreation('v');
+            }
+        }
+    }
+
+    private void emPassantChanceChanges() {
+        documentationStringCreation(emPassantChance.charAt(0));
+        if (!"-".equals(emPassantChance)) {
+            documentationStringCreation(emPassantChance.charAt(1));
+        }
+    }
+
+
     /**
+     * @param appendThis if we append numbers (those will means locations) it appends the first,
+     *                   and if the next isn't a number, it ->
+     *
      * <p>
      *      ColorType_fromXfromY_toXtoY_
      *      pluszfiguraColorpluszfiguraType_
@@ -272,30 +328,30 @@ public class Move {
      * <p>
      *      In the description above the capital letters are the ones that mark a char
      */
-    private void createDocumentationString(){
+    private void documentationStringCreation(char appendThis){
 
-        moveDocString += what.isWhite() ? "W" : "B";
-        moveDocString += what.getType();
-        moveDocString += "_";
-        moveDocString += from.getI();
-        moveDocString += from.getJ();
-        moveDocString += "_";
-        moveDocString += to.getI();
-        moveDocString += to.getJ();
-        moveDocString += notNull(plusPiece) ? (plusPiece.isWhite() ? "W" : "B") : "-";
-        moveDocString += notNull(plusPiece) ? plusPiece.getType() : "-";
-        moveDocString += "_";
-        //TODO Megnézni, hogy a field.clean közben eltűnik-e a piece.
-        moveDocString += plusPieceFrom().getI();
-        moveDocString += plusPieceFrom().getJ();
-        moveDocString += "_";
-        moveDocString += plusPieceTo().getI();
-        moveDocString += plusPieceTo().getJ();
-        moveDocString += "_";
-        moveDocString += bigCastleChangeAfterMove();
-        moveDocString += smallCastleChangeAfterMove();
-        moveDocString += "_";
-        moveDocString += emPassantChance;
+        if (!moveDocString.isEmpty() &&
+                Character.isDigit(moveDocString.charAt(moveDocString.length() - 1)) &&
+                !Character.isDigit(appendThis)) {
+            throw new RuntimeException("Úgy akarunk mást hozzá fűzni, " +
+                    "hogy a megkezdett docStringet még nem fejeztük be: " + moveDocString);
+        }
+
+        moveDocString += appendThis;
+
+        if (
+                moveDocString.length() > 1 &&
+                (
+                        pieceLetters.contains(moveDocString.charAt(moveDocString.length() - 1)) &&
+                        pieceLetters.contains(moveDocString.charAt(moveDocString.length() - 2))
+                ) ||
+                (
+                        Character.isDigit(moveDocString.charAt(moveDocString.length() - 1)) &&
+                        Character.isDigit(moveDocString.charAt(moveDocString.length() - 2))
+                )
+        ){
+            moveDocString += "_";
+        }
 
     }
 
@@ -312,6 +368,20 @@ public class Move {
     }
 
     private Location plusPieceTo() {
+        if (itIsCastle){
+            int rookRoadLength = to.getJ() - plusPiece.getSecond().getFirst().getJ();
+
+            if (rookRoadLength < 0)
+                rookRoadLength--;
+            else
+                rookRoadLength++;
+
+            Location rookOriginPlace = new Location(plusPiece.getSecond().getFirst());
+            Location rookNewPlace = new Location(
+                    to.getI(),
+                    rookOriginPlace.getJ() + rookRoadLength
+            );
+        }
         return null;
     }
 

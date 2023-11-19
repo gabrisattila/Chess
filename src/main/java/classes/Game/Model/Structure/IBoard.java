@@ -80,4 +80,12 @@ public interface IBoard {
     IPiece getPiece(IField field) throws ChessGameException;
 
     void rangeUpdater() throws ChessGameException, InterruptedException;
+
+    default Location getKingsOriginPlace(boolean forWhite){
+        if (whiteDown){
+            return new Location(4, forWhite ? 0 : 7);
+        }else {
+            return new Location(3, forWhite ? 7 : 0);
+        }
+    }
 }
