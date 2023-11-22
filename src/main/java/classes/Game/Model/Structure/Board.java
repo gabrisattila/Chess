@@ -205,8 +205,6 @@ public class Board implements IBoard {
                 }
                 return;
             }
-
-
         }
 
         rookCastleParaming();

@@ -2,10 +2,6 @@ package classes;
 
 public class TODO {
 
-    //TODO Új Move-ba:
-    // StepBack moveDocString visszafejtés
-    // !!! plusPiece levétel esetén eltárolódik-e valahol?
-
     //TODO Új Move bevezetése:
     // Kivezetni : - Először kivenni a gyalog és király lépésekből, mint előre megszabott lépésekből
     //             - Kitalálni, hogy a Board-ban hogy fog jelen lenni.

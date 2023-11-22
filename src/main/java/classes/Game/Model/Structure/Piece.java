@@ -25,8 +25,6 @@ public class Piece implements IPiece {
 
     private boolean inDefend;
 
-    private boolean notMovedAlready = true;
-
     private boolean inBinding;
 
     private double VALUE;

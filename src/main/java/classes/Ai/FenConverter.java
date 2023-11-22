@@ -243,13 +243,13 @@ public class FenConverter {
     private static void emPassantFenToBoard(String emPassant, PieceAttributes piece, int sor, int oszlop){
         if (piece.isWhite() == whiteToPlay &&
                 piece.getType() == G &&
-                Math.abs(sor - Integer.parseInt(String.valueOf(emPassantChance.charAt(0)))) == 1 &&
-                Math.abs(oszlop - Integer.parseInt(String.valueOf(emPassantChance.charAt(1)))) == 1
+                Math.abs(sor - Character.getNumericValue(emPassantChance.charAt(0))) == 1 &&
+                Math.abs(oszlop - Character.getNumericValue(emPassantChance.charAt(1))) == 1
         )
             emPassantHelper(emPassant, piece);
     }
 
-    private static void emPassantHelper(String emPassant, PieceAttributes piece){
+    public static void emPassantHelper(String emPassant, PieceAttributes piece){
             char sorInChar = emPassant.charAt(0);
             char oszlopInChar = emPassant.charAt(1);
             piece.setPossibleEmPassant(

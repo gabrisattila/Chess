@@ -5,8 +5,11 @@ import classes.Game.I18N.*;
 import lombok.*;
 
 import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
+import static classes.Ai.FenConverter.*;
 import static classes.Game.I18N.Location.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.PieceType.*;
@@ -27,6 +30,8 @@ public class Move {
 
     private IBoard boardToMoveOn;
 
+    private boolean backMove;
+
 
     /**
      * This is a mimic of the plusPiece, that was used in the move.
@@ -46,6 +51,14 @@ public class Move {
     private boolean itIsPawnGotIn;
 
 
+    /**
+     *      ColorType_fromXfromY_toXtoY_
+     *      pluszfiguraColor/-pluszfiguraType/-_
+     *      pluszfigurahonnanX/-pluszfigurahonnanY/-_plusfigurahovaX/-pluszfigurahovaY/-_
+     *      bigCastlechangesmallCastlechange_possibleempassantXpossibleempassantY
+     * <p>
+     *      In the description above the capital letters are the ones that mark a char
+     */
     private String moveDocString;
 
     //endregion
@@ -53,49 +66,52 @@ public class Move {
 
     //region Constructor
 
-    public Move(){}
+    public Move(boolean backMove){
+        parameterizeToDefault(backMove);
+    }
 
-    public Move(IPiece what, Location to){
+    public Move(IPiece what, Location to, boolean backMove){
         this.what = what;
         from = what.getLocation();
         this.to = to;
-        parameterizeToDefault();
+        parameterizeToDefault(backMove);
     }
 
-    public Move(IBoard boardToMoveOn){
+    public Move(IBoard boardToMoveOn, boolean backMove){
         this.boardToMoveOn = boardToMoveOn;
-        parameterizeToDefault();
+        parameterizeToDefault(backMove);
     }
 
-    public Move(IPiece what, Location to, IBoard boardToMoveOn){
-        this.what = what;
-        from = what.getLocation();
-        this.to = to;
-        this.boardToMoveOn = boardToMoveOn;
-        parameterizeToDefault();
-    }
-
-    public void parameterize(IBoard boardToMoveOn){
-        this.boardToMoveOn = boardToMoveOn;
-        parameterizeToDefault();
-    }
-
-    public void parameterize(IPiece what, Location to){
-        this.what = what;
-        from = what.getLocation();
-        this.to = to;
-        parameterizeToDefault();
-    }
-
-    public void parameterize(IPiece what, Location to, IBoard boardToMoveOn){
+    public Move(IPiece what, Location to, IBoard boardToMoveOn, boolean ba, boolean backMove){
         this.what = what;
         from = what.getLocation();
         this.to = to;
         this.boardToMoveOn = boardToMoveOn;
-        parameterizeToDefault();
+        parameterizeToDefault(backMove);
     }
 
-    private void parameterizeToDefault(){
+    public void parameterize(IBoard boardToMoveOn, boolean backMove){
+        this.boardToMoveOn = boardToMoveOn;
+        parameterizeToDefault(backMove);
+    }
+
+    public void parameterize(IPiece what, Location to, boolean backMove){
+        this.what = what;
+        from = what.getLocation();
+        this.to = to;
+        parameterizeToDefault(backMove);
+    }
+
+    public void parameterize(IPiece what, Location to, IBoard boardToMoveOn, boolean backMove){
+        this.what = what;
+        from = what.getLocation();
+        this.to = to;
+        this.boardToMoveOn = boardToMoveOn;
+        parameterizeToDefault(backMove);
+    }
+
+    private void parameterizeToDefault(boolean backMove){
+        this.backMove = backMove;
         itIsCastle = false;
         itIsEmPassant = false;
         itIsEmPassantAuthorization = false;
@@ -117,15 +133,10 @@ public class Move {
         
     }
 
-    public static void StepBack(Move move){
-        if (move.getMoveDocString().isEmpty())
-            //TODO Megírni szépen a honnan hovát (valami e4-ről ...)
-            throw new RuntimeException("A " + move.what + " bábu " + move.to.toString() +
-                    " -re készülő lépéséhez nem tartozik docString" +
-                    " ami alapján meg lehetne tenni a visszalépést." );
-        //TODO MoveDocString visszafejtés
+    public static void StepBack(Move move) throws ChessGameException, InterruptedException {
+        deCryptAndStepBackMove(move);
     }
-    
+
     private void moveCaseExploreAndSet(){
         String moveCase = detectSpecialCase();
         switch (moveCase) {
@@ -154,6 +165,7 @@ public class Move {
             plusPiece.setFirst(new PieceAttributes(
                     boardToMoveOn.getPiece(to).getType(),
                     !what.isWhite() ? "WHITE" : "BLACK"));
+            plusPiece.setSecond(new Pair<>(plusPieceFrom(), plusPieceTo()));
 
         }else {
             plusPiece = null;
@@ -162,11 +174,17 @@ public class Move {
     
     private void pieceChangeOnBoard() throws ChessGameException {
 
-        IField fromField = boardToMoveOn.getField(what);
-        IField toField = boardToMoveOn.getField(to);
+        IField fromField = null;
+        if (notNull(what.getLocation())) {
+            fromField = boardToMoveOn.getField(what);
+        }
 
+        IField toField = boardToMoveOn.getField(to);
         toField.setPiece(what);
-        fromField.clean();
+
+        if (notNull(fromField)) {
+            fromField.clean();
+        }
 
     }
 
@@ -204,7 +222,145 @@ public class Move {
         }
 
         moveDocumenting();
-        boardToMoveOn.rangeUpdater();
+        updateRangesBackAndFront(this);
+    }
+
+    private static void deCryptAndStepBackMove(Move move) throws ChessGameException, InterruptedException {
+        List<Object> backMoveParams = deCryptMoveDocStringToList(move);
+        StepBackMove(backMoveParams);
+        castleCasesSetBack(move);
+        emPassantChanceSetBack(move);
+        updateRangesBackAndFront(move);
+    }
+
+    private static List<Object> deCryptMoveDocStringToList(Move origin) {
+        Move back = new Move(true);
+        back.parameterize(origin.boardToMoveOn, true);
+
+        String[] originParams = origin.getMoveDocString().split("_");
+
+        boolean backWhatWhite = 'W' == originParams[0].charAt(0);
+        PieceType backWhatType = charToPieceType(originParams[0].charAt(1));
+        Location backWhatTo = new Location( // The from of the origin
+                Character.getNumericValue(originParams[1].charAt(0)),
+                Character.getNumericValue(originParams[1].charAt(1))
+        );
+        Location backWhatFrom = new Location(
+                Character.getNumericValue(originParams[2].charAt(0)),
+                Character.getNumericValue(originParams[2].charAt(1))
+        );
+        boolean backPlusWhite = false;
+        PieceType backPlusType = null;
+        Location backPlusTo = null;
+        Location backPlusFrom = null;
+        if ('-' != originParams[3].charAt(0)){
+            backPlusWhite = 'W' == originParams[3].charAt(0);
+            backPlusType = charToPieceType(originParams[3].charAt(1));
+            backPlusTo = new Location( // The from of the origin
+                    Character.getNumericValue(originParams[4].charAt(0)),
+                    Character.getNumericValue(originParams[4].charAt(1))
+            );
+            if ('-' != originParams[5].charAt(0)) {
+                backPlusFrom = new Location(
+                        Character.getNumericValue(originParams[5].charAt(0)),
+                        Character.getNumericValue(originParams[5].charAt(1))
+                );
+            }
+        }else {
+            back.plusPiece = null;
+        }
+
+        List<Object> backMoveParams = new ArrayList<>();
+        backMoveParams.add(back);
+        backMoveParams.add(backWhatWhite);
+        backMoveParams.add(backWhatType);
+        backMoveParams.add(backWhatTo);
+        backMoveParams.add(backWhatFrom);
+        backMoveParams.add(backPlusWhite);
+        backMoveParams.add(backPlusType);
+        backMoveParams.add(backPlusTo);
+        backMoveParams.add(backPlusFrom);
+
+        return backMoveParams;
+    }
+
+    private static void StepBackMove(List<Object> backMoveParams) throws ChessGameException {
+
+        Move back = (Move) backMoveParams.get(0);
+        boolean backWhatWhite = (Boolean) backMoveParams.get(1);
+        PieceType backWhatType = (PieceType) backMoveParams.get(2);
+        Location backWhatTo = (Location) backMoveParams.get(3);
+        Location backWhatFrom = (Location) backMoveParams.get(4);
+        boolean backPlusWhite = (Boolean) backMoveParams.get(5);
+        PieceType backPlusType = (PieceType) backMoveParams.get(6);
+        Location backPlusTo = (Location) backMoveParams.get(7);
+        Location backPlusFrom = (Location) backMoveParams.get(8);
+
+        IBoard backBoard = back.boardToMoveOn;
+        PieceAttributes backWhatAttrs = new PieceAttributes(backWhatType, backWhatWhite ? "WHITE" : "BLACK");
+        IPiece backWhat = backBoard instanceof Board ?
+                new Piece(backWhatAttrs) :
+                new ViewPiece(createSourceStringFromGotAttributes(backWhatAttrs), backWhatAttrs);
+        IField backFromField = backBoard.getField(backWhatFrom);
+        IField backToField = backBoard.getField(backWhatTo);
+
+        backToField.setPiece(backWhat);
+        backFromField.clean();
+
+        if (notNull(backPlusType)){
+            PieceAttributes backPlusAttrs = new PieceAttributes(backPlusType, backPlusWhite ? "WHITE" : "BLACK");
+            IPiece backPlus = backBoard instanceof Board ?
+                    new Piece(backPlusAttrs) :
+                    new ViewPiece(createSourceStringFromGotAttributes(backPlusAttrs), backPlusAttrs);
+            IField backPlusFromField = null;
+            if (notNull(backPlusFrom)){
+                backPlusFromField = backBoard.getField(backPlusFrom);
+            }
+            IField backPlusToField = backBoard.getField(backPlusTo);
+
+            backPlusToField.setPiece(backPlus);
+            if (notNull(backPlusFromField)){
+                backPlusFromField.clean();
+            }
+        }
+    }
+
+    private static void castleCasesSetBack(Move origin){
+        String castleCasesChange = origin.moveDocString.split("_")[6];
+
+        for (int i = 0; i < castleCasesChange.length(); i++) {
+            switch (castleCasesChange.charAt(i)) {
+                case 'K' -> whiteSmallCastleEnabled = true;
+                case 'V' -> whiteBigCastleEnabled = true;
+                case 'k' -> blackSmallCastleEnabled = true;
+                case 'v' -> blackBigCastleEnabled = true;
+                case '-' -> {}
+            }
+        }
+    }
+
+    private static void emPassantChanceSetBack(Move origin){
+        String emPassantChanceChange = origin.moveDocString.split("_")[7];
+
+        if ('-' != emPassantChanceChange.charAt(0)){
+
+            int sor = Character.getNumericValue(emPassantChanceChange.charAt(0));
+            int oszlop = Character.getNumericValue(emPassantChanceChange.charAt(1));
+
+            for (IPiece p : origin.boardToMoveOn.getPieces()) {
+                if (p.isWhite() != whiteToPlay &&
+                        p.getType() == G &&
+                        Math.abs(sor - Integer.parseInt(String.valueOf(emPassantChance.charAt(0)))) == 1 &&
+                        Math.abs(oszlop - Integer.parseInt(String.valueOf(emPassantChance.charAt(1)))) == 1){
+                    emPassantHelper(emPassantChanceChange, p.getAttributes());
+                }
+            }
+        }
+    }
+
+    private static void updateRangesBackAndFront(Move move) throws ChessGameException, InterruptedException {
+        whiteToPlay = !whiteToPlay;
+        move.boardToMoveOn.rangeUpdater();
     }
 
     /**
@@ -264,12 +420,26 @@ public class Move {
     }
 
     private void plusPieceDocumenting(){
-        documentationStringCreation(plusPiece.getFirst().isWhite() ? 'W' : 'B');
-        documentationStringCreation(plusPiece.getFirst().getType().toString().charAt(0));
-        documentationStringCreation((char) plusPiece.getSecond().getFirst().getI());
-        documentationStringCreation((char) plusPiece.getSecond().getFirst().getJ());
-        documentationStringCreation((char) plusPiece.getSecond().getSecond().getI());
-        documentationStringCreation((char) plusPiece.getSecond().getSecond().getJ());
+        if (notNull(plusPiece)) {
+            documentationStringCreation(plusPiece.getFirst().isWhite() ? 'W' : 'B');
+            documentationStringCreation(plusPiece.getFirst().getType().toString().charAt(0));
+            documentationStringCreation((char) plusPiece.getSecond().getFirst().getI());
+            documentationStringCreation((char) plusPiece.getSecond().getFirst().getJ());
+            if (notNull(plusPiece.getSecond().getSecond())){
+                documentationStringCreation((char) plusPiece.getSecond().getSecond().getI());
+                documentationStringCreation((char) plusPiece.getSecond().getSecond().getJ());
+            }else {
+                documentationStringCreation('-');
+                documentationStringCreation('-');
+            }
+        }else {
+            documentationStringCreation('-');
+            documentationStringCreation('-');
+            documentationStringCreation('-');
+            documentationStringCreation('-');
+            documentationStringCreation('-');
+            documentationStringCreation('-');
+        }
     }
 
     private void castleChanceDocumenting() {
@@ -340,17 +510,9 @@ public class Move {
 
     /**
      * @param appendThis if we append numbers (those will mean locations) it appends the first,
-     *                   and if the next isn't a number, it ->
-     *
-     * <p>
-     *      ColorType_fromXfromY_toXtoY_
-     *      pluszfiguraColorpluszfiguraType_
-     *      pluszfigurahonnanXpluszfigurahonnanX_plusfigurahovaXpluszfigurahovaY_
-     *      bigCastlechangesmallCastlechange_possibleempassantXpossibleempassantY
-     * <p>
-     *      In the description above the capital letters are the ones that mark a char
+     *                   and if the next isn't a number we throw RunTimeException
      */
-    private void documentationStringCreation(char appendThis){
+    private void documentationStringCreation(char appendThis) throws RuntimeException {
 
         if (!moveDocString.isEmpty() &&
                 Character.isDigit(moveDocString.charAt(moveDocString.length() - 1)) &&
@@ -370,6 +532,10 @@ public class Move {
                 (
                         Character.isDigit(moveDocString.charAt(moveDocString.length() - 1)) &&
                         Character.isDigit(moveDocString.charAt(moveDocString.length() - 2))
+                ) ||
+                (
+                        '-' == moveDocString.charAt(moveDocString.length() - 1) &&
+                        '-' == moveDocString.charAt(moveDocString.length() - 2)
                 )
         ){
             moveDocString += "_";
@@ -406,15 +572,6 @@ public class Move {
         }
         return null;
     }
-
-    private String bigCastleChangeAfterMove() {
-        return "";
-    }
-
-    private String smallCastleChangeAfterMove() {
-        return "";
-    }
-
 
     private PieceType pawnGotInCaseView(){
         int result = JOptionPane.showOptionDialog(null, "Válassz melyik figurát szeretnéd.", "Lehetőségek.",
