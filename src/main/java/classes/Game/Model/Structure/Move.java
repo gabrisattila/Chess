@@ -5,8 +5,6 @@ import classes.Game.I18N.*;
 import lombok.*;
 
 import javax.swing.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import static classes.Game.I18N.Location.*;
@@ -204,8 +202,7 @@ public class Move {
 
         }
 
-        castleChanceChanges();
-        emPassantChanceChanges();
+        moveDocumenting();
         boardToMoveOn.rangeUpdater();
     }
 
@@ -249,8 +246,32 @@ public class Move {
         return null;
     }
 
+    private void moveDocumenting(){
+        stepperDocumenting();
+        plusPieceDocumenting();
+        castleChanceDocumenting();
+        emPassantChanceDocumenting();
+    }
 
-    private void castleChanceChanges() {
+    private void stepperDocumenting(){
+        documentationStringCreation(what.isWhite() ? 'W' : 'B');
+        documentationStringCreation(what.getType().toString().charAt(0));
+        documentationStringCreation((char) from.getI());
+        documentationStringCreation((char) from.getJ());
+        documentationStringCreation((char) to.getI());
+        documentationStringCreation((char) to.getJ());
+    }
+
+    private void plusPieceDocumenting(){
+        documentationStringCreation(plusPiece.getFirst().isWhite() ? 'W' : 'B');
+        documentationStringCreation(plusPiece.getFirst().getType().toString().charAt(0));
+        documentationStringCreation((char) plusPiece.getSecond().getFirst().getI());
+        documentationStringCreation((char) plusPiece.getSecond().getFirst().getJ());
+        documentationStringCreation((char) plusPiece.getSecond().getSecond().getI());
+        documentationStringCreation((char) plusPiece.getSecond().getSecond().getJ());
+    }
+
+    private void castleChanceDocumenting() {
         if (what.getType() == B){
             if (whiteDown){
                 if (from.getJ() > 4){
@@ -308,7 +329,7 @@ public class Move {
         }
     }
 
-    private void emPassantChanceChanges() {
+    private void emPassantChanceDocumenting() {
         documentationStringCreation(emPassantChance.charAt(0));
         if (!"-".equals(emPassantChance)) {
             documentationStringCreation(emPassantChance.charAt(1));
@@ -317,7 +338,7 @@ public class Move {
 
 
     /**
-     * @param appendThis if we append numbers (those will means locations) it appends the first,
+     * @param appendThis if we append numbers (those will mean locations) it appends the first,
      *                   and if the next isn't a number, it ->
      *
      * <p>
@@ -377,7 +398,7 @@ public class Move {
                 rookRoadLength++;
 
             Location rookOriginPlace = new Location(plusPiece.getSecond().getFirst());
-            Location rookNewPlace = new Location(
+            return new Location(
                     to.getI(),
                     rookOriginPlace.getJ() + rookRoadLength
             );
