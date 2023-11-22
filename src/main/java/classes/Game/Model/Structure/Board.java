@@ -203,84 +203,13 @@ public class Board implements IBoard {
                 }else {
                     Draw = true;
                 }
-                return;
             }
         }
 
-        rookCastleParaming();
-        emPassantCaseSet();
     }
 
     private boolean theBoardHasKings() {
         return pieces.stream().anyMatch(p -> p.getType() == K);
-    }
-
-    private void rookCastleParaming() throws ChessGameException {
-        String whichRook = "";
-        for (IPiece p : getTisztek(whiteToPlay)) {
-            if (p.getType() == B){
-                boolean whiteDown = (!whiteAiNeeded || !theresOnlyOneAi);
-                if (p.isWhite() && ((whiteDown && p.getLocation().EQUALS(0, 0)) || (!whiteDown && p.getLocation().EQUALS(0, 7)))){
-                    whichRook = "Q";
-                } else if (p.isWhite() && ((whiteDown && p.getLocation().EQUALS(0, 7)) || (!whiteDown && p.getLocation().EQUALS(0, 0)))) {
-                    whichRook = "K";
-                }
-                if (!p.isWhite() && ((whiteDown && p.getLocation().EQUALS(7, 0)) || (!whiteDown && p.getLocation().EQUALS(7, 7)))){
-                    whichRook = "q";
-                } else if (!p.isWhite() && ((whiteDown && p.getLocation().EQUALS(7, 7)) || (!whiteDown && p.getLocation().EQUALS(7, 0)))) {
-                    whichRook = "k";
-                }
-                for (Location l : p.getPossibleRange()) {
-                    ((Piece) p).setLegals(new Move_(
-                            this,
-                            p,
-                            p.getLocation(),
-                            l,
-                            notNull(getPiece(l)) ? getPiece(l) : null,
-                            whichRook
-                    ));
-                }
-            }
-        }
-    }
-
-    private void emPassantCaseSet() throws ChessGameException {
-        StringBuilder emPassant = new StringBuilder();
-        for (IPiece p : myPieces()) {
-            if (p.getType() == G){
-                for (Location l : p.getPossibleRange()) {
-
-                    Location neighbour1 = new Location(l.getI(), l.getJ() - 1),
-                            neighbour2 = new Location(l.getI(), l.getJ() + 1);
-
-                    if (emPassantIf(p, l, neighbour1) || emPassantIf(p, l, neighbour2)){
-                        Location middle = getTheMiddleLocation(p.getLocation(), l);
-                        assert middle != null;
-                        emPassant.append(numsForPrinting.get(middle.getI()));
-                        emPassant.append(numsForPrinting.get(middle.getJ()));
-                        ((Piece) p).setLegals(new Move_(
-                                this,
-                                p,
-                                p.getLocation(),
-                                l,
-                                notNull(getPiece(l)) ? getPiece(l) : null,
-                                emPassant.toString()
-                        ));
-                        emPassant = new StringBuilder();
-                    }
-                }
-            }
-        }
-    }
-
-    private boolean emPassantIf(IPiece p, Location l, Location neighbour) throws ChessGameException {
-        return Math.abs(p.getI() - l.getI()) > 1 && containsLocation(neighbour) &&
-                notNull(getPiece(neighbour)) && getPiece(neighbour).getType() == G &&
-                getPiece(neighbour).isWhite() != p.isWhite() &&
-                locationCollectionContains(
-                        ((Piece)getPiece(neighbour)).getWatchedRange(),
-                        getTheMiddleLocation(p.getLocation(), l)
-                );
     }
 
     private Location getTheMiddleLocation(Location first, Location last){
@@ -416,17 +345,7 @@ public class Board implements IBoard {
         }
         if (p.getPossibleRange() != setToCollectRightPlacesToGo)
             ((Piece) p).setPossibleRange(setToCollectRightPlacesToGo);
-        if (p.getType() == K){
-            for (Location l : p.getPossibleRange()) {
-                ((Piece) p).setLegals(new Move_(
-                        this,
-                        p,
-                        p.getLocation(),
-                        l,
-                        notNull(getPiece(l)) ? getPiece(l) : null
-                ));
-            }
-        }
+
     }
 
     /**
@@ -589,16 +508,6 @@ public class Board implements IBoard {
                     !locationCollectionContains(getAttackRangeWithoutKing(!my), possiblePlaceOfMyKing)
             ){
                 getKing(my).setPossibleRange(l);
-
-                //getKing(my).setLegals(
-                //        new Move_(
-                //                this,
-                //                getKing(my),
-                //                getKingsPlace(my),
-                //                possiblePlaceOfMyKing,
-                //                hitOnThisLocWith(my, possiblePlaceOfMyKing)
-                //        )
-                //);
             }
         }
     }
@@ -696,31 +605,18 @@ public class Board implements IBoard {
     public void addLegalMovesToPieces() throws ChessGameException {
         for (IPiece p : myPieces()) {
             for (Location to : p.getPossibleRange()) {
-                if (((Piece) p).getLegalMoves().isEmpty()) {
-                    ((Piece) p).setLegals(new Move_(
-                            this,
-                            p,
-                            p.getLocation(),
-                            to,
-                            notNull(getPiece(to)) ? getPiece(to) : null
-                    ));
-                }else {
-                    if (((Piece) p).getLegalMoves().stream().noneMatch(m -> m.getTo().EQUALS(to))){
-                        ((Piece) p).setLegals(new Move_(
-                                this,
-                                p,
-                                p.getLocation(),
-                                to,
-                                notNull(getPiece(to)) ? getPiece(to) : null
-                        ));
-                    }
-                }
+                ((Piece) p).setLegals(new Move(
+                        p,
+                        to,
+                        ((Piece) p).getBoard(),
+                        false
+                ));
             }
         }
     }
 
-    public HashMap<IPiece, Set<Move_>> getAllLegalMoves(boolean forWhite){
-        HashMap<IPiece, Set<Move_>> legals = new HashMap<>();
+    public HashMap<IPiece, Set<Move>> getAllLegalMoves(boolean forWhite){
+        HashMap<IPiece, Set<Move>> legals = new HashMap<>();
         for (IPiece p : getPieces(forWhite)) {
             if (!((Piece) p).getLegalMoves().isEmpty()) {
                 legals.put(

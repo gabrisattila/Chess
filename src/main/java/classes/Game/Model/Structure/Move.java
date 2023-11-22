@@ -82,7 +82,7 @@ public class Move {
         parameterizeToDefault(backMove);
     }
 
-    public Move(IPiece what, Location to, IBoard boardToMoveOn, boolean ba, boolean backMove){
+    public Move(IPiece what, Location to, IBoard boardToMoveOn, boolean backMove){
         this.what = what;
         from = what.getLocation();
         this.to = to;

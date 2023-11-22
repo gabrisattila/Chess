@@ -35,9 +35,9 @@ public class Piece implements IPiece {
 
     private Set<Location> watchedRange;
 
-    private Set<Move_> pseudoLegals;
+    private Set<Move> pseudoLegals;
 
-    private Set<Move_> legalMoves;
+    private Set<Move> legalMoves;
 
     //endregion
 
@@ -150,7 +150,7 @@ public class Piece implements IPiece {
             throw new RuntimeException("Vagy a paraméter típusa, vagy annak értéke rossz.");
     }
 
-    public void setPseudoLegals(Move_ moveToAdd){
+    public void setPseudoLegals(Move moveToAdd){
         if (isNull(pseudoLegals))
             setPseudoLegals("new");
         pseudoLegals.add(moveToAdd);
@@ -165,7 +165,7 @@ public class Piece implements IPiece {
             throw new RuntimeException("Vagy a paraméter típusa, vagy annak értéke rossz.");
     }
 
-    public void setLegals(Move_ moveToAdd){
+    public void setLegals(Move moveToAdd){
         if (isNull(pseudoLegals))
             setLegals("new");
         legalMoves.add(moveToAdd);
