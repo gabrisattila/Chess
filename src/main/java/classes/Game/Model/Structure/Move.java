@@ -123,6 +123,7 @@ public class Move {
             throw new RuntimeException("A " + move.what + " bábu " + move.to.toString() +
                     " -re készülő lépéséhez nem tartozik docString" +
                     " ami alapján meg lehetne tenni a visszalépést." );
+        //TODO MoveDocString visszafejtés
     }
     
     private void moveCaseExploreAndSet(){
