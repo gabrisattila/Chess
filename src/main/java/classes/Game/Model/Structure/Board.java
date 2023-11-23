@@ -16,6 +16,8 @@ import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Game.Model.Structure.GameOver.*;
+import static classes.Game.Model.Structure.Move.Step;
+import static classes.Game.Model.Structure.Move.StepBack;
 
 
 /**
@@ -185,7 +187,7 @@ public class Board implements IBoard {
 
 
     @Override
-    public void rangeUpdater() throws ChessGameException {
+    public void rangeUpdater() throws ChessGameException, InterruptedException {
 
         clearRangesAndStuffBeforeUpdate();
         pseudos();
@@ -260,7 +262,7 @@ public class Board implements IBoard {
      * @param enemy this means who would be the player, who gives check
      * Alapvetés szerint pedig megnézi sakkban vagyok-e, ha igen, aszerint kalkulálja ki a további lehetőségeim
      */
-    private void inspectCheck(boolean enemy) throws ChessGameException {
+    private void inspectCheck(boolean enemy) throws ChessGameException, InterruptedException {
         if (locationCollectionContains(getAttackRangeWithoutKing(enemy), getKingsPlace(!enemy))){
 
             findCheckers(enemy);
@@ -285,8 +287,8 @@ public class Board implements IBoard {
         }
     }
 
-    private void findLegalMovesInCheckCases(boolean enemy) throws ChessGameException {
-        Move_ supposedMove = new Move_(this);
+    private void findLegalMovesInCheckCases(boolean enemy) throws ChessGameException, InterruptedException {
+        Move supposedMove = new Move(this, false);
 
         if (notNull(checkers.getSecond())){
 
@@ -299,11 +301,11 @@ public class Board implements IBoard {
         }
     }
 
-    private void kingStepOutFromCheck(Move_ supposedMove, boolean enemy) throws ChessGameException {
+    private void kingStepOutFromCheck(Move supposedMove, boolean enemy) throws ChessGameException, InterruptedException {
         constrainInsteadOfCheck(matrixChooser.get(K), supposedMove, getKing(!enemy), enemy);
     }
 
-    private void blockCheckOrHitChecker(Move_ supposed, boolean enemy) throws ChessGameException {
+    private void blockCheckOrHitChecker(Move supposed, boolean enemy) throws ChessGameException, InterruptedException {
 
         Set<Location> wholePileOfChecker = checkers.getFirst().getPossibleRange();
         wholePileOfChecker.add(checkers.getFirst().getLocation());
@@ -324,7 +326,7 @@ public class Board implements IBoard {
     }
 
     private void constrainInsteadOfCheck(Set<Location> setThatWeCollectFrom,
-                                         Move_ supposed, IPiece p, boolean enemy) throws ChessGameException {
+                                         Move supposed, IPiece p, boolean enemy) throws ChessGameException, InterruptedException {
 
         Set<Location> setToCollectRightPlacesToGo = new HashSet<>();
         for (Location l : setThatWeCollectFrom) {
@@ -355,11 +357,11 @@ public class Board implements IBoard {
      * @param enemy theColorOfEnemy
      * @return Decides about a place that if my piece moves there the check still remain or not
      */
-    private boolean supposedMoveWith(Move_ supposed, IPiece piece, Location to, boolean enemy) throws ChessGameException {
-        supposed.setEveryThing(piece, to);
-        supposed.supposedMove();
+    private boolean supposedMoveWith(Move supposed, IPiece piece, Location to, boolean enemy) throws ChessGameException, InterruptedException {
+        supposed.parameterize(piece, to, false);
+        Step(supposed);
         boolean placeIsGood = !locationCollectionContains(getAttackRangeWithoutKing(enemy), getKingsPlace(!enemy));
-        supposed.supposedMoveBack();
+        StepBack(supposed);
         return placeIsGood;
     }
 
@@ -602,7 +604,7 @@ public class Board implements IBoard {
                 .collect(Collectors.toSet());
     }
 
-    public void addLegalMovesToPieces() throws ChessGameException {
+    public void addLegalMovesToPieces() {
         for (IPiece p : myPieces()) {
             for (Location to : p.getPossibleRange()) {
                 ((Piece) p).setLegals(new Move(

@@ -4,7 +4,6 @@ package classes.Ai;
 import classes.Game.I18N.*;
 import classes.Game.Model.Structure.IPiece;
 import classes.Game.Model.Structure.Move;
-import classes.Game.Model.Structure.Move_;
 import lombok.*;
 
 import java.util.*;
@@ -65,7 +64,7 @@ public class AiTree {
         return getAiBoard().isDraw() || getAiBoard().isCheckMate();
     }
 
-    public Set<String> collectPossibilities() throws ChessGameException {
+    public Set<String> collectPossibilities() throws ChessGameException, InterruptedException {
         Set<String> possibilities = new HashSet<>();
 
         HashMap<IPiece, Set<Move>> legalMoves = collectLegalMoves();
@@ -82,11 +81,10 @@ public class AiTree {
         return legals;
     }
 
-    private void doAllLegalMoves(HashMap<IPiece, Set<Move>> legalMoves, Set<String> possibilities) throws ChessGameException {
+    private void doAllLegalMoves(HashMap<IPiece, Set<Move>> legalMoves, Set<String> possibilities) throws ChessGameException, InterruptedException {
         for (IPiece p : legalMoves.keySet()) {
             for (Move m : legalMoves.get(p)) {
-                boolean gonnaBePawnGotIn = checkIfItsPawnGotIn(m);
-                MOVE(getAiBoard(), m, gonnaBePawnGotIn);
+                Step(m);
                 possibilities.add(BoardToFen(getAiBoard()));
                 FenToBoard(fen, getAiBoard());
             }

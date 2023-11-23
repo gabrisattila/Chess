@@ -3,10 +3,8 @@ package classes;
 public class TODO {
 
     //TODO Új Move bevezetése:
-    // Kivezetni : - Először kivenni a gyalog és király lépésekből, mint előre megszabott lépésekből
-    //             - Kitalálni, hogy a Board-ban hogy fog jelen lenni.
-    //             - Supposed Move-ok ellenőrzése, felfedett sakk, sakk-matt-patt kezelés stb.
-    //             - AiTree-be bevezetése
+    // Kivezetni : - Supposed Move-ok ellenőrzése, felfedett sakk, sakk-matt-patt kezelés stb.
+
     //TODO Teszt:
     // - StepBack gomb felrakása a view-ba tesztelés
 

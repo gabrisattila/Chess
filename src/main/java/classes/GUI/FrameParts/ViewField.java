@@ -6,6 +6,7 @@ import classes.Game.I18N.PieceAttributes;
 
 import classes.Game.I18N.PieceType;
 import classes.Game.Model.Structure.IPiece;
+import classes.Game.Model.Structure.Move;
 import lombok.*;
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
@@ -18,7 +19,7 @@ import static classes.Game.Model.Logic.EDT.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
-import static classes.Game.Model.Structure.Move_.*;
+import static classes.Game.Model.Structure.Move.*;
 
 @Getter
 @Setter
@@ -188,15 +189,13 @@ public class ViewField extends JButton implements classes.Game.Model.Structure.I
             changeFieldColor(source);
         }
 
-        private void moveToClicked(ViewField clicked) throws ChessGameException {
-
-            pawnGotInCase(clicked);
+        private void moveToClicked(ViewField clicked) throws ChessGameException, InterruptedException {
 
             ViewPiece hit = null;
             if (clicked.isGotPiece())
                 hit = clicked.getPiece();
 
-            MOVE(getViewBoard(), pieceToChange, clicked.loc, false);
+            Step(new Move(pieceToChange, clicked.getLoc(), getViewBoard(), false));
 
             if (notNull(hit))
                 putTakenPieceToItsPlace(hit);
@@ -237,14 +236,6 @@ public class ViewField extends JButton implements classes.Game.Model.Structure.I
         private boolean helperIfBasedOnColor(ViewPiece piece){
             return (piece.isWhite() && whiteToPlay) ||
                     (!piece.isWhite() && !whiteToPlay);
-        }
-
-        private void pawnGotInCase(ViewField clicked) throws ChessGameException {
-
-            if (pieceToChange.getType() == G && (clicked.getI() == 0 || clicked.getI() == 7)){
-                PieceType newType = pawnGotInCaseView();
-                pawnGotInCaseBackground(pieceToChange, lastClicked, clicked, getViewBoard(), newType);
-            }
         }
 
         private PieceType pawnGotInCaseView(){

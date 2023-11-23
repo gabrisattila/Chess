@@ -17,7 +17,7 @@ import static classes.Game.I18N.PieceType.*;
 import static classes.Game.Model.Logic.EDT.*;
 import static classes.Game.Model.Structure.Board.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
-import static classes.Game.Model.Structure.Move_.*;
+import static classes.Game.Model.Structure.Move.*;
 
 @Getter
 @Setter
@@ -67,20 +67,20 @@ public class AI extends Thread {
         try {
             fen = Move();
             addToContinuousTree(fen);
-        } catch (ChessGameException e) {
+        } catch (ChessGameException | InterruptedException e) {
             throw new RuntimeException(e);
         }
         return fen;
     }
 
-    public String Move() throws ChessGameException {
+    public String Move() throws ChessGameException, InterruptedException {
 
         return moveWithSimpleAi();
 //        return moveWithMiniMaxAi();
 
     }
 
-    public String moveWithSimpleAi() throws ChessGameException {
+    public String moveWithSimpleAi() throws ChessGameException, InterruptedException {
 
         synchronized (pauseFlag){
             while (pauseFlag.get()) {
@@ -108,16 +108,12 @@ public class AI extends Thread {
 
             boolean gonnaBePawnGotIn = checkIfItsPawnGotIn(stepper, toStepOn);
 
-            MOVE(getAiBoard(), stepper, toStepOn, gonnaBePawnGotIn);
+            Step(new Move(stepper, toStepOn, getAiBoard(), false));
 
             return BoardToFen(getAiBoard());
 
         }
 
-    }
-
-    public static boolean checkIfItsPawnGotIn(Move_ move){
-        return checkIfItsPawnGotIn(move.getWhat(), move.getTo());
     }
 
     private static boolean checkIfItsPawnGotIn(IPiece stepper, Location to){
@@ -126,7 +122,7 @@ public class AI extends Thread {
                 to.getI() == 7 || to.getI() == 0);
     }
 
-    private String moveWithMiniMaxAi() throws ChessGameException {
+    private String moveWithMiniMaxAi() throws ChessGameException, InterruptedException {
         AiTree tree = new AiTree(BoardToFen(getAiBoard()));
 
 //        double best = newMiniMax(tree, MINIMAX_DEPTH, -350, 350);
@@ -148,7 +144,7 @@ public class AI extends Thread {
         return bestChildsFen;
     }
 
-    private double newMiniMax(AiTree starterPos, int depth, double alpha, double beta) throws ChessGameException {
+    private double newMiniMax(AiTree starterPos, int depth, double alpha, double beta) throws ChessGameException, InterruptedException {
 
         synchronized (pauseFlag){
 
@@ -199,7 +195,7 @@ public class AI extends Thread {
 
     }
 
-    private double oldMiniMax(AiTree starterPos, int depth, boolean maxNeeded, double alpha, double beta) throws ChessGameException {
+    private double oldMiniMax(AiTree starterPos, int depth, boolean maxNeeded, double alpha, double beta) throws ChessGameException, InterruptedException {
 
         FenToBoard(starterPos.getFen(), getAiBoard());
         getAiBoard().rangeUpdater();
