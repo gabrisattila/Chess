@@ -106,12 +106,11 @@ public class AI extends Thread {
             int indexOfChosen = random.nextInt(0, ableToStepThereIn.size());
             Location toStepOn = ableToStepThereIn.get(indexOfChosen);
 
-            boolean gonnaBePawnGotIn = checkIfItsPawnGotIn(stepper, toStepOn);
-
-            Step(new Move(stepper, toStepOn, getAiBoard(), false));
+            Move move = new Move(stepper, toStepOn, getAiBoard(), false);
+            move.setMustLogged(true);
+            Step(move);
 
             return BoardToFen(getAiBoard());
-
         }
 
     }

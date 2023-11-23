@@ -4,10 +4,7 @@ package classes.Game.Model.Structure;
 import classes.Game.I18N.*;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -217,6 +214,8 @@ public class Board implements IBoard {
     private Location getTheMiddleLocation(Location first, Location last){
         if (first.getJ() == last.getJ()){
             return new Location((first.getI() + last.getI()) / 2, first.getJ());
+        }else if (first.getI() == last.getI()){
+            return new Location(first.getI(), (first.getJ() + last.getJ()) / 2);
         }
         return null;
     }
@@ -517,7 +516,7 @@ public class Board implements IBoard {
     /**
      * @param forWhite in that case forWhite simbolize my color (Me is who count the step)
      */
-    private void kingCastle(boolean forWhite) {
+    private void kingCastle(boolean forWhite) throws ChessGameException {
         if (MAX_WIDTH == 8 && MAX_HEIGHT == 8 &&
                 (   (forWhite && (whiteBigCastleEnabled || whiteSmallCastleEnabled)) ||
                     (!forWhite && (blackBigCastleEnabled || blackSmallCastleEnabled)) ) &&
@@ -526,13 +525,26 @@ public class Board implements IBoard {
 
             int bigCastlePointPlus = (whiteDown ? -2 : 2);
             int bigCastleRoadPlus = (whiteDown ? -1 : 1);
-            Location bigCastlePointLocation = getKingsPlace(forWhite).add(new Location(getKingsPlace(forWhite).getI(), bigCastlePointPlus));
-            Location bigCastleRoadLocation = getKingsPlace(forWhite).add(new Location(getKingsPlace(forWhite).getI(), bigCastleRoadPlus));
+            Location bigCastlePointLocation = new Location(
+                    getKingsPlace(forWhite).getI(),
+                    getKingsPlace(forWhite).getJ() + bigCastlePointPlus);
+            Location bigCastleRoadLocation = new Location(
+                    getKingsPlace(forWhite).getI(),
+                    getKingsPlace(forWhite).getJ() + bigCastleRoadPlus);
 
             int smallCastlePointPlus = (whiteDown ? 2 : -2);
             int smallCastleRoadPlus = (whiteDown ? 1 : -1);
-            Location smallCastlePointLocation = getKingsPlace(forWhite).add(new Location(getKingsPlace(forWhite).getI(), smallCastlePointPlus));
-            Location smallCastleRoadLocation = getKingsPlace(forWhite).add(new Location(getKingsPlace(forWhite).getI(), smallCastleRoadPlus));
+            Location smallCastlePointLocation = new Location(
+                    getKingsPlace(forWhite).getI(),
+                    getKingsPlace(forWhite).getJ() + smallCastlePointPlus);
+            Location smallCastleRoadLocation = new Location(
+                    getKingsPlace(forWhite).getI(),
+                    getKingsPlace(forWhite).getJ() + smallCastleRoadPlus);
+
+            Location bigCastlePlusRoad = getTheMiddleLocation(bigCastlePointLocation, new Location(
+                    bigCastlePointLocation.getI(), bigCastlePointLocation.getJ() == 2 ? 1 : 6
+            ));
+            boolean theresNoPieceOnBigCastlePlusRoad = notNull(bigCastlePlusRoad) && isNull(getPiece(bigCastlePlusRoad));
 
             castleHelper(
                     forWhite,
@@ -540,7 +552,8 @@ public class Board implements IBoard {
                     bigCastleRoadLocation,
                     smallCastlePointLocation,
                     smallCastleRoadLocation,
-                    getKing(forWhite).isWhite() ? whiteBigCastleEnabled : blackBigCastleEnabled,
+                    (getKing(forWhite).isWhite() ? whiteBigCastleEnabled : blackBigCastleEnabled)
+                            && theresNoPieceOnBigCastlePlusRoad,
                     getKing(forWhite).isWhite() ? whiteSmallCastleEnabled : blackSmallCastleEnabled
             );
 
@@ -553,26 +566,23 @@ public class Board implements IBoard {
                               Location smallCastlePointLocation,
                               Location smallCastleRoadLocation,
                               boolean bigCastleEnabled,
-                              boolean whiteSmallCastleEnabled) {
-        if (
-                bigCastleEnabled &&
-                !locationCollectionContains(getAttackRangeWithoutKing(!forWhite), bigCastleRoadLocation) &&
-                !locationCollectionContains(getAttackRangeWithoutKing(!forWhite), bigCastlePointLocation) &&
-                enemyKingNotInNeighbour(bigCastleRoadLocation, forWhite) &&
-                enemyKingNotInNeighbour(bigCastlePointLocation, forWhite)
-        ) {
+                              boolean smallCastleEnabled) throws ChessGameException {
+        if (castleHelpersIf(forWhite, bigCastlePointLocation, bigCastleRoadLocation, bigCastleEnabled)) {
             getKing(forWhite).setPossibleRange(bigCastlePointLocation);
         }
 
-        if (
-                whiteSmallCastleEnabled &&
-                !locationCollectionContains(getAttackRangeWithoutKing(!forWhite), smallCastleRoadLocation) &&
-                !locationCollectionContains(getAttackRangeWithoutKing(!forWhite), smallCastlePointLocation) &&
-                enemyKingNotInNeighbour(smallCastleRoadLocation, forWhite) &&
-                enemyKingNotInNeighbour(smallCastlePointLocation, forWhite)
-        ) {
+        if (castleHelpersIf(forWhite, smallCastlePointLocation, smallCastleRoadLocation, smallCastleEnabled)) {
             getKing(forWhite).setPossibleRange(smallCastlePointLocation);
         }
+    }
+
+    private boolean castleHelpersIf(boolean forWhite, Location castlePoint, Location castleRoad, boolean castleEnabled) throws ChessGameException {
+        return castleEnabled &&
+                !locationCollectionContains(getAttackRangeWithoutKing(!forWhite), castleRoad) &&
+                !locationCollectionContains(getAttackRangeWithoutKing(!forWhite), castlePoint) &&
+                enemyKingNotInNeighbour(castleRoad, forWhite) &&
+                enemyKingNotInNeighbour(castlePoint, forWhite) &&
+                isNull(getPiece(castlePoint)) && isNull(getPiece(castleRoad));
     }
 
     /**

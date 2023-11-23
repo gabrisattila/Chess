@@ -204,7 +204,7 @@ public class VARS {
             add('8');
         }};
 
-        public static final ArrayList<String> numsForPrinting = new ArrayList<>(){{
+        public static final ArrayList<String> indexNums = new ArrayList<>(){{
             add("0");
             add("1");
             add("2");

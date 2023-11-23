@@ -2,12 +2,12 @@ package classes.Game.I18N;
 
 
 import classes.GUI.FrameParts.ViewField;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Collections;
 
-import static classes.GUI.FrameParts.ViewBoard.getViewBoard;
+import static classes.GUI.FrameParts.ViewBoard.*;
+import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.theresOnlyOneAi;
 import static classes.Game.I18N.VARS.MUTABLE.whiteAiNeeded;
@@ -45,7 +45,11 @@ public class Location {
     //region Methods
 
     public boolean EQUALS(Location l){
-        return i == l.i && j == l.j;
+        if (notNull(l)){
+            return i == l.i && j == l.j;
+        }else {
+            return false;
+        }
     }
 
     public boolean EQUALS(int i, int j){
@@ -71,7 +75,7 @@ public class Location {
     public String toLoggerString() throws ChessGameException {
 
         String loc = "";
-        loc += ((ViewField)getViewBoard().getField(this)).getRow();
+        loc += Character.toLowerCase(((ViewField)getViewBoard().getField(this)).getRow());
         loc += ((ViewField)getViewBoard().getField(this)).getCol();
         return loc;
     }
@@ -81,8 +85,9 @@ public class Location {
                 location.length() != 2 ||
                 !Character.isDigit(location.charAt(0)) ||
                 !Character.isDigit(location.charAt(1))
-        )
-            throw new RuntimeException("A megadott ("+ location +") string nem írható át location-re.");
+        ) {
+            return null;
+        }
 
         return new Location(Character.getNumericValue(location.charAt(0)),
                             Character.getNumericValue(location.charAt(1)));

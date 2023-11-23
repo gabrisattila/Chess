@@ -11,6 +11,7 @@ import java.util.List;
 
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
+import static classes.Game.I18N.VARS.MUTABLE.whiteToPlay;
 
 public class Logger extends JTextArea {
 

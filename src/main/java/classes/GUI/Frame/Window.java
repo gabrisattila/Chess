@@ -100,8 +100,9 @@ public class Window extends JFrame {
         addButtons();
         buttonsEnabled();
 
-        if (canBeLogger)
+        if (canBeLogger) {
             addLogger();
+        }
     }
 
     private void addButtons() {

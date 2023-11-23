@@ -5,6 +5,7 @@ import classes.Game.I18N.*;
 import lombok.*;
 
 import javax.swing.*;
+import javax.swing.text.BadLocationException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,6 +16,8 @@ import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
+import static classes.GUI.FrameParts.Logger.*;
+import static classes.GUI.Frame.Window.*;
 
 @Getter
 @Setter
@@ -31,6 +34,8 @@ public class Move {
     private IBoard boardToMoveOn;
 
     private boolean backMove;
+
+    private boolean mustLogged;
 
 
     /**
@@ -128,13 +133,60 @@ public class Move {
         
         move.moveCaseExploreAndSet();
         move.collectPlusPiece();
-        move.pieceChangeOnBoard();
         move.doAfterChangeEffects();
-        
+        move.pieceChangeOnBoard();
+
     }
 
     public static void StepBack(Move move) throws ChessGameException, InterruptedException {
         deCryptAndStepBackMove(move);
+        changeEvenOrOddStep();
+        logStepBack(move);
+    }
+
+    private static void logStep(Move move) throws ChessGameException {
+        if (move.mustLogged){
+            String step = "";
+
+            if (whiteToPlay){
+                step += stepNumber + ". ";
+            }else {
+                step += " - ";
+                stepNumber++;
+            }
+
+            if (!move.itIsCastle){
+                step += move.what.getType().toString().charAt(0);
+                if (notNull(move.plusPiece)) {
+                    step += 'x';
+                }
+                step += move.to.toLoggerString();
+            }else {
+                if (Math.abs(move.plusPiece.getSecond().getFirst().getJ() - move.plusPiece.getSecond().getSecond().getJ()) > 2){
+                    step += "0-0-0";
+                }else{
+                    step += "0-0";
+                }
+            }
+
+            step += "\t" + move.moveDocString;
+            step += '\n';
+
+            getLogger().log(step);
+        }
+    }
+
+    private static void logStepBack(Move move) {
+        int lineCount = getLogger().getLineCount();
+        if (move.mustLogged){
+            try {
+                int startOffset = getLogger().getLineStartOffset(lineCount - 1);
+                int endOffset = getLogger().getLineEndOffset(lineCount - 1);
+                getLogger().replaceRange("", startOffset, endOffset);
+            } catch (BadLocationException ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     private void moveCaseExploreAndSet(){
@@ -173,6 +225,8 @@ public class Move {
     }
     
     private void pieceChangeOnBoard() throws ChessGameException {
+
+        logStep(this);
 
         IField fromField = null;
         if (notNull(what.getLocation())) {
@@ -222,7 +276,7 @@ public class Move {
         }
 
         moveDocumenting();
-        updateRangesBackAndFront(this);
+        changeEvenOrOddStep();
     }
 
     private static void deCryptAndStepBackMove(Move move) throws ChessGameException, InterruptedException {
@@ -361,6 +415,7 @@ public class Move {
     private static void updateRangesBackAndFront(Move move) throws ChessGameException, InterruptedException {
         whiteToPlay = !whiteToPlay;
         move.boardToMoveOn.rangeUpdater();
+        whiteToPlay = !whiteToPlay;
     }
 
     /**
@@ -413,10 +468,10 @@ public class Move {
     private void stepperDocumenting(){
         documentationStringCreation(what.isWhite() ? 'W' : 'B');
         documentationStringCreation(what.getType().toString().charAt(0));
-        documentationStringCreation((char) from.getI());
-        documentationStringCreation((char) from.getJ());
-        documentationStringCreation((char) to.getI());
-        documentationStringCreation((char) to.getJ());
+        documentationStringCreation(indexNums.get(from.getI()).charAt(0));
+        documentationStringCreation(indexNums.get(from.getJ()).charAt(0));
+        documentationStringCreation(indexNums.get(to.getI()).charAt(0));
+        documentationStringCreation(indexNums.get(to.getJ()).charAt(0));
     }
 
     private void plusPieceDocumenting(){
@@ -444,7 +499,7 @@ public class Move {
 
     private void castleChanceDocumenting() {
         if (what.getType() == B){
-            if (whiteDown){
+            if (whiteDown) {
                 if (from.getJ() > 4){
                     if (what.isWhite()) {
                         whiteSmallCastleEnabled = false;
@@ -464,7 +519,7 @@ public class Move {
                         documentationStringCreation('v');
                     }
                 }
-            }else {
+            } else {
                 if (from.getJ() < 4){
                     if (what.isWhite()) {
                         whiteSmallCastleEnabled = false;
@@ -485,6 +540,7 @@ public class Move {
                     }
                 }
             }
+            documentationStringCreation('-');
         } else if (what.getType() == K) {
             if (what.isWhite()){
                 whiteSmallCastleEnabled = false;
@@ -497,6 +553,9 @@ public class Move {
                 documentationStringCreation('k');
                 documentationStringCreation('v');
             }
+        } else {
+            documentationStringCreation('-');
+            documentationStringCreation('-');
         }
     }
 
@@ -525,7 +584,7 @@ public class Move {
 
         if (
                 moveDocString.length() > 1 &&
-                (
+                ((
                         pieceLetters.contains(moveDocString.charAt(moveDocString.length() - 1)) &&
                         pieceLetters.contains(moveDocString.charAt(moveDocString.length() - 2))
                 ) ||
@@ -536,7 +595,11 @@ public class Move {
                 (
                         '-' == moveDocString.charAt(moveDocString.length() - 1) &&
                         '-' == moveDocString.charAt(moveDocString.length() - 2)
-                )
+                ) ||
+                (
+                        pieceLetters.contains(moveDocString.charAt(moveDocString.length() - 1)) &&
+                        '-' == moveDocString.charAt(moveDocString.length() - 2)
+                ))
         ){
             moveDocString += "_";
         }

@@ -195,7 +195,9 @@ public class ViewField extends JButton implements classes.Game.Model.Structure.I
             if (clicked.isGotPiece())
                 hit = clicked.getPiece();
 
-            Step(new Move(pieceToChange, clicked.getLoc(), getViewBoard(), false));
+            Move move = new Move(pieceToChange, clicked.getLoc(), getViewBoard(), false);
+            move.setMustLogged(true);
+            Step(move);
 
             if (notNull(hit))
                 putTakenPieceToItsPlace(hit);
