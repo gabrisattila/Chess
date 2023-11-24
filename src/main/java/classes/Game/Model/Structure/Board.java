@@ -13,8 +13,7 @@ import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Game.Model.Structure.GameOver.*;
-import static classes.Game.Model.Structure.Move.Step;
-import static classes.Game.Model.Structure.Move.StepBack;
+import static classes.Game.Model.Structure.Move.*;
 
 
 /**
@@ -359,6 +358,7 @@ public class Board implements IBoard {
     private boolean supposedMoveWith(Move supposed, IPiece piece, Location to, boolean enemy) throws ChessGameException, InterruptedException {
         supposed.parameterize(piece, to, false);
         Step(supposed);
+        supposed.getBoardToMoveOn().rangeUpdater();
         boolean placeIsGood = !locationCollectionContains(getAttackRangeWithoutKing(enemy), getKingsPlace(!enemy));
         StepBack(supposed);
         return placeIsGood;
