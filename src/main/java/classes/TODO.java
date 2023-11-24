@@ -4,6 +4,8 @@ public class TODO {
 
     //TODO Supposed Move-ok ellenőrzése, felfedett sakk, sakk-matt-patt kezelés stb.
 
+    //TODO EmPassant és Sánc átgondolása, hogy a fenébe is fog működni miniMax esetén
+
     //TODO Teszt:
     // - StepBack gomb felrakása a view-ba tesztelés
 

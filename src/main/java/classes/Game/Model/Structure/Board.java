@@ -332,7 +332,7 @@ public class Board implements IBoard {
             l = p.getLocation().add(l);
             if (
                     containsLocation(l) && enemyKingNotInNeighbour(l, !enemy) &&
-                    ((isNull(getPiece(l)) || notNull(getPiece(l)) && getPiece(l).isWhite() != getKing(!enemy).isWhite())) &&
+                    ((isNull(getPiece(l)) || (notNull(getPiece(l)) && getPiece(l).isWhite() == enemy))) &&
                     supposedMoveWith(supposed, p, l, enemy)
             ){
                 if (p.getType() == K){
@@ -508,7 +508,7 @@ public class Board implements IBoard {
                     enemyKingNotInNeighbour(possiblePlaceOfMyKing, my) &&
                     !locationCollectionContains(getAttackRangeWithoutKing(!my), possiblePlaceOfMyKing)
             ){
-                getKing(my).setPossibleRange(l);
+                getKing(my).setPossibleRange(possiblePlaceOfMyKing);
             }
         }
     }

@@ -20,6 +20,17 @@ import static classes.GUI.Frame.Window.*;
 
 public class METHODS {
 
+    public static void fillCastleArray(char castleCase){
+        int i = 0;
+        for (int j = 0; j < alreadyHappenedCastleCases.length; j++) {
+            i++;
+        }
+        if (i != 3){
+            i++;
+            alreadyHappenedCastleCases[i] = castleCase;
+        }
+    }
+
     public static void changeEvenOrOddStep(){
         if (evenOrOddStep == 0)
             evenOrOddStep = 1;

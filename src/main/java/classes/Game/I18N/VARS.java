@@ -234,6 +234,7 @@ public class VARS {
             put("whiteDown2And3Pawn", "8/8/8/P3P3/8/8/3ppp2/8 w ---- - 1 0");
             put("whiteDownOneRookTwoKing4x4", "K3/1R2/4/k3 b ---- - 1 1");
             put("whiteDownOneRookTwoKing3x3", "K1R/3/1k1 w ---- - 1 0");
+            put("whiteDownOneOnePawn", "2K5/p7/8/8/7k/8/1P6/8 w ---- - 1 0");
         }};
 
         //region PieceViews
@@ -285,6 +286,8 @@ public class VARS {
         public static int MAX_HEIGHT = 8;
 
         public static int MINIMAX_DEPTH = 2;
+
+        public static Character[] alreadyHappenedCastleCases = new Character[4];
 
         public static String starterFen = "whiteDownStarter";
 

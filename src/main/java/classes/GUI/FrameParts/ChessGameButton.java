@@ -309,7 +309,7 @@ public class ChessGameButton extends JButton {
             String setUpFen = "";
 
             if (isTest){
-                setUpFen = usualFens.get("onlyTwoBishops6x6");
+                setUpFen = usualFens.get("whiteDownOneOnePawn");
             }
 
             if (!isFirstOpen && "".equals(setUpFen)){

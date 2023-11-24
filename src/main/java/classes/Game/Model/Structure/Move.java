@@ -224,7 +224,7 @@ public class Move {
         }
     }
     
-    private void pieceChangeOnBoard() throws ChessGameException {
+    private void pieceChangeOnBoard() throws ChessGameException, InterruptedException {
 
         logStep(this);
 
@@ -242,7 +242,7 @@ public class Move {
 
     }
 
-    private void doAfterChangeEffects() throws ChessGameException, InterruptedException {
+    private void doAfterChangeEffects() throws ChessGameException {
 
         if (itIsCastle){
 
@@ -412,6 +412,13 @@ public class Move {
         }
     }
 
+    private static void pawnGotInCaseSetBack(Move origin){
+        String pawnGotInChange = origin.moveDocString.split("_").length > 8 ? origin.moveDocString.split("_")[8] : "";
+        if (!"".equals(pawnGotInChange)){
+            origin.what.getAttributes().setType(G);
+        }
+    }
+
     private static void updateRangesBackAndFront(Move move) throws ChessGameException, InterruptedException {
         whiteToPlay = !whiteToPlay;
         move.boardToMoveOn.rangeUpdater();
@@ -563,9 +570,17 @@ public class Move {
         documentationStringCreation(emPassantChance.charAt(0));
         if (!"-".equals(emPassantChance)) {
             documentationStringCreation(emPassantChance.charAt(1));
+        }else {
+            documentationStringCreation('-');
         }
     }
 
+    private void pawnGotInDocumenting(){
+        if (itIsPawnGotIn) {
+            documentationStringCreation('G');
+            documentationStringCreation(what.getType().toString().charAt(0));
+        }
+    }
 
     /**
      * @param appendThis if we append numbers (those will mean locations) it appends the first,
@@ -582,28 +597,15 @@ public class Move {
 
         moveDocString += appendThis;
 
-        if (
-                moveDocString.length() > 1 &&
-                ((
-                        pieceLetters.contains(moveDocString.charAt(moveDocString.length() - 1)) &&
-                        pieceLetters.contains(moveDocString.charAt(moveDocString.length() - 2))
-                ) ||
+        if (moveDocString.length() > 1 &&
                 (
-                        Character.isDigit(moveDocString.charAt(moveDocString.length() - 1)) &&
-                        Character.isDigit(moveDocString.charAt(moveDocString.length() - 2))
-                ) ||
-                (
-                        '-' == moveDocString.charAt(moveDocString.length() - 1) &&
-                        '-' == moveDocString.charAt(moveDocString.length() - 2)
-                ) ||
-                (
-                        pieceLetters.contains(moveDocString.charAt(moveDocString.length() - 1)) &&
-                        '-' == moveDocString.charAt(moveDocString.length() - 2)
-                ))
+                        (Character.isLetter(appendThis) && Character.isLetter(moveDocString.charAt(moveDocString.length() - 2)) ||
+                        (Character.isDigit(appendThis) && Character.isDigit(moveDocString.charAt(moveDocString.length() - 2))) ||
+                        ('-' == appendThis && '-' == moveDocString.charAt(moveDocString.length() - 2)))
+                )
         ){
             moveDocString += "_";
         }
-
     }
 
     private Location plusPieceFrom() {

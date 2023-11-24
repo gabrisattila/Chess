@@ -240,32 +240,6 @@ public class ViewField extends JButton implements classes.Game.Model.Structure.I
                     (!piece.isWhite() && !whiteToPlay);
         }
 
-        private PieceType pawnGotInCaseView(){
-            int result = JOptionPane.showOptionDialog(null, "Válassz melyik figurát szeretnéd.", "Lehetőségek.",
-                    JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null,
-                    pieceToChange.isWhite() ?
-                            WhitePieceChoiceInsteadOfPawnGotIn.toArray() :
-                            BlackPieceChoiceInsteadOfPawnGotIn.toArray(),
-                    null);
-            PieceType newType;
-            switch (result){
-                case 0 -> newType = H;
-                case 1 -> newType = F;
-                case 2 -> newType = B;
-                case 3 -> newType = V;
-                default -> throw new IllegalStateException("Unexpected value: " + result);
-            }
-            pieceToChange.getAttributes().setType(newType);
-
-            pieceToChange.setImage(
-                    pieceToChange.isWhite() ?
-                            WhitePieceChoiceInsteadOfPawnGotIn.get(result).getImage() :
-                            BlackPieceChoiceInsteadOfPawnGotIn.get(result).getImage()
-            );
-            return newType;
-        }
-
-
     }
 
     //endregion
