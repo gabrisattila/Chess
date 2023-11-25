@@ -124,8 +124,8 @@ public class AI extends Thread {
     private String moveWithMiniMaxAi() throws ChessGameException, InterruptedException {
         AiTree tree = new AiTree(BoardToFen(getAiBoard()));
 
-//        double best = newMiniMax(tree, MINIMAX_DEPTH, -350, 350);
-        double best = oldMiniMax(tree, MINIMAX_DEPTH, whiteToPlay, -350, 350);
+        double best = newMiniMax(tree, MINIMAX_DEPTH, -350, 350);
+//        double best = oldMiniMax(tree, 0, whiteToPlay, -350, 350);
 
         String bestChildsFen = "";
 

@@ -302,14 +302,13 @@ public class ChessButton extends JButton {
         }
 
         private void newGameInitialization(boolean oneAi, boolean whiteAi, boolean test) throws ChessGameException, InterruptedException {
-            getGameBoard().clear();
             theresOnlyOneAi = oneAi;
             whiteAiNeeded = whiteAi;
             isTest = test;
             String setUpFen = "";
 
             if (isTest){
-                setUpFen = testFens.get("blackDownWhitePawnsFrontEmPassant");
+                setUpFen = testFens.get("onlyKnights4x4");
 //                whiteAiNeeded = setUpFen.split(" ")[1].charAt(0) == 'w';
             }
 
@@ -325,7 +324,7 @@ public class ChessButton extends JButton {
 
             whiteDown = !theresOnlyOneAi || !whiteAiNeeded; //TODO Teszt átszervezésekor javítani
 
-            addGameBoard(getWindow());
+            getWindow().addGameBoard(getWindow());
             setUpSides(setUpFen);
             buttonsEnabled();
             initialization();

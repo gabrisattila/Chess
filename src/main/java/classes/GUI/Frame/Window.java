@@ -27,7 +27,7 @@ public class Window extends JFrame {
     private static Window window;
 
     @Getter
-    private static GameBoard gameBoard;
+    private GameBoard gameBoard;
 
     @Getter
     private static Logger logger;
@@ -81,10 +81,10 @@ public class Window extends JFrame {
         getViewBoard().pieceSetUp(setUpFen);
     }
 
-    public static void addGameBoard(Window window) throws ChessGameException {
-        deleteViewBoard();
-        if (notNull(gameBoard))
-            window.remove(gameBoard);
+    public void addGameBoard(Window window) throws ChessGameException {
+//        getViewBoard().cleanBoard();
+//        if (notNull(gameBoard))
+//            window.remove(gameBoard);
         gameBoard = new GameBoard();
         window.add(gameBoard);
     }
@@ -98,7 +98,7 @@ public class Window extends JFrame {
         addButtons();
         buttonsEnabled();
 
-        canBeLogger = false;
+//        canBeLogger = false;
         if (canBeLogger) {
             addLogger();
         }

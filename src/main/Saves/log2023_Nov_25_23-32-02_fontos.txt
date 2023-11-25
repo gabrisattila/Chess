@@ -1,0 +1,28 @@
+1. Gg3	
+ - Ge5	
+2. Gf3	
+ - Fd6	
+3. Gf4	
+ - Fa3	
+4. Gc3	
+ - Hh6	
+5. Hxa3	
+ - Gg6	
+6. Hb5	
+ - Bg8	
+7. Gb3	
+ - Ga5	
+8. Bb1	
+ - Gb6	
+9. Gh4	
+ - Bg7	
+10. Kf2	
+ - Gd6	
+11. Ke3	
+ - Gg5	
+12. Ga3	
+ - Hd7	
+13. Kf2	
+ - Ke7	
+14. Ha7	
+ - Hg4	

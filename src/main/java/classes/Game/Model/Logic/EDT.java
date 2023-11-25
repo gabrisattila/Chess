@@ -86,21 +86,21 @@ public class EDT {
         if (WHITE_STRING.equals(color)){
             aiW = new AI(color);
             SwingUtilities.invokeLater(() -> {
-                try {
-                    sleep(1000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
+//                try {
+//                    sleep(1000);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
                 aiW.start();
             });
         }else {
             aiB = new AI(color);
             SwingUtilities.invokeLater(() -> {
-                try {
-                    sleep(1000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
+//                try {
+//                    sleep(1000);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
                 aiB.start();
             });
         }

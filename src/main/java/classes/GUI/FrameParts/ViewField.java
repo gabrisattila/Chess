@@ -112,7 +112,6 @@ public class ViewField extends JButton implements classes.Game.Model.Structure.I
     @Override
     public void clean() {
         setPiece((ViewPiece) null);
-        setIcon(new ImageIcon("src/main/resources/Figura_images/Ures.png"));
     }
 
     @Override

@@ -3,11 +3,14 @@ package classes.GUI.FrameParts;
 import classes.Game.I18N.ChessGameException;
 import classes.Game.I18N.Location;
 import classes.Game.Model.Structure.IField;
+import classes.Game.Model.Structure.IPiece;
 import lombok.*;
 
 import javax.swing.*;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -41,7 +44,6 @@ public class GameBoard extends JLayeredPane {
     //region Constructor
 
     public GameBoard() throws ChessGameException {
-        deleteViewBoard();
         parentBoard = getViewBoard();
         gameBoardSetUp();
     }
@@ -59,13 +61,45 @@ public class GameBoard extends JLayeredPane {
         }
     }
 
+    private void clearLeftIcons() throws ChessGameException {
+
+        for (var v : getViewBoard().getFields()) {
+            for (IField f : v) {
+
+                Timer timer = new Timer(1000, new ActionListener() {
+                    private boolean isHovered = false;
+
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        // Az egér belépését szimuláljuk
+                        if (!isHovered) {
+                            ((JButton) f).getModel().setRollover(true);
+                            isHovered = true;
+                        } else {
+                            // Az egér kijutását szimuláljuk
+                            ((JButton) f).getModel().setRollover(false);
+                            isHovered = false;
+                        }
+
+                        // A JButton újrarajzolása a változások érvényesítése érdekében
+                        ((JButton) f).repaint();
+                    }
+                });
+                // A Timer indítása
+                timer.start();
+            }
+        }
+    }
+
     private void gameBoardSetUp() throws ChessGameException {
 
         setBoardCoordinates();
 
         rotateBoard();
         addFieldsAtTheirFinalForm();
+        clearLeftIcons();
 //        fieldNumPrinter(getViewBoard());
+
 
         addCorners();
         addLabels();
