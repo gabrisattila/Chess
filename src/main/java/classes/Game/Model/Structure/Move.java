@@ -258,6 +258,8 @@ public class Move {
 
         moveDocumenting();
         changeEvenOrOddStep();
+        if (!itIsEmPassantAuthorization)
+            emPassantChance = "-";
     }
 
     /**

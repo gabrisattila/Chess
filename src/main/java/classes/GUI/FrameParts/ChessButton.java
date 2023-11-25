@@ -196,7 +196,7 @@ public class ChessButton extends JButton {
         }
 
         private void newGameTestClicked() throws ChessGameException, InterruptedException {
-            newGameInitialization(true, false, true);
+            newGameInitialization(true, true, true);
         }
 
         private void pauseClicked() {
@@ -309,7 +309,7 @@ public class ChessButton extends JButton {
             String setUpFen = "";
 
             if (isTest){
-                setUpFen = testFens.get("whiteDown2And2Pawn");
+                setUpFen = testFens.get("blackDownWhitePawnsFrontEmPassant");
 //                whiteAiNeeded = setUpFen.split(" ")[1].charAt(0) == 'w';
             }
 

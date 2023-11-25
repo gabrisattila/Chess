@@ -78,9 +78,7 @@ public class Window extends JFrame {
     }
 
     public static void setUpSides(String setUpFen) throws ChessGameException {
-
         getViewBoard().pieceSetUp(setUpFen);
-
     }
 
     public static void addGameBoard(Window window) throws ChessGameException {

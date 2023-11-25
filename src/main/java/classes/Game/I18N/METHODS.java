@@ -62,6 +62,10 @@ public class METHODS {
             Collections.sort(current);
             char thePiece = '0';
             for (int i = 0; i < prev.size(); i++) {
+                if (i == prev.size() - 1){
+                    thePiece = prev.get(i);
+                    break;
+                }
                 if (prev.get(i) != current.get(i)){
                     thePiece = prev.get(i);
                     break;
