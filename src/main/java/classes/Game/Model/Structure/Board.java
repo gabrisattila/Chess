@@ -266,7 +266,7 @@ public class Board implements IBoard {
 
     private void constrainBoundPiecesRanges(Set<IPiece> piecesInBinding) throws ChessGameException {
         for (IPiece p : piecesInBinding) {
-            ((Piece) p).setPossibleRange(boundPieceOrKingRangeCalc(p, ((Piece) p).getBounderPiece()));
+            ((Piece) p).setPossibleRange(boundPieceOrKingRangeCalc(p, ((Piece) p).getBounderPiece(), null));
         }
     }
 
@@ -345,7 +345,7 @@ public class Board implements IBoard {
         return addIAddJ;
     }
 
-    public Set<Location> boundPieceOrKingRangeCalc(IPiece boundOrKing, IPiece bounderOrChecker) throws ChessGameException{
+    public Set<Location> boundPieceOrKingRangeCalc(IPiece boundOrKing, IPiece bounderOrChecker, IPiece secondChecker) throws ChessGameException {
         Location originLocOfBound = boundOrKing.getLocation();
         Set<Location> originRangeOfBound = boundOrKing.getPossibleRange();
 
@@ -354,16 +354,24 @@ public class Board implements IBoard {
         field.setPiece(boundOrKing);
         originFieldOfBound.clean();
         bounderOrChecker.updateRange();
+        if (notNull(secondChecker))
+            secondChecker.updateRange();
 
-        Set<Location> newRangeOfBound = (Set<Location>) intersection(originRangeOfBound, bounderOrChecker.getPossibleRange());
+        Set<Location> newRangeOfCheckersOrBounder = (Set<Location>)(
+            notNull(secondChecker) ? union(bounderOrChecker.getPossibleRange(), secondChecker.getPossibleRange()) : bounderOrChecker.getPossibleRange()
+        );
+        Set<Location> newRangeOfBound = (Set<Location>) intersection(originRangeOfBound, newRangeOfCheckersOrBounder);
         newRangeOfBound = (Set<Location>) minus(newRangeOfBound, originLocOfBound);
 
         originFieldOfBound.setPiece(boundOrKing);
         field.clean();
         bounderOrChecker.updateRange();
+        if (notNull(secondChecker))
+            secondChecker.updateRange();
 
         return newRangeOfBound;
     }
+
 
 
     private void kingsRanges() throws ChessGameException {
@@ -387,7 +395,7 @@ public class Board implements IBoard {
             findCheckers(enemy);
 
             if (notNull(checkers.getFirst()))
-                findLegalMovesInCheckCases(enemy);
+                constrainPossibilitiesInsteadOfCheck(enemy);
 
         }
     }
@@ -406,70 +414,49 @@ public class Board implements IBoard {
         }
     }
 
-    private void findLegalMovesInCheckCases(boolean enemy) throws ChessGameException, InterruptedException {
-        Move supposedMove = new Move(this, false);
+    private void constrainPossibilitiesInsteadOfCheck(boolean enemy) throws ChessGameException, InterruptedException {
 
-        if (notNull(checkers.getSecond())){
-            kingStepOutFromCheck(supposedMove, enemy);
-        }else {
-            kingStepOutFromCheck(supposedMove, enemy);
-
-            blockCheckOrHitChecker(supposedMove, enemy);
+        kingStepOutFromCheck(enemy);
+        if (isNull(checkers.getSecond())) {
+            blockCheckOrHitChecker(enemy);
         }
     }
 
-    private void kingStepOutFromCheck(Move supposedMove, boolean enemy) throws ChessGameException, InterruptedException {
-        constrainInsteadOfCheck(matrixChooser.get(K), supposedMove, getKing(!enemy), enemy);
-    }
-
-    private void blockCheckOrHitChecker(Move supposed, boolean enemy) throws ChessGameException, InterruptedException {
-
-        Set<Location> wholePileOfChecker = checkers.getFirst().getPossibleRange();
-        wholePileOfChecker.add(checkers.getFirst().getLocation());
-
-        Set<Location> neededIntersection;
-
-        for (IPiece p : minus(myPieces(), getMyKing())) {
-
-            neededIntersection = (Set<Location>) intersection(p.getPossibleRange(), wholePileOfChecker);
-
-            if (!neededIntersection.isEmpty()) {
-                constrainInsteadOfCheck(neededIntersection, supposed, p, enemy);
-            }else {
-                ((Piece) p).setPossibleRange(new HashSet<>());
+    private void kingStepOutFromCheck(boolean enemy) throws ChessGameException {
+        getKing(!enemy).setPossibleRange(
+                boundPieceOrKingRangeCalc(getKing(!enemy), checkers.getFirst(), checkers.getSecond())
+        );
+        if (locationCollectionContains(getKing(!enemy).getPossibleRange(), checkers.getFirst().getLocation())){
+            if (((Piece) checkers.getFirst()).isInDefend()){
+                getKing(!enemy).getPossibleRange().remove(checkers.getFirst().getLocation());
             }
         }
-        
+        if (notNull(checkers.getSecond()) &&
+                locationCollectionContains(getKing(!enemy).getPossibleRange(), checkers.getSecond().getLocation())){
+            if (((Piece) checkers.getSecond()).isInDefend()){
+                getKing(!enemy).getPossibleRange().remove(checkers.getSecond().getLocation());
+            }
+        }
     }
 
-    private void constrainInsteadOfCheck(Set<Location> setThatWeCollectFrom,
-                                         Move supposed, IPiece p, boolean enemy) throws ChessGameException, InterruptedException {
-
-
-
-
-
-        Set<Location> setToCollectRightPlacesToGo = new HashSet<>();
-        for (Location l : setThatWeCollectFrom) {
-            l = p.getLocation().add(l);
-            if (
-                    containsLocation(l) && enemyKingNotInNeighbour(l, !enemy) &&
-                    ((isNull(getPiece(l)) || (notNull(getPiece(l)) && getPiece(l).isWhite() == enemy))) &&
-                    supposedMoveWith(supposed, p, l, enemy)
-            ){
-                if (p.getType() == K){
-                    if (enemyKingNotInNeighbour(l, !enemy)){
-                        setToCollectRightPlacesToGo.add(l);
-                    }
-                }else {
-                    setToCollectRightPlacesToGo.add(l);
+    private void blockCheckOrHitChecker(boolean enemy) {
+        ArrayList<Location> lineToTheKingFromChecker = lineFromAPieceToAnother(checkers.getFirst(), getKing(!enemy));
+        ArrayList<Location> newRangeForPiece;
+        for (IPiece p : getPieces(!enemy)) {
+            newRangeForPiece = new ArrayList<>();
+            if (p.getType() != K && !((Piece) p).isInBinding()){
+                if (p.getPossibleRange().contains(checkers.getFirst().getLocation())){
+                    newRangeForPiece.add(checkers.getFirst().getLocation());
+                }
+                if (checkers.getFirst().getType() != H && checkers.getFirst().getType() != G){
+                    newRangeForPiece.addAll(intersection(p.getPossibleRange(), lineToTheKingFromChecker));
                 }
             }
+            p.getPossibleRange().clear();
+            p.getPossibleRange().addAll(newRangeForPiece);
         }
-        if (p.getPossibleRange() != setToCollectRightPlacesToGo)
-            ((Piece) p).setPossibleRange(setToCollectRightPlacesToGo);
-
     }
+
 
     /**
      * @param supposed theMoveObjectThatWeUse
