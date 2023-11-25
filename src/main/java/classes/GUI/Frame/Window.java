@@ -1,6 +1,6 @@
 package classes.GUI.Frame;
 
-import classes.GUI.FrameParts.ChessGameButton;
+import classes.GUI.FrameParts.ChessButton;
 import classes.GUI.FrameParts.GameBoard;
 import classes.GUI.FrameParts.Logger;
 import classes.GUI.FrameParts.ViewField;
@@ -33,7 +33,7 @@ public class Window extends JFrame {
     private static Logger logger;
 
     @Getter
-    private static ArrayList<ChessGameButton> buttons = buttons();
+    private static ArrayList<ChessButton> buttons = buttons();
 
     private static Pair<ArrayList<ViewField>, ArrayList<ViewField>> takenPiecePlaces = new Pair<>(new ArrayList<>(16), new ArrayList<>(16));
 
@@ -100,6 +100,7 @@ public class Window extends JFrame {
         addButtons();
         buttonsEnabled();
 
+        canBeLogger = false;
         if (canBeLogger) {
             addLogger();
         }
@@ -112,16 +113,16 @@ public class Window extends JFrame {
     }
 
     public static void buttonsEnabled(){
-        for (ChessGameButton b : buttons) {
+        for (ChessButton b : buttons) {
             if (!"Új játék".equals(b.getText()) && !"Betöltés".equals(b.getText()))
                 b.setEnabled(!isFirstOpen);
         }
     }
 
-    public static ArrayList<ChessGameButton> buttons(){
-        ArrayList<ChessGameButton> buttons = new ArrayList<>(6);
+    public static ArrayList<ChessButton> buttons(){
+        ArrayList<ChessButton> buttons = new ArrayList<>(6);
         for (int i = 0; i < 6; i++) {
-            buttons.add(new ChessGameButton());
+            buttons.add(new ChessButton());
         }
 
         double buttonHeight;

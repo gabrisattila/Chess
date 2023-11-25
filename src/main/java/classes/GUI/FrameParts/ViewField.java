@@ -4,7 +4,6 @@ import classes.Game.I18N.ChessGameException;
 import classes.Game.I18N.Location;
 import classes.Game.I18N.PieceAttributes;
 
-import classes.Game.I18N.PieceType;
 import classes.Game.Model.Structure.IPiece;
 import classes.Game.Model.Structure.Move;
 import lombok.*;
@@ -14,7 +13,6 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 import static classes.GUI.FrameParts.ViewBoard.*;
-import static classes.Game.I18N.PieceType.*;
 import static classes.Game.Model.Logic.EDT.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
@@ -195,7 +193,7 @@ public class ViewField extends JButton implements classes.Game.Model.Structure.I
             if (clicked.isGotPiece())
                 hit = clicked.getPiece();
 
-            Move move = new Move(pieceToChange, clicked.getLoc(), getViewBoard(), false);
+            Move move = new Move(pieceToChange, clicked.getLoc(), getViewBoard());
             move.setMustLogged(true);
             Step(move);
 

@@ -235,6 +235,10 @@ public class VARS {
             put("whiteDownOneRookTwoKing4x4", "K3/1R2/4/k3 b ---- - 1 1");
             put("whiteDownOneRookTwoKing3x3", "K1R/3/1k1 w ---- - 1 0");
             put("whiteDownOneOnePawn", "2K5/p7/8/8/7k/8/1P6/8 w ---- - 1 0");
+            put("whiteDownOnePawnInTheEdgeOfPawnGotIn", "2K5/8/8/8/7k/8/1P6/8 w ---- - 1 0");
+            put("whiteDownBindingTestWithQueen", "qQK5/8/8/8/7k/8/1P6/8 w ---- - 1 0");
+            put("whiteDownBindingTestWithKnight", "qNK5/8/8/8/7k/8/8/8 w ---- - 1 0");
+            put("whiteDownCheckTestCheckWithQueenPiecesAroundEnemyKing", "K7/Q5rr/7k/6nn/8/8/8/8 w ---- - 1 0");
         }};
 
         //region PieceViews

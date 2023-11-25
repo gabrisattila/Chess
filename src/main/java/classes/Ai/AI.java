@@ -106,7 +106,7 @@ public class AI extends Thread {
             int indexOfChosen = random.nextInt(0, ableToStepThereIn.size());
             Location toStepOn = ableToStepThereIn.get(indexOfChosen);
 
-            Move move = new Move(stepper, toStepOn, getAiBoard(), false);
+            Move move = new Move(stepper, toStepOn, getAiBoard());
             move.setMustLogged(true);
             Step(move);
 

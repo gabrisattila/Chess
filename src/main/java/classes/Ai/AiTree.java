@@ -86,7 +86,7 @@ public class AiTree {
             for (Move m : legalMoves.get(p)) {
                 Step(m);
                 possibilities.add(BoardToFen(getAiBoard()));
-                StepBack(m);
+                FenToBoard(fen, getAiBoard());
             }
         }
     }

@@ -13,7 +13,6 @@ import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Game.Model.Structure.GameOver.*;
-import static classes.Game.Model.Structure.Move.*;
 
 
 /**
@@ -181,7 +180,6 @@ public class Board implements IBoard {
         blackPieceSet.clean();
     }
 
-
     @Override
     public void rangeUpdater() throws ChessGameException, InterruptedException {
 
@@ -311,7 +309,7 @@ public class Board implements IBoard {
     private boolean tisztAttackRangeContainsOneOfMyPiece(IPiece enemyTiszt){
         return enemyTiszt.getPossibleRange().stream().anyMatch(l -> {
             try {
-                return notNull(getPiece(l)) && getPiece(l).isWhite() != enemyTiszt.isWhite();
+                return notNull(getPiece(l)) && getPiece(l).isWhite() != enemyTiszt.isWhite() && getPiece(l).getType() != K;
             } catch (ChessGameException e) {
                 throw new RuntimeException(e);
             }
@@ -319,26 +317,26 @@ public class Board implements IBoard {
     }
 
     private ArrayList<Location> lineFromAPieceToAnother(IPiece fromPiece, IPiece toPiece) {
-        ArrayList<Location> lineToMyKing = new ArrayList<>();
+        ArrayList<Location> lineToPiece = new ArrayList<>();
         Pair<Integer, Integer> addIAddJ = addToIAddToJ(fromPiece, toPiece);
-        Location line = toPiece.getLocation().add(new Location(addIAddJ.getFirst(), addIAddJ.getFirst()));
-        while (!fromPiece.getLocation().EQUALS(line)){
-            lineToMyKing.add(line);
+        Location line = fromPiece.getLocation().add(new Location(addIAddJ.getFirst(), addIAddJ.getSecond()));
+        while (containsLocation(line) && !toPiece.getLocation().EQUALS(line)){
+            lineToPiece.add(line);
             line = line.add(new Location(addIAddJ.getFirst(), addIAddJ.getSecond()));
         }
-        return lineToMyKing;
+        return lineToPiece;
     }
     
-    private Pair<Integer, Integer> addToIAddToJ(IPiece king, IPiece other){
+    private Pair<Integer, Integer> addToIAddToJ(IPiece fromPiece, IPiece toPiece){
         Pair<Integer, Integer> addIAddJ = new Pair<>();
         int addToI = 0, addToJ = 0;
-        if (other.getI() == king.getI()){
-            addToJ = king.getJ() - other.getJ() > 0 ? 1 : -1;
-        } else if (other.getJ() == king.getJ()){
-            addToI = king.getI() - other.getI() > 0 ? 1 : -1;
-        } else if (Math.abs(king.getI() - other.getI()) == Math.abs(king.getJ() - other.getJ())) {
-            addToI = king.getI() - other.getI() > 0 ? 1 : -1;
-            addToJ = king.getJ() - other.getJ() > 0 ? 1 : -1;
+        if (toPiece.getI() == fromPiece.getI()){
+            addToJ = fromPiece.getJ() - toPiece.getJ() > 0 ? -1 : 1;
+        } else if (toPiece.getJ() == fromPiece.getJ()){
+            addToI = fromPiece.getI() - toPiece.getI() > 0 ? -1 : 1;
+        } else if (Math.abs(fromPiece.getI() - toPiece.getI()) == Math.abs(fromPiece.getJ() - toPiece.getJ())) {
+            addToI = fromPiece.getI() - toPiece.getI() > 0 ? -1 : 1;
+            addToJ = fromPiece.getJ() - toPiece.getJ() > 0 ? -1 : 1;
         }
         addIAddJ.setFirst(addToI);
         addIAddJ.setSecond(addToJ);
@@ -347,7 +345,21 @@ public class Board implements IBoard {
 
     public Set<Location> boundPieceOrKingRangeCalc(IPiece boundOrKing, IPiece bounderOrChecker, IPiece secondChecker) throws ChessGameException {
         Location originLocOfBound = boundOrKing.getLocation();
+        if (boundOrKing.getType() == K){
+            for (Location l : matrixChooser.get(K)) {
+                l = getKingsPlace(boundOrKing.isWhite()).add(l);
+                if (containsLocation(l))
+                    boundOrKing.getPossibleRange().add(l);
+            }
+        }
         Set<Location> originRangeOfBound = boundOrKing.getPossibleRange();
+        boundOrKing.getPossibleRange().removeIf(l -> {
+            try {
+                return notNull(getPiece(l)) && getPiece(l).isWhite() == boundOrKing.isWhite();
+            } catch (ChessGameException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         IField originFieldOfBound = getField(boundOrKing);
         IField field = new Field(-1, -1);
@@ -360,8 +372,20 @@ public class Board implements IBoard {
         Set<Location> newRangeOfCheckersOrBounder = (Set<Location>)(
             notNull(secondChecker) ? union(bounderOrChecker.getPossibleRange(), secondChecker.getPossibleRange()) : bounderOrChecker.getPossibleRange()
         );
-        Set<Location> newRangeOfBound = (Set<Location>) intersection(originRangeOfBound, newRangeOfCheckersOrBounder);
+
+        if (isNull(secondChecker) && boundOrKing.getType() != K){
+            newRangeOfCheckersOrBounder.clear();
+            newRangeOfCheckersOrBounder.addAll(lineFromAPieceToAnother(bounderOrChecker, getKing(!bounderOrChecker.isWhite())));
+        }
+
+        Set<Location> newRangeOfBound = (Set<Location>)
+                (boundOrKing.getType() == K ?
+                        minus(originRangeOfBound, newRangeOfCheckersOrBounder) :
+                        intersection(originRangeOfBound, newRangeOfCheckersOrBounder));
         newRangeOfBound = (Set<Location>) minus(newRangeOfBound, originLocOfBound);
+        if (boundOrKing.getType() != K && locationCollectionContains(originRangeOfBound, bounderOrChecker.getLocation())){
+            newRangeOfBound.add(bounderOrChecker.getLocation());
+        }
 
         originFieldOfBound.setPiece(boundOrKing);
         field.clean();
@@ -371,7 +395,6 @@ public class Board implements IBoard {
 
         return newRangeOfBound;
     }
-
 
 
     private void kingsRanges() throws ChessGameException {
@@ -439,39 +462,24 @@ public class Board implements IBoard {
         }
     }
 
-    private void blockCheckOrHitChecker(boolean enemy) {
+    private void blockCheckOrHitChecker(boolean enemy)  {
         ArrayList<Location> lineToTheKingFromChecker = lineFromAPieceToAnother(checkers.getFirst(), getKing(!enemy));
         ArrayList<Location> newRangeForPiece;
         for (IPiece p : getPieces(!enemy)) {
-            newRangeForPiece = new ArrayList<>();
-            if (p.getType() != K && !((Piece) p).isInBinding()){
-                if (p.getPossibleRange().contains(checkers.getFirst().getLocation())){
-                    newRangeForPiece.add(checkers.getFirst().getLocation());
+            if (p.getType() != K){
+                newRangeForPiece = new ArrayList<>();
+                if (!((Piece) p).isInBinding()) {
+                    if (locationCollectionContains(p.getPossibleRange(), checkers.getFirst().getLocation())) {
+                        newRangeForPiece.add(checkers.getFirst().getLocation());
+                    }
+                    if (checkers.getFirst().getType() != H && checkers.getFirst().getType() != G) {
+                        newRangeForPiece.addAll(intersection(p.getPossibleRange(), lineToTheKingFromChecker));
+                    }
                 }
-                if (checkers.getFirst().getType() != H && checkers.getFirst().getType() != G){
-                    newRangeForPiece.addAll(intersection(p.getPossibleRange(), lineToTheKingFromChecker));
-                }
+                p.getPossibleRange().clear();
+                p.getPossibleRange().addAll(newRangeForPiece);
             }
-            p.getPossibleRange().clear();
-            p.getPossibleRange().addAll(newRangeForPiece);
         }
-    }
-
-
-    /**
-     * @param supposed theMoveObjectThatWeUse
-     * @param piece theMovesWhatParam
-     * @param to theMovesToParam
-     * @param enemy theColorOfEnemy
-     * @return Decides about a place that if my piece moves there the check still remain or not
-     */
-    private boolean supposedMoveWith(Move supposed, IPiece piece, Location to, boolean enemy) throws ChessGameException, InterruptedException {
-        supposed.parameterize(piece, to, false);
-        Step(supposed);
-        supposed.getBoardToMoveOn().rangeUpdater();
-        boolean placeIsGood = !locationCollectionContains(getAttackRangeWithoutKing(enemy), getKingsPlace(!enemy));
-        StepBack(supposed);
-        return placeIsGood;
     }
 
     private Set<IPiece> getTisztek(boolean my) {
@@ -595,8 +603,7 @@ public class Board implements IBoard {
                 ((Piece) p).setLegals(new Move(
                         p,
                         to,
-                        ((Piece) p).getBoard(),
-                        false
+                        ((Piece) p).getBoard()
                 ));
             }
         }

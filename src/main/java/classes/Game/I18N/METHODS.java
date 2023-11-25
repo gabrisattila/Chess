@@ -43,7 +43,7 @@ public class METHODS {
         playerTurn = !playerTurn;
     }
 
-    public static void putTakenPieceToItsPlace(String fenOfCurrentState, String fenOfPreviousState) throws ChessGameException {
+    public static void putTakenPieceToItsPlace(String fenOfCurrentState, String fenOfPreviousState) {
 
         ArrayList<Character> prev = (ArrayList<Character>) fenOfPreviousState
                 .chars()
@@ -115,7 +115,11 @@ public class METHODS {
         Collection<T> list = new HashSet<>();
 
         for (T t : c1) {
-            if(c2.contains(t)) {
+            if (c1.toArray()[0] instanceof Location){
+                if (c2.stream().anyMatch(l -> ((Location) l).EQUALS((Location) t))){
+                    list.add(t);
+                }
+            }else if(c2.contains(t)) {
                 list.add(t);
             }
         }
@@ -141,6 +145,9 @@ public class METHODS {
     }
 
     public static <T> boolean collectionNotContains(Collection<T> collection, T element){
+        if (element instanceof Location){
+            return collection.stream().noneMatch(l -> ((Location) l).EQUALS((Location) element));
+        }
         return !collection.contains(element);
     }
 

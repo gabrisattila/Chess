@@ -1,5 +1,6 @@
 package classes.Game.Model.Structure;
 
+import classes.GUI.FrameParts.ViewBoard;
 import classes.GUI.FrameParts.ViewPiece;
 import classes.Game.I18N.*;
 import lombok.*;
@@ -11,13 +12,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static classes.Ai.FenConverter.*;
+import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.Location.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
-import static classes.GUI.FrameParts.Logger.*;
 import static classes.GUI.Frame.Window.*;
+import static classes.Game.Model.Structure.Board.*;
 
 @Getter
 @Setter
@@ -32,8 +34,6 @@ public class Move {
     private Location to;
 
     private IBoard boardToMoveOn;
-
-    private boolean backMove;
 
     private boolean mustLogged;
 
@@ -71,52 +71,51 @@ public class Move {
 
     //region Constructor
 
-    public Move(boolean backMove){
-        parameterizeToDefault(backMove);
+    public Move(){
+        parameterizeToDefault();
     }
 
-    public Move(IPiece what, Location to, boolean backMove){
+    public Move(IPiece what, Location to){
         this.what = what;
         from = what.getLocation();
         this.to = to;
-        parameterizeToDefault(backMove);
+        parameterizeToDefault();
     }
 
-    public Move(IBoard boardToMoveOn, boolean backMove){
+    public Move(IBoard boardToMoveOn){
         this.boardToMoveOn = boardToMoveOn;
-        parameterizeToDefault(backMove);
+        parameterizeToDefault();
     }
 
-    public Move(IPiece what, Location to, IBoard boardToMoveOn, boolean backMove){
-        this.what = what;
-        from = what.getLocation();
-        this.to = to;
-        this.boardToMoveOn = boardToMoveOn;
-        parameterizeToDefault(backMove);
-    }
-
-    public void parameterize(IBoard boardToMoveOn, boolean backMove){
-        this.boardToMoveOn = boardToMoveOn;
-        parameterizeToDefault(backMove);
-    }
-
-    public void parameterize(IPiece what, Location to, boolean backMove){
-        this.what = what;
-        from = what.getLocation();
-        this.to = to;
-        parameterizeToDefault(backMove);
-    }
-
-    public void parameterize(IPiece what, Location to, IBoard boardToMoveOn, boolean backMove){
+    public Move(IPiece what, Location to, IBoard boardToMoveOn){
         this.what = what;
         from = what.getLocation();
         this.to = to;
         this.boardToMoveOn = boardToMoveOn;
-        parameterizeToDefault(backMove);
+        parameterizeToDefault();
     }
 
-    private void parameterizeToDefault(boolean backMove){
-        this.backMove = backMove;
+    public void parameterize(IBoard boardToMoveOn){
+        this.boardToMoveOn = boardToMoveOn;
+        parameterizeToDefault();
+    }
+
+    public void parameterize(IPiece what, Location to){
+        this.what = what;
+        from = what.getLocation();
+        this.to = to;
+        parameterizeToDefault();
+    }
+
+    public void parameterize(IPiece what, Location to, IBoard boardToMoveOn){
+        this.what = what;
+        from = what.getLocation();
+        this.to = to;
+        this.boardToMoveOn = boardToMoveOn;
+        parameterizeToDefault();
+    }
+
+    private void parameterizeToDefault(){
         itIsCastle = false;
         itIsEmPassant = false;
         itIsEmPassantAuthorization = false;
@@ -130,22 +129,16 @@ public class Move {
     //region Methods
 
     public static void Step(Move move) throws ChessGameException, InterruptedException {
-        
+
         move.moveCaseExploreAndSet();
         move.collectPlusPiece();
-        move.doAfterChangeEffects();
         move.pieceChangeOnBoard();
+        move.doAfterChangeEffects();
 
-    }
-
-    public static void StepBack(Move move) throws ChessGameException, InterruptedException {
-        deCryptAndStepBackMove(move);
-        changeEvenOrOddStep();
-        logStepBack(move);
     }
 
     private static void logStep(Move move) throws ChessGameException {
-        if (move.mustLogged){
+        if (canBeLogger && move.mustLogged){
             String step = "";
 
             if (whiteToPlay){
@@ -176,20 +169,7 @@ public class Move {
         }
     }
 
-    private static void logStepBack(Move move) {
-        int lineCount = getLogger().getLineCount();
-        if (move.mustLogged){
-            try {
-                int startOffset = getLogger().getLineStartOffset(lineCount - 1);
-                int endOffset = getLogger().getLineEndOffset(lineCount - 1);
-                getLogger().replaceRange("", startOffset, endOffset);
-            } catch (BadLocationException ex) {
-                ex.printStackTrace();
-            }
-        }
-    }
-
-    private void moveCaseExploreAndSet(){
+    private void moveCaseExploreAndSet() throws ChessGameException, InterruptedException {
         String moveCase = detectSpecialCase();
         switch (moveCase) {
             case "castle" -> setItIsCastle(true);
@@ -224,7 +204,7 @@ public class Move {
         }
     }
     
-    private void pieceChangeOnBoard() throws ChessGameException, InterruptedException {
+    private void pieceChangeOnBoard() throws ChessGameException {
 
         logStep(this);
 
@@ -279,158 +259,12 @@ public class Move {
         changeEvenOrOddStep();
     }
 
-    private static void deCryptAndStepBackMove(Move move) throws ChessGameException, InterruptedException {
-        List<Object> backMoveParams = deCryptMoveDocStringToList(move);
-        StepBackMove(backMoveParams);
-        castleCasesSetBack(move);
-        emPassantChanceSetBack(move);
-        updateRangesBackAndFront(move);
-    }
-
-    private static List<Object> deCryptMoveDocStringToList(Move origin) {
-        Move back = new Move(true);
-        back.parameterize(origin.boardToMoveOn, true);
-
-        String[] originParams = origin.getMoveDocString().split("_");
-
-        boolean backWhatWhite = 'W' == originParams[0].charAt(0);
-        PieceType backWhatType = charToPieceType(originParams[0].charAt(1));
-        Location backWhatTo = new Location( // The from of the origin
-                Character.getNumericValue(originParams[1].charAt(0)),
-                Character.getNumericValue(originParams[1].charAt(1))
-        );
-        Location backWhatFrom = new Location(
-                Character.getNumericValue(originParams[2].charAt(0)),
-                Character.getNumericValue(originParams[2].charAt(1))
-        );
-        boolean backPlusWhite = false;
-        PieceType backPlusType = null;
-        Location backPlusTo = null;
-        Location backPlusFrom = null;
-        if ('-' != originParams[3].charAt(0)){
-            backPlusWhite = 'W' == originParams[3].charAt(0);
-            backPlusType = charToPieceType(originParams[3].charAt(1));
-            backPlusTo = new Location( // The from of the origin
-                    Character.getNumericValue(originParams[4].charAt(0)),
-                    Character.getNumericValue(originParams[4].charAt(1))
-            );
-            if ('-' != originParams[5].charAt(0)) {
-                backPlusFrom = new Location(
-                        Character.getNumericValue(originParams[5].charAt(0)),
-                        Character.getNumericValue(originParams[5].charAt(1))
-                );
-            }
-        }else {
-            back.plusPiece = null;
-        }
-
-        List<Object> backMoveParams = new ArrayList<>();
-        backMoveParams.add(back);
-        backMoveParams.add(backWhatWhite);
-        backMoveParams.add(backWhatType);
-        backMoveParams.add(backWhatTo);
-        backMoveParams.add(backWhatFrom);
-        backMoveParams.add(backPlusWhite);
-        backMoveParams.add(backPlusType);
-        backMoveParams.add(backPlusTo);
-        backMoveParams.add(backPlusFrom);
-
-        return backMoveParams;
-    }
-
-    private static void StepBackMove(List<Object> backMoveParams) throws ChessGameException {
-
-        Move back = (Move) backMoveParams.get(0);
-        boolean backWhatWhite = (Boolean) backMoveParams.get(1);
-        PieceType backWhatType = (PieceType) backMoveParams.get(2);
-        Location backWhatTo = (Location) backMoveParams.get(3);
-        Location backWhatFrom = (Location) backMoveParams.get(4);
-        boolean backPlusWhite = (Boolean) backMoveParams.get(5);
-        PieceType backPlusType = (PieceType) backMoveParams.get(6);
-        Location backPlusTo = (Location) backMoveParams.get(7);
-        Location backPlusFrom = (Location) backMoveParams.get(8);
-
-        IBoard backBoard = back.boardToMoveOn;
-        PieceAttributes backWhatAttrs = new PieceAttributes(backWhatType, backWhatWhite ? "WHITE" : "BLACK");
-        IPiece backWhat = backBoard instanceof Board ?
-                new Piece(backWhatAttrs) :
-                new ViewPiece(createSourceStringFromGotAttributes(backWhatAttrs), backWhatAttrs);
-        IField backFromField = backBoard.getField(backWhatFrom);
-        IField backToField = backBoard.getField(backWhatTo);
-
-        backToField.setPiece(backWhat);
-        backFromField.clean();
-
-        if (notNull(backPlusType)){
-            PieceAttributes backPlusAttrs = new PieceAttributes(backPlusType, backPlusWhite ? "WHITE" : "BLACK");
-            IPiece backPlus = backBoard instanceof Board ?
-                    new Piece(backPlusAttrs) :
-                    new ViewPiece(createSourceStringFromGotAttributes(backPlusAttrs), backPlusAttrs);
-            IField backPlusFromField = null;
-            if (notNull(backPlusFrom)){
-                backPlusFromField = backBoard.getField(backPlusFrom);
-            }
-            IField backPlusToField = backBoard.getField(backPlusTo);
-
-            backPlusToField.setPiece(backPlus);
-            if (notNull(backPlusFromField)){
-                backPlusFromField.clean();
-            }
-        }
-    }
-
-    private static void castleCasesSetBack(Move origin){
-        String castleCasesChange = origin.moveDocString.split("_")[6];
-
-        for (int i = 0; i < castleCasesChange.length(); i++) {
-            switch (castleCasesChange.charAt(i)) {
-                case 'K' -> whiteSmallCastleEnabled = true;
-                case 'V' -> whiteBigCastleEnabled = true;
-                case 'k' -> blackSmallCastleEnabled = true;
-                case 'v' -> blackBigCastleEnabled = true;
-                case '-' -> {}
-            }
-        }
-    }
-
-    private static void emPassantChanceSetBack(Move origin){
-        String emPassantChanceChange = origin.moveDocString.split("_")[7];
-
-        if ('-' != emPassantChanceChange.charAt(0)){
-
-            int sor = Character.getNumericValue(emPassantChanceChange.charAt(0));
-            int oszlop = Character.getNumericValue(emPassantChanceChange.charAt(1));
-
-            for (IPiece p : origin.boardToMoveOn.getPieces()) {
-                if (p.isWhite() != whiteToPlay &&
-                        p.getType() == G &&
-                        Math.abs(sor - Integer.parseInt(String.valueOf(emPassantChance.charAt(0)))) == 1 &&
-                        Math.abs(oszlop - Integer.parseInt(String.valueOf(emPassantChance.charAt(1)))) == 1){
-                    emPassantHelper(emPassantChanceChange, p.getAttributes());
-                }
-            }
-        }
-    }
-
-    private static void pawnGotInCaseSetBack(Move origin){
-        String pawnGotInChange = origin.moveDocString.split("_").length > 8 ? origin.moveDocString.split("_")[8] : "";
-        if (!"".equals(pawnGotInChange)){
-            origin.what.getAttributes().setType(G);
-        }
-    }
-
-    private static void updateRangesBackAndFront(Move move) throws ChessGameException, InterruptedException {
-        whiteToPlay = !whiteToPlay;
-        move.boardToMoveOn.rangeUpdater();
-        whiteToPlay = !whiteToPlay;
-    }
-
     /**
      * @return "castle" if the move was castle, "emPassant" if the move was emPassant,
      *         "emPassantAut" if the move enables future emPassant
      *         "pawnGotIn" if the move was pawnGotIn
      */
-    private String detectSpecialCase(){
+    private String detectSpecialCase() throws ChessGameException, InterruptedException {
 
         if (what.getType() == K && Math.abs(from.getJ() - to.getJ()) == 2){
             return "castle";
@@ -446,15 +280,20 @@ public class Move {
 
     }
 
-    private boolean emPassantAuthorizationIf(){
-        return what.getType() == G && Math.abs(what.getI() - to.getI()) == 2 &&
+    private boolean emPassantAuthorizationIf() throws ChessGameException, InterruptedException {
+
+        convertOneBoardToAnother(getViewBoard(), getBoard());
+        getBoard().rangeUpdater();
+        IPiece What = getBoard().getPiece(what.getLocation());
+
+        return What.getType() == G && Math.abs(What.getI() - to.getI()) == 2 &&
                 locationCollectionContains(
                         //Itt azt nézzük meg, hogy a közbülső mezőt tartalmazza-e bármely ellenfél gyalog watchRange-e
-                        boardToMoveOn.getPieces().stream()
-                                .filter(p -> p.isWhite() != what.isWhite() && p.getType() == G)
+                        getBoard().getPieces().stream()
+                                .filter(p -> p.isWhite() != What.isWhite() && p.getType() == G)
                                 .flatMap(p -> ((Piece) p).getWatchedRange().stream())
                                 .collect(Collectors.toSet()),
-                        getTheMiddleLocation(what.getLocation(), to)
+                        getTheMiddleLocation(What.getLocation(), to)
                 );
     }
 
@@ -470,6 +309,7 @@ public class Move {
         plusPieceDocumenting();
         castleChanceDocumenting();
         emPassantChanceDocumenting();
+        pawnGotInDocumenting();
     }
 
     private void stepperDocumenting(){
@@ -663,6 +503,174 @@ public class Move {
         return newType;
     }
 
+
+    //region StepBack
+    public static void StepBack(Move move) throws ChessGameException, InterruptedException {
+        deCryptAndStepBackMove(move);
+        changeEvenOrOddStep();
+        logStepBack(move);
+    }
+
+    private static void logStepBack(Move move) {
+        int lineCount = getLogger().getLineCount();
+        if (move.mustLogged){
+            try {
+                int startOffset = getLogger().getLineStartOffset(lineCount - 1);
+                int endOffset = getLogger().getLineEndOffset(lineCount - 1);
+                getLogger().replaceRange("", startOffset, endOffset);
+            } catch (BadLocationException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    private static void deCryptAndStepBackMove(Move move) throws ChessGameException, InterruptedException {
+        List<Object> backMoveParams = deCryptMoveDocStringToList(move);
+        StepBackMove(backMoveParams);
+        castleCasesSetBack(move);
+        emPassantChanceSetBack(move);
+        updateRangesBackAndFront(move);
+    }
+
+    private static List<Object> deCryptMoveDocStringToList(Move origin) {
+        Move back = new Move();
+        back.parameterize(origin.boardToMoveOn);
+
+        String[] originParams = origin.getMoveDocString().split("_");
+
+        boolean backWhatWhite = 'W' == originParams[0].charAt(0);
+        PieceType backWhatType = charToPieceType(originParams[0].charAt(1));
+        Location backWhatTo = new Location( // The from of the origin
+                Character.getNumericValue(originParams[1].charAt(0)),
+                Character.getNumericValue(originParams[1].charAt(1))
+        );
+        Location backWhatFrom = new Location(
+                Character.getNumericValue(originParams[2].charAt(0)),
+                Character.getNumericValue(originParams[2].charAt(1))
+        );
+        boolean backPlusWhite = false;
+        PieceType backPlusType = null;
+        Location backPlusTo = null;
+        Location backPlusFrom = null;
+        if ('-' != originParams[3].charAt(0)){
+            backPlusWhite = 'W' == originParams[3].charAt(0);
+            backPlusType = charToPieceType(originParams[3].charAt(1));
+            backPlusTo = new Location( // The from of the origin
+                    Character.getNumericValue(originParams[4].charAt(0)),
+                    Character.getNumericValue(originParams[4].charAt(1))
+            );
+            if ('-' != originParams[5].charAt(0)) {
+                backPlusFrom = new Location(
+                        Character.getNumericValue(originParams[5].charAt(0)),
+                        Character.getNumericValue(originParams[5].charAt(1))
+                );
+            }
+        }else {
+            back.plusPiece = null;
+        }
+
+        List<Object> backMoveParams = new ArrayList<>();
+        backMoveParams.add(back);
+        backMoveParams.add(backWhatWhite);
+        backMoveParams.add(backWhatType);
+        backMoveParams.add(backWhatTo);
+        backMoveParams.add(backWhatFrom);
+        backMoveParams.add(backPlusWhite);
+        backMoveParams.add(backPlusType);
+        backMoveParams.add(backPlusTo);
+        backMoveParams.add(backPlusFrom);
+
+        return backMoveParams;
+    }
+
+    private static void StepBackMove(List<Object> backMoveParams) throws ChessGameException {
+
+        Move back = (Move) backMoveParams.get(0);
+        boolean backWhatWhite = (Boolean) backMoveParams.get(1);
+        PieceType backWhatType = (PieceType) backMoveParams.get(2);
+        Location backWhatTo = (Location) backMoveParams.get(3);
+        Location backWhatFrom = (Location) backMoveParams.get(4);
+        boolean backPlusWhite = (Boolean) backMoveParams.get(5);
+        PieceType backPlusType = (PieceType) backMoveParams.get(6);
+        Location backPlusTo = (Location) backMoveParams.get(7);
+        Location backPlusFrom = (Location) backMoveParams.get(8);
+
+        IBoard backBoard = back.boardToMoveOn;
+        PieceAttributes backWhatAttrs = new PieceAttributes(backWhatType, backWhatWhite ? "WHITE" : "BLACK");
+        IPiece backWhat = backBoard instanceof Board ?
+                new Piece(backWhatAttrs) :
+                new ViewPiece(createSourceStringFromGotAttributes(backWhatAttrs), backWhatAttrs);
+        IField backFromField = backBoard.getField(backWhatFrom);
+        IField backToField = backBoard.getField(backWhatTo);
+
+        backToField.setPiece(backWhat);
+        backFromField.clean();
+
+        if (notNull(backPlusType)){
+            PieceAttributes backPlusAttrs = new PieceAttributes(backPlusType, backPlusWhite ? "WHITE" : "BLACK");
+            IPiece backPlus = backBoard instanceof Board ?
+                    new Piece(backPlusAttrs) :
+                    new ViewPiece(createSourceStringFromGotAttributes(backPlusAttrs), backPlusAttrs);
+            IField backPlusFromField = null;
+            if (notNull(backPlusFrom)){
+                backPlusFromField = backBoard.getField(backPlusFrom);
+            }
+            IField backPlusToField = backBoard.getField(backPlusTo);
+
+            backPlusToField.setPiece(backPlus);
+            if (notNull(backPlusFromField)){
+                backPlusFromField.clean();
+            }
+        }
+    }
+
+    private static void castleCasesSetBack(Move origin){
+        String castleCasesChange = origin.moveDocString.split("_")[6];
+
+        for (int i = 0; i < castleCasesChange.length(); i++) {
+            switch (castleCasesChange.charAt(i)) {
+                case 'K' -> whiteSmallCastleEnabled = true;
+                case 'V' -> whiteBigCastleEnabled = true;
+                case 'k' -> blackSmallCastleEnabled = true;
+                case 'v' -> blackBigCastleEnabled = true;
+                case '-' -> {}
+            }
+        }
+    }
+
+    private static void emPassantChanceSetBack(Move origin){
+        String emPassantChanceChange = origin.moveDocString.split("_")[7];
+
+        if ('-' != emPassantChanceChange.charAt(0)){
+
+            int sor = Character.getNumericValue(emPassantChanceChange.charAt(0));
+            int oszlop = Character.getNumericValue(emPassantChanceChange.charAt(1));
+
+            for (IPiece p : origin.boardToMoveOn.getPieces()) {
+                if (p.isWhite() != whiteToPlay &&
+                        p.getType() == G &&
+                        Math.abs(sor - Integer.parseInt(String.valueOf(emPassantChance.charAt(0)))) == 1 &&
+                        Math.abs(oszlop - Integer.parseInt(String.valueOf(emPassantChance.charAt(1)))) == 1){
+                    emPassantHelper(emPassantChanceChange, p.getAttributes());
+                }
+            }
+        }
+    }
+
+    private static void pawnGotInCaseSetBack(Move origin){
+        String pawnGotInChange = origin.moveDocString.split("_").length > 8 ? origin.moveDocString.split("_")[8] : "";
+        if (!"".equals(pawnGotInChange)){
+            origin.what.getAttributes().setType(G);
+        }
+    }
+
+    private static void updateRangesBackAndFront(Move move) throws ChessGameException, InterruptedException {
+        whiteToPlay = !whiteToPlay;
+        move.boardToMoveOn.rangeUpdater();
+        whiteToPlay = !whiteToPlay;
+    }
+
+    //endregion
 
     //endregion
 

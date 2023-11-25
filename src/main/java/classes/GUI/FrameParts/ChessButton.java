@@ -10,7 +10,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.Date;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static classes.Ai.FenConverter.*;
 import static classes.GUI.Frame.Window.*;
@@ -21,27 +20,27 @@ import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Game.Model.Logic.EDT.*;
 import static classes.Game.I18N.METHODS.*;
 
-public class ChessGameButton extends JButton {
+public class ChessButton extends JButton {
 
     //region Fields
 
     private static JDialog pauseDialog;
 
-    private static ChessGameButton continueButton;
+    private static ChessButton continueButton;
 
-    private static ChessGameButton exitButton;
+    private static ChessButton exitButton;
 
     //endregion
 
 
     //region Constructor
 
-    public ChessGameButton(String text){
+    public ChessButton(String text){
         setText(text);
         buttonStyleSetting();
     }
 
-    public ChessGameButton(){
+    public ChessButton(){
         buttonStyleSetting();
     }
 
@@ -88,14 +87,14 @@ public class ChessGameButton extends JButton {
 
 
         private void swapColors(MouseEvent e) {
-            Color tmp = ((ChessGameButton) e.getSource()).getForeground();
-            ((ChessGameButton) e.getSource()).setForeground(((ChessGameButton) e.getSource()).getBackground());
-            ((ChessGameButton) e.getSource()).setBackground(tmp);
+            Color tmp = ((ChessButton) e.getSource()).getForeground();
+            ((ChessButton) e.getSource()).setForeground(((ChessButton) e.getSource()).getBackground());
+            ((ChessButton) e.getSource()).setBackground(tmp);
         }
 
         private void manageClick(MouseEvent e) throws ChessGameException, InterruptedException, IOException {
-            if (((ChessGameButton)e.getSource()).isEnabled()) {
-                switch (((ChessGameButton) e.getSource()).getText()) {
+            if (((ChessButton)e.getSource()).isEnabled()) {
+                switch (((ChessButton) e.getSource()).getText()) {
                     case "Új játék" -> newGameClicked();
                     case "Világossal szeretnék lenni" -> newGameBlackAiClicked();
                     case "Sötéttel szeretnék lenni" -> newGameWhiteAiClicked();
@@ -122,10 +121,10 @@ public class ChessGameButton extends JButton {
             newGameDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             newGameDialog.setLayout(new GridLayout(2, 2));
 
-            ChessGameButton blackAi = new ChessGameButton("<html><div style='text-align: center;'>Világossal<br>szeretnék lenni</div></html>");
-            ChessGameButton whiteAi = new ChessGameButton("<html><div style='text-align: center;'>Sötéttel<br>szeretnék lenni</div></html>");
-            ChessGameButton aiVsAi = new ChessGameButton("<html><div style='text-align: center;'>Ai vs Ai</div></html>");
-            ChessGameButton test = new ChessGameButton("<html><div style='text-align: center;'>Teszt</div></html>");
+            ChessButton blackAi = new ChessButton("<html><div style='text-align: center;'>Világossal<br>szeretnék lenni</div></html>");
+            ChessButton whiteAi = new ChessButton("<html><div style='text-align: center;'>Sötéttel<br>szeretnék lenni</div></html>");
+            ChessButton aiVsAi = new ChessButton("<html><div style='text-align: center;'>Ai vs Ai</div></html>");
+            ChessButton test = new ChessButton("<html><div style='text-align: center;'>Teszt</div></html>");
 
             blackAi.setBorder(BorderFactory.createLineBorder(BLACK, 13));
             whiteAi.setBorder(BorderFactory.createLineBorder(BLACK, 13));
@@ -207,8 +206,8 @@ public class ChessGameButton extends JButton {
             pauseDialog.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
             pauseDialog.setLayout(new FlowLayout());
 
-            continueButton = new ChessGameButton("Folytatás");
-            exitButton = new ChessGameButton("Kilépés");
+            continueButton = new ChessButton("Folytatás");
+            exitButton = new ChessButton("Kilépés");
 
             pause();
 
@@ -309,7 +308,7 @@ public class ChessGameButton extends JButton {
             String setUpFen = "";
 
             if (isTest){
-                setUpFen = usualFens.get("whiteDownOneOnePawn");
+                setUpFen = usualFens.get("whiteDownCheckTestCheckWithQueenPiecesAroundEnemyKing");
             }
 
             if (!isFirstOpen && "".equals(setUpFen)){
