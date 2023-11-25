@@ -302,13 +302,15 @@ public class ChessButton extends JButton {
         }
 
         private void newGameInitialization(boolean oneAi, boolean whiteAi, boolean test) throws ChessGameException, InterruptedException {
+            getGameBoard().clear();
             theresOnlyOneAi = oneAi;
             whiteAiNeeded = whiteAi;
             isTest = test;
             String setUpFen = "";
 
             if (isTest){
-                setUpFen = usualFens.get("whiteDownCheckTestCheckWithQueenPiecesAroundEnemyKing");
+                setUpFen = testFens.get("whiteDown2And2Pawn");
+//                whiteAiNeeded = setUpFen.split(" ")[1].charAt(0) == 'w';
             }
 
             if (!isFirstOpen && "".equals(setUpFen)){
@@ -321,7 +323,7 @@ public class ChessButton extends JButton {
             MAX_HEIGHT = widthHeight;
             MAX_WIDTH = widthHeight;
 
-            whiteDown = (!theresOnlyOneAi || !whiteAiNeeded) || isTest; //TODO Teszt átszervezésekor javítani
+            whiteDown = !theresOnlyOneAi || !whiteAiNeeded; //TODO Teszt átszervezésekor javítani
 
             addGameBoard(getWindow());
             setUpSides(setUpFen);

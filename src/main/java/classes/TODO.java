@@ -2,12 +2,7 @@ package classes;
 
 public class TODO {
 
-    //TODO Supposed Move-ok ellenőrzése, felfedett sakk, sakk-matt-patt kezelés stb.
-
     //TODO EmPassant és Sánc átgondolása, hogy a fenébe is fog működni miniMax esetén
-
-    //TODO Teszt:
-    // - StepBack gomb felrakása a view-ba tesztelés
 
     //TODO MiniMax:
     // MiniMax átnézése
@@ -18,6 +13,8 @@ public class TODO {
     // - Ugorjon fel egy új box a játék típus választó helyén.
     // - Amiből kiválasztjuk a kellő fent
     // - Tűnjön el, majd rajzolódjon újra a GameBoard
+
+    //TODO Új játéknál törlődjön a tábla
 
     //TODO changeFieldColor és véges determinisztikus automata minden esethez click-nél
 

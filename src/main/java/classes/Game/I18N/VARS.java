@@ -218,27 +218,75 @@ public class VARS {
         public static Map<String, String> usualFens = new HashMap<>(){{
             put("whiteDownStarter", "RNBQKBNR/PPPPPPPP/8/8/8/8/pppppppp/rnbqkbnr w KQkq - 1 0");
             put("blackDownStarter", "rnbkqbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBKQBNR w KQkq - 1 0");
+        }};
+
+        public static Map<String, String> testFens = new HashMap<>(){{
+
+            //region Simple Piece Tests
+
             put("onlyTwoKnights8x8", "1N4N1/8/8/8/8/8/8/1n4n1 w ---- - 1 0");
             put("onlyKnights4x4", "1N2/4/4/2n1 w ---- - 1 0");
             put("onlyBishops", "2F2F2/8/8/8/8/8/8/2f2f2 w ---- - 1 0");
-            put("whiteDownOnlyKingsAndRooks", "R3K2R/8/8/8/8/8/8/r3k2r w KQkq - 1 0");
-            put("whiteUpOnlyKingsAndRooks", "r2k3r/8/8/8/8/8/8/R2K3R w KQkq - 1 0");
             put("onlyTwoBishops6x6", "1F4/6/6/6/6/4f1 w ---- - 1 0");
             put("onlyTwoRooks6x6", "B5/6/6/6/6/5b w ---- - 1 0");
             put("onlyTwoQueens6x6", "2V3/6/6/6/6/3v2 w ---- - 1 0");
             put("onlyTwoKings4x4", "1K2/4/4/2k1 w ---- - 1 0");
+
+            //endregion
+
+
+            //region Special Case Tests
+
+            //region EmPassant Case
+
             put("whiteDownPawnsFrontEmPassant", "8/8/8/PPPPPPPP/8/8/pppppppp/8 w ---- - 1 0");
             put("blackDownPawnsFrontEmPassant", "8/8/8/pppppppp/8/8/PPPPPPPP/8 w ---- - 1 0");
             put("whiteDownPawnsFront", "8/PPPPPPPP/8/8/8/8/pppppppp/8 w ---- - 1 0");
             put("blackDownPawnsFront", "8/pppppppp/8/8/8/8/PPPPPPPP/8 w ---- - 1 0");
-            put("whiteDown2And3Pawn", "8/8/8/P3P3/8/8/3ppp2/8 w ---- - 1 0");
-            put("whiteDownOneRookTwoKing4x4", "K3/1R2/4/k3 b ---- - 1 1");
-            put("whiteDownOneRookTwoKing3x3", "K1R/3/1k1 w ---- - 1 0");
-            put("whiteDownOneOnePawn", "2K5/p7/8/8/7k/8/1P6/8 w ---- - 1 0");
+            put("whiteDown2And2Pawn", "8/8/8/P3P3/8/8/3p1p2/8 w ---- - 1 0");
+
+            //endregion
+
+            //region Castle Case
+
+            put("whiteDownOnlyKingsAndRooks", "R3K2R/8/8/8/8/8/8/r3k2r w KQkq - 1 0");
+            put("whiteUpOnlyKingsAndRooks", "r2k3r/8/8/8/8/8/8/R2K3R w KQkq - 1 0");
+            put("whiteDownEachCanCastleBothSides", "R3K2R/8/8/8/8/8/8/r3k2r w KQkq - 1 0");
+            put("whiteDownBlackCanCastleOneSide", "R3K2R/8/8/8/8/8/8/4k2r b KQk- - 1 1");
+            put("whiteDownBlackCanCastleNoSide", "R3KR2/8/8/8/8/8/8/4k2r b -Qk- - 1 1");
+            put("whiteDownBlackCanCastleNoSideBecauseItIsInCheck", "R3K3/4R3/8/8/8/8/8/4k2r b -Qk- - 1 1");
+
+            //endregion
+
+            //region Pawn Got In
+
             put("whiteDownOnePawnInTheEdgeOfPawnGotIn", "2K5/8/8/8/7k/8/1P6/8 w ---- - 1 0");
+            put("whiteDownOneOnePawn", "2K5/p7/8/8/7k/8/1P6/8 w ---- - 1 0");
+
+            //endregion
+
+            //region Binding
+
             put("whiteDownBindingTestWithQueen", "qQK5/8/8/8/7k/8/1P6/8 w ---- - 1 0");
             put("whiteDownBindingTestWithKnight", "qNK5/8/8/8/7k/8/8/8 w ---- - 1 0");
+
+            //endregion
+
+            //region Check - CheckMate - Draw
+
             put("whiteDownCheckTestCheckWithQueenPiecesAroundEnemyKing", "K7/Q5rr/7k/6nn/8/8/8/8 w ---- - 1 0");
+
+            //endregion
+
+            //region Others
+
+            put("whiteDownOneRookTwoKing4x4", "K3/1R2/4/k3 b ---- - 1 1");
+            put("whiteDownOneRookTwoKing3x3", "K1R/3/1k1 w ---- - 1 0");
+
+            //endregion
+
+            //endregion
+
         }};
 
         //region PieceViews

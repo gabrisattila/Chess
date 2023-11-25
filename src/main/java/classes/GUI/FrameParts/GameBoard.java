@@ -51,7 +51,15 @@ public class GameBoard extends JLayeredPane {
 
     //region Methods
 
-    private void gameBoardSetUp() {
+    public void clear() throws ChessGameException {
+        for (var fields : parentBoard.getFields()) {
+            for (IField f : fields) {
+                f.clean();
+            }
+        }
+    }
+
+    private void gameBoardSetUp() throws ChessGameException {
 
         setBoardCoordinates();
 
@@ -95,7 +103,7 @@ public class GameBoard extends JLayeredPane {
         return new Point(newX, newY);
     }
 
-    private void addFieldsAtTheirFinalForm(){
+    private void addFieldsAtTheirFinalForm() {
         for (ArrayList<IField> row: parentBoard.getFields()){
             for (IField f : row) {
                 add((ViewField) f);

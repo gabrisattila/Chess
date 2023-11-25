@@ -237,7 +237,8 @@ public class Move {
 
             Location middleLocOfPawnStep = getTheMiddleLocation(from, to);
             assert middleLocOfPawnStep != null;
-            emPassantChance +=  middleLocOfPawnStep.getI();
+            emPassantChance = "";
+            emPassantChance += middleLocOfPawnStep.getI();
             emPassantChance += middleLocOfPawnStep.getJ();
 
 
@@ -462,14 +463,14 @@ public class Move {
 
     private Location plusPieceTo() {
         if (itIsCastle){
-            int rookRoadLength = to.getJ() - plusPiece.getSecond().getFirst().getJ();
+            int rookRoadLength = to.getJ() - (to.getJ() >= 4 ? 7 : 0);
 
             if (rookRoadLength < 0)
                 rookRoadLength--;
             else
                 rookRoadLength++;
 
-            Location rookOriginPlace = new Location(plusPiece.getSecond().getFirst());
+            Location rookOriginPlace = new Location(to.getI(), to.getJ() >= 4 ? 7 : 0);
             return new Location(
                     to.getI(),
                     rookOriginPlace.getJ() + rookRoadLength
