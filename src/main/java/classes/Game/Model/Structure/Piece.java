@@ -25,7 +25,7 @@ public class Piece implements IPiece {
 
     private boolean inDefend;
 
-    private boolean inBinding;
+    private IPiece bounderPiece;
 
     private double VALUE;
 
@@ -47,12 +47,14 @@ public class Piece implements IPiece {
     public Piece(){
         possibleRange = new HashSet<>();
         watchedRange = new HashSet<>();
+        bounderPiece = null;
     }
 
     public Piece(PieceAttributes attributes){
         this.attributes = attributes;
         possibleRange = new HashSet<>();
         watchedRange = new HashSet<>();
+        bounderPiece = null;
     }
 
     public Piece(PieceAttributes attributes, Location Location, IBoard board) throws ChessGameException {
@@ -63,6 +65,7 @@ public class Piece implements IPiece {
         this.board = (Board) board;
         possibleRange = new HashSet<>();
         watchedRange = new HashSet<>();
+        bounderPiece = null;
     }
 
     //endregion
@@ -98,6 +101,10 @@ public class Piece implements IPiece {
 
     public int getEnemyStartRow(){
         return attributes.getEnemyAndOwnStartRow().getFirst();
+    }
+
+    public boolean isInBinding(){
+        return notNull(bounderPiece);
     }
 
     public double getVALUE(){
