@@ -143,7 +143,6 @@ public class Piece implements IPiece {
         attributes = null;
         Location = null;
         inDefend = false;
-        inBinding = false;
         possibleRange = null;
         watchedRange = null;
     }
