@@ -20,8 +20,6 @@ public class TODO {
     // - Amiből kiválasztjuk a kellő fent
     // - Tűnjön el, majd rajzolódjon újra a GameBoard
 
-    //TODO changeFieldColor és véges determinisztikus automata minden esethez click-nél
-
     //TODO Exceptions unification
 
 }
