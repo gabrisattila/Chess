@@ -6,6 +6,7 @@ import classes.GUI.FrameParts.Logger;
 import classes.GUI.FrameParts.ViewField;
 import classes.Game.I18N.ChessGameException;
 import classes.Game.I18N.Pair;
+import classes.Game.Model.Structure.IField;
 import lombok.*;
 
 import javax.swing.*;
@@ -13,6 +14,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 
+import static classes.GUI.FrameParts.GameBoard.cleanFieldFromLeftIcon;
 import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
@@ -82,9 +84,7 @@ public class Window extends JFrame {
     }
 
     public void addGameBoard(Window window) throws ChessGameException {
-//        getViewBoard().cleanBoard();
-//        if (notNull(gameBoard))
-//            window.remove(gameBoard);
+        window.clearTakenPiecePlaces();
         gameBoard = new GameBoard();
         window.add(gameBoard);
     }
@@ -259,6 +259,15 @@ public class Window extends JFrame {
 
             (whiteSide ? takenPiecePlaces.getFirst() : takenPiecePlaces.getSecond()).add(fieldForTaken);
 
+        }
+    }
+
+    private void clearTakenPiecePlaces() throws ChessGameException {
+        for (IField f : takenPiecePlaces.getFirst()) {
+            cleanFieldFromLeftIcon(f);
+        }
+        for (IField f : takenPiecePlaces.getSecond()) {
+            cleanFieldFromLeftIcon(f);
         }
     }
 

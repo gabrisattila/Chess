@@ -318,15 +318,21 @@ public class Board implements IBoard {
 
     private ArrayList<Location> lineFromAPieceToAnother(IPiece fromPiece, IPiece toPiece) {
         ArrayList<Location> lineToPiece = new ArrayList<>();
-        Pair<Integer, Integer> addIAddJ = addToIAddToJ(fromPiece, toPiece);
-        Location line = fromPiece.getLocation().add(new Location(addIAddJ.getFirst(), addIAddJ.getSecond()));
-        while (containsLocation(line) && !toPiece.getLocation().EQUALS(line)){
-            lineToPiece.add(line);
-            line = line.add(new Location(addIAddJ.getFirst(), addIAddJ.getSecond()));
+        if (fromPiece.getType() != H && fromPiece.getType() != G && !fromPieceIsOnCorner(fromPiece, toPiece)){
+            Pair<Integer, Integer> addIAddJ = addToIAddToJ(fromPiece, toPiece);
+            Location line = fromPiece.getLocation().add(new Location(addIAddJ.getFirst(), addIAddJ.getSecond()));
+            while (containsLocation(line) && !toPiece.getLocation().EQUALS(line)){
+                lineToPiece.add(line);
+                line = line.add(new Location(addIAddJ.getFirst(), addIAddJ.getSecond()));
+            }
         }
         return lineToPiece;
     }
-    
+
+    private boolean fromPieceIsOnCorner(IPiece fromPiece, IPiece toPiece) {
+        return Math.abs(fromPiece.getI() - toPiece.getI()) == 1 && Math.abs(fromPiece.getJ() - toPiece.getJ()) == 1;
+    }
+
     private Pair<Integer, Integer> addToIAddToJ(IPiece fromPiece, IPiece toPiece){
         Pair<Integer, Integer> addIAddJ = new Pair<>();
         int addToI = 0, addToJ = 0;
@@ -446,18 +452,31 @@ public class Board implements IBoard {
     }
 
     private void kingStepOutFromCheck(boolean enemy) throws ChessGameException {
-        getKing(!enemy).setPossibleRange(
-                boundPieceOrKingRangeCalc(getKing(!enemy), checkers.getFirst(), checkers.getSecond())
-        );
-        if (locationCollectionContains(getKing(!enemy).getPossibleRange(), checkers.getFirst().getLocation())){
-            if (((Piece) checkers.getFirst()).isInDefend()){
-                getKing(!enemy).getPossibleRange().remove(checkers.getFirst().getLocation());
+        if (checkers.getFirst().getType() == H || checkers.getFirst().getType() == G){
+            for (Location l : matrixChooser.get(K)) {
+                l = getKingsPlace(!enemy).add(l);
+                if (
+                        containsLocation(l) && !locationCollectionContains(getAttackRangeWithoutKing(enemy), l) &&
+                        (isNull(getPiece(l)) || (notNull(getPiece(l)) && getPiece(l).isWhite() == enemy)) &&
+                        enemyKingNotInNeighbour(l, !enemy)
+                ){
+                    getKing(!enemy).setPossibleRange(l);
+                }
             }
-        }
-        if (notNull(checkers.getSecond()) &&
-                locationCollectionContains(getKing(!enemy).getPossibleRange(), checkers.getSecond().getLocation())){
-            if (((Piece) checkers.getSecond()).isInDefend()){
-                getKing(!enemy).getPossibleRange().remove(checkers.getSecond().getLocation());
+        }else {
+            getKing(!enemy).setPossibleRange(
+                    boundPieceOrKingRangeCalc(getKing(!enemy), checkers.getFirst(), checkers.getSecond())
+            );
+            if (locationCollectionContains(getKing(!enemy).getPossibleRange(), checkers.getFirst().getLocation())){
+                if (((Piece) checkers.getFirst()).isInDefend()){
+                    getKing(!enemy).getPossibleRange().remove(checkers.getFirst().getLocation());
+                }
+            }
+            if (notNull(checkers.getSecond()) &&
+                    locationCollectionContains(getKing(!enemy).getPossibleRange(), checkers.getSecond().getLocation())){
+                if (((Piece) checkers.getSecond()).isInDefend()){
+                    getKing(!enemy).getPossibleRange().remove(checkers.getSecond().getLocation());
+                }
             }
         }
     }
@@ -466,13 +485,13 @@ public class Board implements IBoard {
         ArrayList<Location> lineToTheKingFromChecker = lineFromAPieceToAnother(checkers.getFirst(), getKing(!enemy));
         ArrayList<Location> newRangeForPiece;
         for (IPiece p : getPieces(!enemy)) {
-            if (p.getType() != K){
+            if (p.getType() != K) {
                 newRangeForPiece = new ArrayList<>();
                 if (!((Piece) p).isInBinding()) {
                     if (locationCollectionContains(p.getPossibleRange(), checkers.getFirst().getLocation())) {
                         newRangeForPiece.add(checkers.getFirst().getLocation());
                     }
-                    if (checkers.getFirst().getType() != H && checkers.getFirst().getType() != G) {
+                    if (!lineToTheKingFromChecker.isEmpty()) {
                         newRangeForPiece.addAll(intersection(p.getPossibleRange(), lineToTheKingFromChecker));
                     }
                 }

@@ -1,0 +1,213 @@
+1. Ge3	
+ - Hf6	
+2. Ga3	
+ - Ge5	
+3. Ga4	
+ - Gd5	
+4. Vg4	
+ - Fxg4	
+5. Ge4	
+ - Gxe4	
+6. Gc4	
+ - Ge3	
+7. Gh4	
+ - Fd1	
+8. Gh5	
+ - Hxh5	
+9. Gb4	
+ - Fxb4	
+10. He2	
+10. Ge4	
+ - Gh6	
+11. Gg3	
+ - Gd5	
+12. Hh3	
+ - Gb6	
+13. Ha3	
+ - Gg6	
+14. Fd3	
+ - Gf5	
+15. Bb1	
+ - Gxe4	
+16. Hc4	
+ - Gb5	
+17. Bf1	
+ - Kd7	
+18. Ga3	
+ - Gh5	
+19. Hg1	
+ - Gf4	
+20. Ke2	
+ - Gh4	
+21. Fxe4	
+ - Ke8	
+22. Ke1	
+ - Gg5	
+23. Ba1	
+ - Fg7	
+24. Ga4	
+ - Ge5	
+25. Gc3	
+ - Vd5	
+26. Ff5	
+ - Kf8	
+27. Ba3	
+ - Fh6	
+28. He2	
+ - He7	
+29. Gd4	
+ - Vxd4	
+30. Vxd4	
+ - Fg7	
+31. Hxf4	
+ - Bh6	
+32. Fd2	
+ - Gh3	
+33. Ba2	
+ - Kg8	
+34. Gg4	
+ - Ga5	
+35. Bg1	
+ - Gxd4	
+36. Gf3	
+ - Gxf4	
+37. Gb3	
+ - Hc6	
+38. Gxd4	
+ - Hd7	
+39. Fxa5	
+ - Gxc4	
+40. Be2	
+ - Hxa5	
+41. Gg5	
+ - Gc3	
+42. Gd5	
+ - Fd4	
+43. Gg6	
+ - Bh4	
+44. Gd6	
+ - Bg4	
+45. Gg7	
+ - Fa6	
+46. Gxc7	
+ - Hc6	
+47. Bg3	
+ - Gxg3	
+48. Gb4	
+ - Fb5	
+49. Gc8	
+ - Kxg7	
+50. Gxg3	
+ - Hb8	
+51. Bf2	
+ - Gc2	
+52. Bh2	
+ - Bf4	
+53. Kd2	
+ - He7	
+54. Gxf4	
+ - Ha6	
+55. Vc6	
+ - Hc7	
+56. Fe6	
+ - Gc1	
+57. Ke2	
+ - Hf5	
+58. Vc4	
+ - Fxc4	
+59. Kd1	
+ - Bxa4	
+60. Ke2	
+ - Fd5	
+61. Gb5	
+ - Ha6	
+62. Gb6	
+ - Fe5	
+63. Gxe5	
+ - Hc7	
+64. Kd3	
+ - Kh8	
+65. Bb2	
+ - Gh2	
+66. Gxc7	
+ - Vc6	
+67. Gc8	
+ - Ve8	
+68. Kc3	
+ - Gh1	
+69. Gf4	
+ - Vf3	
+70. Kd4	
+ - Hg7	
+71. Bb4	
+ - Ba3	
+72. Vc2	
+ - Fb7	
+73. Kc5	
+ - Fc6	
+74. Gf5	
+ - Hh5	
+75. Bb2	
+ - Hf4	
+76. Fb3	
+ - Ve2	
+77. Ge6	
+ - Ba6	
+78. Ba2	
+ - Fe4	
+79. Vc4	
+ - Hd5	
+80. Ge7	
+ - Kg8	
+81. Vxa6	
+ - Kf7	
+82. Va3	
+ - Fb1	
+83. Gf6	
+ - Vxe7	
+84. Gxe7	
+ - Fe4	
+85. Kb4	
+ - Vd7	
+86. Kc3	
+ - Kg6	
+87. Kd2	
+ - Fb1	
+88. Bc2	
+ - Fxc2	
+89. Va2	
+ - Ff5	
+90. Ge8	
+ - Vxe8	
+91. Gh4	
+ - Ga5	
+92. Gd3	
+ - Ga4	
+93. Gf4	
+ - Hh6	
+94. Bh2	
+ - Ga3	
+95. Kf2	
+ - Bg8	
+96. Gb3	
+ - Ha6	
+97. Gc3	
+ - Gg5	
+98. Gc4	
+ - Hf5	
+99. Gb4	
+ - Gc6	
+100. Gxg5	
+ - Bb8	
+101. Hf3	
+ - Vc7	
+102. Gg6	
+ - Vf4	
+103. Gc5	
+ - Bg7	
+104. Gh5	
+ - Ge6	
+105. Bh1	
+ - Gh6	
+106. Fe3	
+ - Bxg6	

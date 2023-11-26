@@ -1,0 +1,369 @@
+1. Gc4	
+ - Gb5	
+2. Gh4	
+ - Gxc4	
+3. Ge3	
+ - Gd5	
+4. Gh5	
+4. Gc3	
+ - Hf6	
+5. Gg3	
+ - Ge6	
+6. Ha3	
+ - Fxa3	
+7. Fh3	
+ - Hh5	
+8. Gc4	
+ - Gg6	
+9. Gc5	
+ - Ha6	
+10. Bb1	
+ - Fxb2	
+11. Ga3	
+ - Hb8	
+12. Gc6	
+ - Vg5	
+13. Gg4	
+ - Gf5	
+14. Gxf5	
+ - Vxg1	
+15. Ff1	
+ - Gg5	
+16. Gxd7	
+ - Kd8	
+17. Bxb2	
+ - Gb6	
+18. Vc2	
+ - Gc5	
+19. Gf4	
+ - Ve3	
+20. Kd1	
+ - Ge5	
+21. Bg1	
+ - Gb5	
+22. Gf6	
+ - Hxf4	
+23. Gf7	
+ - Gh5	
+24. Gh3	
+ - Vf2	
+25. Ge3	
+ - Bh6	
+26. Bh1	
+ - Ge4	
+27. Gd3	
+ - Vg3	
+28. Kd2	
+ - Kxd7	
+29. Bg1	
+ - Gh4	
+30. Bb3	
+ - Gb4	
+31. Vd1	
+ - Gxa3	
+32. Bg2	
+ - Bc6	
+33. Gxf4	
+ - Ge3	
+34. Kc3	
+ - Fa6	
+35. Fe2	
+ - Ga2	
+36. Gd4	
+ - Gc4	
+37. Gf8	
+ - Bc7	
+38. Fd2	
+ - Ga1	
+39. Kd3	
+ - Gxf4	
+40. Kc2	
+ - Bc6	
+41. Ve7	
+ - Kxe7	
+42. Vh1	
+ - Hd7	
+43. Gd5	
+ - Vg5	
+44. Fa5	
+ - Kf8	
+45. Bb6	
+ - Fb5	
+46. Fd2	
+ - Gxd2	
+47. Gxc6	
+ - Vxh1	
+48. Bb8	
+ - Hxb8	
+49. Fd3	
+ - Fxc6	
+50. Kc3	
+ - Kf7	
+51. Fe2	
+ - Gd1	
+52. Bxg5	
+ - Kf6	
+53. Fxd1	
+ - Ke6	
+54. Fh5	
+ - Ha6	
+55. Ff7	
+ - Kd6	
+56. Bg2	
+ - Ff3	
+57. Kc2	
+ - Ke5	
+58. Fe6	
+ - Ke4	
+59. Fg8	
+ - Fd1	
+60. Kc3	
+ - Fh5	
+61. Bh2	
+ - Hc7	
+62. Fxc4	
+ - Gf3	
+63. Kb2	
+ - Kf5	
+64. Bf2	
+ - Bc8	
+65. Kb3	
+ - He6	
+66. Kc2	
+ - Hf4	
+67. Kc3	
+ - Vg2	
+68. Kb4	
+ - Kf6	
+69. Ff1	
+ - Bb8	
+70. Fb5	
+ - Vf1	
+71. Ka4	
+ - Bf8	
+72. Fxf1	
+ - Hxh3	
+73. Be2	
+ - Kf5	
+74. Kb4	
+ - Ga6	
+75. Kc4	
+ - Fg6	
+76. Kc3	
+ - Bc8	
+77. Kb3	
+ - Bc1	
+78. Ka2	
+ - Hg1	
+79. Kb2	
+ - Bc3	
+80. Kb1	
+ - Kg5	
+81. Be4	
+ - Gh3	
+82. Kb2	
+ - He2	
+83. Kb1	
+ - Gh2	
+84. Ka1	
+ - Kh5	
+85. Ka2	
+ - Gf2	
+86. Fg2	
+ - Ga5	
+87. Kb2	
+ - Bf3	
+88. Kb1	
+ - Kh4	
+89. Ff1	
+ - Hc3	
+90. Ka1	
+ - Bf4	
+91. Fc4	
+ - Gh1	
+92. Ka2	
+ - Fe8	
+93. Ka3	
+ - Bg4	
+94. Bd4	
+ - Ga4	
+95. Kxa4	
+ - Bf4	
+96. Kb3	
+ - Vg2	
+97. Bd8	
+ - Gf1	
+98. Bd2	
+ - Ve1	
+99. Ff7	
+ - Kg5	
+100. Kxc3	
+ - Ba4	
+101. Fc4	
+ - Kf6	
+102. Kd3	
+ - Kg6	
+103. Kc3	
+ - Fb5	
+104. Fxb5	
+ - Kh7	
+105. Kd3	
+ - Kh8	
+106. Bxg2	
+ - Kh7	
+107. Kc2	
+ - Bc4	
+108. Fxc4	
+ - Vb1	
+109. Kc3	
+ - Vh1	
+110. Bc2	
+ - Kg6	
+111. Ba2	
+ - Vf1	
+112. Fb3	
+ - Ve2	
+113. Kd4	
+ - Kf5	
+114. Kc3	
+ - Va6	
+115. Bg2	
+ - Kf4	
+116. Fc2	
+ - Ke5	
+117. Kb4	
+ - Vg6	
+118. Kc5	
+ - Vg7	
+119. Bf2	
+ - Vg4	
+120. Fe4	
+ - Vh5	
+121. Kb4	
+ - Vg6	
+122. Fd5	
+ - Kd6	
+123. Ba2	
+ - Kd7	
+124. Fc6	
+ - Kxc6	
+125. Kc4	
+ - Kd7	
+126. Kc3	
+ - Ve8	
+127. Ba6	
+ - Vb8	
+128. Kd4	
+ - Kc8	
+129. Bh6	
+ - Vb3	
+130. Bh7	
+ - Vb1	
+131. Kd5	
+ - Kb8	
+132. Bf7	
+ - Vh7	
+133. Bg7	
+ - Kc8	
+134. Ke5	
+ - Kd8	
+135. Bg4	
+ - Kc7	
+136. Bg1	
+ - Vg7	
+137. Kf5	
+ - Kb8	
+138. Bc1	
+ - Vh7	
+139. Kf6	
+ - Ka7	
+140. Bc3	
+ - Kb8	
+141. Ke6	
+ - Ka8	
+142. Kd6	
+ - Va7	
+143. Ba3	
+ - Kb7	
+144. Ke7	
+ - Kc6	
+145. Kd8	
+ - Ve3	
+146. Kc8	
+ - Kd6	
+147. Ba7	
+ - Vc5	
+148. Kd7	
+ - Vh5	
+149. Kd8	
+ - Kc5	
+150. Kc7	
+ - Kb4	
+151. Kc6	
+ - Kc3	
+152. Kb7	
+ - Kd4	
+153. Ba6	
+ - Vg5	
+154. Ba5	
+ - Ke3	
+155. Ka6	
+ - Kf3	
+156. Ba2	
+ - Kg4	
+157. Kb7	
+ - Va5	
+158. Kc8	
+ - Kg5	
+159. Kb8	
+ - Vd2	
+160. Kb7	
+ - Vd7	
+161. Kb8	
+ - Kh6	
+162. Ka8	
+ - Vc7	
+163. Ba1	
+ - Kh7	
+164. Ba3	
+ - Kh8	
+165. Bg3	
+ - Vc3	
+166. Bg2	
+ - Vd3	
+167. Ba2	
+ - Vc3	
+168. Ba1	
+ - Vxa1	
+169. Kb7	
+ - Vh1	
+170. Ka7	
+ - Vd5	
+171. Ka6	
+ - Ve5	
+172. Kb7	
+ - Vf6	
+173. Ka8	
+ - Vf7	
+174. Kb8	
+ - Kg7	
+175. Ka8	
+ - Kh7	
+176. Kb8	
+ - Kg7	
+177. Ka8	
+ - Ve8	
+178. Kb7	
+ - Vh5	
+179. Kc6	
+ - Kh8	
+180. Kd7	
+ - Kg8	
+181. Kc7	
+ - Kf7	
+182. Kd7	
+ - Vf5	
+183. Kd8	
+ - Vd5	
+184. Ke7	
+ - Vd1	

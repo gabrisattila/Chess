@@ -273,9 +273,23 @@ public class VARS {
 
             //endregion
 
-            //region Check - CheckMate - Draw
+            //region Check
 
             put("whiteDownCheckTestCheckWithQueenPiecesAroundEnemyKing", "K7/Q5rr/7k/6nn/8/8/8/8 w ---- - 1 0");
+            put("whiteDownOutOfMemoryAfterCheck1", "R1B1KR2/3PPPn1/N1P2NP1/1P4pP/2pB1p1p/4p1qb/p2p4/r1b1k1nr w -Qkq - 1 0");
+            put("whiteDownOutOfMemoryAfterCheck2", "2BK1BR1/3Q4/N1n3q1/3ppNpP/2b1n3/R6r/ppk2p1b/6r1 w ---- - 1 0");
+
+            //endregion
+
+            //region CheckMate
+
+
+
+            //endregion
+
+            //region Draw
+
+
 
             //endregion
 
@@ -283,6 +297,7 @@ public class VARS {
 
             put("whiteDownOneRookTwoKing4x4", "K3/1R2/4/k3 b ---- - 1 1");
             put("whiteDownOneRookTwoKing3x3", "K1R/3/1k1 w ---- - 1 0");
+            put("whiteDownKingTakesOwnKnight", "1RB1KBR1/P4P1P/N3P1P1/3PpN2/1pPp4/5nQ1/pp2kpp1/r1bqnbr1 b ---- - 1 1");
 
             //endregion
 

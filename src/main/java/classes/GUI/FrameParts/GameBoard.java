@@ -61,34 +61,38 @@ public class GameBoard extends JLayeredPane {
         }
     }
 
-    private void clearLeftIcons() throws ChessGameException {
+    public static void clearLeftIcons() throws ChessGameException {
 
         for (var v : getViewBoard().getFields()) {
             for (IField f : v) {
-
-                Timer timer = new Timer(1000, new ActionListener() {
-                    private boolean isHovered = false;
-
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        // Az egér belépését szimuláljuk
-                        if (!isHovered) {
-                            ((JButton) f).getModel().setRollover(true);
-                            isHovered = true;
-                        } else {
-                            // Az egér kijutását szimuláljuk
-                            ((JButton) f).getModel().setRollover(false);
-                            isHovered = false;
-                        }
-
-                        // A JButton újrarajzolása a változások érvényesítése érdekében
-                        ((JButton) f).repaint();
-                    }
-                });
-                // A Timer indítása
-                timer.start();
+                cleanFieldFromLeftIcon(f);
             }
         }
+    }
+
+    public static void cleanFieldFromLeftIcon(IField f) throws ChessGameException {
+        f.clean();
+        Timer timer = new Timer(1000, new ActionListener() {
+            private boolean isHovered = false;
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Az egér belépését szimuláljuk
+                if (!isHovered) {
+                    ((JButton) f).getModel().setRollover(true);
+                    isHovered = true;
+                } else {
+                    // Az egér kijutását szimuláljuk
+                    ((JButton) f).getModel().setRollover(false);
+                    isHovered = false;
+                }
+
+                // A JButton újrarajzolása a változások érvényesítése érdekében
+                ((JButton) f).repaint();
+            }
+        });
+        // A Timer indítása
+        timer.start();
     }
 
     private void gameBoardSetUp() throws ChessGameException {
