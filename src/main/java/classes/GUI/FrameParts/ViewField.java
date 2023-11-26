@@ -11,6 +11,7 @@ import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Set;
 
 import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.Model.Logic.EDT.*;
@@ -156,30 +157,6 @@ public class ViewField extends JButton implements classes.Game.Model.Structure.I
             MouseExit((ViewField) e.getSource());
         }
 
-        private void PlayerClick(ViewField clicked) throws ChessGameException, InterruptedException {
-
-            if (CLICK_COUNTER == 0 && clicked.isGotPiece() && clicked.piece.isWhite() == whiteToPlay){
-                changeColor(clicked);
-                CLICK_COUNTER++;
-                lastClicked = clicked;
-                pieceToChange = clicked.piece;
-            } else if (CLICK_COUNTER == 1 && lastClicked.isGotPiece() && lastClicked.piece.isWhite() == whiteToPlay &&
-                    lastClicked.piece.inRange(clicked)) {
-                moveToClicked(clicked);
-                CLICK_COUNTER = 0;
-                switchWhoComes();
-            } else if (CLICK_COUNTER == 0 && !clicked.isGotPiece()) {
-                changeColor(clicked);
-            } else if (CLICK_COUNTER == 0 && clicked.piece.isWhite() != whiteToPlay) {
-                return;
-            } else if (CLICK_COUNTER == 1 && !lastClicked.piece.inRange(clicked)) {
-                CLICK_COUNTER = 0;
-                lastClicked = null;
-                return;
-            }
-
-        }
-
         private void MouseEnter(ViewField source) {
             changeFieldColor(source);
         }
@@ -188,6 +165,24 @@ public class ViewField extends JButton implements classes.Game.Model.Structure.I
             changeFieldColor(source);
         }
 
+        private void PlayerClick(ViewField clicked) throws ChessGameException, InterruptedException {
+            if (CLICK_COUNTER == 0 && clicked.isGotPiece() && clicked.piece.isWhite() == whiteToPlay && !clicked.piece.getPossibleRange().isEmpty()){
+                changeColor(clicked);
+                lastClicked = clicked;
+                pieceToChange = clicked.piece;
+                CLICK_COUNTER++;
+            } else if (CLICK_COUNTER == 1 && locationCollectionContains(pieceToChange.getPossibleRange(), clicked.loc)) {
+                moveToClicked(clicked);
+                changeColor(lastClicked);
+                pieceToChange = null;
+                CLICK_COUNTER--;
+                switchWhoComes();
+            } else if (CLICK_COUNTER == 1) {
+                changeColor(lastClicked);
+                pieceToChange = null;
+                CLICK_COUNTER--;
+            }
+        }
         private void moveToClicked(ViewField clicked) throws ChessGameException, InterruptedException {
 
             ViewPiece hit = null;
@@ -220,7 +215,7 @@ public class ViewField extends JButton implements classes.Game.Model.Structure.I
             }
         }
 
-        private void changeFieldColorsOfARange(ArrayList<ViewField> fields){
+        private void changeFieldColorsOfARange(Set<ViewField> fields){
             for (ViewField f : fields) {
                 changeFieldColor(f);
             }

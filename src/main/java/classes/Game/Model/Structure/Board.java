@@ -67,7 +67,7 @@ public class Board implements IBoard {
         Draw = false;
     }
 
-    public static Board getBoard() throws ChessGameException {
+    public static Board getBoard() {
         if(board == null){
             Board b1 = new Board(MAX_WIDTH, MAX_HEIGHT);
             board = new Pair<>(b1, null);
@@ -77,7 +77,7 @@ public class Board implements IBoard {
     }
 
 
-    public static Board getAiBoard() throws ChessGameException {
+    public static Board getAiBoard() {
         if(board == null){
             Board b1 = new Board(MAX_WIDTH, MAX_HEIGHT);
             board = new Pair<>(b1, null);
@@ -183,7 +183,7 @@ public class Board implements IBoard {
     }
 
     @Override
-    public void rangeUpdater() throws ChessGameException, InterruptedException {
+    public void rangeUpdater() throws ChessGameException{
 
         clearRangesAndStuffBeforeUpdate();
         pseudos();
@@ -192,7 +192,13 @@ public class Board implements IBoard {
             constrainPseudos();
             inspectCheck(!whiteToPlay);
             if (isNull(checkers)) {
-                kingsRanges();
+                kingFreeRange(!whiteToPlay);
+                kingFreeRange(whiteToPlay);
+            }else {
+                kingFreeRange(!whiteToPlay);
+                kingStepOutFromCheck(!whiteToPlay);
+                constrainMyPiecesRangeInsteadOfCheck(whiteToPlay);
+                blockCheckOrHitChecker(!whiteToPlay);
             }
             gameOver = gameEnd(this);
             if (notNull(gameOver)){
@@ -222,10 +228,10 @@ public class Board implements IBoard {
         checkers = null;
         CheckMate = false;
         Draw = false;
+        Submitted = false;
         for (IPiece p : pieces) {
             ((Piece) p).setPossibleRange(new HashSet<>());
-            ((Piece) p).setLegals("new");
-            ((Piece) p).setPseudoLegals("new");
+            ((Piece) p).setLegalMoves(new HashSet<>());
             ((Piece) p).setBounderPiece(null);
         }
     }
@@ -242,7 +248,6 @@ public class Board implements IBoard {
         //Leszűkítés annak függvényében, hogy valamely lépéssel sakk felfedése történne
         constrainCalculatedPseudos(!whiteToPlay);
         constrainCalculatedPseudos(whiteToPlay);
-
     }
 
     private void constrainCalculatedPseudos(boolean my) throws ChessGameException{
@@ -406,32 +411,20 @@ public class Board implements IBoard {
     }
 
 
-    private void kingsRanges() throws ChessGameException {
-        //A királyok lépéslehetőségeinek leszűkítése a már meghatározott rangek függvényében
-        kingSimpleMoves(!whiteToPlay);
-        kingSimpleMoves(whiteToPlay);
-        //Sáncok lehetőségeink számbavétele
-        // Ellenőrizni, hogy van-e lehetőség erre-arra a sáncra
-        // Ha igen megnézni, hogy a sánccal megtett király mezők közül bele esik-e valamelyik az ellenfél range-be.
-        kingCastle(!whiteToPlay);
-        kingCastle(whiteToPlay);
+    private void kingFreeRange(boolean my) throws ChessGameException {
+        kingSimpleMoves(my);
+        kingCastle(my);
     }
 
     /**
      * @param enemy this means who would be the player, who gives check
      * Alapvetés szerint pedig megnézi sakkban vagyok-e, ha igen, aszerint kalkulálja ki a további lehetőségeim
      */
-    private void inspectCheck(boolean enemy) throws ChessGameException, InterruptedException {
+    private void inspectCheck(boolean enemy) {
         if (locationCollectionContains(getAttackRangeWithoutKing(enemy), getKingsPlace(!enemy))){
-
             findCheckers(enemy);
-
-            if (notNull(checkers.getFirst()))
-                constrainPossibilitiesInsteadOfCheck(enemy);
-
         }
     }
-
     private void findCheckers(boolean enemy){
         checkers = new Pair<>();
         for (IPiece enemyP : getPieces(enemy)) {
@@ -443,14 +436,6 @@ public class Board implements IBoard {
                     break;
                 }
             }
-        }
-    }
-
-    private void constrainPossibilitiesInsteadOfCheck(boolean enemy) throws ChessGameException, InterruptedException {
-
-        kingStepOutFromCheck(enemy);
-        if (isNull(checkers.getSecond())) {
-            blockCheckOrHitChecker(enemy);
         }
     }
 
@@ -484,10 +469,16 @@ public class Board implements IBoard {
         }
     }
 
-    private void blockCheckOrHitChecker(boolean enemy)  {
-        ArrayList<Location> lineToTheKingFromChecker = lineFromAPieceToAnother(checkers.getFirst(), getKing(!enemy));
+    private void constrainMyPiecesRangeInsteadOfCheck(boolean my){
+        if (isNull(checkers.getSecond())) {
+            blockCheckOrHitChecker(my);
+        }
+    }
+
+    private void blockCheckOrHitChecker(boolean my)  {
+        ArrayList<Location> lineToTheKingFromChecker = lineFromAPieceToAnother(checkers.getFirst(), getKing(my));
         ArrayList<Location> newRangeForPiece;
-        for (IPiece p : getPieces(!enemy)) {
+        for (IPiece p : getPieces(my)) {
             if (p.getType() != K) {
                 newRangeForPiece = new ArrayList<>();
                 if (!((Piece) p).isInBinding()) {
@@ -615,14 +606,14 @@ public class Board implements IBoard {
     private Set<Location> getAttackRangeWithoutKing(boolean forWhite) {
         return pieces.stream()
                 .filter(p -> (p.getType() != K && p.isWhite() == forWhite))
-                .flatMap(p -> (p.getType() == G ? ((Piece) p).getWatchedRange() : p.getPossibleRange()).stream())
+                .flatMap(p -> ((Piece) p).getAttackRange().stream())
                 .collect(Collectors.toSet());
     }
 
     public void addLegalMovesToPieces() {
         for (IPiece p : myPieces()) {
             for (Location to : p.getPossibleRange()) {
-                ((Piece) p).setLegals(new Move(
+                ((Piece) p).getLegalMoves().add(new Move(
                         p,
                         to,
                         ((Piece) p).getBoard()

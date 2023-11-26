@@ -35,8 +35,6 @@ public class Piece implements IPiece {
 
     private Set<Location> watchedRange;
 
-    private Set<Move> pseudoLegals;
-
     private Set<Move> legalMoves;
 
     //endregion
@@ -146,37 +144,6 @@ public class Piece implements IPiece {
         bounderPiece = null;
         possibleRange = null;
         watchedRange = null;
-    }
-
-    public void setPseudoLegals(String newOrNulling){
-        if ("new".equals(newOrNulling) || "New".equals(newOrNulling) || "NEW".equals(newOrNulling))
-            pseudoLegals = new HashSet<>();
-        else if ("null".equals(newOrNulling) || "Null".equals(newOrNulling) || "NULL".equals(newOrNulling))
-            pseudoLegals = null;
-        else
-            throw new RuntimeException("Vagy a paraméter típusa, vagy annak értéke rossz.");
-    }
-
-    public void setPseudoLegals(Move moveToAdd){
-        if (isNull(pseudoLegals))
-            setPseudoLegals("new");
-        pseudoLegals.add(moveToAdd);
-    }
-
-    public void setLegals(String newOrNulling){
-        if ("new".equals(newOrNulling) || "New".equals(newOrNulling) || "NEW".equals(newOrNulling))
-            legalMoves = new HashSet<>();
-        else if ("null".equals(newOrNulling) || "Null".equals(newOrNulling) || "NULL".equals(newOrNulling))
-            legalMoves = null;
-        else
-            throw new RuntimeException("Vagy a paraméter típusa, vagy annak értéke rossz.");
-    }
-
-    public void setLegals(Move moveToAdd){
-        if (isNull(pseudoLegals))
-            setLegals("new");
-        legalMoves.add(moveToAdd);
-        possibleRange.add(moveToAdd.getTo());
     }
 
     //endregion

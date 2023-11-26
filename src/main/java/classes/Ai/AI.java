@@ -80,8 +80,8 @@ public class AI extends Thread {
 
     public String Move() throws ChessGameException, InterruptedException {
 
-//        String fenToMoveTowardsWith = moveWithSimpleAi();
-        String fenToMoveTowardsWith = moveWithMiniMaxAi();
+        String fenToMoveTowardsWith = moveWithSimpleAi();
+//        String fenToMoveTowardsWith = moveWithMiniMaxAi();
         if (fenToMoveTowardsWith.length() < 10){
             getViewBoard().gameEndDialog(fenToMoveTowardsWith);
             this.interrupt();
