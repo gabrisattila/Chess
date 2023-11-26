@@ -675,6 +675,10 @@ public class Move {
 
     //endregion
 
+    private void alwaysCheckKings(){
+
+    }
+
     //endregion
 
 }

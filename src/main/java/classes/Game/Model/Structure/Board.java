@@ -48,6 +48,8 @@ public class Board implements IBoard {
 
     private boolean Draw;
 
+    private boolean Submitted;
+
     //endregion
 
 

@@ -5,6 +5,7 @@ import classes.Game.I18N.Location;
 import classes.Game.Model.Structure.*;
 import lombok.*;
 
+import javax.swing.*;
 import java.util.*;
 
 import static classes.Game.I18N.METHODS.*;
@@ -126,6 +127,29 @@ public class ViewBoard implements IBoard {
                 }
             }
         }
+    }
+
+    public void gameEndDialog(String gameResult) {
+        String message;
+        String title;
+
+        switch (gameResult) {
+            case "CheckMate" -> {
+                title = "Sakk Matt";
+                message = "A játék véget ért, Sakk Matt!";
+            }
+            case "Draw" -> {
+                title = "Döntetlen";
+                message = "A játék döntetlen lett!";
+            }
+            case "Submitted" -> {
+                title = "A játéknak vége";
+                message = "A játék befejeződött!";
+            }
+            default -> throw new IllegalArgumentException("Érvénytelen eredmény: " + gameResult);
+        }
+
+        JOptionPane.showMessageDialog(null, message, title, JOptionPane.INFORMATION_MESSAGE);
     }
 
     //endregion

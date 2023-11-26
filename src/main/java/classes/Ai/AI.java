@@ -2,6 +2,7 @@ package classes.Ai;
 
 import classes.Game.I18N.ChessGameException;
 import classes.Game.I18N.Location;
+import classes.Game.I18N.Tuple;
 import classes.Game.Model.Structure.*;
 import lombok.*;
 
@@ -26,6 +27,8 @@ public class AI extends Thread {
     //region Fields
 
     private String color;
+    
+    private Tuple<Boolean, Boolean, Boolean> gameEnd = new Tuple<>(false, false, false);
 
     //endregion
 
@@ -75,7 +78,13 @@ public class AI extends Thread {
 
     public String Move() throws ChessGameException, InterruptedException {
 
-        return moveWithSimpleAi();
+        String fenToMoveTowardsWith = moveWithSimpleAi();
+//        String fenToMoveTowardsWith = moveWithMiniMaxAi();
+        if (fenToMoveTowardsWith.length() < 10){
+            getViewBoard().gameEndDialog(fenToMoveTowardsWith);
+            this.interrupt();
+        }
+        return fenToMoveTowardsWith;
 //        return moveWithMiniMaxAi();
 
     }
@@ -91,6 +100,16 @@ public class AI extends Thread {
 
             Random random = new Random();
             getAiBoard().rangeUpdater();
+            gameEndCheck();
+            if (gameFinished()){
+                if (gameEnd.getFirst()){
+                    return "CheckMate";
+                } else if (gameEnd.getSecond()) {
+                    return "Draw";
+                } else if (gameEnd.getThird()) {
+                    return "Submitted";
+                }
+            }
 
             Piece stepper;
             ArrayList<Piece> possibleSteppers = new ArrayList<>();
@@ -113,6 +132,20 @@ public class AI extends Thread {
             return BoardToFen(getAiBoard());
         }
 
+    }
+
+    private void gameEndCheck() throws ChessGameException {
+        if (getAiBoard().isCheckMate()){
+            gameEnd.setFirst(true);
+        } else if (getAiBoard().isDraw()) {
+            gameEnd.setSecond(true);
+        } else if (getAiBoard().isSubmitted()) {
+            gameEnd.setThird(true);
+        }
+    }
+
+    private boolean gameFinished(){
+        return gameEnd.getFirst() || gameEnd.getSecond() || gameEnd.getThird();
     }
 
     private static boolean checkIfItsPawnGotIn(IPiece stepper, Location to){

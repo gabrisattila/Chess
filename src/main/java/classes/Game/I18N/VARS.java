@@ -445,6 +445,8 @@ public class VARS {
 
         public static final AtomicBoolean pauseFlag = new AtomicBoolean(false);
 
+        public static AtomicBoolean gameEndFlag = new AtomicBoolean(false);
+
     }
 
 }

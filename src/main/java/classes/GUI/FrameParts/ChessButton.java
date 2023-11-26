@@ -302,13 +302,14 @@ public class ChessButton extends JButton {
         }
 
         private void newGameInitialization(boolean oneAi, boolean whiteAi, boolean test) throws ChessGameException, InterruptedException {
+            gameEndFlag.set(false);
             theresOnlyOneAi = oneAi;
             whiteAiNeeded = whiteAi;
             isTest = test;
             String setUpFen = "";
 
             if (isTest){
-                setUpFen = testFens.get("whiteDownKingTakesOwnKnight");
+                setUpFen = testFens.get("whiteDownKingKnightCheckMateBadSign");
 //                whiteAiNeeded = setUpFen.split(" ")[1].charAt(0) == 'w';
             }
 

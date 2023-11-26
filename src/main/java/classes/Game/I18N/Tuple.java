@@ -1,8 +1,9 @@
 package classes.Game.I18N;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
+@Getter
+@Setter
 public class Tuple<F, S, T> {
 
     //region Fields

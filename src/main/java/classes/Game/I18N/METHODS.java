@@ -20,6 +20,15 @@ import static classes.GUI.Frame.Window.*;
 
 public class METHODS {
 
+    public static void exceptionIgnorer(){
+        Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
+            if (!gameEndFlag.get()){
+                System.err.println("Unhandled exception caught: " + e.getMessage());
+                e.printStackTrace();
+            }
+        });
+    }
+
     public static void fillCastleArray(char castleCase){
         int i = 0;
         for (int j = 0; j < alreadyHappenedCastleCases.length; j++) {
