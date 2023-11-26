@@ -2,6 +2,7 @@ package classes.Ai;
 
 import classes.Game.I18N.ChessGameException;
 import classes.Game.I18N.Location;
+import classes.Game.I18N.Pair;
 import classes.Game.I18N.Tuple;
 import classes.Game.Model.Structure.*;
 import lombok.*;
@@ -124,6 +125,10 @@ public class AI extends Thread {
             ArrayList<Location> ableToStepThereIn = new ArrayList<>(stepper.getPossibleRange());
             int indexOfChosen = random.nextInt(0, ableToStepThereIn.size());
             Location toStepOn = ableToStepThereIn.get(indexOfChosen);
+            Pair<Integer, Location> kingCheck = kingAliveCheckRandomMove(indexOfChosen, toStepOn, ableToStepThereIn, random);
+            if (kingCheck.getFirst() != indexOfChosen){
+                toStepOn = kingCheck.getSecond();
+            }
 
             Move move = new Move(stepper, toStepOn, getAiBoard());
             move.setMustLogged(true);
@@ -153,6 +158,17 @@ public class AI extends Thread {
                 to.getI() == stepper.getAttributes().getEnemyAndOwnStartRow().getFirst() ||
                 to.getI() == 7 || to.getI() == 0);
     }
+
+    private Pair<Integer, Location> kingAliveCheckRandomMove(int indexOfChosen, Location toStepOn, ArrayList<Location> ableToStepThere, Random random) throws ChessGameException {
+        while (notNull(getAiBoard().getPiece(toStepOn)) && getAiBoard().getPiece(toStepOn).getType() == K){
+            indexOfChosen = random.nextInt(0, ableToStepThere.size());
+            toStepOn = ableToStepThere.get(indexOfChosen);
+        }
+        return new Pair<>(indexOfChosen, toStepOn);
+    }
+
+
+    //region Mini Max
 
     private String moveWithMiniMaxAi() throws ChessGameException, InterruptedException {
         AiTree tree = new AiTree(BoardToFen(getAiBoard()));
@@ -301,6 +317,7 @@ public class AI extends Thread {
         return sum;
     }
 
+    //endregion
 
     //endregion
 

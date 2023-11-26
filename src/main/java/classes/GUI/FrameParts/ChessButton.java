@@ -303,6 +303,7 @@ public class ChessButton extends JButton {
 
         private void newGameInitialization(boolean oneAi, boolean whiteAi, boolean test) throws ChessGameException, InterruptedException {
             gameEndFlag.set(false);
+            stepNumber = 1;
             theresOnlyOneAi = oneAi;
             whiteAiNeeded = whiteAi;
             isTest = test;
