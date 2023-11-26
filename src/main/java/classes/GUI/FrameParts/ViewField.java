@@ -18,7 +18,6 @@ import static classes.Game.Model.Logic.EDT.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
-import static classes.Game.Model.Structure.Board.getBoard;
 import static classes.Game.Model.Structure.Move.*;
 
 @Getter
@@ -149,20 +148,17 @@ public class ViewField extends JButton implements classes.Game.Model.Structure.I
 
         @Override
         public void mouseEntered(MouseEvent e) {
-            MouseEnter((ViewField) e.getSource());
+            hoover((ViewField) e.getSource());
         }
 
         @Override
         public void mouseExited(MouseEvent e) {
-            MouseExit((ViewField) e.getSource());
+            hoover((ViewField) e.getSource());
         }
 
-        private void MouseEnter(ViewField source) {
-            changeFieldColor(source);
-        }
-
-        private void MouseExit(ViewField source) {
-            changeFieldColor(source);
+        private void hoover(ViewField source) {
+            if (playerTurn)
+                changeFieldColor(source);
         }
 
         private void PlayerClick(ViewField clicked) throws ChessGameException, InterruptedException {
