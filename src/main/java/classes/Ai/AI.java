@@ -20,6 +20,7 @@ import static classes.Game.Model.Logic.EDT.*;
 import static classes.Game.Model.Structure.Board.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Game.Model.Structure.Move.*;
+import static classes.Game.Model.Structure.GameOver.*;
 
 @Getter
 @Setter
@@ -79,14 +80,13 @@ public class AI extends Thread {
 
     public String Move() throws ChessGameException, InterruptedException {
 
-        String fenToMoveTowardsWith = moveWithSimpleAi();
-//        String fenToMoveTowardsWith = moveWithMiniMaxAi();
+//        String fenToMoveTowardsWith = moveWithSimpleAi();
+        String fenToMoveTowardsWith = moveWithMiniMaxAi();
         if (fenToMoveTowardsWith.length() < 10){
             getViewBoard().gameEndDialog(fenToMoveTowardsWith);
             this.interrupt();
         }
         return fenToMoveTowardsWith;
-//        return moveWithMiniMaxAi();
 
     }
 
@@ -173,8 +173,8 @@ public class AI extends Thread {
     private String moveWithMiniMaxAi() throws ChessGameException, InterruptedException {
         AiTree tree = new AiTree(BoardToFen(getAiBoard()));
 
-        double best = newMiniMax(tree, MINIMAX_DEPTH, -350, 350);
-//        double best = oldMiniMax(tree, 0, whiteToPlay, -350, 350);
+//        double best = newMiniMax(tree, MINIMAX_DEPTH, -350, 350);
+        double best = simpleMiniMaxWithAlphaBeta(tree, 0, whiteToPlay);
 
         String bestChildsFen = "";
 
@@ -192,7 +192,7 @@ public class AI extends Thread {
         return bestChildsFen;
     }
 
-    private double newMiniMax(AiTree starterPos, int depth, double alpha, double beta) throws ChessGameException, InterruptedException {
+    private double negaMaxWithAlphaBeta(AiTree starterPos, int depth, double alpha, double beta) throws ChessGameException, InterruptedException {
 
         synchronized (pauseFlag){
 
@@ -227,7 +227,7 @@ public class AI extends Thread {
                 nextChild = new AiTree(child);
                 starterPos.getChildren().add(nextChild);
 
-                double evaluation = -newMiniMax(nextChild, depth - 1, -beta, -alpha);
+                double evaluation = -negaMaxWithAlphaBeta(nextChild, depth - 1, -beta, -alpha);
 
                 if (evaluation >= beta){
                     break;
@@ -243,7 +243,7 @@ public class AI extends Thread {
 
     }
 
-    private double oldMiniMax(AiTree starterPos, int depth, boolean maxNeeded, double alpha, double beta) throws ChessGameException, InterruptedException {
+    private double simpleMiniMaxWithAlphaBeta(AiTree starterPos, int depth, boolean maxNeeded) throws ChessGameException, InterruptedException {
 
         FenToBoard(starterPos.getFen(), getAiBoard());
         getAiBoard().rangeUpdater();
@@ -277,12 +277,9 @@ public class AI extends Thread {
 
                 nextChild = new AiTree(child);
                 starterPos.getChildren().add(nextChild);
-                double evaluatedMiniMax = oldMiniMax(nextChild, depth < MINIMAX_DEPTH ? depth + 1 : depth, false, alpha, beta);
+                double evaluatedMiniMax = simpleMiniMaxWithAlphaBeta(nextChild, depth < MINIMAX_DEPTH ? depth + 1 : depth, false);
 
                 possibleMax = Math.max(possibleMax, evaluatedMiniMax);
-                alpha = Math.max(alpha, evaluatedMiniMax);
-                if (beta <= alpha)
-                    break;
             }
             starterPos.setFinalValue(possibleMax);
             return possibleMax;
@@ -292,12 +289,9 @@ public class AI extends Thread {
 
                 nextChild = new AiTree(child);
                 starterPos.getChildren().add(nextChild);
-                double evaluatedMiniMax = oldMiniMax(nextChild, depth < MINIMAX_DEPTH ? depth + 1 : depth, true, alpha, beta);
+                double evaluatedMiniMax = simpleMiniMaxWithAlphaBeta(nextChild, depth < MINIMAX_DEPTH ? depth + 1 : depth, true);
 
                 possibleMin = Math.min(possibleMin, evaluatedMiniMax);
-                beta = Math.min(beta, evaluatedMiniMax);
-                if (beta <= alpha)
-                    break;
             }
             starterPos.setFinalValue(possibleMin);
             return possibleMin;

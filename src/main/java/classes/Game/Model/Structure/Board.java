@@ -363,7 +363,8 @@ public class Board implements IBoard {
         Set<Location> originRangeOfBound = boundOrKing.getPossibleRange();
         boundOrKing.getPossibleRange().removeIf(l -> {
             try {
-                return notNull(getPiece(l)) && getPiece(l).isWhite() == boundOrKing.isWhite();
+                return notNull(getPiece(l)) && getPiece(l).isWhite() == boundOrKing.isWhite() &&
+                        ((boundOrKing.getType() == K && enemyKingNotInNeighbour(l, boundOrKing.isWhite()) || boundOrKing.getType() != K) ) ;
             } catch (ChessGameException e) {
                 throw new RuntimeException(e);
             }

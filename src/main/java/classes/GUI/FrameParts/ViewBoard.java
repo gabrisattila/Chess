@@ -117,7 +117,16 @@ public class ViewBoard implements IBoard {
 
         convertOneBoardToAnother(getViewBoard(), getBoard());
         getBoard().rangeUpdater();
-
+        if (gameFinished()){
+            if (getBoard().isCheckMate()){
+                getViewBoard().gameEndDialog("CheckMate");
+            } else if (getBoard().isDraw()) {
+                getViewBoard().gameEndDialog("Draw");
+            } else if (getBoard().isSubmitted()) {
+                getViewBoard().gameEndDialog("Submitted");
+            }
+            return;
+        }
         for (int i = 0; i < MAX_HEIGHT; i++) {
             for (int j = 0; j < MAX_WIDTH; j++) {
                 if (getBoard().getField(i, j).isGotPiece() && notNull(getBoard().getPiece(i, j).getPossibleRange())){
@@ -150,6 +159,10 @@ public class ViewBoard implements IBoard {
         }
 
         JOptionPane.showMessageDialog(null, message, title, JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private boolean gameFinished() throws ChessGameException {
+        return getBoard().isCheckMate() || getBoard().isDraw() || getBoard().isSubmitted();
     }
 
     //endregion

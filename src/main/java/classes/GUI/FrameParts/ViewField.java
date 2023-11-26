@@ -17,6 +17,7 @@ import static classes.Game.Model.Logic.EDT.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
+import static classes.Game.Model.Structure.Board.getBoard;
 import static classes.Game.Model.Structure.Move.*;
 
 @Getter

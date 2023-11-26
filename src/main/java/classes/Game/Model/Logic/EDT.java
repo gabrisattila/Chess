@@ -57,19 +57,18 @@ public class EDT {
         } else {
             SwingUtilities.invokeLater(EDT::initializeAis);
 
-            if (theresOnlyOneAi && !whiteAiNeeded)
+            if (theresOnlyOneAi)
                 getViewBoard().rangeUpdater();
         }
     }
 
     private static void initializeAis(){
         if (theresOnlyOneAi){
-            if (whiteAiNeeded) {
+            if ((whiteToPlay && whiteAiNeeded) || (!whiteToPlay && !whiteAiNeeded)){
                 aiTurn = true;
                 playerTurn = false;
                 startAI();
-            }
-            else {
+            }else {
                 aiTurn = false;
                 playerTurn = true;
             }

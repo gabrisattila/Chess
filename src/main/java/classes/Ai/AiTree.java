@@ -61,7 +61,7 @@ public class AiTree {
     //endregion
 
     public boolean isGameEndInPos() throws ChessGameException {
-        return getAiBoard().isDraw() || getAiBoard().isCheckMate();
+        return getAiBoard().isDraw() || getAiBoard().isCheckMate() || getAiBoard().isSubmitted();
     }
 
     public Set<String> collectPossibilities() throws ChessGameException, InterruptedException {
