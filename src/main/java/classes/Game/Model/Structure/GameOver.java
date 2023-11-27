@@ -32,6 +32,7 @@ public enum GameOver {
         GameOver gameOver;
         if (game instanceof ViewBoard) {
             convertOneBoardToAnother(getViewBoard(), getBoard());
+            getBoard().rangeUpdater();
             gameEndDialog(gameEnd(getBoard()));
         }else if (game instanceof Board){
             gameOver = gameEnd((Board) game);
@@ -82,8 +83,7 @@ public enum GameOver {
         return gameEnd(getBoard());
     }
 
-    public static GameOver gameEnd(Board board) throws ChessGameException{
-        board.rangeUpdater();
+    public static GameOver gameEnd(Board board) {
         if (notNull(board.getCheckers())){
             if (notNull(board.getCheckers().getSecond()) &&
                     board.getMyKing().getPossibleRange().isEmpty()){

@@ -61,7 +61,7 @@ public class AiTree {
     //endregion
 
     public boolean isGameEndInPos() throws ChessGameException {
-        return getAiBoard().isDraw() || getAiBoard().isCheckMate() || getAiBoard().isSubmitted();
+        return getBoard().isDraw() || getBoard().isCheckMate() || getBoard().isSubmitted();
     }
 
     public Set<String> collectPossibilities() throws ChessGameException, InterruptedException {
@@ -76,8 +76,8 @@ public class AiTree {
 
     private HashMap<IPiece, Set<Move>> collectLegalMoves() throws ChessGameException {
         HashMap<IPiece, Set<Move>> legals;
-        getAiBoard().addLegalMovesToPieces();
-        legals = getAiBoard().getAllLegalMoves(whiteToPlay);
+        getBoard().addLegalMovesToPieces();
+        legals = getBoard().getAllLegalMoves(whiteToPlay);
         return legals;
     }
 
@@ -85,8 +85,8 @@ public class AiTree {
         for (IPiece p : legalMoves.keySet()) {
             for (Move m : legalMoves.get(p)) {
                 Step(m);
-                possibilities.add(BoardToFen(getAiBoard()));
-                FenToBoard(fen, getAiBoard());
+                possibilities.add(BoardToFen(getBoard()));
+                FenToBoard(fen, getBoard());
             }
         }
     }

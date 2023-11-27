@@ -76,26 +76,12 @@ public class Board implements IBoard {
         return board.getFirst();
     }
 
-
-    public static Board getAiBoard() {
-        if(board == null){
-            Board b1 = new Board(MAX_WIDTH, MAX_HEIGHT);
-            board = new Pair<>(b1, null);
-        }
-        if (isNull(board.getSecond())){
-            Board b2 = new Board(MAX_WIDTH, MAX_HEIGHT);
-            board.setSecond(b2);
-            return board.getSecond();
-        }
-        return board.getSecond();
-    }
-
     //endregion
 
 
     //region Methods
 
-    //region GetBy
+    //region Get
 
     @Override
     public IField getField(int i, int j){
@@ -118,7 +104,6 @@ public class Board implements IBoard {
             if (p.getI() == i && p.getJ() == j)
                 return p;
         }
-//        System.out.println("Nincs figura a(z) " + (this == getAiBoard() ? "aiboard" : "board") + "[" + i + ", " + j + "] mezőn.\n");
         return null;
     }
 
@@ -163,6 +148,10 @@ public class Board implements IBoard {
 
     public Location getKingsPlace(boolean forWhite){
         return getKing(forWhite).getLocation();
+    }
+    
+    public boolean isGameFinished(){
+        return CheckMate || Draw || Submitted;
     }
 
     //endregion
@@ -213,6 +202,7 @@ public class Board implements IBoard {
         Submitted = false;
         for (IPiece p : pieces) {
             ((Piece) p).setPossibleRange(new HashSet<>());
+            ((Piece) p).setWatchedRange(new HashSet<>());
             ((Piece) p).setLegalMoves(new HashSet<>());
             ((Piece) p).setBounderPiece(null);
         }

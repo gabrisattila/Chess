@@ -3,7 +3,6 @@ package classes.Ai;
 import classes.Game.I18N.ChessGameException;
 import classes.Game.I18N.Location;
 import classes.Game.I18N.Pair;
-import classes.Game.I18N.Tuple;
 import classes.Game.Model.Structure.*;
 import lombok.*;
 
@@ -11,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Set;
 
-import static classes.Ai.AiTree.*;
 import static classes.Ai.FenConverter.*;
 import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.METHODS.*;
@@ -19,6 +17,7 @@ import static classes.Game.I18N.PieceType.*;
 import static classes.Game.Model.Logic.EDT.*;
 import static classes.Game.Model.Structure.Board.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
+import static classes.Game.Model.Structure.GameOver.*;
 import static classes.Game.Model.Structure.Move.*;
 
 @Getter
@@ -28,8 +27,6 @@ public class AI extends Thread {
     //region Fields
 
     private String color;
-    
-    private Tuple<Boolean, Boolean, Boolean> gameEnd = new Tuple<>(false, false, false);
 
     //endregion
 
@@ -55,16 +52,14 @@ public class AI extends Thread {
         }
     }
 
-    /**
-     *
-     */
     public void aiMove() throws ChessGameException, InterruptedException {
-        convertOneBoardToAnother(getViewBoard(), getAiBoard());
+        convertOneBoardToAnother(getViewBoard(), getBoard());
         Move();
     }
 
     public void Move() throws ChessGameException, InterruptedException {
         moveWithSimpleAi();
+//        moveWithMiniMaxAi();
     }
 
     public void moveWithSimpleAi() throws ChessGameException, InterruptedException {
@@ -76,12 +71,15 @@ public class AI extends Thread {
                 } catch (InterruptedException ignored) {}
             }
 
+            getBoard().rangeUpdater();
+            GameOverAction(getBoard());
+            if (gameFinished())
+                return;
+
             Random random = new Random();
-
-
             Piece stepper;
             ArrayList<Piece> possibleSteppers = new ArrayList<>();
-            for (IPiece p : getAiBoard().myPieces()) {
+            for (IPiece p : getBoard().myPieces()) {
                 if (!p.getPossibleRange().isEmpty()){
                     possibleSteppers.add((Piece) p);
                 }
@@ -97,37 +95,19 @@ public class AI extends Thread {
                 toStepOn = kingCheck.getSecond();
             }
 
-            Move move = new Move(stepper, toStepOn, getAiBoard());
+            Move move = new Move(stepper, toStepOn, getBoard());
             move.setMustLogged(true);
             Step(move);
-
-            return BoardToFen(getAiBoard());
         }
 
-    }
-
-    private void gameEndCheck() throws ChessGameException {
-        if (getAiBoard().isCheckMate()){
-            gameEnd.setFirst(true);
-        } else if (getAiBoard().isDraw()) {
-            gameEnd.setSecond(true);
-        } else if (getAiBoard().isSubmitted()) {
-            gameEnd.setThird(true);
-        }
     }
 
     private boolean gameFinished(){
-        return gameEnd.getFirst() || gameEnd.getSecond() || gameEnd.getThird();
-    }
-
-    private static boolean checkIfItsPawnGotIn(IPiece stepper, Location to){
-        return stepper.getType() == G && (
-                to.getI() == stepper.getAttributes().getEnemyAndOwnStartRow().getFirst() ||
-                to.getI() == 7 || to.getI() == 0);
+        return getBoard().isGameFinished();
     }
 
     private Pair<Integer, Location> kingAliveCheckRandomMove(int indexOfChosen, Location toStepOn, ArrayList<Location> ableToStepThere, Random random) throws ChessGameException {
-        while (notNull(getAiBoard().getPiece(toStepOn)) && getAiBoard().getPiece(toStepOn).getType() == K){
+        while (notNull(getBoard().getPiece(toStepOn)) && getBoard().getPiece(toStepOn).getType() == K){
             indexOfChosen = random.nextInt(0, ableToStepThere.size());
             toStepOn = ableToStepThere.get(indexOfChosen);
         }
@@ -137,10 +117,9 @@ public class AI extends Thread {
 
     //region Mini Max
 
-    private String moveWithMiniMaxAi() throws ChessGameException, InterruptedException {
-        AiTree tree = new AiTree(BoardToFen(getAiBoard()));
+    private void moveWithMiniMaxAi() throws ChessGameException, InterruptedException {
+        AiTree tree = new AiTree(BoardToFen(getBoard()));
 
-//        double best = newMiniMax(tree, MINIMAX_DEPTH, -350, 350);
         double best = simpleMiniMaxWithAlphaBeta(tree, 0, whiteToPlay);
 
         String bestChildsFen = "";
@@ -148,15 +127,10 @@ public class AI extends Thread {
         for (AiTree child : tree.getChildren()) {
             if (best == child.getFinalValue()){
                 bestChildsFen = child.getFen();
-                FenToBoard(bestChildsFen, getAiBoard());
+                FenToBoard(bestChildsFen, getBoard());
                 break;
             }
         }
-
-        if (getAiBoard().isDraw() || getAiBoard().isCheckMate()){
-            //TODO GameOver lekezelése
-        }
-        return bestChildsFen;
     }
 
     private double negaMaxWithAlphaBeta(AiTree starterPos, int depth, double alpha, double beta) throws ChessGameException, InterruptedException {
@@ -171,15 +145,15 @@ public class AI extends Thread {
                 }
             }
 
-            FenToBoard(starterPos.getFen(), getAiBoard());
-            getAiBoard().rangeUpdater();
+            FenToBoard(starterPos.getFen(), getBoard());
+            getBoard().rangeUpdater();
 
             if (depth == 0){
                 return evaluate(starterPos);
             }
 
             if (starterPos.isGameEndInPos()){
-                if (getAiBoard().isCheckMate()){
+                if (getBoard().isCheckMate()){
                     return -5000;
                 }else {
                     return 0;
@@ -212,13 +186,16 @@ public class AI extends Thread {
 
     private double simpleMiniMaxWithAlphaBeta(AiTree starterPos, int depth, boolean maxNeeded) throws ChessGameException, InterruptedException {
 
-        FenToBoard(starterPos.getFen(), getAiBoard());
-        getAiBoard().rangeUpdater();
+        FenToBoard(starterPos.getFen(), getBoard());
+        getBoard().rangeUpdater();
+        SubmissionOrDrawThinking();
 
-        if (depth == MINIMAX_DEPTH || starterPos.isGameEndInPos()){
+        GameOverAction(starterPos);
 
-            if (starterPos.isGameEndInPos()){
-                if (getAiBoard().isCheckMate()) {
+        if (depth == MINIMAX_DEPTH || gameFinished()){
+
+            if (gameFinished()){
+                if (getBoard().isCheckMate()) {
                     if (whiteToPlay) {
                         //Sötét nyert, mert világos kapott mattot
                         return -5000;
@@ -226,7 +203,15 @@ public class AI extends Thread {
                         //Világos nyert, mert sötét kapott mattot
                         return 5000;
                     }
-                }else if (getAiBoard().isDraw()) {
+                } else if (getBoard().isSubmitted()) {
+                    if (whiteToPlay) {
+                        //Sötét nyert, mert világos kapott mattot
+                        return -5000;
+                    } else {
+                        //Világos nyert, mert sötét kapott mattot
+                        return 5000;
+                    }
+                } else if (getBoard().isDraw()) {
                     //TODO Kitalálni kinek hogyan súlyozzam adott helyzethez mérten
                     return 0;
                 }
@@ -265,13 +250,19 @@ public class AI extends Thread {
         }
     }
 
+    private void SubmissionOrDrawThinking(){
+//        if (){
+//            getBoard().setSubmitted(true);
+//        }
+    }
+
     public static double evaluate(AiTree aiTree) throws ChessGameException {
 
-        FenToBoard(aiTree.getFen(), getAiBoard());
+        FenToBoard(aiTree.getFen(), getBoard());
 
         double sum = 0;
 
-        for (IPiece p : getAiBoard().getPieces()) {
+        for (IPiece p : getBoard().getPieces()) {
             sum += ((Piece) p).getVALUE();
         }
 
