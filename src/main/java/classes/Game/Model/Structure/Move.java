@@ -283,7 +283,7 @@ public class Move {
 
     }
 
-    private boolean emPassantAuthorizationIf() throws ChessGameException, InterruptedException {
+    private boolean emPassantAuthorizationIf() throws ChessGameException {
 
         convertOneBoardToAnother(getViewBoard(), getBoard());
         getBoard().rangeUpdater();
@@ -298,13 +298,6 @@ public class Move {
                                 .collect(Collectors.toSet()),
                         getTheMiddleLocation(What.getLocation(), to)
                 );
-    }
-
-    private Location getTheMiddleLocation(Location first, Location last){
-        if (first.getJ() == last.getJ()){
-            return new Location((first.getI() + last.getI()) / 2, first.getJ());
-        }
-        return null;
     }
 
     private void moveDocumenting(){

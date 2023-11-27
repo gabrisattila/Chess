@@ -4,8 +4,6 @@ public class TODO {
 
     //TODO GameEnd egységesítése. Ugyanazt az egy függvényt lehessen használni Board-ra, Fen-re,Ai-ban, Ai nélkül, AiTree-re.
 
-    //TODO BoundOrCheck átnézése, legutóbb volt olyan, hogy a király tudott ütni a másik király védelmében lévő figurát.
-
     //TODO EmPassant és Sánc átgondolása, hogy a fenébe is fog működni miniMax esetén
 
     //TODO MiniMax:

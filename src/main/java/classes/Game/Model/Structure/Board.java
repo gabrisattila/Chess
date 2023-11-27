@@ -509,6 +509,64 @@ public class Board implements IBoard {
 
     //region Calc line from one piece to another
 
+    private Set<Location> boundPieceOrKingRangeCalc(IPiece attacked,
+                                                    IPiece attacker,
+                                                    IPiece secondAttacker) throws ChessGameException {
+
+        Set<Location> originRangeOfBound = setBaseRangeOfAttacked(attacked);
+
+        IField originFieldOfBound = getField(attacked);
+        IField field = new Field(-1, -1);
+        field.setPiece(attacked);
+        originFieldOfBound.clean();
+
+        attacker.updateRange();
+        if (notNull(secondAttacker))
+            secondAttacker.updateRange();
+
+        Set<Location> newAttackRange;
+        Set<Location> attackedNewRange;
+
+        if (attacked.getType() == K){
+            newAttackRange = (Set<Location>)(
+                    notNull(secondAttacker) ?
+                            union(attacker.getPossibleRange(), secondAttacker.getPossibleRange()) :
+                            attacker.getPossibleRange()
+            );
+            attackedNewRange = (Set<Location>) minus(originRangeOfBound, newAttackRange);
+        }else {
+            newAttackRange = new HashSet<>(lineFromAPieceToAnother(attacker, attacked));
+            if (locationCollectionContains(originRangeOfBound, attacker.getLocation()))
+                newAttackRange.add(attacker.getLocation());
+            attackedNewRange = (Set<Location>) intersection(originRangeOfBound, newAttackRange);
+        }
+
+        originFieldOfBound.setPiece(attacked);
+        field.clean();
+        attacker.updateRange();
+        if (notNull(secondAttacker))
+            secondAttacker.updateRange();
+
+        return attackedNewRange;
+    }
+
+    private Set<Location> setBaseRangeOfAttacked(IPiece boundOrKing) throws ChessGameException {
+        if (boundOrKing.getType() == K){
+            for (Location l : matrixChooser.get(K)) {
+                l = getKingsPlace(boundOrKing.isWhite()).add(l);
+
+                if (
+                        containsLocation(l) && enemyKingNotInNeighbour(l, boundOrKing.isWhite()) &&
+                        !locationCollectionContains(getAttackRangeWithoutKing(!boundOrKing.isWhite()), l) &&
+                        (isNull(getPiece(l)) || (notNull(getPiece(l)) && getPiece(l).isWhite() != boundOrKing.isWhite()))
+                ) {
+                    boundOrKing.getPossibleRange().add(l);
+                }
+            }
+        }
+        return boundOrKing.getPossibleRange();
+    }
+
     private ArrayList<Location> lineFromAPieceToAnother(IPiece fromPiece, IPiece toPiece) {
         ArrayList<Location> lineToPiece = new ArrayList<>();
         if (fromPiece.getType() != H && fromPiece.getType() != G && !fromPieceIsOnCorner(fromPiece, toPiece)){
@@ -520,10 +578,6 @@ public class Board implements IBoard {
             }
         }
         return lineToPiece;
-    }
-
-    private boolean fromPieceIsOnCorner(IPiece fromPiece, IPiece toPiece) {
-        return Math.abs(fromPiece.getI() - toPiece.getI()) == 1 && Math.abs(fromPiece.getJ() - toPiece.getJ()) == 1;
     }
 
     private Pair<Integer, Integer> addToIAddToJ(IPiece fromPiece, IPiece toPiece){
@@ -542,59 +596,10 @@ public class Board implements IBoard {
         return addIAddJ;
     }
 
-    public Set<Location> boundPieceOrKingRangeCalc(IPiece boundOrKing, IPiece bounderOrChecker, IPiece secondChecker) throws ChessGameException {
-        Location originLocOfBound = boundOrKing.getLocation();
-        if (boundOrKing.getType() == K){
-            for (Location l : matrixChooser.get(K)) {
-                l = getKingsPlace(boundOrKing.isWhite()).add(l);
-                if (containsLocation(l))
-                    boundOrKing.getPossibleRange().add(l);
-            }
-        }
-        Set<Location> originRangeOfBound = boundOrKing.getPossibleRange();
-        boundOrKing.getPossibleRange().removeIf(l -> {
-            try {
-                return notNull(getPiece(l)) && getPiece(l).isWhite() == boundOrKing.isWhite() &&
-                        ((boundOrKing.getType() == K && enemyKingNotInNeighbour(l, boundOrKing.isWhite()) || boundOrKing.getType() != K) ) ;
-            } catch (ChessGameException e) {
-                throw new RuntimeException(e);
-            }
-        });
-
-        IField originFieldOfBound = getField(boundOrKing);
-        IField field = new Field(-1, -1);
-        field.setPiece(boundOrKing);
-        originFieldOfBound.clean();
-        bounderOrChecker.updateRange();
-        if (notNull(secondChecker))
-            secondChecker.updateRange();
-
-        Set<Location> newRangeOfCheckersOrBounder = (Set<Location>)(
-            notNull(secondChecker) ? union(bounderOrChecker.getPossibleRange(), secondChecker.getPossibleRange()) : bounderOrChecker.getPossibleRange()
-        );
-
-        if (isNull(secondChecker) && boundOrKing.getType() != K){
-            newRangeOfCheckersOrBounder.clear();
-            newRangeOfCheckersOrBounder.addAll(lineFromAPieceToAnother(bounderOrChecker, getKing(!bounderOrChecker.isWhite())));
-        }
-
-        Set<Location> newRangeOfBound = (Set<Location>)
-                (boundOrKing.getType() == K ?
-                        minus(originRangeOfBound, newRangeOfCheckersOrBounder) :
-                        intersection(originRangeOfBound, newRangeOfCheckersOrBounder));
-        newRangeOfBound = (Set<Location>) minus(newRangeOfBound, originLocOfBound);
-        if (boundOrKing.getType() != K && locationCollectionContains(originRangeOfBound, bounderOrChecker.getLocation())){
-            newRangeOfBound.add(bounderOrChecker.getLocation());
-        }
-
-        originFieldOfBound.setPiece(boundOrKing);
-        field.clean();
-        bounderOrChecker.updateRange();
-        if (notNull(secondChecker))
-            secondChecker.updateRange();
-
-        return newRangeOfBound;
+    private boolean fromPieceIsOnCorner(IPiece fromPiece, IPiece toPiece) {
+        return Math.abs(fromPiece.getI() - toPiece.getI()) == 1 && Math.abs(fromPiece.getJ() - toPiece.getJ()) == 1;
     }
+
 
     //endregion
 
@@ -604,11 +609,13 @@ public class Board implements IBoard {
         return pieces.stream().anyMatch(p -> p.getType() == K);
     }
 
-    private Location getTheMiddleLocation(Location first, Location last){
+    public static Location getTheMiddleLocation(Location first, Location last){
         if (first.getJ() == last.getJ()){
             return new Location((first.getI() + last.getI()) / 2, first.getJ());
         }else if (first.getI() == last.getI()){
             return new Location(first.getI(), (first.getJ() + last.getJ()) / 2);
+        } else if (Math.abs(first.getI() - last.getI()) == Math.abs(first.getJ() - last.getJ())) {
+            return new Location((first.getI() + last.getI()) / 2, (first.getJ() + last.getJ()) / 2);
         }
         return null;
     }
