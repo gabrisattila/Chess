@@ -167,6 +167,8 @@ public class Board implements IBoard {
 
     //endregion
 
+    //region Main functions
+
     @Override
     public void cleanBoard() throws ChessGameException {
         for (ArrayList<IField> row : this.fields) {
@@ -187,7 +189,6 @@ public class Board implements IBoard {
 
         clearRangesAndStuffBeforeUpdate();
         pseudos();
-        GameOver gameOver;
         if (theBoardHasKings()){
             constrainPseudos();
             inspectCheck(!whiteToPlay);
@@ -196,33 +197,15 @@ public class Board implements IBoard {
                 kingFreeRange(whiteToPlay);
             }else {
                 kingFreeRange(!whiteToPlay);
-                kingStepOutFromCheck(!whiteToPlay);
-                constrainMyPiecesRangeInsteadOfCheck(whiteToPlay);
-                blockCheckOrHitChecker(!whiteToPlay);
+                kingRangeInsteadOfCheck(whiteToPlay);
             }
-            gameOver = gameEnd(this);
-            if (notNull(gameOver)){
-                if (gameOver == GameOver.CheckMate){
-                    CheckMate = true;
-                }else {
-                    Draw = true;
-                }
-            }
+            gameOverCase();
         }
     }
 
-    private boolean theBoardHasKings() {
-        return pieces.stream().anyMatch(p -> p.getType() == K);
-    }
+    //endregion
 
-    private Location getTheMiddleLocation(Location first, Location last){
-        if (first.getJ() == last.getJ()){
-            return new Location((first.getI() + last.getI()) / 2, first.getJ());
-        }else if (first.getI() == last.getI()){
-            return new Location(first.getI(), (first.getJ() + last.getJ()) / 2);
-        }
-        return null;
-    }
+    //region Update Range Main
 
     private void clearRangesAndStuffBeforeUpdate(){
         checkers = null;
@@ -245,10 +228,44 @@ public class Board implements IBoard {
     }
 
     public void constrainPseudos() throws ChessGameException {
-        //Leszűkítés annak függvényében, hogy valamely lépéssel sakk felfedése történne
         constrainCalculatedPseudos(!whiteToPlay);
         constrainCalculatedPseudos(whiteToPlay);
     }
+
+    /**
+     * @param enemy this means who would be the player, who gives check
+     * Alapvetés szerint pedig megnézi sakkban vagyok-e, ha igen, a checkers többé nem null
+     */
+    private void inspectCheck(boolean enemy) {
+        if (locationCollectionContains(getAttackRangeWithoutKing(enemy), getKingsPlace(!enemy))){
+            findCheckers(enemy);
+        }
+    }
+
+    private void kingFreeRange(boolean my) throws ChessGameException {
+        kingSimpleMoves(my);
+        kingCastle(my);
+    }
+
+    private void kingRangeInsteadOfCheck(boolean my) throws ChessGameException {
+        kingStepOutFromCheck(!my);
+        constrainMyPiecesRangeInsteadOfCheck(my);
+    }
+
+    private void gameOverCase(){
+        GameOver gameOver = gameEnd(this);
+        if (notNull(gameOver)){
+            if (gameOver == GameOver.CheckMate){
+                CheckMate = true;
+            }else {
+                Draw = true;
+            }
+        }
+    }
+
+    //endregion
+
+    //region Basic constrains, bind setting
 
     private void constrainCalculatedPseudos(boolean my) throws ChessGameException{
         Set<IPiece> piecesInBinding = findAndSetBindingFor(my);
@@ -322,6 +339,175 @@ public class Board implements IBoard {
             }
         });
     }
+
+    //endregion
+
+    //region King Free Move
+
+    private void kingSimpleMoves(boolean my) throws ChessGameException {
+        getKing(my).setPossibleRange(new HashSet<>());
+        for (Location l : matrixChooser.get(K)) {
+            Location possiblePlaceOfMyKing = l.add(getKingsPlace(my));
+            if (
+                    containsLocation(possiblePlaceOfMyKing) &&
+                            (!getField(possiblePlaceOfMyKing).isGotPiece() || getPiece(possiblePlaceOfMyKing).isWhite() != my) &&
+                            enemyKingNotInNeighbour(possiblePlaceOfMyKing, my) &&
+                            !locationCollectionContains(getAttackRangeWithoutKing(!my), possiblePlaceOfMyKing)
+            ){
+                getKing(my).setPossibleRange(possiblePlaceOfMyKing);
+            }
+        }
+    }
+
+    /**
+     * @param forWhite in that case forWhite simbolize my color (Me is who count the step)
+     */
+    private void kingCastle(boolean forWhite) throws ChessGameException {
+        if (MAX_WIDTH == 8 && MAX_HEIGHT == 8 &&
+                (   (forWhite && (whiteBigCastleEnabled || whiteSmallCastleEnabled)) ||
+                        (!forWhite && (blackBigCastleEnabled || blackSmallCastleEnabled)) ) &&
+                !locationCollectionContains(getAttackRangeWithoutKing(!forWhite), getKingsPlace(forWhite))
+        ){
+
+            int bigCastlePointPlus = (whiteDown ? -2 : 2);
+            int bigCastleRoadPlus = (whiteDown ? -1 : 1);
+            Location bigCastlePointLocation = new Location(
+                    getKingsPlace(forWhite).getI(),
+                    getKingsPlace(forWhite).getJ() + bigCastlePointPlus);
+            Location bigCastleRoadLocation = new Location(
+                    getKingsPlace(forWhite).getI(),
+                    getKingsPlace(forWhite).getJ() + bigCastleRoadPlus);
+
+            int smallCastlePointPlus = (whiteDown ? 2 : -2);
+            int smallCastleRoadPlus = (whiteDown ? 1 : -1);
+            Location smallCastlePointLocation = new Location(
+                    getKingsPlace(forWhite).getI(),
+                    getKingsPlace(forWhite).getJ() + smallCastlePointPlus);
+            Location smallCastleRoadLocation = new Location(
+                    getKingsPlace(forWhite).getI(),
+                    getKingsPlace(forWhite).getJ() + smallCastleRoadPlus);
+
+            Location bigCastlePlusRoad = getTheMiddleLocation(bigCastlePointLocation, new Location(
+                    bigCastlePointLocation.getI(), bigCastlePointLocation.getJ() == 2 ? 1 : 6
+            ));
+            boolean theresNoPieceOnBigCastlePlusRoad = notNull(bigCastlePlusRoad) && isNull(getPiece(bigCastlePlusRoad));
+
+            castleHelper(
+                    forWhite,
+                    bigCastlePointLocation,
+                    bigCastleRoadLocation,
+                    smallCastlePointLocation,
+                    smallCastleRoadLocation,
+                    (getKing(forWhite).isWhite() ? whiteBigCastleEnabled : blackBigCastleEnabled)
+                            && theresNoPieceOnBigCastlePlusRoad,
+                    getKing(forWhite).isWhite() ? whiteSmallCastleEnabled : blackSmallCastleEnabled
+            );
+
+        }
+    }
+
+    private void castleHelper(boolean forWhite,
+                              Location bigCastlePointLocation,
+                              Location bigCastleRoadLocation,
+                              Location smallCastlePointLocation,
+                              Location smallCastleRoadLocation,
+                              boolean bigCastleEnabled,
+                              boolean smallCastleEnabled) throws ChessGameException {
+        if (castleHelpersIf(forWhite, bigCastlePointLocation, bigCastleRoadLocation, bigCastleEnabled)) {
+            getKing(forWhite).setPossibleRange(bigCastlePointLocation);
+        }
+
+        if (castleHelpersIf(forWhite, smallCastlePointLocation, smallCastleRoadLocation, smallCastleEnabled)) {
+            getKing(forWhite).setPossibleRange(smallCastlePointLocation);
+        }
+    }
+
+    private boolean castleHelpersIf(boolean forWhite, Location castlePoint, Location castleRoad, boolean castleEnabled) throws ChessGameException {
+        return castleEnabled &&
+                !locationCollectionContains(getAttackRangeWithoutKing(!forWhite), castleRoad) &&
+                !locationCollectionContains(getAttackRangeWithoutKing(!forWhite), castlePoint) &&
+                enemyKingNotInNeighbour(castleRoad, forWhite) &&
+                enemyKingNotInNeighbour(castlePoint, forWhite) &&
+                isNull(getPiece(castlePoint)) && isNull(getPiece(castleRoad));
+    }
+
+    //endregion
+
+    //region Check
+
+    private void findCheckers(boolean enemy){
+        checkers = new Pair<>();
+        for (IPiece enemyP : getPieces(enemy)) {
+            if (locationCollectionContains(enemyP.getPossibleRange(), getKingsPlace(!enemy))){
+                if (isNull(checkers.getFirst())) {
+                    checkers.setFirst(enemyP);
+                } else {
+                    checkers.setSecond(enemyP);
+                    break;
+                }
+            }
+        }
+    }
+
+    private void kingStepOutFromCheck(boolean enemy) throws ChessGameException {
+        if (checkers.getFirst().getType() == H || checkers.getFirst().getType() == G){
+            for (Location l : matrixChooser.get(K)) {
+                l = getKingsPlace(!enemy).add(l);
+                if (
+                        containsLocation(l) && !locationCollectionContains(getAttackRangeWithoutKing(enemy), l) &&
+                                (isNull(getPiece(l)) || (notNull(getPiece(l)) && getPiece(l).isWhite() == enemy)) &&
+                                enemyKingNotInNeighbour(l, !enemy)
+                ){
+                    getKing(!enemy).setPossibleRange(l);
+                }
+            }
+        }else {
+            getKing(!enemy).setPossibleRange(
+                    boundPieceOrKingRangeCalc(getKing(!enemy), checkers.getFirst(), checkers.getSecond())
+            );
+            if (locationCollectionContains(getKing(!enemy).getPossibleRange(), checkers.getFirst().getLocation())){
+                if (((Piece) checkers.getFirst()).isInDefend()){
+                    getKing(!enemy).getPossibleRange().remove(checkers.getFirst().getLocation());
+                }
+            }
+            if (notNull(checkers.getSecond()) &&
+                    locationCollectionContains(getKing(!enemy).getPossibleRange(), checkers.getSecond().getLocation())){
+                if (((Piece) checkers.getSecond()).isInDefend()){
+                    getKing(!enemy).getPossibleRange().remove(checkers.getSecond().getLocation());
+                }
+            }
+        }
+    }
+
+    private void constrainMyPiecesRangeInsteadOfCheck(boolean my){
+        if (isNull(checkers.getSecond())) {
+            blockCheckOrHitChecker(my);
+        }
+    }
+
+    private void blockCheckOrHitChecker(boolean my)  {
+        ArrayList<Location> lineToTheKingFromChecker = lineFromAPieceToAnother(checkers.getFirst(), getKing(my));
+        ArrayList<Location> newRangeForPiece;
+        for (IPiece p : getPieces(my)) {
+            if (p.getType() != K) {
+                newRangeForPiece = new ArrayList<>();
+                if (!((Piece) p).isInBinding()) {
+                    if (locationCollectionContains(p.getPossibleRange(), checkers.getFirst().getLocation())) {
+                        newRangeForPiece.add(checkers.getFirst().getLocation());
+                    }
+                    if (!lineToTheKingFromChecker.isEmpty()) {
+                        newRangeForPiece.addAll(intersection(p.getPossibleRange(), lineToTheKingFromChecker));
+                    }
+                }
+                p.getPossibleRange().clear();
+                p.getPossibleRange().addAll(newRangeForPiece);
+            }
+        }
+    }
+
+    //endregion
+
+    //region Calc line from one piece to another
 
     private ArrayList<Location> lineFromAPieceToAnother(IPiece fromPiece, IPiece toPiece) {
         ArrayList<Location> lineToPiece = new ArrayList<>();
@@ -410,182 +596,21 @@ public class Board implements IBoard {
         return newRangeOfBound;
     }
 
+    //endregion
 
-    private void kingFreeRange(boolean my) throws ChessGameException {
-        kingSimpleMoves(my);
-        kingCastle(my);
+    //region Simple Helpers
+
+    private boolean theBoardHasKings() {
+        return pieces.stream().anyMatch(p -> p.getType() == K);
     }
 
-    /**
-     * @param enemy this means who would be the player, who gives check
-     * Alapvetés szerint pedig megnézi sakkban vagyok-e, ha igen, aszerint kalkulálja ki a további lehetőségeim
-     */
-    private void inspectCheck(boolean enemy) {
-        if (locationCollectionContains(getAttackRangeWithoutKing(enemy), getKingsPlace(!enemy))){
-            findCheckers(enemy);
+    private Location getTheMiddleLocation(Location first, Location last){
+        if (first.getJ() == last.getJ()){
+            return new Location((first.getI() + last.getI()) / 2, first.getJ());
+        }else if (first.getI() == last.getI()){
+            return new Location(first.getI(), (first.getJ() + last.getJ()) / 2);
         }
-    }
-    private void findCheckers(boolean enemy){
-        checkers = new Pair<>();
-        for (IPiece enemyP : getPieces(enemy)) {
-            if (locationCollectionContains(enemyP.getPossibleRange(), getKingsPlace(!enemy))){
-                if (isNull(checkers.getFirst())) {
-                    checkers.setFirst(enemyP);
-                } else {
-                    checkers.setSecond(enemyP);
-                    break;
-                }
-            }
-        }
-    }
-
-    private void kingStepOutFromCheck(boolean enemy) throws ChessGameException {
-        if (checkers.getFirst().getType() == H || checkers.getFirst().getType() == G){
-            for (Location l : matrixChooser.get(K)) {
-                l = getKingsPlace(!enemy).add(l);
-                if (
-                        containsLocation(l) && !locationCollectionContains(getAttackRangeWithoutKing(enemy), l) &&
-                        (isNull(getPiece(l)) || (notNull(getPiece(l)) && getPiece(l).isWhite() == enemy)) &&
-                        enemyKingNotInNeighbour(l, !enemy)
-                ){
-                    getKing(!enemy).setPossibleRange(l);
-                }
-            }
-        }else {
-            getKing(!enemy).setPossibleRange(
-                    boundPieceOrKingRangeCalc(getKing(!enemy), checkers.getFirst(), checkers.getSecond())
-            );
-            if (locationCollectionContains(getKing(!enemy).getPossibleRange(), checkers.getFirst().getLocation())){
-                if (((Piece) checkers.getFirst()).isInDefend()){
-                    getKing(!enemy).getPossibleRange().remove(checkers.getFirst().getLocation());
-                }
-            }
-            if (notNull(checkers.getSecond()) &&
-                    locationCollectionContains(getKing(!enemy).getPossibleRange(), checkers.getSecond().getLocation())){
-                if (((Piece) checkers.getSecond()).isInDefend()){
-                    getKing(!enemy).getPossibleRange().remove(checkers.getSecond().getLocation());
-                }
-            }
-        }
-    }
-
-    private void constrainMyPiecesRangeInsteadOfCheck(boolean my){
-        if (isNull(checkers.getSecond())) {
-            blockCheckOrHitChecker(my);
-        }
-    }
-
-    private void blockCheckOrHitChecker(boolean my)  {
-        ArrayList<Location> lineToTheKingFromChecker = lineFromAPieceToAnother(checkers.getFirst(), getKing(my));
-        ArrayList<Location> newRangeForPiece;
-        for (IPiece p : getPieces(my)) {
-            if (p.getType() != K) {
-                newRangeForPiece = new ArrayList<>();
-                if (!((Piece) p).isInBinding()) {
-                    if (locationCollectionContains(p.getPossibleRange(), checkers.getFirst().getLocation())) {
-                        newRangeForPiece.add(checkers.getFirst().getLocation());
-                    }
-                    if (!lineToTheKingFromChecker.isEmpty()) {
-                        newRangeForPiece.addAll(intersection(p.getPossibleRange(), lineToTheKingFromChecker));
-                    }
-                }
-                p.getPossibleRange().clear();
-                p.getPossibleRange().addAll(newRangeForPiece);
-            }
-        }
-    }
-
-    private Set<IPiece> getTisztek(boolean my) {
-        return pieces.stream().filter(p -> p.isWhite() == my && p.getType() != G && p.getType() != K).collect(Collectors.toSet());
-    }
-
-    //region King Helpers
-
-    private void kingSimpleMoves(boolean my) throws ChessGameException {
-        getKing(my).setPossibleRange(new HashSet<>());
-        for (Location l : matrixChooser.get(K)) {
-            Location possiblePlaceOfMyKing = l.add(getKingsPlace(my));
-            if (
-                    containsLocation(possiblePlaceOfMyKing) &&
-                    (!getField(possiblePlaceOfMyKing).isGotPiece() || getPiece(possiblePlaceOfMyKing).isWhite() != my) &&
-                    enemyKingNotInNeighbour(possiblePlaceOfMyKing, my) &&
-                    !locationCollectionContains(getAttackRangeWithoutKing(!my), possiblePlaceOfMyKing)
-            ){
-                getKing(my).setPossibleRange(possiblePlaceOfMyKing);
-            }
-        }
-    }
-
-    /**
-     * @param forWhite in that case forWhite simbolize my color (Me is who count the step)
-     */
-    private void kingCastle(boolean forWhite) throws ChessGameException {
-        if (MAX_WIDTH == 8 && MAX_HEIGHT == 8 &&
-                (   (forWhite && (whiteBigCastleEnabled || whiteSmallCastleEnabled)) ||
-                    (!forWhite && (blackBigCastleEnabled || blackSmallCastleEnabled)) ) &&
-                !locationCollectionContains(getAttackRangeWithoutKing(!forWhite), getKingsPlace(forWhite))
-        ){
-
-            int bigCastlePointPlus = (whiteDown ? -2 : 2);
-            int bigCastleRoadPlus = (whiteDown ? -1 : 1);
-            Location bigCastlePointLocation = new Location(
-                    getKingsPlace(forWhite).getI(),
-                    getKingsPlace(forWhite).getJ() + bigCastlePointPlus);
-            Location bigCastleRoadLocation = new Location(
-                    getKingsPlace(forWhite).getI(),
-                    getKingsPlace(forWhite).getJ() + bigCastleRoadPlus);
-
-            int smallCastlePointPlus = (whiteDown ? 2 : -2);
-            int smallCastleRoadPlus = (whiteDown ? 1 : -1);
-            Location smallCastlePointLocation = new Location(
-                    getKingsPlace(forWhite).getI(),
-                    getKingsPlace(forWhite).getJ() + smallCastlePointPlus);
-            Location smallCastleRoadLocation = new Location(
-                    getKingsPlace(forWhite).getI(),
-                    getKingsPlace(forWhite).getJ() + smallCastleRoadPlus);
-
-            Location bigCastlePlusRoad = getTheMiddleLocation(bigCastlePointLocation, new Location(
-                    bigCastlePointLocation.getI(), bigCastlePointLocation.getJ() == 2 ? 1 : 6
-            ));
-            boolean theresNoPieceOnBigCastlePlusRoad = notNull(bigCastlePlusRoad) && isNull(getPiece(bigCastlePlusRoad));
-
-            castleHelper(
-                    forWhite,
-                    bigCastlePointLocation,
-                    bigCastleRoadLocation,
-                    smallCastlePointLocation,
-                    smallCastleRoadLocation,
-                    (getKing(forWhite).isWhite() ? whiteBigCastleEnabled : blackBigCastleEnabled)
-                            && theresNoPieceOnBigCastlePlusRoad,
-                    getKing(forWhite).isWhite() ? whiteSmallCastleEnabled : blackSmallCastleEnabled
-            );
-
-        }
-    }
-
-    private void castleHelper(boolean forWhite,
-                              Location bigCastlePointLocation,
-                              Location bigCastleRoadLocation,
-                              Location smallCastlePointLocation,
-                              Location smallCastleRoadLocation,
-                              boolean bigCastleEnabled,
-                              boolean smallCastleEnabled) throws ChessGameException {
-        if (castleHelpersIf(forWhite, bigCastlePointLocation, bigCastleRoadLocation, bigCastleEnabled)) {
-            getKing(forWhite).setPossibleRange(bigCastlePointLocation);
-        }
-
-        if (castleHelpersIf(forWhite, smallCastlePointLocation, smallCastleRoadLocation, smallCastleEnabled)) {
-            getKing(forWhite).setPossibleRange(smallCastlePointLocation);
-        }
-    }
-
-    private boolean castleHelpersIf(boolean forWhite, Location castlePoint, Location castleRoad, boolean castleEnabled) throws ChessGameException {
-        return castleEnabled &&
-                !locationCollectionContains(getAttackRangeWithoutKing(!forWhite), castleRoad) &&
-                !locationCollectionContains(getAttackRangeWithoutKing(!forWhite), castlePoint) &&
-                enemyKingNotInNeighbour(castleRoad, forWhite) &&
-                enemyKingNotInNeighbour(castlePoint, forWhite) &&
-                isNull(getPiece(castlePoint)) && isNull(getPiece(castleRoad));
+        return null;
     }
 
     /**
@@ -601,14 +626,20 @@ public class Board implements IBoard {
                                         getKingsPlace(!my).EQUALS(new Location(i, j))));
     }
 
-    //endregion
-
     private Set<Location> getAttackRangeWithoutKing(boolean forWhite) {
         return pieces.stream()
                 .filter(p -> (p.getType() != K && p.isWhite() == forWhite))
                 .flatMap(p -> ((Piece) p).getAttackRange().stream())
                 .collect(Collectors.toSet());
     }
+
+    private Set<IPiece> getTisztek(boolean my) {
+        return pieces.stream().filter(p -> p.isWhite() == my && p.getType() != G && p.getType() != K).collect(Collectors.toSet());
+    }
+
+    //endregion
+
+    //region Used by AiTree
 
     public void addLegalMovesToPieces() {
         for (IPiece p : myPieces()) {
@@ -634,6 +665,8 @@ public class Board implements IBoard {
         }
         return legals;
     }
+
+    //endregion
 
     //endregion
 
