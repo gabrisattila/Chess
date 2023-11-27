@@ -37,6 +37,8 @@ public interface IPiece {
 
      Set<Location> getPossibleRange();
 
+     Set<Location> getWatchedRange();
+
      void updateRange() throws ChessGameException;
 
      default boolean EQUALS(IPiece ownPiece) {

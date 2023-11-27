@@ -20,7 +20,6 @@ import static classes.Game.Model.Logic.EDT.*;
 import static classes.Game.Model.Structure.Board.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Game.Model.Structure.Move.*;
-import static classes.Game.Model.Structure.GameOver.*;
 
 @Getter
 @Setter
@@ -49,48 +48,26 @@ public class AI extends Thread {
     @Override
     public void run(){
         try {
-            String fen = aiMove();
-            receivedMoveFromAi(fen);
-        } catch (ChessGameException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * @return the Fen String of the best option what minimax chosen
-     */
-    public String aiMove() throws ChessGameException {
-        convertOneBoardToAnother(getViewBoard(), getAiBoard());
-        return calculate();
-    }
-
-    /**
-     * @return the Fen String of the best option what minimax chosen
-     */
-    public String calculate() {
-        String fen;
-        try {
-            fen = Move();
-            addToContinuousTree(fen);
+            aiMove();
+            receivedMoveFromAi(BoardToFen(getBoard()));
         } catch (ChessGameException | InterruptedException e) {
             throw new RuntimeException(e);
         }
-        return fen;
     }
 
-    public String Move() throws ChessGameException, InterruptedException {
-
-        String fenToMoveTowardsWith = moveWithSimpleAi();
-//        String fenToMoveTowardsWith = moveWithMiniMaxAi();
-        if (fenToMoveTowardsWith.length() < 10){
-            getViewBoard().gameEndDialog(fenToMoveTowardsWith);
-            this.interrupt();
-        }
-        return fenToMoveTowardsWith;
-
+    /**
+     *
+     */
+    public void aiMove() throws ChessGameException, InterruptedException {
+        convertOneBoardToAnother(getViewBoard(), getAiBoard());
+        Move();
     }
 
-    public String moveWithSimpleAi() throws ChessGameException, InterruptedException {
+    public void Move() throws ChessGameException, InterruptedException {
+        moveWithSimpleAi();
+    }
+
+    public void moveWithSimpleAi() throws ChessGameException, InterruptedException {
 
         synchronized (pauseFlag){
             while (pauseFlag.get()) {
@@ -100,17 +77,7 @@ public class AI extends Thread {
             }
 
             Random random = new Random();
-            getAiBoard().rangeUpdater();
-            gameEndCheck();
-            if (gameFinished()){
-                if (gameEnd.getFirst()){
-                    return "CheckMate";
-                } else if (gameEnd.getSecond()) {
-                    return "Draw";
-                } else if (gameEnd.getThird()) {
-                    return "Submitted";
-                }
-            }
+
 
             Piece stepper;
             ArrayList<Piece> possibleSteppers = new ArrayList<>();

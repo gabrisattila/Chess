@@ -199,7 +199,6 @@ public class Board implements IBoard {
                 kingFreeRange(!whiteToPlay);
                 kingRangeInsteadOfCheck(whiteToPlay);
             }
-            gameOverCase();
         }
     }
 
@@ -250,17 +249,6 @@ public class Board implements IBoard {
     private void kingRangeInsteadOfCheck(boolean my) throws ChessGameException {
         kingStepOutFromCheck(!my);
         constrainMyPiecesRangeInsteadOfCheck(my);
-    }
-
-    private void gameOverCase(){
-        GameOver gameOver = gameEnd(this);
-        if (notNull(gameOver)){
-            if (gameOver == GameOver.CheckMate){
-                CheckMate = true;
-            }else {
-                Draw = true;
-            }
-        }
     }
 
     //endregion

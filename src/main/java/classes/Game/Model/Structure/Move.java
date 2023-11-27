@@ -267,7 +267,7 @@ public class Move {
      *         "emPassantAut" if the move enables future emPassant
      *         "pawnGotIn" if the move was pawnGotIn
      */
-    private String detectSpecialCase() throws ChessGameException, InterruptedException {
+    private String detectSpecialCase() {
 
         if (what.getType() == K && Math.abs(from.getJ() - to.getJ()) == 2){
             return "castle";
@@ -283,20 +283,15 @@ public class Move {
 
     }
 
-    private boolean emPassantAuthorizationIf() throws ChessGameException {
-
-        convertOneBoardToAnother(getViewBoard(), getBoard());
-        getBoard().rangeUpdater();
-        IPiece What = getBoard().getPiece(what.getLocation());
-
-        return What.getType() == G && Math.abs(What.getI() - to.getI()) == 2 &&
+    private boolean emPassantAuthorizationIf() {
+        return what.getType() == G && Math.abs(what.getI() - to.getI()) == 2 &&
                 locationCollectionContains(
                         //Itt azt nézzük meg, hogy a közbülső mezőt tartalmazza-e bármely ellenfél gyalog watchRange-e
                         getBoard().getPieces().stream()
-                                .filter(p -> p.isWhite() != What.isWhite() && p.getType() == G)
-                                .flatMap(p -> ((Piece) p).getWatchedRange().stream())
+                                .filter(p -> p.isWhite() != what.isWhite() && p.getType() == G)
+                                .flatMap(p -> p.getWatchedRange().stream())
                                 .collect(Collectors.toSet()),
-                        getTheMiddleLocation(What.getLocation(), to)
+                        getTheMiddleLocation(what.getLocation(), to)
                 );
     }
 

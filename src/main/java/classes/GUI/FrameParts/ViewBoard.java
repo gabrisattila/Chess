@@ -6,15 +6,18 @@ import classes.Game.Model.Structure.*;
 import lombok.*;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.*;
 
 import static classes.Game.I18N.METHODS.*;
+import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Game.Model.Structure.Board.*;
+import static classes.Game.Model.Structure.GameOver.*;
 
 @Getter
 @Setter
-public class ViewBoard implements IBoard {
+public class ViewBoard extends Component implements IBoard {
 
     //region Fields
 
@@ -46,10 +49,6 @@ public class ViewBoard implements IBoard {
             viewBoard = new ViewBoard(MAX_WIDTH, MAX_HEIGHT);
         }
         return viewBoard;
-    }
-
-    public static void deleteViewBoard(){
-        viewBoard = null;
     }
 
     //endregion
@@ -115,54 +114,18 @@ public class ViewBoard implements IBoard {
     @Override
     public void rangeUpdater() throws ChessGameException, InterruptedException {
 
-        convertOneBoardToAnother(getViewBoard(), getBoard());
-        getBoard().rangeUpdater();
-        if (gameFinished()){
-            if (getBoard().isCheckMate()){
-                getViewBoard().gameEndDialog("CheckMate");
-            } else if (getBoard().isDraw()) {
-                getViewBoard().gameEndDialog("Draw");
-            } else if (getBoard().isSubmitted()) {
-                getViewBoard().gameEndDialog("Submitted");
-            }
-            return;
-        }
+        GameOverAction(this);
+
         for (int i = 0; i < MAX_HEIGHT; i++) {
             for (int j = 0; j < MAX_WIDTH; j++) {
                 if (getBoard().getField(i, j).isGotPiece() && notNull(getBoard().getPiece(i, j).getPossibleRange())){
-                    getPiece(i, j).getPossibleRange().addAll(
-                            getBoard().getPiece(i, j).getPossibleRange()
-                    );
+                    getPiece(i, j).getPossibleRange().addAll(getBoard().getPiece(i, j).getPossibleRange());
+                    if (getPiece(i, j).getType() == G){
+                        getPiece(i, j).getWatchedRange().addAll(getBoard().getPiece(i, j).getWatchedRange());
+                    }
                 }
             }
         }
-    }
-
-    public void gameEndDialog(String gameResult) {
-        String message;
-        String title;
-
-        switch (gameResult) {
-            case "CheckMate" -> {
-                title = "Sakk Matt";
-                message = "A játék véget ért, Sakk Matt!";
-            }
-            case "Draw" -> {
-                title = "Döntetlen";
-                message = "A játék döntetlen lett!";
-            }
-            case "Submitted" -> {
-                title = "A játéknak vége";
-                message = "A játék befejeződött!";
-            }
-            default -> throw new IllegalArgumentException("Érvénytelen eredmény: " + gameResult);
-        }
-
-        JOptionPane.showMessageDialog(null, message, title, JOptionPane.INFORMATION_MESSAGE);
-    }
-
-    private boolean gameFinished() throws ChessGameException {
-        return getBoard().isCheckMate() || getBoard().isDraw() || getBoard().isSubmitted();
     }
 
     //endregion

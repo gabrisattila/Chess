@@ -17,7 +17,7 @@ import static classes.Game.I18N.VARS.FINALS.*;
 
 @Getter
 @Setter
-public class ViewPiece extends ImageIcon implements IPiece, Comparable<ViewPiece>{
+public class ViewPiece extends ImageIcon implements IPiece{
 
     //region Fields
 
@@ -30,6 +30,8 @@ public class ViewPiece extends ImageIcon implements IPiece, Comparable<ViewPiece
     private PieceAttributes attributes;
 
     private Set<Location> possibleRange;
+
+    private Set<Location> watchedRange;
 
     //endregion
 
@@ -53,6 +55,7 @@ public class ViewPiece extends ImageIcon implements IPiece, Comparable<ViewPiece
         attributes.setType(charToPieceType(type));
 
         possibleRange = new HashSet<>();
+        watchedRange = new HashSet<>();
     }
 
     public ViewPiece(String source, PieceAttributes attributes){
@@ -61,6 +64,7 @@ public class ViewPiece extends ImageIcon implements IPiece, Comparable<ViewPiece
         this.attributes = attributes;
 
         possibleRange = new HashSet<>();
+        watchedRange = new HashSet<>();
     }
 
     //endregion
@@ -91,24 +95,6 @@ public class ViewPiece extends ImageIcon implements IPiece, Comparable<ViewPiece
     @Override
     public void updateRange() {
 
-    }
-
-    public boolean inRange(ViewField clicked) {
-        for (Location l : possibleRange) {
-            if (clicked.getLoc().EQUALS(l))
-                return true;
-        }
-        return false;
-    }
-
-    @Override
-    public int compareTo(ViewPiece p1) {
-        int result = Character.compare(getType().toLowerCase(), p1.getType().toLowerCase());
-        //if (result == 0)
-        //    result = Integer.compare(getI(), p1.getI());
-        //if (result == 0)
-        //    result = Integer.compare(getJ(), p1.getJ());
-        return Integer.compare(hashCode(), p1.hashCode());
     }
 
     //endregion
