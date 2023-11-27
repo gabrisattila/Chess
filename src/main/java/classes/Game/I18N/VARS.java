@@ -283,7 +283,10 @@ public class VARS {
 
             //region CheckMate
 
-            put("whiteDownCheckMateInOneTwoKingOneRook", "1k1/3/K1R b ---- - 1 1");
+            put("whiteDownCheckMateInOneTwoKingOneRookOneStep3x3", "1k1/3/K1R b ---- - 1 1");
+            put("whiteDownCheckMateInOneTwoKingOneRookTwoStep4x4", "k3/4/K3/2R1 b ---- - 1 1");
+            put("whiteDownCheckMateInOneTwoKingOneRookSomeSteps4x4", "k3/4/4/K2R b ---- - 1 1");
+            put("whiteDownCheckMateInOneTwoKingOneQueenSteps5x5", "k4/5/5/5/K3Q b ---- - 1 1");
 
             //endregion
 
@@ -349,11 +352,11 @@ public class VARS {
 
     public static class MUTABLE {
 
-        public static int MAX_WIDTH = 8;
+        public static int MAX_WIDTH = 4;
 
-        public static int MAX_HEIGHT = 8;
+        public static int MAX_HEIGHT = 4;
 
-        public static int MINIMAX_DEPTH = 2;
+        public static int MINIMAX_DEPTH = 8;
 
         public static Character[] alreadyHappenedCastleCases = new Character[4];
 

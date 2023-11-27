@@ -58,8 +58,8 @@ public class AI extends Thread {
     }
 
     public void Move() throws ChessGameException, InterruptedException {
-        moveWithSimpleAi();
-//        moveWithMiniMaxAi();
+//        moveWithSimpleAi();
+        moveWithMiniMaxAi();
     }
 
     public void moveWithSimpleAi() throws ChessGameException, InterruptedException {
@@ -120,14 +120,11 @@ public class AI extends Thread {
     private void moveWithMiniMaxAi() throws ChessGameException, InterruptedException {
         AiTree tree = new AiTree(BoardToFen(getBoard()));
 
-        double best = simpleMiniMaxWithAlphaBeta(tree, 0, whiteToPlay);
-
-        String bestChildsFen = "";
+        double best = simpleMiniMax(tree, 0, whiteToPlay, -350, 350);
 
         for (AiTree child : tree.getChildren()) {
             if (best == child.getFinalValue()){
-                bestChildsFen = child.getFen();
-                FenToBoard(bestChildsFen, getBoard());
+                FenToBoard(child.getFen(), getBoard());
                 break;
             }
         }
@@ -184,7 +181,7 @@ public class AI extends Thread {
 
     }
 
-    private double simpleMiniMaxWithAlphaBeta(AiTree starterPos, int depth, boolean maxNeeded) throws ChessGameException, InterruptedException {
+    private double simpleMiniMax(AiTree starterPos, int depth, boolean maxNeeded, double alpha, double beta) throws ChessGameException, InterruptedException {
 
         FenToBoard(starterPos.getFen(), getBoard());
         getBoard().rangeUpdater();
@@ -193,31 +190,34 @@ public class AI extends Thread {
         GameOverAction(starterPos);
 
         if (depth == MINIMAX_DEPTH || gameFinished()){
-
+            double evaluation = 0;
             if (gameFinished()){
                 if (getBoard().isCheckMate()) {
                     if (whiteToPlay) {
                         //Sötét nyert, mert világos kapott mattot
-                        return -5000;
+                        evaluation = -5000;
                     } else {
                         //Világos nyert, mert sötét kapott mattot
-                        return 5000;
+                        evaluation = 5000;
                     }
                 } else if (getBoard().isSubmitted()) {
                     if (whiteToPlay) {
-                        //Sötét nyert, mert világos kapott mattot
-                        return -5000;
+                        //Sötét nyert, mert világos adta fel
+                        evaluation = -5000;
                     } else {
-                        //Világos nyert, mert sötét kapott mattot
-                        return 5000;
+                        //Világos nyert, mert sötét adta fel
+                        evaluation = 5000;
                     }
                 } else if (getBoard().isDraw()) {
                     //TODO Kitalálni kinek hogyan súlyozzam adott helyzethez mérten
-                    return 0;
+                    evaluation = 0;
                 }
+            }else {
+                evaluation = evaluate(starterPos);
             }
 
-            return evaluate(starterPos);
+            starterPos.setFinalValue(evaluation);
+            return evaluation;
         }
 
         Set<String> possibilities = starterPos.collectPossibilities();
@@ -226,24 +226,28 @@ public class AI extends Thread {
         if (maxNeeded){
             double possibleMax = -350;
             for (String child : possibilities){
-
                 nextChild = new AiTree(child);
                 starterPos.getChildren().add(nextChild);
-                double evaluatedMiniMax = simpleMiniMaxWithAlphaBeta(nextChild, depth < MINIMAX_DEPTH ? depth + 1 : depth, false);
 
+                double evaluatedMiniMax = simpleMiniMax(nextChild, depth + 1, false, -350, 350);
                 possibleMax = Math.max(possibleMax, evaluatedMiniMax);
+                alpha = Math.max(alpha, evaluatedMiniMax);
+                if (beta <= alpha)
+                    break;
             }
             starterPos.setFinalValue(possibleMax);
             return possibleMax;
         }else {
             double possibleMin = 350;
             for (String child : possibilities){
-
                 nextChild = new AiTree(child);
                 starterPos.getChildren().add(nextChild);
-                double evaluatedMiniMax = simpleMiniMaxWithAlphaBeta(nextChild, depth < MINIMAX_DEPTH ? depth + 1 : depth, true);
 
+                double evaluatedMiniMax = simpleMiniMax(nextChild, depth + 1, true, -350, 350);
                 possibleMin = Math.min(possibleMin, evaluatedMiniMax);
+                beta = Math.min(beta, evaluatedMiniMax);
+                if (beta <= alpha)
+                    break;
             }
             starterPos.setFinalValue(possibleMin);
             return possibleMin;

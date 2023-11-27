@@ -87,6 +87,7 @@ public class AiTree {
                 Step(m);
                 possibilities.add(BoardToFen(getBoard()));
                 FenToBoard(fen, getBoard());
+                getBoard().rangeUpdater();
             }
         }
     }

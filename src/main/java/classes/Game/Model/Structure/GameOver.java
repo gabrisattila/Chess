@@ -23,11 +23,7 @@ public enum GameOver {
     Draw,
 
     Submission;
-
-    public static boolean isGameEndInThisPosition(AiTree node) throws ChessGameException{
-        return notNull(gameEnd(node));
-    }
-
+    
     public static void GameOverAction(Object game) throws ChessGameException{
         GameOver gameOver;
         if (game instanceof ViewBoard) {
@@ -44,7 +40,7 @@ public enum GameOver {
                 }
             }
         } else if (game instanceof AiTree) {
-            gameOver = gameEnd((AiTree) game);
+            gameOver = gameEnd(getBoard());
             if (notNull(gameOver)){
                 switch (gameOver) {
                     case CheckMate -> getBoard().setCheckMate(true);
@@ -78,11 +74,6 @@ public enum GameOver {
         }
     }
 
-    public static GameOver gameEnd(AiTree node) throws ChessGameException{
-        FenToBoard(node.getFen(), getBoard());
-        return gameEnd(getBoard());
-    }
-
     public static GameOver gameEnd(Board board) {
         if (notNull(board.getCheckers())){
             if (notNull(board.getCheckers().getSecond()) &&
@@ -92,7 +83,7 @@ public enum GameOver {
                     board.myPieces().stream().allMatch(p -> p.getPossibleRange().isEmpty())) {
                 return CheckMate;
             }
-        } else if (board.getPieces().stream().allMatch(p -> p.getType() == K) || board.myPieces().stream().allMatch(p ->((Piece) p).getPossibleRange().isEmpty())){
+        } else if (board.getPieces().stream().allMatch(p -> p.getType() == K) || board.myPieces().stream().allMatch(p -> p.getPossibleRange().isEmpty())){
             return Draw;
         }
 
