@@ -2,8 +2,6 @@ package classes;
 
 public class TODO {
 
-    //TODO invokeLater a changeColor-ra
-
     //TODO EmPassant és Sánc átgondolása, hogy a fenébe is fog működni miniMax esetén
 
     //TODO Feladás és döntetlen gombok

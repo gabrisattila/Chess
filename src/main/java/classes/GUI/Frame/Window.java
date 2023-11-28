@@ -98,7 +98,7 @@ public class Window extends JFrame {
         addButtons();
         buttonsEnabled();
 
-//        canBeLogger = false;
+        canBeLogger = false;
         if (canBeLogger) {
             addLogger();
         }

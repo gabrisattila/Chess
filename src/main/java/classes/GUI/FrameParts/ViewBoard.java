@@ -128,6 +128,14 @@ public class ViewBoard extends Component implements IBoard {
         }
     }
 
+    public void setFieldColorsToNormal(){
+        for (ArrayList<IField> fields : getFields()) {
+            for (IField f : fields) {
+                ((ViewField) f).setBackColorToNormal();
+            }
+        }
+    }
+
     //endregion
 
 }

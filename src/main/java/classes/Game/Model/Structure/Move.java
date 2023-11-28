@@ -169,7 +169,7 @@ public class Move {
         }
     }
 
-    private void moveCaseExploreAndSet() throws ChessGameException, InterruptedException {
+    private void moveCaseExploreAndSet() {
         String moveCase = detectSpecialCase();
         switch (moveCase) {
             case "castle" -> setItIsCastle(true);

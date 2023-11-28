@@ -4,6 +4,7 @@ import classes.Game.I18N.ChessGameException;
 import classes.Game.I18N.Location;
 import classes.Game.I18N.PieceAttributes;
 
+import classes.Game.Model.Logic.EDT;
 import classes.Game.Model.Structure.IPiece;
 import classes.Game.Model.Structure.Move;
 import lombok.*;
@@ -123,6 +124,13 @@ public class ViewField extends JButton implements classes.Game.Model.Structure.I
         this.y = y;
     }
 
+    public void setBackColorToNormal(){
+        if (WHITE_STRING.equals(fieldColor))
+            setBackground(WHITE);
+        else
+            setBackground(BLACK);
+    }
+
     //endregion
 
 
@@ -137,8 +145,9 @@ public class ViewField extends JButton implements classes.Game.Model.Structure.I
             try {
                 if (theresOnlyOneAi){
                     PlayerClick((ViewField) e.getSource());
-                    if (aiTurn) {
-                        startAI();
+                    if (aiTurn){
+                        getViewBoard().setFieldColorsToNormal();
+                        SwingUtilities.invokeLater(EDT::startAI);
                     }
                 }
             } catch (ChessGameException | InterruptedException ex) {
@@ -168,8 +177,8 @@ public class ViewField extends JButton implements classes.Game.Model.Structure.I
                 pieceToChange = clicked.piece;
                 CLICK_COUNTER++;
             } else if (CLICK_COUNTER == 1 && locationCollectionContains(pieceToChange.getPossibleRange(), clicked.loc)) {
-                moveToClicked(clicked);
                 changeColor(lastClicked);
+                moveToClicked(clicked);
                 pieceToChange = null;
                 CLICK_COUNTER--;
                 switchWhoComes();
@@ -187,12 +196,11 @@ public class ViewField extends JButton implements classes.Game.Model.Structure.I
 
             Move move = new Move(pieceToChange, clicked.getLoc(), getViewBoard());
             move.setMustLogged(true);
+            changeFieldColor(clicked);
             Step(move);
 
             if (notNull(hit))
                 putTakenPieceToItsPlace(hit);
-
-            changeColor(clicked);
         }
 
         private void changeColor(ViewField field){

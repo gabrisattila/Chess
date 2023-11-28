@@ -352,11 +352,11 @@ public class VARS {
 
     public static class MUTABLE {
 
-        public static int MAX_WIDTH = 4;
+        public static int MAX_WIDTH = 8;
 
-        public static int MAX_HEIGHT = 4;
+        public static int MAX_HEIGHT = 8;
 
-        public static int MINIMAX_DEPTH = 8;
+        public static int MINIMAX_DEPTH = 10;
 
         public static Character[] alreadyHappenedCastleCases = new Character[4];
 
