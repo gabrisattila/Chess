@@ -1,6 +1,5 @@
 package classes.GUI.FrameParts;
 
-import classes.Game.I18N.ChessGameException;
 import classes.Game.Model.Structure.IBoard;
 import lombok.*;
 
@@ -19,6 +18,8 @@ import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Game.Model.Logic.EDT.*;
 import static classes.Game.I18N.METHODS.*;
+import static classes.Game.Model.Structure.Board.*;
+import static classes.Game.Model.Structure.GameOver.*;
 
 public class ChessButton extends JButton {
 
@@ -267,11 +268,11 @@ public class ChessButton extends JButton {
         }
 
         private void submissionClicked() {
-
+            SubmissionOrDrawRecommendation(getBoard(), Submission);
         }
 
         private void drawClicked() {
-
+            SubmissionOrDrawRecommendation(getBoard(), Draw);
         }
 
         private void continueClicked(){
@@ -308,11 +309,11 @@ public class ChessButton extends JButton {
             MAX_HEIGHT = widthHeight;
             MAX_WIDTH = widthHeight;
 
-            whiteDown = !theresOnlyOneAi || !whiteAiNeeded; //TODO Teszt átszervezésekor javítani
+            whiteDown = !theresOnlyOneAi || !whiteAiNeeded;
 
             getWindow().addGameBoard(getWindow());
             setUpSides(setUpFen);
-            buttonsEnabled();
+            buttonsEnabled(true);
             initialization();
             labelTexting(!oneAi || !whiteAi);
         }

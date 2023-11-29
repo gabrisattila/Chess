@@ -4,7 +4,6 @@ import classes.GUI.FrameParts.ChessButton;
 import classes.GUI.FrameParts.GameBoard;
 import classes.GUI.FrameParts.Logger;
 import classes.GUI.FrameParts.ViewField;
-import classes.Game.I18N.ChessGameException;
 import classes.Game.I18N.Pair;
 import classes.Game.Model.Structure.IField;
 import lombok.*;
@@ -96,7 +95,7 @@ public class Window extends JFrame {
 
     private void addButtonsAndMayBeTheLoggerToo() {
         addButtons();
-        buttonsEnabled();
+        buttonsEnabled(true);
 
         canBeLogger = false;
         if (canBeLogger) {
@@ -110,10 +109,10 @@ public class Window extends JFrame {
         }
     }
 
-    public static void buttonsEnabled(){
+    public static void buttonsEnabled(boolean enabled){
         for (ChessButton b : buttons) {
             if (!"Új játék".equals(b.getText()) && !"Betöltés".equals(b.getText()))
-                b.setEnabled(!isFirstOpen);
+                b.setEnabled(!isFirstOpen && enabled);
         }
     }
 

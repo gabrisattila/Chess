@@ -8,7 +8,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static classes.Game.I18N.ChessGameException.throwBadTypeErrorIfNeeded;
+import static classes.GUI.Frame.Window.*;
+import static classes.Game.I18N.ChessGameException.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
@@ -17,7 +18,7 @@ import static classes.Game.Model.Structure.GameOver.*;
 
 
 /**
- * It's not a singleton, but technically it works like a singleton.
+ * Singleton.
  */
 @Getter
 @Setter
@@ -192,6 +193,20 @@ public class Board implements IBoard {
                 kingFreeRange(!whiteToPlay);
                 kingRangeInsteadOfCheck(whiteToPlay);
             }
+        }
+    }
+
+    public static void SubmissionOrDrawRecommendation(IBoard board, GameOver gameOver){
+        if (notNull(gameOver)){
+            if (gameOver == Submission) {
+                ((Board) board).setSubmitted(true);
+            } else {
+                ((Board) board).setDraw(true);
+            }
+            gameEndDialog(gameOver, whiteToPlay);
+//            buttonsEnabled(false);
+        } else {
+            //TODO AI part, mikor ajánljon mit.
         }
     }
 

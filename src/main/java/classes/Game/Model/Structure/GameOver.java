@@ -29,7 +29,7 @@ public enum GameOver {
         if (game instanceof ViewBoard) {
             convertOneBoardToAnother(getViewBoard(), getBoard());
             getBoard().rangeUpdater();
-            gameEndDialog(gameEnd(getBoard()));
+            gameEndDialog(gameEnd(getBoard()), whiteToPlay);
         }else if (game instanceof Board){
             gameOver = gameEnd((Board) game);
             if (notNull(gameOver)){
@@ -51,7 +51,7 @@ public enum GameOver {
         }
     }
 
-    private static void gameEndDialog(GameOver gameResult)  {
+    public static void gameEndDialog(GameOver gameResult, boolean forWhite)  {
         if (notNull(gameResult)){
             String message = "";
             String title = "";
@@ -66,7 +66,9 @@ public enum GameOver {
                 }
                 case Submission -> {
                     title = "A játéknak vége";
-                    message = "A játék befejeződött!";
+                    message = forWhite ?
+                                (whiteToPlay ? "Feladtad a partit." : "Az ellenfeled feladta a pratit.") :
+                                (whiteToPlay ? "Az ellenfeled feladta a pratit." : "Feladtad a partit." );
                 }
             }
 
@@ -85,6 +87,8 @@ public enum GameOver {
             }
         } else if (board.getPieces().stream().allMatch(p -> p.getType() == K) || board.myPieces().stream().allMatch(p -> p.getPossibleRange().isEmpty())){
             return Draw;
+        } else if (board.isSubmitted()) {
+            return Submission;
         }
 
         return null;

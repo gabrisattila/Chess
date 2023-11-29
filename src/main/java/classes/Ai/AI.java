@@ -1,6 +1,5 @@
 package classes.Ai;
 
-import classes.Game.I18N.ChessGameException;
 import classes.Game.I18N.Location;
 import classes.Game.I18N.Pair;
 import classes.Game.Model.Structure.*;
@@ -185,7 +184,7 @@ public class AI extends Thread {
 
         FenToBoard(starterPos.getFen(), getBoard());
         getBoard().rangeUpdater();
-        SubmissionOrDrawThinking();
+//        SubmissionOrDrawRecommendation(getBoard(),null);
 
         GameOverAction(starterPos);
 
@@ -252,12 +251,6 @@ public class AI extends Thread {
             starterPos.setFinalValue(possibleMin);
             return possibleMin;
         }
-    }
-
-    private void SubmissionOrDrawThinking(){
-//        if (){
-//            getBoard().setSubmitted(true);
-//        }
     }
 
     public static double evaluate(AiTree aiTree)  {
