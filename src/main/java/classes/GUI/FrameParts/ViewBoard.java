@@ -100,11 +100,7 @@ public class ViewBoard extends Component implements IBoard {
         for (int i = 0; i < MAX_HEIGHT; i++) {
             for (int j = 0; j < MAX_WIDTH; j++) {
                 if (getField(i, j).isGotPiece()) {
-                    try {
-                        getField(i, j).clean();
-                    } catch (ChessGameException e) {
-                        throw new RuntimeException(e);
-                    }
+                    getField(i, j).clean();
                 }
             }
         }

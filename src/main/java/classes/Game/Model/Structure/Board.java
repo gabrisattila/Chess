@@ -8,6 +8,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static classes.Game.I18N.ChessGameException.throwBadTypeErrorIfNeeded;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
@@ -163,7 +164,10 @@ public class Board implements IBoard {
         for (ArrayList<IField> row : this.fields) {
             for (IField f : row) {
                 if (!(f instanceof Field)){
-                    throw new ChessGameException(f.toSString(), "is not Field instance, so can't clean here.\n");
+                    throwBadTypeErrorIfNeeded(new Object[]{
+                            f, Field.class.getName(),
+                            " ezért nem tudom elvégezni a clean műveletet.\n"
+                    });
                 }
                 f.clean();
             }
@@ -310,11 +314,7 @@ public class Board implements IBoard {
 
     private boolean tisztAttackRangeContainsOneOfMyPiece(IPiece enemyTiszt){
         return enemyTiszt.getPossibleRange().stream().anyMatch(l -> {
-            try {
-                return notNull(getPiece(l)) && getPiece(l).isWhite() != enemyTiszt.isWhite() && getPiece(l).getType() != K;
-            } catch (ChessGameException e) {
-                throw new RuntimeException(e);
-            }
+            return notNull(getPiece(l)) && getPiece(l).isWhite() != enemyTiszt.isWhite() && getPiece(l).getType() != K;
         });
     }
 

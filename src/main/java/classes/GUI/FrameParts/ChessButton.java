@@ -70,7 +70,7 @@ public class ChessButton extends JButton {
         public void mouseClicked(MouseEvent e){
             try {
                 manageClick(e);
-            } catch (ChessGameException | InterruptedException | IOException ex) {
+            } catch (InterruptedException | IOException ex) {
                 throw new RuntimeException(ex);
             }
         }
@@ -209,7 +209,7 @@ public class ChessButton extends JButton {
             saveBoard(getViewBoard());
         }
 
-        private void loadClicked() throws IOException, ChessGameException, InterruptedException {
+        private void loadClicked() throws IOException {
             isFirstOpen = false;
 
             JFileChooser fileChooser = new JFileChooser("src/main/Saves/");

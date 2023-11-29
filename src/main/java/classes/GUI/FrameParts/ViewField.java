@@ -203,11 +203,7 @@ public class ViewField extends JButton implements classes.Game.Model.Structure.I
             if (field.isGotPiece()){
                 ArrayList<ViewField> fields = new ArrayList<>();
                 for (Location l : field.piece.getPossibleRange()) {
-                    try {
-                        fields.add((ViewField) getViewBoard().getField(l));
-                    } catch (ChessGameException e) {
-                        throw new RuntimeException(e);
-                    }
+                    fields.add((ViewField) getViewBoard().getField(l));
                 }
                 for (ViewField f : fields) {
                     changeFieldColor(f);

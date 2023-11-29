@@ -54,11 +54,7 @@ public interface IBoard {
 
         FEN = fenPieces + " " + toPlay + " " + castle + " " + emPassant + " " + stepNum + " " + evenOrOddStep;
 
-        try {
-            FenToBoard(FEN, this);
-        } catch (ChessGameException e) {
-            throw new RuntimeException(e);
-        }
+        FenToBoard(FEN, this);
     }
 
     void cleanBoard() ;

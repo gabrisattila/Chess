@@ -7,6 +7,7 @@ import classes.Game.I18N.PieceAttributes;
 import classes.Game.I18N.PieceType;
 import lombok.*;
 
+import static classes.Game.I18N.ChessGameException.throwBadTypeErrorIfNeeded;
 import static classes.Game.I18N.METHODS.*;
 
 @Getter
@@ -44,43 +45,27 @@ public class Field implements classes.Game.Model.Structure.IField {
 
     public Field(Location Location) {
         this.Location = Location;
-        try {
-            setPiece((Piece) null);
-        } catch (ChessGameException e) {
-            throw new RuntimeException(e);
-        }
+        setPiece((Piece) null);
         setValuesToZero();
     }
 
     public Field(int i, int j) {
         Location = new Location(i, j);
-        try {
-            setPiece((Piece) null);
-        } catch (ChessGameException e) {
-            throw new RuntimeException(e);
-        }
+        setPiece((Piece) null);
         setValuesToZero();
     }
 
     public Field(Location Location, String color) {
         this.Location = Location;
         fieldColor = color;
-        try {
-            setPiece((Piece) null);
-        } catch (ChessGameException e) {
-            throw new RuntimeException(e);
-        }
+        setPiece((Piece) null);
         setValuesToZero();
     }
 
     public Field(Location Location, String color, Piece piece) {
         this.Location = Location;
         fieldColor = color;
-        try {
-            setPiece(piece);
-        } catch (ChessGameException e) {
-            throw new RuntimeException(e.getMsg());
-        }
+        setPiece(piece);
         setValuesToZero();
     }
 
@@ -119,8 +104,11 @@ public class Field implements classes.Game.Model.Structure.IField {
             this.piece = null;
         }
 
-        if (piece != null && !(piece instanceof Piece))
-            throw new ChessGameException("Nem megfelelő típus");
+        if (piece != null){
+            throwBadTypeErrorIfNeeded(
+                    new Object[]{piece, Piece.class.getName()}
+            );
+        }
     }
 
     @Override

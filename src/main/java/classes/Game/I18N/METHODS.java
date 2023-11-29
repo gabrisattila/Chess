@@ -90,17 +90,14 @@ public class METHODS {
 
         String[] dateParts = String.valueOf(date).split(" ");
         String month = dateParts[1], day = dateParts[2], hourMinSec = dateParts[3], year =  dateParts[5];
-        StringBuilder sb = new StringBuilder();
 
-        sb.append(year);
-        sb.append("_");
-        sb.append(month);
-        sb.append("_");
-        sb.append(day);
-        sb.append("_");
-        sb.append(hourMinSec.replace(':', '-'));
-
-        return sb.toString();
+        return year +
+                "_" +
+                month +
+                "_" +
+                day +
+                "_" +
+                hourMinSec.replace(':', '-');
     }
 
     public static void putTakenPieceToItsPlace(ViewPiece hit)  {
@@ -108,11 +105,7 @@ public class METHODS {
     }
 
     public static void convertOneBoardToAnother(IBoard what, IBoard to){
-        try {
-            FenToBoard(BoardToFen(what), to);
-        } catch (ChessGameException e) {
-            throw new RuntimeException(e);
-        }
+        FenToBoard(BoardToFen(what), to);
     }
 
     public static <T> Collection<T> union(Collection<T> set1, Collection<T> set2) {
@@ -216,16 +209,6 @@ public class METHODS {
 
     public static Set<Location> locationSetTimesN(Set<Location> list, int n){
         return list.stream().map(t -> t.times(n)).collect(Collectors.toSet());
-    }
-
-    public static String replace(String original, int index, char newChar) {
-        if (index < 0 || index >= original.length()) {
-            throw new IndexOutOfBoundsException("Invalid index");
-        }
-
-        char[] charArray = original.toCharArray();
-        charArray[index] = newChar;
-        return new String(charArray);
     }
 
     public static int countOccurrences(String text, char targetChar) {

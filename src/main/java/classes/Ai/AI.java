@@ -47,7 +47,7 @@ public class AI extends Thread {
         try {
             aiMove();
             receivedMoveFromAi(BoardToFen(getBoard()));
-        } catch (ChessGameException | InterruptedException e) {
+        } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
     }

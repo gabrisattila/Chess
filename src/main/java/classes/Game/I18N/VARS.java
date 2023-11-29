@@ -96,8 +96,6 @@ public class VARS {
 
         public static final String BLACK_STRING = "BLACK";
 
-        public static final String BAD_TYPE_MSG = "is not instance of Field or ViewField";
-
         public final static Color WHITE = new Color(255,228,196);
 
         public final static Color DARK_WHITE = new Color(85,85,85);
@@ -356,7 +354,7 @@ public class VARS {
 
         public static int MAX_HEIGHT = 8;
 
-        public static int MINIMAX_DEPTH = 10;
+        public static int MINIMAX_DEPTH = 6;
 
         public static Character[] alreadyHappenedCastleCases = new Character[4];
 

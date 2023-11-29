@@ -6,8 +6,6 @@ public class TODO {
 
     //TODO Feladás és döntetlen gombok
 
-    //TODO Exceptions unification
-
     //TODO Saját kiértékelő függvény.
 
     //TODO Gráfos megoldása a miniMax fának

@@ -5,8 +5,7 @@ import classes.Game.I18N.*;
 import classes.Game.I18N.Location;
 import classes.Game.Model.Structure.*;
 
-import java.util.Arrays;
-
+import static classes.Game.I18N.ChessGameException.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
@@ -24,9 +23,8 @@ public class FenConverter {
 
         String pieces = separatedFen[0];
 
-        if (fenIsWrong(pieces)) {
-            throw new ChessGameException(fenErrorMessage(pieces));
-        }
+        throwFenErrorIfNeeded(pieces);
+
         char currentChar;
         int sor = 0, oszlop = 0;
         PieceAttributes piece;
@@ -47,9 +45,12 @@ public class FenConverter {
                         oszlop += Character.getNumericValue(currentChar);
                     }else {
                         IField f = board.getField(sor, oszlop);
-                        if (! ((f instanceof Field ) || (f instanceof ViewField))){
-                            throw new ChessGameException(f, BAD_TYPE_MSG);
-                        }
+
+                        throwBadTypeErrorIfNeeded(
+                                new Object[]
+                                        {f, Field.class.getName(), ViewField.class.getName(),
+                                        "Emiatt most nem tudom a fen-t átírni " + board.getClass().getName() + "-ra."}
+                        );
 
                         piece = charToPieceAttributes(currentChar);
 
@@ -96,9 +97,13 @@ public class FenConverter {
         for (int i = 0; i < MAX_HEIGHT; i++) {
             for (int j = 0; j < MAX_WIDTH; j++) {
                 IField f = board.getFields().get(i).get(j);
-                if (! ((f instanceof Field ) || (f instanceof ViewField))){
-                    throw new ChessGameException(f, BAD_TYPE_MSG);
-                }
+
+                throwBadTypeErrorIfNeeded(
+                        new Object[]
+                                {f, Field.class.getName(), ViewField.class.getName(), "Emiatt itt nem tudom a " +
+                                (board instanceof Board ? "Board-ot átírni Fen-re." : "ViewBoard-ot átírni Fen-re.")}
+                );
+
                 if (f.isGotPiece()){
                     if (counterForRows != 0)
                         fenToReturn.append(counterForRows);
@@ -160,73 +165,6 @@ public class FenConverter {
         return fenToReturn.toString();
     }
 
-    private static boolean fenIsWrong(String FEN){
-        boolean fenIsWrong = false;
-        String fen = FEN.split(" ")[0];
-        if(MAX_HEIGHT - 1 == countOccurrences(fen, '/')){
-            String[] parts = fen.split("/");
-            int lengthOfPart = 0;
-            for (String part : parts) {
-                for (char c : part.toCharArray()) {
-                    if (Character.isDigit(c)){
-                        lengthOfPart += Integer.parseInt(String.valueOf(c));
-                    }else {
-                        lengthOfPart++;
-                    }
-                }
-
-                if (MAX_WIDTH != lengthOfPart){
-                    fenIsWrong = true;
-                }
-                lengthOfPart = 0;
-            }
-        }else {
-            fenIsWrong = true;
-        }
-
-        return fenIsWrong;
-    }
-    
-    private static String fenErrorMessage(String fen){
-        StringBuilder errorMessage = new StringBuilder("Ez a fen:\n");
-        errorMessage.append(fen).append('\n');
-        errorMessage.append("nem passzol a megszabott tábla méretekhez, mert ");
-        String[] rows = fen.split("/");
-        boolean rowCountEqualsMaxHeight = rows.length == MAX_HEIGHT;
-        boolean colCountEqualsMaxWidth = Arrays.stream(rows).allMatch(r -> r.length() == MAX_WIDTH);
-        if (!rowCountEqualsMaxHeight && !colCountEqualsMaxWidth){
-            badRowNum(errorMessage, rows);
-            badColNum(errorMessage, rows, ". \nTovábbá ez a sor: ");
-        } else if (!rowCountEqualsMaxHeight) {
-            errorMessage.append("a megadott fen ").append(rows.length).append(" sort tartalmaz, holott az elvárt: ").append(MAX_HEIGHT);
-        } else if (!colCountEqualsMaxWidth) {
-            badColNum(errorMessage, rows, ". \nEz a sor: ");
-        }
-        return errorMessage.toString();
-    }
-    
-    private static void badRowNum(StringBuilder errorMessage, String[] rows){
-        errorMessage.append("a megadott fen ").append(rows.length).append(" sort tartalmaz, holott az elvárt: ").append(MAX_HEIGHT);
-    }
-    
-    private static void badColNum(StringBuilder errorMessage, String[] rows, String openingLine) {
-        errorMessage.append(openingLine);
-        String badRow = "";
-        for (String row : rows) {
-            if (row.length() != MAX_WIDTH) {
-                badRow = row;
-                break;
-            }
-        }
-        errorMessage
-                .append(badRow)
-                .append(" nem megfelelő hosszúságú, hiszen a kívánt hossz ")
-                .append(MAX_WIDTH)
-                .append(" a sor pedig ")
-                .append(badRow.length())
-                .append(" hosszú.\n");
-    }
-
     public static PieceAttributes charToPieceAttributes(char c){
         PieceType type;
         String color = Character.isUpperCase(c) ? "WHITE" : "BLACK";
@@ -256,7 +194,6 @@ public class FenConverter {
             case B -> 'B';
             case V -> 'V';
             case K -> 'K';
-            default -> throw new IllegalStateException("Itt nem megengedett ez a típus: " + piece.getType());
         };
         if (!piece.isWhite())
             pieceChar = Character.toLowerCase(pieceChar);

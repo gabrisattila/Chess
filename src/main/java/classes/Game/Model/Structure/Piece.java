@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import java.util.*;
 
+import static classes.Game.I18N.ChessGameException.throwBadTypeErrorIfNeeded;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
@@ -58,8 +59,9 @@ public class Piece implements IPiece {
     public Piece(PieceAttributes attributes, Location Location, IBoard board)  {
         this.attributes = attributes;
         this.Location = Location;
-        if (! (board instanceof Board))
-            throw new ChessGameException("Nem megfelelő az átadott tábla típusa");
+        throwBadTypeErrorIfNeeded(new Object[]{
+                board, Board.getBoard(), "Ezért nem hozható létre a Piece objektum."
+        });
         this.board = (Board) board;
         possibleRange = new HashSet<>();
         watchedRange = new HashSet<>();
@@ -161,8 +163,6 @@ public class Piece implements IPiece {
     }
 
     private Set<Location> getRange(PieceType type, boolean posOrWatch)  {
-        if (type == null)
-            throw new ChessGameException("Type can't be null when choose range to PieceType");
         switch (type){
             case G -> {
                 return range(G, posOrWatch);
@@ -236,8 +236,11 @@ public class Piece implements IPiece {
                     }
                 }
             } else {
-                if (Math.abs(l.getJ() - getJ()) > 1)
-                    throw new RuntimeException("Nem eshet bele a gyalog range-be");
+                if (Math.abs(l.getJ() - getJ()) > 1) {
+                    String msg = "A következő helyen lévő gyalog (" + getLocation().toString() + ") egy olyan helyre akar " +
+                            "ütni, ami nem esik bele a saját range-be. (" + l + ")";
+                    throw new ChessGameException(msg);
+                }
                 if (posOrWatch){
                     if (isTherePiece(l)){
                         return enemyColor(l);
