@@ -8,6 +8,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static classes.Ai.Evaluate.Evaluator.addBaseFieldValues;
 import static classes.GUI.Frame.Window.*;
 import static classes.Game.I18N.ChessGameException.*;
 import static classes.Game.I18N.METHODS.*;
@@ -30,7 +31,7 @@ public class Board implements IBoard {
 
     private int Y;
 
-    private static Pair<Board, Board> board;
+    private static Board board;
 
     private ArrayList<ArrayList<IField>> fields;
 
@@ -71,11 +72,11 @@ public class Board implements IBoard {
 
     public static Board getBoard() {
         if(board == null){
-            Board b1 = new Board(MAX_WIDTH, MAX_HEIGHT);
-            board = new Pair<>(b1, null);
-            return board.getFirst();
+            board = new Board(MAX_WIDTH, MAX_HEIGHT);
+            addBaseFieldValues();
+            return board;
         }
-        return board.getFirst();
+        return board;
     }
 
     //endregion
@@ -676,6 +677,10 @@ public class Board implements IBoard {
             }
         }
         return legals;
+    }
+
+    public Set<IPiece> getPiecesWithoutHit(boolean forWhite){
+        return getPiecesWithoutHit().stream().filter(p -> p.isWhite() == forWhite).collect(Collectors.toSet());
     }
 
     public Set<IPiece> getPiecesWithoutHit() {

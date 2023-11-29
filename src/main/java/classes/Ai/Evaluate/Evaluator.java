@@ -40,10 +40,10 @@ public class Evaluator {
     //region Watcher Count
 
     public static void setWatcherCounts(boolean forWhite){
-        getBoard().getPieces(forWhite).forEach(p ->
-                p.getWatchedRange().stream()
-                        .map(loc -> (Field) getBoard().getField(loc))
-                        .forEach(field -> field.increaseWatcherCount(forWhite))
+        getBoard().getPiecesWithoutHit(forWhite)
+                .forEach(p -> p.getWatchedRange().stream()
+                .map(loc -> (Field) getBoard().getField(loc))
+                .forEach(field -> field.increaseWatcherCount(forWhite))
         );
     }
 
@@ -54,38 +54,33 @@ public class Evaluator {
     public static void addBaseFieldValues(){
         boolean evenOrOddBoardWidthHeight = MAX_WIDTH % 2 == 0;
         firstInnerConcentricCircleBaseFieldValues(evenOrOddBoardWidthHeight);
-        if (MAX_WIDTH > 1){
+        if (MAX_WIDTH > 2){
             secondInnerConcentricCircleBaseFieldValues(evenOrOddBoardWidthHeight);
         }
-        if (MAX_WIDTH > 3){
+        if (MAX_WIDTH > 4){
             thirdInnerConcentricCircleBaseFieldValues(evenOrOddBoardWidthHeight);
         }
-        if (MAX_WIDTH > 5){
+        if (MAX_WIDTH > 6){
             fourthInnerConcentricCircleBaseFieldValues(evenOrOddBoardWidthHeight);
         }
     }
+
     /**
      * @param evenOrOddBoardWidthHeight Megmutatja, hogy páros vagy páratlan board baseFieldValue-t állítjuk.
      * Azon belül is annak első belső körét.
      */
     private static void firstInnerConcentricCircleBaseFieldValues(boolean evenOrOddBoardWidthHeight){
         ArrayList<Double> alreadyUsedBaseValues = new ArrayList<>();
-        if (evenOrOddBoardWidthHeight){
-            setBaseFieldValue(firstBaseFieldValue, (MAX_WIDTH / 2) - 1, (MAX_WIDTH / 2) + 2, alreadyUsedBaseValues);
-        }else {
-            setBaseFieldValue(firstBaseFieldValue, (MAX_WIDTH / 2), (MAX_WIDTH / 2), alreadyUsedBaseValues);
-        }
+        int fromTo = evenOrOddBoardWidthHeight ? 1 : 0;
+        setBaseFieldValue(firstBaseFieldValue, (MAX_WIDTH / 2) - fromTo, (MAX_WIDTH / 2) + fromTo, alreadyUsedBaseValues);
     }
     
     private static void secondInnerConcentricCircleBaseFieldValues(boolean evenOrOddBoardWidthHeight) {
         ArrayList<Double> alreadyUsedBaseValues = new ArrayList<>(){{
             add(firstBaseFieldValue);
         }};
-        if (evenOrOddBoardWidthHeight){
-            setBaseFieldValue(secondBaseFieldValue, (MAX_WIDTH / 2) - 2, (MAX_WIDTH / 2) + 3, alreadyUsedBaseValues);
-        }else {
-            setBaseFieldValue(secondBaseFieldValue, (MAX_WIDTH / 2) - 1, (MAX_WIDTH / 2) + 2, alreadyUsedBaseValues);
-        }
+        int fromTo = evenOrOddBoardWidthHeight ? 2 : 1;
+        setBaseFieldValue(secondBaseFieldValue, (MAX_WIDTH / 2) - fromTo, (MAX_WIDTH / 2) + fromTo, alreadyUsedBaseValues);
     }
 
     private static void thirdInnerConcentricCircleBaseFieldValues(boolean evenOrOddBoardWidthHeight) {
@@ -93,11 +88,8 @@ public class Evaluator {
             add(firstBaseFieldValue);
             add(secondBaseFieldValue);
         }};
-        if (evenOrOddBoardWidthHeight){
-            setBaseFieldValue(thirdBaseFieldValue, (MAX_WIDTH / 2) - 3, (MAX_WIDTH / 2) + 4, alreadyUsedBaseValues);
-        }else {
-            setBaseFieldValue(thirdBaseFieldValue, (MAX_WIDTH / 2) - 2, (MAX_WIDTH / 2) + 3, alreadyUsedBaseValues);
-        }
+        int fromTo = evenOrOddBoardWidthHeight ? 3 : 2;
+        setBaseFieldValue(thirdBaseFieldValue, (MAX_WIDTH / 2) - fromTo, (MAX_WIDTH / 2) + fromTo, alreadyUsedBaseValues);
     }
 
     private static void fourthInnerConcentricCircleBaseFieldValues(boolean evenOrOddBoardWidthHeight) {
@@ -106,11 +98,8 @@ public class Evaluator {
             add(secondBaseFieldValue);
             add(thirdBaseFieldValue);
         }};
-        if (evenOrOddBoardWidthHeight){
-            setBaseFieldValue(fourthBaseFieldValue, (MAX_WIDTH / 2) - 4, (MAX_WIDTH / 2) + 5, alreadyUsedBaseValues);
-        }else {
-            setBaseFieldValue(fourthBaseFieldValue, (MAX_WIDTH / 2) - 3, (MAX_WIDTH / 2) + 4, alreadyUsedBaseValues);
-        }
+        int fromTo = evenOrOddBoardWidthHeight ? 4 : 3;
+        setBaseFieldValue(fourthBaseFieldValue, (MAX_WIDTH / 2) - fromTo, (MAX_WIDTH / 2) + fromTo, alreadyUsedBaseValues);
     }
 
     private static void setBaseFieldValue(double baseFieldValue, int from, int to, ArrayList<Double> dontWantThatValue){

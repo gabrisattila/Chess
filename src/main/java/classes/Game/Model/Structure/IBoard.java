@@ -33,8 +33,6 @@ public interface IBoard {
             }
             fields.add(row);
         }
-        if (board instanceof Board)
-            addBaseFieldValues();
     }
 
     default void pieceSetUp(String FEN){
