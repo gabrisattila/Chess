@@ -226,6 +226,9 @@ public class Board implements IBoard {
             ((Piece) p).setLegalMoves(new HashSet<>());
             ((Piece) p).setBounderPiece(null);
         }
+        getFields().stream()
+                .flatMap(ArrayList::stream)
+                .forEach(f -> ((Field) f).setValuesToZero());
     }
 
     public void pseudos()  {

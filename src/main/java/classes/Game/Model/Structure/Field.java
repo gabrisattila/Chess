@@ -137,7 +137,6 @@ public class Field implements classes.Game.Model.Structure.IField {
     //Values
     public void setValuesToZero(){
         finalValue = 0;
-        baseValue = 0;
         kingBoost = 0;
         whiteWatcherCount = 0;
         blackWatcherCount = 0;
@@ -152,11 +151,6 @@ public class Field implements classes.Game.Model.Structure.IField {
             whiteWatcherCount++;
         else
             blackWatcherCount--;
-    }
-
-    public void setWatcherCountToZero(){
-        whiteWatcherCount = 0;
-        blackWatcherCount = 0;
     }
 
     public void setFinalValue(boolean forWhite){

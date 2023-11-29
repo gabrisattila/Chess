@@ -6,10 +6,6 @@ public class TODO {
 
     //TODO EmPassant és Sánc átgondolása, hogy a fenébe is fog működni miniMax esetén
 
-    //TODO AiTree-ben az összegyűjtött Move-ok rendezése a keletkező állás értéke szerint csökkenőbe
-
-    //TODO Saját kiértékelő függvény.
-
     //TODO Gráfos megoldása a miniMax fának
 
     //TODO Teszt mode view megfelelő kidolgozása:

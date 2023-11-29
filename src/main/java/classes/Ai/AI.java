@@ -183,74 +183,85 @@ public class AI extends Thread {
 
     private double simpleMiniMax(AiTree starterPos, int depth, boolean maxNeeded, double alpha, double beta) {
 
-        FenToBoard(starterPos.getFen(), getBoard());
-        getBoard().rangeUpdater();
-//        SubmissionOrDrawRecommendation(getBoard(),null);
+        synchronized (pauseFlag){
 
-        GameOverAction(starterPos);
-
-        if (depth == MINIMAX_DEPTH || gameFinished()){
-            double evaluation = 0;
-            if (gameFinished()){
-                if (getBoard().isCheckMate()) {
-                    if (whiteToPlay) {
-                        //Sötét nyert, mert világos kapott mattot
-                        evaluation = -5000;
-                    } else {
-                        //Világos nyert, mert sötét kapott mattot
-                        evaluation = 5000;
-                    }
-                } else if (getBoard().isSubmitted()) {
-                    if (whiteToPlay) {
-                        //Sötét nyert, mert világos adta fel
-                        evaluation = -5000;
-                    } else {
-                        //Világos nyert, mert sötét adta fel
-                        evaluation = 5000;
-                    }
-                } else if (getBoard().isDraw()) {
-                    //TODO Kitalálni kinek hogyan súlyozzam adott helyzethez mérten
-                    evaluation = 0;
+            while(pauseFlag.get()) {
+                try {
+                    pauseFlag.wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
                 }
-            }else {
-                evaluation = evaluate(starterPos);
             }
 
-            starterPos.setFinalValue(evaluation);
-            return evaluation;
-        }
+            FenToBoard(starterPos.getFen(), getBoard());
+            getBoard().rangeUpdater();
+//           SubmissionOrDrawRecommendation(getBoard(),null);
 
-        ArrayList<String> possibilities = starterPos.collectPossibilities(maxNeeded);
+            GameOverAction(starterPos);
 
-        AiTree nextChild;
-        if (maxNeeded){
-            double possibleMax = -350;
-            for (String child : possibilities){
-                nextChild = new AiTree(child);
-                starterPos.getChildren().add(nextChild);
+            if (depth == MINIMAX_DEPTH || gameFinished()) {
+                double evaluation = 0;
+                if (gameFinished()) {
+                    if (getBoard().isCheckMate()) {
+                        if (whiteToPlay) {
+                            //Sötét nyert, mert világos kapott mattot
+                            evaluation = -5000;
+                        } else {
+                            //Világos nyert, mert sötét kapott mattot
+                            evaluation = 5000;
+                        }
+                    } else if (getBoard().isSubmitted()) {
+                        if (whiteToPlay) {
+                            //Sötét nyert, mert világos adta fel
+                            evaluation = -5000;
+                        } else {
+                            //Világos nyert, mert sötét adta fel
+                            evaluation = 5000;
+                        }
+                    } else if (getBoard().isDraw()) {
+                        //TODO Kitalálni kinek hogyan súlyozzam adott helyzethez mérten
+                        evaluation = 0;
+                    }
+                } else {
+                    evaluation = evaluate(starterPos);
+                }
 
-                double evaluatedMiniMax = simpleMiniMax(nextChild, depth + 1, false, -350, 350);
-                possibleMax = Math.max(possibleMax, evaluatedMiniMax);
-                alpha = Math.max(alpha, evaluatedMiniMax);
-                if (beta <= alpha)
-                    break;
+                starterPos.setFinalValue(evaluation);
+                return evaluation;
             }
-            starterPos.setFinalValue(possibleMax);
-            return possibleMax;
-        }else {
-            double possibleMin = 350;
-            for (String child : possibilities){
-                nextChild = new AiTree(child);
-                starterPos.getChildren().add(nextChild);
 
-                double evaluatedMiniMax = simpleMiniMax(nextChild, depth + 1, true, -350, 350);
-                possibleMin = Math.min(possibleMin, evaluatedMiniMax);
-                beta = Math.min(beta, evaluatedMiniMax);
-                if (beta <= alpha)
-                    break;
+            ArrayList<String> possibilities = starterPos.collectPossibilities(maxNeeded);
+
+            AiTree nextChild;
+            if (maxNeeded) {
+                double possibleMax = -350;
+                for (String child : possibilities) {
+                    nextChild = new AiTree(child);
+                    starterPos.getChildren().add(nextChild);
+
+                    double evaluatedMiniMax = simpleMiniMax(nextChild, depth + 1, false, -350, 350);
+                    possibleMax = Math.max(possibleMax, evaluatedMiniMax);
+                    alpha = Math.max(alpha, evaluatedMiniMax);
+                    if (beta <= alpha)
+                        break;
+                }
+                starterPos.setFinalValue(possibleMax);
+                return possibleMax;
+            } else {
+                double possibleMin = 350;
+                for (String child : possibilities) {
+                    nextChild = new AiTree(child);
+                    starterPos.getChildren().add(nextChild);
+
+                    double evaluatedMiniMax = simpleMiniMax(nextChild, depth + 1, true, -350, 350);
+                    possibleMin = Math.min(possibleMin, evaluatedMiniMax);
+                    beta = Math.min(beta, evaluatedMiniMax);
+                    if (beta <= alpha)
+                        break;
+                }
+                starterPos.setFinalValue(possibleMin);
+                return possibleMin;
             }
-            starterPos.setFinalValue(possibleMin);
-            return possibleMin;
         }
     }
 
