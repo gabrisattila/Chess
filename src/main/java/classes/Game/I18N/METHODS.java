@@ -22,7 +22,7 @@ public class METHODS {
 
     public static void exceptionIgnorer(){
         Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
-            if (!gameEndFlag.get()){
+            if (gameEndFlag.get()){
                 System.err.println("Unhandled exception caught: " + e.getMessage());
                 e.printStackTrace();
             }

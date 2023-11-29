@@ -204,6 +204,10 @@ public class Board implements IBoard {
                 ((Board) board).setDraw(true);
             }
             gameEndDialog(gameOver, whiteToPlay);
+            gameEndFlag.set(true);
+            for (IPiece p : getBoard().pieces) {
+                p.getPossibleRange().clear();
+            }
 //            buttonsEnabled(false);
         } else {
             //TODO AI part, mikor ajánljon mit.
