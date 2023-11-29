@@ -43,7 +43,7 @@ public class GameBoard extends JLayeredPane {
 
     //region Constructor
 
-    public GameBoard() throws ChessGameException {
+    public GameBoard()  {
         parentBoard = getViewBoard();
         gameBoardSetUp();
     }
@@ -53,7 +53,7 @@ public class GameBoard extends JLayeredPane {
 
     //region Methods
 
-    public void clear() throws ChessGameException {
+    public void clear()  {
         for (var fields : parentBoard.getFields()) {
             for (IField f : fields) {
                 f.clean();
@@ -61,7 +61,7 @@ public class GameBoard extends JLayeredPane {
         }
     }
 
-    public static void clearLeftIcons() throws ChessGameException {
+    public static void clearLeftIcons()  {
 
         for (var v : getViewBoard().getFields()) {
             for (IField f : v) {
@@ -70,7 +70,7 @@ public class GameBoard extends JLayeredPane {
         }
     }
 
-    public static void cleanFieldFromLeftIcon(IField f) throws ChessGameException {
+    public static void cleanFieldFromLeftIcon(IField f)  {
         f.clean();
         Timer timer = new Timer(1000, new ActionListener() {
             private boolean isHovered = false;
@@ -95,7 +95,7 @@ public class GameBoard extends JLayeredPane {
         timer.start();
     }
 
-    private void gameBoardSetUp() throws ChessGameException {
+    private void gameBoardSetUp()  {
 
         setBoardCoordinates();
 
@@ -215,7 +215,7 @@ public class GameBoard extends JLayeredPane {
 
     }
 
-    public static void labelTexting(boolean whiteDown) throws ChessGameException {
+    public static void labelTexting(boolean whiteDown)  {
         labelTextList = collectProperLabelTexts(whiteDown);
         int i = 0;
         for (SideLabel label : labels) {

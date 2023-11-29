@@ -50,7 +50,7 @@ public class AiTree {
 
     //region Tree Methods
 
-    public static void addToContinuousTree(String fen) throws ChessGameException {
+    public static void addToContinuousTree(String fen)  {
         AiTree child = new AiTree(fen);
         child.setFinalValue(evaluate(child));
         for (AiTree next = continuousTree; !next.getChildren().isEmpty(); next = ((AiTree)next.getChildren().toArray()[0])){
@@ -60,11 +60,11 @@ public class AiTree {
 
     //endregion
 
-    public boolean isGameEndInPos() throws ChessGameException {
+    public boolean isGameEndInPos()  {
         return getBoard().isDraw() || getBoard().isCheckMate() || getBoard().isSubmitted();
     }
 
-    public Set<String> collectPossibilities() throws ChessGameException, InterruptedException {
+    public Set<String> collectPossibilities() {
         Set<String> possibilities = new HashSet<>();
 
         HashMap<IPiece, Set<Move>> legalMoves = collectLegalMoves();
@@ -74,14 +74,14 @@ public class AiTree {
     }
 
 
-    private HashMap<IPiece, Set<Move>> collectLegalMoves() throws ChessGameException {
+    private HashMap<IPiece, Set<Move>> collectLegalMoves()  {
         HashMap<IPiece, Set<Move>> legals;
         getBoard().addLegalMovesToPieces();
         legals = getBoard().getAllLegalMoves(whiteToPlay);
         return legals;
     }
 
-    private void doAllLegalMoves(HashMap<IPiece, Set<Move>> legalMoves, Set<String> possibilities) throws ChessGameException, InterruptedException {
+    private void doAllLegalMoves(HashMap<IPiece, Set<Move>> legalMoves, Set<String> possibilities) {
         for (IPiece p : legalMoves.keySet()) {
             for (Move m : legalMoves.get(p)) {
                 Step(m);

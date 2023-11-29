@@ -5,6 +5,8 @@ import classes.Game.I18N.*;
 import classes.Game.I18N.Location;
 import classes.Game.Model.Structure.*;
 
+import java.util.Arrays;
+
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
@@ -16,14 +18,15 @@ import static classes.Game.I18N.VARS.MUTABLE.*;
  */
 public class FenConverter {
 
-    public static void FenToBoard(String fen, IBoard board) throws ChessGameException {
+    public static void FenToBoard(String fen, IBoard board) {
 
         String[] separatedFen = fen.split(" ");
 
         String pieces = separatedFen[0];
 
-        if (fenIsWrong(pieces))
-            throw new ChessGameException("This Fen String doesn't suites for the table sizes");
+        if (fenIsWrong(pieces)) {
+            throw new ChessGameException(fenErrorMessage(pieces));
+        }
         char currentChar;
         int sor = 0, oszlop = 0;
         PieceAttributes piece;
@@ -87,7 +90,7 @@ public class FenConverter {
         evenOrOddStep = '1' == separatedFen[5].charAt(0) ? 1 : 0;
     }
 
-    public static String BoardToFen(IBoard board) throws ChessGameException {
+    public static String BoardToFen(IBoard board)  {
         int counterForRows = 0;
         StringBuilder fenToReturn = new StringBuilder();
         for (int i = 0; i < MAX_HEIGHT; i++) {
@@ -157,7 +160,7 @@ public class FenConverter {
         return fenToReturn.toString();
     }
 
-    public static boolean fenIsWrong(String FEN){
+    private static boolean fenIsWrong(String FEN){
         boolean fenIsWrong = false;
         String fen = FEN.split(" ")[0];
         if(MAX_HEIGHT - 1 == countOccurrences(fen, '/')){
@@ -182,6 +185,46 @@ public class FenConverter {
         }
 
         return fenIsWrong;
+    }
+    
+    private static String fenErrorMessage(String fen){
+        StringBuilder errorMessage = new StringBuilder("Ez a fen:\n");
+        errorMessage.append(fen).append('\n');
+        errorMessage.append("nem passzol a megszabott tábla méretekhez, mert ");
+        String[] rows = fen.split("/");
+        boolean rowCountEqualsMaxHeight = rows.length == MAX_HEIGHT;
+        boolean colCountEqualsMaxWidth = Arrays.stream(rows).allMatch(r -> r.length() == MAX_WIDTH);
+        if (!rowCountEqualsMaxHeight && !colCountEqualsMaxWidth){
+            badRowNum(errorMessage, rows);
+            badColNum(errorMessage, rows, ". \nTovábbá ez a sor: ");
+        } else if (!rowCountEqualsMaxHeight) {
+            errorMessage.append("a megadott fen ").append(rows.length).append(" sort tartalmaz, holott az elvárt: ").append(MAX_HEIGHT);
+        } else if (!colCountEqualsMaxWidth) {
+            badColNum(errorMessage, rows, ". \nEz a sor: ");
+        }
+        return errorMessage.toString();
+    }
+    
+    private static void badRowNum(StringBuilder errorMessage, String[] rows){
+        errorMessage.append("a megadott fen ").append(rows.length).append(" sort tartalmaz, holott az elvárt: ").append(MAX_HEIGHT);
+    }
+    
+    private static void badColNum(StringBuilder errorMessage, String[] rows, String openingLine) {
+        errorMessage.append(openingLine);
+        String badRow = "";
+        for (String row : rows) {
+            if (row.length() != MAX_WIDTH) {
+                badRow = row;
+                break;
+            }
+        }
+        errorMessage
+                .append(badRow)
+                .append(" nem megfelelő hosszúságú, hiszen a kívánt hossz ")
+                .append(MAX_WIDTH)
+                .append(" a sor pedig ")
+                .append(badRow.length())
+                .append(" hosszú.\n");
     }
 
     public static PieceAttributes charToPieceAttributes(char c){

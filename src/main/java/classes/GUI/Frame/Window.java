@@ -44,7 +44,7 @@ public class Window extends JFrame {
 
     //region Constructor
 
-    private Window() throws ChessGameException {
+    private Window()  {
 
         frameSetup();
         addGameBoard(this);
@@ -56,7 +56,7 @@ public class Window extends JFrame {
 
     }
 
-    public static Window getWindow() throws ChessGameException {
+    public static Window getWindow()  {
         if (isNull(window))
             window = new Window();
         return window;
@@ -79,11 +79,11 @@ public class Window extends JFrame {
         setLocationRelativeTo(null);
     }
 
-    public static void setUpSides(String setUpFen) throws ChessGameException {
+    public static void setUpSides(String setUpFen)  {
         getViewBoard().pieceSetUp(setUpFen);
     }
 
-    public void addGameBoard(Window window) throws ChessGameException {
+    public void addGameBoard(Window window)  {
         window.clearTakenPiecePlaces();
         gameBoard = new GameBoard();
         window.add(gameBoard);
@@ -262,7 +262,7 @@ public class Window extends JFrame {
         }
     }
 
-    private void clearTakenPiecePlaces() throws ChessGameException {
+    private void clearTakenPiecePlaces()  {
         for (IField f : takenPiecePlaces.getFirst()) {
             cleanFieldFromLeftIcon(f);
         }

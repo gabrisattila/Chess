@@ -61,7 +61,7 @@ public interface IBoard {
         }
     }
 
-    void cleanBoard() throws ChessGameException;
+    void cleanBoard() ;
 
     ArrayList<ArrayList<IField>> getFields();
 
@@ -73,13 +73,13 @@ public interface IBoard {
 
     IField getField(IPiece piece);
 
-    IPiece getPiece(int i, int j) throws ChessGameException;
+    IPiece getPiece(int i, int j) ;
 
-    IPiece getPiece(Location Location) throws ChessGameException;
+    IPiece getPiece(Location Location) ;
 
-    IPiece getPiece(IField field) throws ChessGameException;
+    IPiece getPiece(IField field) ;
 
-    void rangeUpdater() throws ChessGameException, InterruptedException;
+    void rangeUpdater() ;
 
     default Location getKingsOriginPlace(boolean forWhite){
         if (whiteDown){

@@ -10,6 +10,8 @@ public class TODO {
 
     //TODO Saját kiértékelő függvény.
 
+    //TODO Gráfos megoldása a miniMax fának
+
     //TODO Teszt mode view megfelelő kidolgozása:
     // - Ugorjon fel egy új box a játék típus választó helyén.
     // - Amiből kiválasztjuk a kellő fent

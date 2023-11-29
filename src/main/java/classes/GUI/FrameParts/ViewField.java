@@ -142,16 +142,12 @@ public class ViewField extends JButton implements classes.Game.Model.Structure.I
 
         @Override
         public void mouseClicked(MouseEvent e) {
-            try {
-                if (theresOnlyOneAi){
-                    PlayerClick((ViewField) e.getSource());
-                    if (aiTurn){
-                        getViewBoard().setFieldColorsToNormal();
-                        SwingUtilities.invokeLater(EDT::startAI);
-                    }
+            if (theresOnlyOneAi){
+                PlayerClick((ViewField) e.getSource());
+                if (aiTurn){
+                    getViewBoard().setFieldColorsToNormal();
+                    SwingUtilities.invokeLater(EDT::startAI);
                 }
-            } catch (ChessGameException | InterruptedException ex) {
-                throw new RuntimeException(ex);
             }
         }
 
@@ -170,7 +166,7 @@ public class ViewField extends JButton implements classes.Game.Model.Structure.I
                 changeFieldColor(source);
         }
 
-        private void PlayerClick(ViewField clicked) throws ChessGameException, InterruptedException {
+        private void PlayerClick(ViewField clicked) {
             if (CLICK_COUNTER == 0 && clicked.isGotPiece() && clicked.piece.isWhite() == whiteToPlay && !clicked.piece.getPossibleRange().isEmpty()){
                 changeColor(clicked);
                 lastClicked = clicked;
@@ -188,7 +184,7 @@ public class ViewField extends JButton implements classes.Game.Model.Structure.I
                 CLICK_COUNTER--;
             }
         }
-        private void moveToClicked(ViewField clicked) throws ChessGameException, InterruptedException {
+        private void moveToClicked(ViewField clicked) {
 
             ViewPiece hit = null;
             if (clicked.isGotPiece())

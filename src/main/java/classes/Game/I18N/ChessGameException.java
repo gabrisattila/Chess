@@ -5,7 +5,7 @@ import lombok.*;
 
 @Getter
 @Setter
-public class ChessGameException extends Exception{
+public class ChessGameException extends RuntimeException {
 
     //region Fields
 

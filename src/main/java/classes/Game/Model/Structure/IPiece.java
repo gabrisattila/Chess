@@ -39,7 +39,7 @@ public interface IPiece {
 
      Set<Location> getWatchedRange();
 
-     void updateRange() throws ChessGameException;
+     void updateRange() ;
 
      default boolean EQUALS(IPiece ownPiece) {
           return isWhite() == ownPiece.isWhite() && getAttributes().equals(ownPiece.getAttributes());

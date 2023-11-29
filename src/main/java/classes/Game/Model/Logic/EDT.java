@@ -41,7 +41,7 @@ public class EDT {
 
     //region Constructor
 
-    public EDT() throws ChessGameException, InterruptedException {
+    public EDT() {
         initialization();
     }
 
@@ -51,7 +51,7 @@ public class EDT {
     //region Methods
 
 
-    public static void initialization() throws ChessGameException, InterruptedException {
+    public static void initialization() {
         if (isFirstOpen){
             getWindow();
         } else {
@@ -106,20 +106,16 @@ public class EDT {
     }
 
     public static void receivedMoveFromAi(String fen){
-        try {
-            setUpViewBoard(fen);
-            if (theresOnlyOneAi){
-                switchWhoComes();
-                getViewBoard().rangeUpdater();
-            }else {
-                startAI();
-            }
-        } catch (ChessGameException | InterruptedException e) {
-            throw new RuntimeException(e);
+        setUpViewBoard(fen);
+        if (theresOnlyOneAi){
+            switchWhoComes();
+            getViewBoard().rangeUpdater();
+        }else {
+            startAI();
         }
     }
 
-    private static void setUpViewBoard(String fen) throws ChessGameException {
+    private static void setUpViewBoard(String fen)  {
 
         putTakenPieceToItsPlace(fen.split(" ")[0], BoardToFen(getViewBoard()).split(" ")[0]);
 

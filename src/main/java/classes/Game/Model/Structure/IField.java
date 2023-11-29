@@ -16,11 +16,11 @@ public interface IField {
 
      boolean isGotPiece();
 
-     void setPiece(IPiece piece) throws ChessGameException;
+     void setPiece(IPiece piece) ;
 
      void setPiece(PieceAttributes piece);
 
-     void clean() throws ChessGameException;
+     void clean() ;
 
      default String toSString(){
           return " [" + getI() + ", " + getJ() + "] ";

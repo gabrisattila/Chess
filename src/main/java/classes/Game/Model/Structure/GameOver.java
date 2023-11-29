@@ -24,7 +24,7 @@ public enum GameOver {
 
     Submission;
     
-    public static void GameOverAction(Object game) throws ChessGameException{
+    public static void GameOverAction(Object game) {
         GameOver gameOver;
         if (game instanceof ViewBoard) {
             convertOneBoardToAnother(getViewBoard(), getBoard());
@@ -51,7 +51,7 @@ public enum GameOver {
         }
     }
 
-    private static void gameEndDialog(GameOver gameResult) throws ChessGameException {
+    private static void gameEndDialog(GameOver gameResult)  {
         if (notNull(gameResult)){
             String message = "";
             String title = "";

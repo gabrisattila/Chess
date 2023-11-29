@@ -18,7 +18,7 @@ public class Helpers {
         }
     }
 
-    public static void viewFieldPrinter(ArrayList<String> whatNeeded) throws ChessGameException {
+    public static void viewFieldPrinter(ArrayList<String> whatNeeded)  {
         String fieldInString = "";
         ViewField field;
         for (int i = 0; i < MAX_HEIGHT; i++) {
@@ -66,7 +66,7 @@ public class Helpers {
         }
     }
 
-    public static String printBoardWithPieces(IBoard board, boolean inRed) throws ChessGameException {
+    public static String printBoardWithPieces(IBoard board, boolean inRed)  {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < MAX_HEIGHT; i++) {
             for (int j = 0; j < MAX_WIDTH; j++) {

@@ -128,7 +128,7 @@ public class Move {
 
     //region Methods
 
-    public static void Step(Move move) throws ChessGameException, InterruptedException {
+    public static void Step(Move move) {
 
         move.moveCaseExploreAndSet();
         move.collectPlusPiece();
@@ -137,7 +137,7 @@ public class Move {
 
     }
 
-    private static void logStep(Move move) throws ChessGameException {
+    private static void logStep(Move move)  {
         if (canBeLogger && move.mustLogged){
             String step = "";
 
@@ -179,7 +179,7 @@ public class Move {
         }
     }
 
-    private void collectPlusPiece() throws ChessGameException {
+    private void collectPlusPiece()  {
         plusPiece = new Pair<>();
 
         if (itIsCastle){
@@ -204,7 +204,7 @@ public class Move {
         }
     }
     
-    private void pieceChangeOnBoard() throws ChessGameException {
+    private void pieceChangeOnBoard()  {
 
         logStep(this);
 
@@ -222,7 +222,7 @@ public class Move {
 
     }
 
-    private void doAfterChangeEffects() throws ChessGameException {
+    private void doAfterChangeEffects()  {
 
         if (itIsCastle){
 
@@ -496,7 +496,7 @@ public class Move {
 
 
     //region StepBack
-    public static void StepBack(Move move) throws ChessGameException, InterruptedException {
+    public static void StepBack(Move move) {
         deCryptAndStepBackMove(move);
         changeEvenOrOddStep();
         logStepBack(move);
@@ -515,7 +515,7 @@ public class Move {
         }
     }
 
-    private static void deCryptAndStepBackMove(Move move) throws ChessGameException, InterruptedException {
+    private static void deCryptAndStepBackMove(Move move) {
         List<Object> backMoveParams = deCryptMoveDocStringToList(move);
         StepBackMove(backMoveParams);
         castleCasesSetBack(move);
@@ -574,7 +574,7 @@ public class Move {
         return backMoveParams;
     }
 
-    private static void StepBackMove(List<Object> backMoveParams) throws ChessGameException {
+    private static void StepBackMove(List<Object> backMoveParams)  {
 
         Move back = (Move) backMoveParams.get(0);
         boolean backWhatWhite = (Boolean) backMoveParams.get(1);
@@ -655,7 +655,7 @@ public class Move {
         }
     }
 
-    private static void updateRangesBackAndFront(Move move) throws ChessGameException, InterruptedException {
+    private static void updateRangesBackAndFront(Move move) {
         whiteToPlay = !whiteToPlay;
         move.boardToMoveOn.rangeUpdater();
         whiteToPlay = !whiteToPlay;

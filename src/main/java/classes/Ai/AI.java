@@ -52,17 +52,17 @@ public class AI extends Thread {
         }
     }
 
-    public void aiMove() throws ChessGameException, InterruptedException {
+    public void aiMove() throws InterruptedException {
         convertOneBoardToAnother(getViewBoard(), getBoard());
         Move();
     }
 
-    public void Move() throws ChessGameException, InterruptedException {
+    public void Move()  {
 //        moveWithSimpleAi();
         moveWithMiniMaxAi();
     }
 
-    public void moveWithSimpleAi() throws ChessGameException, InterruptedException {
+    public void moveWithSimpleAi() {
 
         synchronized (pauseFlag){
             while (pauseFlag.get()) {
@@ -106,7 +106,7 @@ public class AI extends Thread {
         return getBoard().isGameFinished();
     }
 
-    private Pair<Integer, Location> kingAliveCheckRandomMove(int indexOfChosen, Location toStepOn, ArrayList<Location> ableToStepThere, Random random) throws ChessGameException {
+    private Pair<Integer, Location> kingAliveCheckRandomMove(int indexOfChosen, Location toStepOn, ArrayList<Location> ableToStepThere, Random random)  {
         while (notNull(getBoard().getPiece(toStepOn)) && getBoard().getPiece(toStepOn).getType() == K){
             indexOfChosen = random.nextInt(0, ableToStepThere.size());
             toStepOn = ableToStepThere.get(indexOfChosen);
@@ -117,7 +117,7 @@ public class AI extends Thread {
 
     //region Mini Max
 
-    private void moveWithMiniMaxAi() throws ChessGameException, InterruptedException {
+    private void moveWithMiniMaxAi() {
         AiTree tree = new AiTree(BoardToFen(getBoard()));
 
         double best = simpleMiniMax(tree, 0, whiteToPlay, -350, 350);
@@ -130,7 +130,7 @@ public class AI extends Thread {
         }
     }
 
-    private double negaMaxWithAlphaBeta(AiTree starterPos, int depth, double alpha, double beta) throws ChessGameException, InterruptedException {
+    private double negaMaxWithAlphaBeta(AiTree starterPos, int depth, double alpha, double beta) {
 
         synchronized (pauseFlag){
 
@@ -181,7 +181,7 @@ public class AI extends Thread {
 
     }
 
-    private double simpleMiniMax(AiTree starterPos, int depth, boolean maxNeeded, double alpha, double beta) throws ChessGameException, InterruptedException {
+    private double simpleMiniMax(AiTree starterPos, int depth, boolean maxNeeded, double alpha, double beta) {
 
         FenToBoard(starterPos.getFen(), getBoard());
         getBoard().rangeUpdater();
@@ -260,7 +260,7 @@ public class AI extends Thread {
 //        }
     }
 
-    public static double evaluate(AiTree aiTree) throws ChessGameException {
+    public static double evaluate(AiTree aiTree)  {
 
         FenToBoard(aiTree.getFen(), getBoard());
 

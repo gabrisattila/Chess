@@ -38,7 +38,7 @@ public class Field implements classes.Game.Model.Structure.IField {
 
     //region Constructor
 
-    public Field() throws ChessGameException {
+    public Field()  {
         setPiece((Piece) null);
     }
 
@@ -109,7 +109,7 @@ public class Field implements classes.Game.Model.Structure.IField {
     //Pieces
 
     @Override
-    public void setPiece(IPiece piece) throws ChessGameException {
+    public void setPiece(IPiece piece)  {
         gotPiece = notNull(piece);
 
         if (gotPiece && piece instanceof Piece) {
@@ -136,7 +136,7 @@ public class Field implements classes.Game.Model.Structure.IField {
     }
 
     @Override
-    public void clean() throws ChessGameException {
+    public void clean()  {
         gotPiece = false;
         setPiece((Piece) null);
     }

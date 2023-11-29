@@ -72,7 +72,7 @@ public class Location {
         return "[" + i + ", " + j + "] ";
     }
 
-    public String toLoggerString() throws ChessGameException {
+    public String toLoggerString()  {
 
         String loc = "";
         loc += Character.toLowerCase(((ViewField)getViewBoard().getField(this)).getRow());

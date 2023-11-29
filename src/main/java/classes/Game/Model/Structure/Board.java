@@ -99,7 +99,7 @@ public class Board implements IBoard {
     }
 
     @Override
-    public IPiece getPiece(int i, int j) throws ChessGameException {
+    public IPiece getPiece(int i, int j) {
         for (IPiece p : pieces) {
             if (p.getI() == i && p.getJ() == j)
                 return p;
@@ -108,12 +108,12 @@ public class Board implements IBoard {
     }
 
     @Override
-    public IPiece getPiece(Location Location) throws ChessGameException {
+    public IPiece getPiece(Location Location) {
         return getPiece(Location.getI(), Location.getJ());
     }
 
     @Override
-    public IPiece getPiece(IField field) throws ChessGameException {
+    public IPiece getPiece(IField field) {
         return getPiece(field.getI(), field.getJ());
     }
 
@@ -159,11 +159,11 @@ public class Board implements IBoard {
     //region Main functions
 
     @Override
-    public void cleanBoard() throws ChessGameException {
+    public void cleanBoard() {
         for (ArrayList<IField> row : this.fields) {
             for (IField f : row) {
                 if (!(f instanceof Field)){
-                    throw new ChessGameException(BAD_TYPE_MSG);
+                    throw new ChessGameException(f.toSString(), "is not Field instance, so can't clean here.\n");
                 }
                 f.clean();
             }
@@ -174,7 +174,7 @@ public class Board implements IBoard {
     }
 
     @Override
-    public void rangeUpdater() throws ChessGameException{
+    public void rangeUpdater() {
 
         clearRangesAndStuffBeforeUpdate();
         pseudos();
@@ -208,7 +208,7 @@ public class Board implements IBoard {
         }
     }
 
-    public void pseudos() throws ChessGameException {
+    public void pseudos()  {
         for (IPiece p : pieces) {
             if (p.getType() != K) {
                 p.updateRange();
@@ -216,7 +216,7 @@ public class Board implements IBoard {
         }
     }
 
-    public void constrainPseudos() throws ChessGameException {
+    public void constrainPseudos()  {
         constrainCalculatedPseudos(!whiteToPlay);
         constrainCalculatedPseudos(whiteToPlay);
     }
@@ -231,12 +231,12 @@ public class Board implements IBoard {
         }
     }
 
-    private void kingFreeRange(boolean my) throws ChessGameException {
+    private void kingFreeRange(boolean my)  {
         kingSimpleMoves(my);
         kingCastle(my);
     }
 
-    private void kingRangeInsteadOfCheck(boolean my) throws ChessGameException {
+    private void kingRangeInsteadOfCheck(boolean my)  {
         kingStepOutFromCheck(!my);
         constrainMyPiecesRangeInsteadOfCheck(my);
     }
@@ -245,12 +245,12 @@ public class Board implements IBoard {
 
     //region Basic constrains, bind setting
 
-    private void constrainCalculatedPseudos(boolean my) throws ChessGameException{
+    private void constrainCalculatedPseudos(boolean my) {
         Set<IPiece> piecesInBinding = findAndSetBindingFor(my);
         constrainBoundPiecesRanges(piecesInBinding);
     }
 
-    private Set<IPiece> findAndSetBindingFor(boolean my) throws ChessGameException {
+    private Set<IPiece> findAndSetBindingFor(boolean my)  {
         Set<IPiece> boundPieces = new HashSet<>();
         for (IPiece enemyTiszt : getTisztek(!my)) {
             if (isThereAnyPieceInPossibleBindingBy(enemyTiszt)){
@@ -264,7 +264,7 @@ public class Board implements IBoard {
         return boundPieces;
     }
 
-    private void constrainBoundPiecesRanges(Set<IPiece> piecesInBinding) throws ChessGameException {
+    private void constrainBoundPiecesRanges(Set<IPiece> piecesInBinding) {
         for (IPiece p : piecesInBinding) {
             ((Piece) p).setPossibleRange(boundPieceOrKingRangeCalc(p, ((Piece) p).getBounderPiece(), null));
         }
@@ -274,7 +274,7 @@ public class Board implements IBoard {
         return isOnTheSameLineWithMyKing(enemyTiszt) && tisztAttackRangeContainsOneOfMyPiece(enemyTiszt);
     }
 
-    private IPiece boundPieceBy(IPiece enemyTiszt) throws ChessGameException{
+    private IPiece boundPieceBy(IPiece enemyTiszt) {
         ArrayList<Location> lineToMyKing = lineFromAPieceToAnother(getKing(!enemyTiszt.isWhite()), enemyTiszt);
 
         int pieceCountOnLine = 0;
@@ -322,7 +322,7 @@ public class Board implements IBoard {
 
     //region King Free Move
 
-    private void kingSimpleMoves(boolean my) throws ChessGameException {
+    private void kingSimpleMoves(boolean my) {
         getKing(my).setPossibleRange(new HashSet<>());
         for (Location l : matrixChooser.get(K)) {
             Location possiblePlaceOfMyKing = l.add(getKingsPlace(my));
@@ -340,7 +340,7 @@ public class Board implements IBoard {
     /**
      * @param forWhite in that case forWhite simbolize my color (Me is who count the step)
      */
-    private void kingCastle(boolean forWhite) throws ChessGameException {
+    private void kingCastle(boolean forWhite) {
         if (MAX_WIDTH == 8 && MAX_HEIGHT == 8 &&
                 (   (forWhite && (whiteBigCastleEnabled || whiteSmallCastleEnabled)) ||
                         (!forWhite && (blackBigCastleEnabled || blackSmallCastleEnabled)) ) &&
@@ -390,7 +390,7 @@ public class Board implements IBoard {
                               Location smallCastlePointLocation,
                               Location smallCastleRoadLocation,
                               boolean bigCastleEnabled,
-                              boolean smallCastleEnabled) throws ChessGameException {
+                              boolean smallCastleEnabled) {
         if (castleHelpersIf(forWhite, bigCastlePointLocation, bigCastleRoadLocation, bigCastleEnabled)) {
             getKing(forWhite).setPossibleRange(bigCastlePointLocation);
         }
@@ -400,7 +400,7 @@ public class Board implements IBoard {
         }
     }
 
-    private boolean castleHelpersIf(boolean forWhite, Location castlePoint, Location castleRoad, boolean castleEnabled) throws ChessGameException {
+    private boolean castleHelpersIf(boolean forWhite, Location castlePoint, Location castleRoad, boolean castleEnabled)  {
         return castleEnabled &&
                 !locationCollectionContains(getAttackRangeWithoutKing(!forWhite), castleRoad) &&
                 !locationCollectionContains(getAttackRangeWithoutKing(!forWhite), castlePoint) &&
@@ -427,7 +427,7 @@ public class Board implements IBoard {
         }
     }
 
-    private void kingStepOutFromCheck(boolean enemy) throws ChessGameException {
+    private void kingStepOutFromCheck(boolean enemy)  {
         if (checkers.getFirst().getType() == H || checkers.getFirst().getType() == G){
             for (Location l : matrixChooser.get(K)) {
                 l = getKingsPlace(!enemy).add(l);
@@ -489,7 +489,7 @@ public class Board implements IBoard {
 
     private Set<Location> boundPieceOrKingRangeCalc(IPiece attacked,
                                                     IPiece attacker,
-                                                    IPiece secondAttacker) throws ChessGameException {
+                                                    IPiece secondAttacker)  {
 
         Set<Location> originRangeOfBound = setBaseRangeOfAttacked(attacked);
 
@@ -528,7 +528,7 @@ public class Board implements IBoard {
         return attackedNewRange;
     }
 
-    private Set<Location> setBaseRangeOfAttacked(IPiece boundOrKing) throws ChessGameException {
+    private Set<Location> setBaseRangeOfAttacked(IPiece boundOrKing)  {
         if (boundOrKing.getType() == K){
             for (Location l : matrixChooser.get(K)) {
                 l = getKingsPlace(boundOrKing.isWhite()).add(l);

@@ -92,7 +92,7 @@ public class ChessButton extends JButton {
             ((ChessButton) e.getSource()).setBackground(tmp);
         }
 
-        private void manageClick(MouseEvent e) throws ChessGameException, InterruptedException, IOException {
+        private void manageClick(MouseEvent e) throws IOException, InterruptedException {
             if (((ChessButton)e.getSource()).isEnabled()) {
                 switch (((ChessButton) e.getSource()).getText()) {
                     case "Új játék" -> newGameClicked();
@@ -137,39 +137,23 @@ public class ChessButton extends JButton {
             test.setBorderPainted(true);
 
             blackAi.addActionListener(e -> {
-                try {
-                    newGameBlackAiClicked();
-                    newGameDialog.dispose();
-                } catch (ChessGameException | InterruptedException ex) {
-                    throw new RuntimeException(ex);
-                }
+                newGameBlackAiClicked();
+                newGameDialog.dispose();
             });
 
             whiteAi.addActionListener(e -> {
-                try {
-                    newGameWhiteAiClicked();
-                    newGameDialog.dispose();
-                } catch (ChessGameException | InterruptedException ex) {
-                    throw new RuntimeException(ex);
-                }
+                newGameWhiteAiClicked();
+                newGameDialog.dispose();
             });
 
             aiVsAi.addActionListener(e -> {
-                try {
-                    newGameAiVsAiClicked();
-                    newGameDialog.dispose();
-                } catch (ChessGameException | InterruptedException ex) {
-                    throw new RuntimeException(ex);
-                }
+                newGameAiVsAiClicked();
+                newGameDialog.dispose();
             });
 
             test.addActionListener(e -> {
-                try {
-                    newGameTestClicked();
-                    newGameDialog.dispose();
-                } catch (ChessGameException | InterruptedException ex) {
-                    throw new RuntimeException(ex);
-                }
+                newGameTestClicked();
+                newGameDialog.dispose();
             });
 
             newGameDialog.add(blackAi);
@@ -183,20 +167,20 @@ public class ChessButton extends JButton {
             newGameDialog.setVisible(true);
         }
 
-        private void newGameBlackAiClicked() throws ChessGameException, InterruptedException {
+        private void newGameBlackAiClicked() {
             newGameInitialization(true, false, false);
         }
 
-        private void newGameWhiteAiClicked() throws ChessGameException, InterruptedException {
+        private void newGameWhiteAiClicked() {
             newGameInitialization(true, true, false);
         }
 
-        private void newGameAiVsAiClicked() throws ChessGameException, InterruptedException {
+        private void newGameAiVsAiClicked() {
             newGameInitialization(false, false, false);
         }
 
-        private void newGameTestClicked() throws ChessGameException, InterruptedException {
-            newGameInitialization(true, true, true);
+        private void newGameTestClicked() {
+            newGameInitialization(true, false, true);
         }
 
         private void pauseClicked() {
@@ -221,7 +205,7 @@ public class ChessButton extends JButton {
 
         }
 
-        private void saveClicked() throws ChessGameException {
+        private void saveClicked()  {
             saveBoard(getViewBoard());
         }
 
@@ -301,7 +285,7 @@ public class ChessButton extends JButton {
             System.exit(0);
         }
 
-        private void newGameInitialization(boolean oneAi, boolean whiteAi, boolean test) throws ChessGameException, InterruptedException {
+        private void newGameInitialization(boolean oneAi, boolean whiteAi, boolean test) {
             gameEndFlag.set(false);
             stepNumber = 1;
             theresOnlyOneAi = oneAi;
@@ -310,7 +294,7 @@ public class ChessButton extends JButton {
             String setUpFen = "";
 
             if (isTest){
-                setUpFen = testFens.get("whiteDownCheckMateInOneTwoKingOneRookSomeSteps4x4");
+                setUpFen = testFens.get("whiteDown2And2Pawn");
 //                whiteAiNeeded = setUpFen.split(" ")[1].charAt(0) == 'w';
             }
 
@@ -333,7 +317,7 @@ public class ChessButton extends JButton {
             labelTexting(!oneAi || !whiteAi);
         }
 
-        private void saveBoard(IBoard board) throws ChessGameException {
+        private void saveBoard(IBoard board)  {
 
             String fen = BoardToFen(board);
             String save = dateToString(new Date());

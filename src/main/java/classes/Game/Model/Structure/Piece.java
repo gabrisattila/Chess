@@ -55,7 +55,7 @@ public class Piece implements IPiece {
         bounderPiece = null;
     }
 
-    public Piece(PieceAttributes attributes, Location Location, IBoard board) throws ChessGameException {
+    public Piece(PieceAttributes attributes, Location Location, IBoard board)  {
         this.attributes = attributes;
         this.Location = Location;
         if (! (board instanceof Board))
@@ -155,12 +155,12 @@ public class Piece implements IPiece {
     //region Main of range
 
     @Override
-    public void updateRange() throws ChessGameException {
+    public void updateRange()  {
         possibleRange = getRange(getType(), true);
         watchedRange = getRange(getType(), false);
     }
 
-    private Set<Location> getRange(PieceType type, boolean posOrWatch) throws ChessGameException {
+    private Set<Location> getRange(PieceType type, boolean posOrWatch)  {
         if (type == null)
             throw new ChessGameException("Type can't be null when choose range to PieceType");
         switch (type){
@@ -183,7 +183,7 @@ public class Piece implements IPiece {
         return range(G, posOrWatch);
     }
 
-    private Set<Location> range(PieceType type, boolean posOrWatch) throws ChessGameException {
+    private Set<Location> range(PieceType type, boolean posOrWatch)  {
         Set<Location> range = new HashSet<>();
         Set<Location> optionsToIterateTrough = type == G && getEnemyStartRow() > getOwnStartRow() ?
                 matrixChooser.get(type) :
@@ -218,7 +218,7 @@ public class Piece implements IPiece {
 
     //region Piece cases separately
 
-    private boolean pawnCase(Location l, boolean posOrWatch) throws ChessGameException {
+    private boolean pawnCase(Location l, boolean posOrWatch)  {
         if (containsLocation(l)){
             if (l.getJ() == getJ()){
                 if (isTherePiece(l))
@@ -252,7 +252,7 @@ public class Piece implements IPiece {
         return false;
     }
 
-    private Set<Location> runTrough(int i, int j, int addToI, int addToJ, boolean possibleOrWatched) throws ChessGameException {
+    private Set<Location> runTrough(int i, int j, int addToI, int addToJ, boolean possibleOrWatched)  {
         boolean b = true;
         Set<Location> pRange = new HashSet<>();
         Set<Location> wRange = new HashSet<>();
@@ -284,11 +284,11 @@ public class Piece implements IPiece {
 
     //region Helpers for ranges
 
-    private boolean enemyColor(Location Location) throws ChessGameException {
+    private boolean enemyColor(Location Location)  {
         return board.getPiece(Location).isWhite() != isWhite();
     }
 
-    private boolean enemyColor(int i, int j) throws ChessGameException {
+    private boolean enemyColor(int i, int j)  {
         return board.getPiece(i, j).isWhite() != isWhite();
     }
 

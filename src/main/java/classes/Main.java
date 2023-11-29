@@ -10,11 +10,7 @@ import static classes.Game.I18N.METHODS.exceptionIgnorer;
 public class Main {
 
     public static void main(String[] args) {
-        try {
-//            exceptionIgnorer();
-            new EDT();
-        } catch (ChessGameException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+//           exceptionIgnorer();
+        new EDT();
     }
 }

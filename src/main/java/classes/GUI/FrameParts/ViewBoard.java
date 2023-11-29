@@ -44,7 +44,7 @@ public class ViewBoard extends Component implements IBoard {
         pieces = new ArrayList<>();
     }
 
-    public static ViewBoard getViewBoard() throws ChessGameException {
+    public static ViewBoard getViewBoard()  {
         if (isNull(viewBoard)){
             viewBoard = new ViewBoard(MAX_WIDTH, MAX_HEIGHT);
         }
@@ -112,7 +112,7 @@ public class ViewBoard extends Component implements IBoard {
     }
 
     @Override
-    public void rangeUpdater() throws ChessGameException, InterruptedException {
+    public void rangeUpdater() {
 
         GameOverAction(this);
 
