@@ -295,7 +295,7 @@ public class ChessButton extends JButton {
             String setUpFen = "";
 
             if (isTest){
-                setUpFen = testFens.get("whiteDown2And2Pawn");
+                setUpFen = testFens.get("onlyTwoQueensHitTest6x6");
 //                whiteAiNeeded = setUpFen.split(" ")[1].charAt(0) == 'w';
             }
 

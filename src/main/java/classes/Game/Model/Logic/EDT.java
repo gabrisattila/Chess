@@ -1,14 +1,12 @@
 package classes.Game.Model.Logic;
 
 import classes.Ai.AI;
-import classes.Game.I18N.*;
 import lombok.*;
 
 import javax.swing.*;
 
-import static classes.Ai.FenConverter.BoardToFen;
 
-import static classes.Ai.FenConverter.FenToBoard;
+import static classes.Ai.FenConverter.*;
 import static classes.GUI.Frame.Window.*;
 import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.METHODS.*;

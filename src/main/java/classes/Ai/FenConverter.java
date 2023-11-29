@@ -8,7 +8,6 @@ import classes.Game.Model.Structure.*;
 import static classes.Game.I18N.ChessGameException.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.PieceType.*;
-import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 
 /**

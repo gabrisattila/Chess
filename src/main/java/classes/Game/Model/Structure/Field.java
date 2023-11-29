@@ -9,6 +9,8 @@ import lombok.*;
 
 import static classes.Game.I18N.ChessGameException.throwBadTypeErrorIfNeeded;
 import static classes.Game.I18N.METHODS.*;
+import static classes.Game.I18N.VARS.MUTABLE.blackPieceSet;
+import static classes.Game.I18N.VARS.MUTABLE.whitePieceSet;
 
 @Getter
 @Setter

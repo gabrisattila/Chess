@@ -156,7 +156,7 @@ public class AI extends Thread {
                 }
             }
 
-            Set<String> possibilities = starterPos.collectPossibilities();
+            ArrayList<String> possibilities = starterPos.collectPossibilities(false);
 
             AiTree nextChild;
             for (String child : possibilities) {
@@ -219,7 +219,7 @@ public class AI extends Thread {
             return evaluation;
         }
 
-        Set<String> possibilities = starterPos.collectPossibilities();
+        ArrayList<String> possibilities = starterPos.collectPossibilities(maxNeeded);
 
         AiTree nextChild;
         if (maxNeeded){
@@ -257,13 +257,17 @@ public class AI extends Thread {
 
         FenToBoard(aiTree.getFen(), getBoard());
 
-        double sum = 0;
+        return sumOfBoard();
+    }
 
-        for (IPiece p : getBoard().getPieces()) {
-            sum += ((Piece) p).getVALUE();
-        }
+    public static double evaluate(){
+        return sumOfBoard();
+    }
 
-        return sum;
+    private static double sumOfBoard(){
+        return getBoard().getPiecesWithoutHit().stream()
+                .mapToDouble(p -> ((Piece) p).getVALUE())
+                .sum();
     }
 
     //endregion

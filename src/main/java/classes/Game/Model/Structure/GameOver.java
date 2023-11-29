@@ -85,6 +85,8 @@ public enum GameOver {
                     board.myPieces().stream().allMatch(p -> p.getPossibleRange().isEmpty())) {
                 return CheckMate;
             }
+        } else if (board.allPiecesAreTheSameColor()) {
+            return CheckMate;
         } else if (board.getPieces().stream().allMatch(p -> p.getType() == K) || board.myPieces().stream().allMatch(p -> p.getPossibleRange().isEmpty())){
             return Draw;
         } else if (board.isSubmitted()) {

@@ -1,7 +1,6 @@
 package classes.Ai;
 
 
-import classes.Game.I18N.*;
 import classes.Game.Model.Structure.IPiece;
 import classes.Game.Model.Structure.Move;
 import lombok.*;
@@ -64,35 +63,51 @@ public class AiTree {
         return getBoard().isDraw() || getBoard().isCheckMate() || getBoard().isSubmitted();
     }
 
-    public Set<String> collectPossibilities() {
-        Set<String> possibilities = new HashSet<>();
+    public ArrayList<String> collectPossibilities(boolean forWhite) {
+        Map<Double, Set<String>> possibilities = new TreeMap<>(forWhite ? Comparator.<Double>reverseOrder() : Comparator.<Double>naturalOrder());
 
-        HashMap<IPiece, Set<Move>> legalMoves = collectLegalMoves();
+        HashMap<IPiece, Set<Move>> legalMoves = collectLegalMoves(forWhite);
         doAllLegalMoves(legalMoves, possibilities);
 
-        return possibilities;
+        return turnPossibilityMapToOneSet(possibilities);
     }
 
 
-    private HashMap<IPiece, Set<Move>> collectLegalMoves()  {
+    private HashMap<IPiece, Set<Move>> collectLegalMoves(boolean forWhite)  {
         HashMap<IPiece, Set<Move>> legals;
-        getBoard().addLegalMovesToPieces();
-        legals = getBoard().getAllLegalMoves(whiteToPlay);
+        getBoard().addLegalMovesToPieces(forWhite);
+        legals = getBoard().getAllLegalMoves(forWhite);
         return legals;
     }
 
-    private void doAllLegalMoves(HashMap<IPiece, Set<Move>> legalMoves, Set<String> possibilities) {
+    private void doAllLegalMoves(HashMap<IPiece, Set<Move>> legalMoves, Map<Double, Set<String>> possibilities) {
         for (IPiece p : legalMoves.keySet()) {
             for (Move m : legalMoves.get(p)) {
                 Step(m);
-                possibilities.add(BoardToFen(getBoard()));
+                putToPossibilityMap(possibilities, evaluate(), BoardToFen(getBoard()));
                 FenToBoard(fen, getBoard());
                 getBoard().rangeUpdater();
             }
         }
     }
 
+    private void putToPossibilityMap(Map<Double, Set<String>> possibilities, double score, String fen){
+        if (possibilities.containsKey(score)){
+            possibilities.get(score).add(fen);
+        }else {
+            HashSet<String> set = new HashSet<>();
+            set.add(fen);
+            possibilities.put(score, set);
+        }
+    }
 
+    private ArrayList<String> turnPossibilityMapToOneSet(Map<Double, Set<String>> possibilities){
+        ArrayList<String> list = new ArrayList<>();
+        for (double k : possibilities.keySet()) {
+            list.addAll(possibilities.get(k));
+        }
+        return list;
+    }
 
     //endregion
 

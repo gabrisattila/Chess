@@ -228,6 +228,7 @@ public class VARS {
             put("onlyTwoBishops6x6", "1F4/6/6/6/6/4f1 w ---- - 1 0");
             put("onlyTwoRooks6x6", "B5/6/6/6/6/5b w ---- - 1 0");
             put("onlyTwoQueens6x6", "2V3/6/6/6/6/3v2 w ---- - 1 0");
+            put("onlyTwoQueensHitTest6x6", "2V3/6/6/6/6/2v3 w ---- - 1 0");
             put("onlyTwoKings4x4", "1K2/4/4/2k1 w ---- - 1 0");
 
             //endregion
@@ -350,9 +351,9 @@ public class VARS {
 
     public static class MUTABLE {
 
-        public static int MAX_WIDTH = 8;
+        public static int MAX_WIDTH = 6;
 
-        public static int MAX_HEIGHT = 8;
+        public static int MAX_HEIGHT = 6;
 
         public static int MINIMAX_DEPTH = 6;
 

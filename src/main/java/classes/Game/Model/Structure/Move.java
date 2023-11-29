@@ -214,6 +214,9 @@ public class Move {
         }
 
         IField toField = boardToMoveOn.getField(to);
+        if (notNull(boardToMoveOn.getPiece(to))){
+            boardToMoveOn.getPiece(to).setLocation(new Location(-1, -1));
+        }
         toField.setPiece(what);
 
         if (notNull(fromField)) {

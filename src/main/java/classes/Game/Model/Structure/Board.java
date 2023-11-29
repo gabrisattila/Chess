@@ -637,12 +637,22 @@ public class Board implements IBoard {
         return pieces.stream().filter(p -> p.isWhite() == my && p.getType() != G && p.getType() != K).collect(Collectors.toSet());
     }
 
+    public boolean allPiecesAreTheSameColor(){
+        boolean b = pieces.get(0).isWhite();
+        for (IPiece p : getPieces()) {
+            if (p.isWhite() != b){
+                return false;
+            }
+        }
+        return true;
+    }
+
     //endregion
 
     //region Used by AiTree
 
-    public void addLegalMovesToPieces() {
-        for (IPiece p : myPieces()) {
+    public void addLegalMovesToPieces(boolean forWhite) {
+        for (IPiece p : getPieces(forWhite)) {
             for (Location to : p.getPossibleRange()) {
                 ((Piece) p).getLegalMoves().add(new Move(
                         p,
@@ -664,6 +674,10 @@ public class Board implements IBoard {
             }
         }
         return legals;
+    }
+
+    public Set<IPiece> getPiecesWithoutHit() {
+        return getPieces().stream().filter(p -> containsLocation(p.getLocation())).collect(Collectors.toSet());
     }
 
     //endregion
