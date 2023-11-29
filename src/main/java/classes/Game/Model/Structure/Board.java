@@ -348,6 +348,8 @@ public class Board implements IBoard {
                             !locationCollectionContains(getAttackRangeWithoutKing(!my), possiblePlaceOfMyKing)
             ){
                 getKing(my).setPossibleRange(possiblePlaceOfMyKing);
+            } else if (containsLocation(l)) {
+                getKing(my).getWatchedRange().add(l);
             }
         }
     }

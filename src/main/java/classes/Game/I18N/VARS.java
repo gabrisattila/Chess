@@ -107,6 +107,16 @@ public class VARS {
         public final static Color BACK_GROUND = new Color(33, 3, 8, 205);
 
 
+        //Minding belülről kezdve számolódnak a koncentrikus körök, mert azok biztos fenn lesznek.
+
+        public static final double firstBaseFieldValue = 6.0;
+
+        public static final double secondBaseFieldValue = 4.0;
+
+        public static final double thirdBaseFieldValue = 2.3;
+
+        public static final double fourthBaseFieldValue = 1.5;
+
         public static final Set<Location> pawnMatrix = new HashSet<>(){{
             add(new Location(1, -1));
             add(new Location(1, 1));

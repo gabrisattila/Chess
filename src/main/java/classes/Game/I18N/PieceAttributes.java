@@ -69,11 +69,11 @@ public class PieceAttributes {
 
     public void valueSetting(){
         switch (getType()){
-            case G -> VALUE = isWhite() ? 1 : -1;
-            case H, F -> VALUE = isWhite() ? 3 : -3;
-            case B -> VALUE = isWhite() ? 5 : -5;
-            case V -> VALUE = isWhite() ? 9 : -9;
-            case K -> VALUE = isWhite() ? 100 : -100;
+            case G -> VALUE = isWhite() ? 2 : -2;
+            case H, F -> VALUE = isWhite() ? 6 : -6;
+            case B -> VALUE = isWhite() ? 10 : -10;
+            case V -> VALUE = isWhite() ? 18 : -18;
+            case K -> VALUE = isWhite() ? 49 : -49;
         }
     }
 

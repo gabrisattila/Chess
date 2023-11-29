@@ -7,6 +7,8 @@ import classes.Game.I18N.PieceAttributes;
 import classes.Game.I18N.PieceType;
 import lombok.*;
 
+import java.util.Map;
+
 import static classes.Game.I18N.ChessGameException.throwBadTypeErrorIfNeeded;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.MUTABLE.blackPieceSet;
@@ -131,21 +133,6 @@ public class Field implements classes.Game.Model.Structure.IField {
         setPiece((Piece) null);
     }
 
-    public boolean isEnemyKingInNeighbour(boolean white, Board board) {
-
-        for (int i = Location.getI() - 1; i < Location.getI() + 2; i++) {
-            for (int j = Location.getJ() - 1; j < Location.getJ() + 2; j++) {
-                if (containsLocation(i, j) && notNull(board.getField(i, j).getPiece())
-                        && board.getField(i, j).getPiece().getType() == PieceType.K){
-                    if (board.getField(i, j).getPiece().isWhite() != white){
-                        return board.getField(i, j).getPiece().isWhite() != white;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
 
     //Values
     public void setValuesToZero(){
@@ -170,6 +157,17 @@ public class Field implements classes.Game.Model.Structure.IField {
     public void setWatcherCountToZero(){
         whiteWatcherCount = 0;
         blackWatcherCount = 0;
+    }
+
+    public void setFinalValue(boolean forWhite){
+        if (forWhite ? whiteWatcherCount == 0 : blackWatcherCount == 0){
+            if (isGotPiece())
+                finalValue = getPiece().getVALUE();
+            else
+                finalValue = 0;
+        }else {
+            finalValue = (Math.abs(getPiece().getVALUE()) + getBaseValue()) * (forWhite ? whiteWatcherCount : blackWatcherCount);
+        }
     }
 
     //endregion

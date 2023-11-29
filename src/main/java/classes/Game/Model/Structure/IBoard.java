@@ -6,6 +6,7 @@ import classes.Game.I18N.Location;
 
 import java.util.ArrayList;
 
+import static classes.Ai.Evaluate.Evaluator.addBaseFieldValues;
 import static classes.Ai.FenConverter.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
@@ -14,10 +15,10 @@ import static classes.Game.I18N.VARS.MUTABLE.*;
 public interface IBoard {
 
     default void boardSetUp(IBoard board, ArrayList<ArrayList<IField>> fields){
-        classes.Game.Model.Structure.IField field;
+        IField field;
         String fieldColor;
         Location Location;
-        ArrayList<classes.Game.Model.Structure.IField> row;
+        ArrayList<IField> row;
 
         for (int i = 0; i < MAX_HEIGHT; i++) {
             row = new ArrayList<>();
@@ -32,6 +33,8 @@ public interface IBoard {
             }
             fields.add(row);
         }
+        if (board instanceof Board)
+            addBaseFieldValues();
     }
 
     default void pieceSetUp(String FEN){
