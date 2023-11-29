@@ -8,8 +8,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static classes.Ai.Evaluate.Evaluator.addBaseFieldValues;
-import static classes.GUI.Frame.Window.*;
+import static classes.Ai.Evaluator.addBaseFieldValues;
 import static classes.Game.I18N.ChessGameException.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.PieceType.*;

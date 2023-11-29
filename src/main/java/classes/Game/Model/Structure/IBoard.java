@@ -1,12 +1,10 @@
 package classes.Game.Model.Structure;
 
 import classes.GUI.FrameParts.ViewField;
-import classes.Game.I18N.ChessGameException;
 import classes.Game.I18N.Location;
 
 import java.util.ArrayList;
 
-import static classes.Ai.Evaluate.Evaluator.addBaseFieldValues;
 import static classes.Ai.FenConverter.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;

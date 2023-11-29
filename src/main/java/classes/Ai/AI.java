@@ -7,9 +7,8 @@ import lombok.*;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Set;
 
-import static classes.Ai.Evaluate.Evaluator.finalValueCalculation;
+import static classes.Ai.Evaluator.finalValueCalculation;
 import static classes.Ai.FenConverter.*;
 import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.METHODS.*;
