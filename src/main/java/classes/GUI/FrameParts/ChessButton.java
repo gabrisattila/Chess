@@ -181,7 +181,7 @@ public class ChessButton extends JButton {
         }
 
         private void newGameTestClicked() {
-            newGameInitialization(true, true, true);
+            newGameInitialization(true, false, true);
         }
 
         private void pauseClicked() {
@@ -295,7 +295,7 @@ public class ChessButton extends JButton {
             String setUpFen = "";
 
             if (isTest){
-                setUpFen = testFens.get("whiteDownCheckMateInOneTwoKingOneRookOneStep3x3");
+                setUpFen = testFens.get("whiteDownOnlyKingsAndRooks");
 //                whiteAiNeeded = setUpFen.split(" ")[1].charAt(0) == 'w';
             }
 

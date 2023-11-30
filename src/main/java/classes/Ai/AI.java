@@ -8,7 +8,8 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.Random;
 
-import static classes.Ai.Evaluator.finalValueCalculation;
+import static classes.Ai.AiTree.*;
+import static classes.Ai.Evaluator.*;
 import static classes.Ai.FenConverter.*;
 import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.METHODS.*;
@@ -19,22 +20,21 @@ import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Game.Model.Structure.GameOver.*;
 import static classes.Game.Model.Structure.Move.*;
 
+/**
+ * thread descriptor object
+ */
 @Getter
 @Setter
 public class AI extends Thread {
 
     //region Fields
 
-    private String color;
-
     //endregion
 
 
     //region Constructor
 
-    public AI(String color){
-        this.color = color;
-    }
+    public AI(){}
 
     //endregion
 
@@ -62,7 +62,6 @@ public class AI extends Thread {
     }
 
     public void moveWithSimpleAi() {
-
         synchronized (pauseFlag){
             while (pauseFlag.get()) {
                 try {
@@ -98,7 +97,6 @@ public class AI extends Thread {
             move.setMustLogged(true);
             Step(move);
         }
-
     }
 
     private boolean gameFinished(){
@@ -117,15 +115,33 @@ public class AI extends Thread {
     //region Mini Max
 
     private void moveWithMiniMaxAi() {
-        AiTree tree = new AiTree(BoardToFen(getBoard()));
 
-        double best = simpleMiniMax(tree, 0, whiteToPlay, -350, 350);
+        getBoard().rangeUpdater();
+        GameOverAction(getBoard());
+        if (!gameFinished()) {
 
-        for (AiTree child : tree.getChildren()) {
-            if (best == child.getFinalValue()){
-                FenToBoard(child.getFen(), getBoard());
-                break;
+            AiTree tree = new AiTree(BoardToFen(getBoard()));
+
+            double best = simpleMiniMax(tree, 0, whiteToPlay, -350, 350);
+
+            ArrayList<AiTree> bestChildren = new ArrayList<>();
+            for (AiTree child : tree.getChildren()) {
+                if (child.getFinalValue() == best) {
+                    bestChildren.add(child);
+                }
             }
+            AiTree bestChild;
+            if (bestChildren.size() == 1) {
+                bestChild = bestChildren.get(0);
+                FenToBoard(bestChildren.get(0).getFen(), getBoard());
+            } else {
+                Random random = new Random();
+                int randomChosenBestIndex = random.nextInt(0, bestChildren.size());
+                bestChild = bestChildren.get(randomChosenBestIndex);
+                FenToBoard(bestChild.getFen(), getBoard());
+            }
+            emPassantChance = bestChild.getFen().split(" ")[3];
+            castleCaseFenToBoard(bestChild.getFen().split(" ")[2]);
         }
     }
 
@@ -239,7 +255,7 @@ public class AI extends Thread {
                     starterPos.getChildren().add(nextChild);
 
                     double evaluatedMiniMax = simpleMiniMax(nextChild, depth + 1, false, -350, 350);
-                    possibleMax = Math.max(possibleMax, evaluatedMiniMax);
+                    possibleMax = evaluatedMiniMax == -5000 ? -5000 :  Math.min(possibleMax, evaluatedMiniMax);
                     alpha = Math.max(alpha, evaluatedMiniMax);
                     if (beta <= alpha)
                         break;
@@ -253,7 +269,7 @@ public class AI extends Thread {
                     starterPos.getChildren().add(nextChild);
 
                     double evaluatedMiniMax = simpleMiniMax(nextChild, depth + 1, true, -350, 350);
-                    possibleMin = Math.min(possibleMin, evaluatedMiniMax);
+                    possibleMin = evaluatedMiniMax == 5000 ? 5000 :  Math.min(possibleMin, evaluatedMiniMax);
                     beta = Math.min(beta, evaluatedMiniMax);
                     if (beta <= alpha)
                         break;
@@ -276,6 +292,11 @@ public class AI extends Thread {
     }
 
     private static double sumOfBoard(){
+        //double sum = 0;
+        //for (IPiece p : getBoard().getPiecesWithoutHit()) {
+        //    sum += ((Piece) p).getVALUE();
+        //}
+        //return sum;
         return finalValueCalculation(true) + finalValueCalculation(false);
     }
 

@@ -254,6 +254,7 @@ public class VARS {
             put("blackDownWhitePawnsFrontEmPassant", "8/pppppppp/8/8/PPPPPPPP/8/8/8 w ---- - 1 0");
             put("whiteDown2And2Pawn", "8/8/8/P3P3/8/8/3p1p2/8 w ---- - 1 0");
             put("blackDown2And2Pawn", "8/8/8/4p3/8/8/3P1P2/8 b ---- - 1 1");
+            put("whiteDown1And2Pawn", "8/8/8/4P3/8/8/3p1p2/8 w ---- - 1 0");
 
             //endregion
 
@@ -365,7 +366,7 @@ public class VARS {
 
         public static int MAX_HEIGHT = 8;
 
-        public static int MINIMAX_DEPTH = 6;
+        public static int MINIMAX_DEPTH = 2;
 
         public static Character[] alreadyHappenedCastleCases = new Character[4];
 

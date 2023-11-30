@@ -109,6 +109,12 @@ public class AiTree {
         return list;
     }
 
+    public static boolean containsSimilarFinalValues(Collection<AiTree> aiTrees){
+        return aiTrees.stream()
+                .anyMatch(aiTree -> aiTrees.stream()
+                        .anyMatch(otherTree -> aiTree != otherTree && aiTree.getFinalValue() == otherTree.getFinalValue()));
+    }
+
     //endregion
 
 }

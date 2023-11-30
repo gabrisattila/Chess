@@ -24,15 +24,14 @@ public class EDT {
     //region Fields
 
     /**
-     * Always this should be the white one. Even if it's alone, even if it has a pair.
+     * This is the AI wich should start when player turn ends.
+     * Then it finishes it's job. After player come again.
+     * Similar with two AI. First initialize and works for white move.
+     * Finishes it's job, and in the next move,
+     * we initialize it again and works for black.
      */
 
-    public static AI aiW;
-
-    /**
-     * Always this should be the black one. Even if it's alone, even if it has a pair.
-     */
-    public static AI aiB;
+    public static AI ai;
 
     //endregion
 
@@ -76,31 +75,8 @@ public class EDT {
     }
 
     public static void startAI(){
-        startAnAi(whiteToPlay ? "WHITE" : "BLACK");
-    }
-
-    public static void startAnAi(String color){
-        if (WHITE_STRING.equals(color)){
-            aiW = new AI(color);
-            SwingUtilities.invokeLater(() -> {
-//                try {
-//                    sleep(250);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-                aiW.start();
-            });
-        }else {
-            aiB = new AI(color);
-            SwingUtilities.invokeLater(() -> {
-//                try {
-//                    sleep(250);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-                aiB.start();
-            });
-        }
+        ai = new AI();
+        ai.start();
     }
 
     public static void receivedMoveFromAi(String fen){

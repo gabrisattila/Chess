@@ -148,7 +148,10 @@ public class FenConverter {
 
         fenToReturn.append(' ');
 
-        fenToReturn.append(emPassantChance);
+        fenToReturn.append(emPassantChance.charAt(0));
+        if (emPassantChance.length() == 2) {
+            fenToReturn.append(emPassantChance.charAt(1));
+        }
 
         fenToReturn.append(' ');
 
@@ -222,8 +225,8 @@ public class FenConverter {
     private static void emPassantFenToBoard(String emPassant, PieceAttributes piece, int sor, int oszlop){
         if (piece.isWhite() == whiteToPlay &&
                 piece.getType() == G &&
-                Math.abs(sor - Character.getNumericValue(emPassantChance.charAt(0))) == 1 &&
-                Math.abs(oszlop - Character.getNumericValue(emPassantChance.charAt(1))) == 1
+                Math.abs(sor - Character.getNumericValue(emPassant.charAt(0))) == 1 &&
+                Math.abs(oszlop - Character.getNumericValue(emPassant.charAt(1))) == 1
         )
             emPassantHelper(emPassant, piece);
     }
@@ -248,7 +251,7 @@ public class FenConverter {
         piece.setOwnStartRow(piece.getEnemyAndOwnStartRow().getFirst() == 7 ? 1 : 6);
     }
 
-    private static void castleCaseFenToBoard(String castleCases){
+    public static void castleCaseFenToBoard(String castleCases){
 
         whiteSmallCastleEnabled = 'K' == castleCases.charAt(0);
 
