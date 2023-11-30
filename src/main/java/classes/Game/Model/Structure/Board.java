@@ -536,18 +536,23 @@ public class Board implements IBoard {
                             attacker.getPossibleRange()
             );
             attackedNewRange = (Set<Location>) minus(originRangeOfBound, newAttackRange);
+            originFieldOfBound.setPiece(attacked);
+            field.clean();
+            attacker.updateRange();
+            if (notNull(secondAttacker))
+                secondAttacker.updateRange();
         }else {
+            originFieldOfBound.setPiece(attacked);
+            field.clean();
+            attacker.updateRange();
+            if (notNull(secondAttacker))
+                secondAttacker.updateRange();
             newAttackRange = new HashSet<>(lineFromAPieceToAnother(attacker, attacked));
             if (locationCollectionContains(originRangeOfBound, attacker.getLocation()))
                 newAttackRange.add(attacker.getLocation());
             attackedNewRange = (Set<Location>) intersection(originRangeOfBound, newAttackRange);
         }
 
-        originFieldOfBound.setPiece(attacked);
-        field.clean();
-        attacker.updateRange();
-        if (notNull(secondAttacker))
-            secondAttacker.updateRange();
 
         return attackedNewRange;
     }

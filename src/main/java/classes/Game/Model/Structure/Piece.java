@@ -28,8 +28,6 @@ public class Piece implements IPiece {
 
     private IPiece bounderPiece;
 
-    private double VALUE;
-
     private Board board;
 
     private Set<Location> possibleRange;

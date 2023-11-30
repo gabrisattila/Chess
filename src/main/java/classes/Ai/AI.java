@@ -119,29 +119,12 @@ public class AI extends Thread {
         getBoard().rangeUpdater();
         GameOverAction(getBoard());
         if (!gameFinished()) {
-
             AiTree tree = new AiTree(BoardToFen(getBoard()));
 
-            double best = simpleMiniMax(tree, 0, whiteToPlay, -350, 350);
+            double bestChildValue = simpleMiniMax(tree, 0, whiteToPlay, -350, 350);
 
-            ArrayList<AiTree> bestChildren = new ArrayList<>();
-            for (AiTree child : tree.getChildren()) {
-                if (child.getFinalValue() == best) {
-                    bestChildren.add(child);
-                }
-            }
-            AiTree bestChild;
-            if (bestChildren.size() == 1) {
-                bestChild = bestChildren.get(0);
-                FenToBoard(bestChildren.get(0).getFen(), getBoard());
-            } else {
-                Random random = new Random();
-                int randomChosenBestIndex = random.nextInt(0, bestChildren.size());
-                bestChild = bestChildren.get(randomChosenBestIndex);
-                FenToBoard(bestChild.getFen(), getBoard());
-            }
-            emPassantChance = bestChild.getFen().split(" ")[3];
-            castleCaseFenToBoard(bestChild.getFen().split(" ")[2]);
+            AiTree bestChild = sortOutBestChild(tree, bestChildValue);
+            FenToBoard(bestChild.getFen(), getBoard());
         }
     }
 
@@ -278,6 +261,26 @@ public class AI extends Thread {
                 return possibleMin;
             }
         }
+    }
+
+    private AiTree sortOutBestChild(AiTree tree, double bestChildValue){
+        ArrayList<AiTree> bestChildren = new ArrayList<>();
+        for (AiTree child : tree.getChildren()) {
+            if (child.getFinalValue() == bestChildValue) {
+                bestChildren.add(child);
+            }
+        }
+        AiTree bestChild;
+        if (bestChildren.size() == 1) {
+            bestChild = bestChildren.get(0);
+        } else {
+            Random random = new Random();
+            int randomChosenBestIndex = random.nextInt(0, bestChildren.size());
+            bestChild = bestChildren.get(randomChosenBestIndex);
+        }
+        emPassantChance = bestChild.getFen().split(" ")[3];
+        castleCaseFenToBoard(bestChild.getFen().split(" ")[2]);
+        return bestChild;
     }
 
     public static double evaluate(AiTree aiTree)  {

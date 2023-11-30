@@ -72,7 +72,6 @@ public class AiTree {
         return turnPossibilityMapToOneSet(possibilities);
     }
 
-
     private HashMap<IPiece, Set<Move>> collectLegalMoves(boolean forWhite)  {
         HashMap<IPiece, Set<Move>> legals;
         getBoard().addLegalMovesToPieces(forWhite);
@@ -107,12 +106,6 @@ public class AiTree {
             list.addAll(possibilities.get(k));
         }
         return list;
-    }
-
-    public static boolean containsSimilarFinalValues(Collection<AiTree> aiTrees){
-        return aiTrees.stream()
-                .anyMatch(aiTree -> aiTrees.stream()
-                        .anyMatch(otherTree -> aiTree != otherTree && aiTree.getFinalValue() == otherTree.getFinalValue()));
     }
 
     //endregion
