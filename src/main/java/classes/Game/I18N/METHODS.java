@@ -1,19 +1,15 @@
 package classes.Game.I18N;
 
-import classes.Ai.FenConverter;
 import classes.GUI.FrameParts.ViewPiece;
 import classes.Game.Model.Structure.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.*;
 import javax.swing.Timer;
 import java.util.stream.Collectors;
 
 import static classes.Ai.FenConverter.*;
-import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.GUI.Frame.Window.*;

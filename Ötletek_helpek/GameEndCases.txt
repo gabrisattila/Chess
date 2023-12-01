@@ -1,0 +1,22 @@
+Matt:
+	- Királyok nélküli táblán: minden figura egy színű.
+	- A soron következő játékos sakkban van, és üres a range-e.
+
+
+Patt:
+	- A soron következő játékosnak üres a range, és nincs sakkban.
+	- A soron következő játékosnak van lehetősége elfogadni az ellenfél által ajánlott döntetlen kérést.
+	- Harmadjára is ugyanolyan állás jön létre. Fen összehasonlítás úgy, hogy a lépésszám nem számít. -> fen.equals()
+	- Mindegyik fennmaradt figura király
+	- 3 figura maradt fenn: 2 király és 1 futó / huszár
+	- 3 figura maradt fenn: 2 király és 1 gyalog, ami a egyik szélső oszlopon megy, és nem tud bejutni, mert a másik 		király előtte áll.
+	- 4 figura maradt fenn: 2 király, 1 futó / huszár az egyik színből és 1 futó / huszár a másik színből
+	- Ai döntetlent ajánl / elfogad:
+		- Minden lépés előtt lehessen döntetlent ajánlani.
+		- 3 figura maradt fenn: 2 király és 1 gyalog, ami a egyik szélső oszlopon megy, és nem tud bejutni, mert a másik király előtte áll.
+		- 4 figura marad fenn: 2 király és két huszár azonos színből.
+
+Feladás:
+	- A játékos/Ai minden lépése előtt dönthet, hogy feladja-e a játékot. Minden egyébb esetben legyen a gomb letiltva.
+	- Ai feladja:
+				- Ha túl nagy az anyagi előny kb. nehéz tiszt vs only király

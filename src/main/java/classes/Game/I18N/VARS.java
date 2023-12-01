@@ -109,13 +109,44 @@ public class VARS {
 
         //Minding belülről kezdve számolódnak a koncentrikus körök, mert azok biztos fenn lesznek.
 
-        public static final double firstBaseFieldValue = 6.0;
+        public static final double FIRST_BASE_FIELD_VALUE = 6.0;
 
-        public static final double secondBaseFieldValue = 4.0;
+        public static final double SECOND_BASE_FIELD_VALUE = 4.0;
 
-        public static final double thirdBaseFieldValue = 2.3;
+        public static final double THIRD_BASE_FIELD_VALUE = 2.3;
 
-        public static final double fourthBaseFieldValue = 1.5;
+        public static final double FOURTH_BASE_FIELD_VALUE = 1.5;
+
+        public static final double WHITE_GOT_CHECKMATE = 10000;
+
+        public static final double BLACK_GOT_CHECKMATE = -10000;
+
+        public static final double DRAW = 0.005;
+
+        public static final double DRAW_OFFER = 0.001;
+
+        public static final double BLACK_SUBMITTED = 5000;
+
+        public static final double WHITE_SUBMITTED = -5000;
+
+        //Eredetileg mindegyik fele ennyi
+        public static final double PAWN_BASE_VALUE = 2;
+
+        public static final double KNIGHT_OR_BISHOP_BASE_VALUE = 6;
+
+        public static final double ROOK_BASE_VALUE = 10;
+
+        public static final double QUEEN_BASE_VALUE = 18;
+
+        public static final double KING_BASE_VALUE = 49;
+
+        public static final ArrayList<Double> GAME_OVER_CASES = new ArrayList<>(){{
+            add(WHITE_GOT_CHECKMATE);
+            add(BLACK_GOT_CHECKMATE);
+            add(DRAW);
+            add(WHITE_SUBMITTED);
+            add(BLACK_SUBMITTED);
+        }};
 
         public static final Set<Location> pawnMatrix = new HashSet<>(){{
             add(new Location(1, -1));
@@ -456,6 +487,8 @@ public class VARS {
         public static int labelCounter = 0;
 
         public static boolean canBeLogger;
+
+        public static double subOrDrawOffer = Double.MIN_VALUE;
 
         public static final AtomicBoolean pauseFlag = new AtomicBoolean(false);
 

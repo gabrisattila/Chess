@@ -52,7 +52,7 @@ public class EDT {
         if (isFirstOpen){
             getWindow();
         } else {
-            SwingUtilities.invokeLater(EDT::initializeAis);
+            initializeAis();
 
             if (theresOnlyOneAi)
                 getViewBoard().rangeUpdater();
@@ -64,17 +64,18 @@ public class EDT {
             if ((whiteToPlay && whiteAiNeeded) || (!whiteToPlay && !whiteAiNeeded)){
                 aiTurn = true;
                 playerTurn = false;
-                startAI();
+                SwingUtilities.invokeLater(EDT::startAI);
             }else {
                 aiTurn = false;
                 playerTurn = true;
             }
         }else {
-            startAI();
+            SwingUtilities.invokeLater(EDT::startAI);
         }
     }
 
     public static void startAI(){
+        buttonsEnabled(false);
         ai = new AI();
         ai.start();
     }
@@ -83,6 +84,7 @@ public class EDT {
         setUpViewBoard(fen);
         if (theresOnlyOneAi){
             switchWhoComes();
+            buttonsEnabled(true);
             getViewBoard().rangeUpdater();
         }else {
             startAI();

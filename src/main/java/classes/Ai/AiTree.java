@@ -1,13 +1,14 @@
 package classes.Ai;
 
 
+import classes.Game.Model.Structure.GameOverOrPositionEnd;
 import classes.Game.Model.Structure.IPiece;
 import classes.Game.Model.Structure.Move;
 import lombok.*;
 
 import java.util.*;
 
-import static classes.Ai.AI.*;
+import static classes.Ai.Evaluator.*;
 import static classes.Ai.FenConverter.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Game.Model.Structure.Board.*;
@@ -51,7 +52,7 @@ public class AiTree {
 
     public static void addToContinuousTree(String fen)  {
         AiTree child = new AiTree(fen);
-        child.setFinalValue(evaluate(child));
+//        child.setFinalValue(evaluate(child));
         for (AiTree next = continuousTree; !next.getChildren().isEmpty(); next = ((AiTree)next.getChildren().toArray()[0])){
             next.getChildren().add(child);
         }
@@ -59,9 +60,7 @@ public class AiTree {
 
     //endregion
 
-    public boolean isGameEndInPos()  {
-        return getBoard().isDraw() || getBoard().isCheckMate() || getBoard().isSubmitted();
-    }
+    //region Possibility Collecting
 
     public ArrayList<String> collectPossibilities(boolean forWhite) {
         Map<Double, Set<String>> possibilities = new TreeMap<>(forWhite ? Comparator.<Double>reverseOrder() : Comparator.<Double>naturalOrder());
@@ -107,6 +106,8 @@ public class AiTree {
         }
         return list;
     }
+
+    //endregion
 
     //endregion
 

@@ -1,6 +1,5 @@
 package classes.Game.Model.Structure;
 
-import classes.GUI.FrameParts.ViewBoard;
 import classes.GUI.FrameParts.ViewPiece;
 import classes.Game.I18N.*;
 import lombok.*;
@@ -12,7 +11,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static classes.Ai.FenConverter.*;
-import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.Location.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.PieceType.*;

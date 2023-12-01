@@ -1,11 +1,10 @@
 package classes.Game.I18N;
 
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-import static classes.Game.I18N.METHODS.isNull;
-import static classes.Game.I18N.VARS.FINALS.WHITE_STRING;
+import static classes.Game.I18N.METHODS.*;
+import static classes.Game.I18N.VARS.FINALS.*;
 
 @Getter
 @Setter
@@ -69,11 +68,11 @@ public class PieceAttributes {
 
     public void valueSetting(){
         switch (getType()){
-            case G -> VALUE = isWhite() ? 2 : -2;
-            case H, F -> VALUE = isWhite() ? 6 : -6;
-            case B -> VALUE = isWhite() ? 10 : -10;
-            case V -> VALUE = isWhite() ? 18 : -18;
-            case K -> VALUE = isWhite() ? 49 : -49;
+            case G -> VALUE = isWhite() ? PAWN_BASE_VALUE : - PAWN_BASE_VALUE;
+            case H, F -> VALUE = isWhite() ? KNIGHT_OR_BISHOP_BASE_VALUE : - KNIGHT_OR_BISHOP_BASE_VALUE;
+            case B -> VALUE = isWhite() ? ROOK_BASE_VALUE : - ROOK_BASE_VALUE;
+            case V -> VALUE = isWhite() ? QUEEN_BASE_VALUE : - QUEEN_BASE_VALUE;
+            case K -> VALUE = isWhite() ? KING_BASE_VALUE : - KING_BASE_VALUE;
         }
     }
 

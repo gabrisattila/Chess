@@ -18,8 +18,7 @@ import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Game.Model.Logic.EDT.*;
 import static classes.Game.I18N.METHODS.*;
-import static classes.Game.Model.Structure.Board.*;
-import static classes.Game.Model.Structure.GameOver.*;
+import static classes.Game.Model.Structure.GameOverOrPositionEnd.GameOverDecision;
 
 public class ChessButton extends JButton {
 
@@ -268,11 +267,11 @@ public class ChessButton extends JButton {
         }
 
         private void submissionClicked() {
-            SubmissionOrDrawRecommendation(getBoard(), Submission);
+            GameOverDecision(getViewBoard(), true, whiteToPlay ? WHITE_SUBMITTED : BLACK_SUBMITTED);
         }
 
         private void drawClicked() {
-            SubmissionOrDrawRecommendation(getBoard(), Draw);
+            GameOverDecision(getViewBoard(), true, DRAW_OFFER);
         }
 
         private void continueClicked(){
@@ -313,8 +312,8 @@ public class ChessButton extends JButton {
 
             getWindow().addGameBoard(getWindow());
             setUpSides(setUpFen);
-            buttonsEnabled(true);
             initialization();
+            buttonsEnabled(true);
             labelTexting(!oneAi || !whiteAi);
         }
 

@@ -8,16 +8,16 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.Random;
 
-import static classes.Ai.AiTree.*;
-import static classes.Ai.Evaluator.*;
 import static classes.Ai.FenConverter.*;
+import static classes.GUI.Frame.Window.*;
 import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.PieceType.*;
+import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.Model.Logic.EDT.*;
 import static classes.Game.Model.Structure.Board.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
-import static classes.Game.Model.Structure.GameOver.*;
+import static classes.Game.Model.Structure.GameOverOrPositionEnd.*;
 import static classes.Game.Model.Structure.Move.*;
 
 /**
@@ -69,9 +69,8 @@ public class AI extends Thread {
                 } catch (InterruptedException ignored) {}
             }
 
-            getBoard().rangeUpdater();
-            GameOverAction(getBoard());
-            if (gameFinished())
+            double gameOver = GameOverDecision(getBoard(), false, Double.MIN_VALUE);
+            if (gameFinished(gameOver))
                 return;
 
             Random random = new Random();
@@ -98,9 +97,9 @@ public class AI extends Thread {
             Step(move);
         }
     }
-
-    private boolean gameFinished(){
-        return getBoard().isGameFinished();
+    
+    private boolean gameFinished(double gameOver){
+        return GAME_OVER_CASES.contains(gameOver);
     }
 
     private Pair<Integer, Location> kingAliveCheckRandomMove(int indexOfChosen, Location toStepOn, ArrayList<Location> ableToStepThere, Random random)  {
@@ -116,9 +115,8 @@ public class AI extends Thread {
 
     private void moveWithMiniMaxAi() {
 
-        getBoard().rangeUpdater();
-        GameOverAction(getBoard());
-        if (!gameFinished()) {
+        double gameOver = GameOverDecision(getBoard(), true, Double.MIN_VALUE);
+        if (!gameFinished(gameOver)) {
             AiTree tree = new AiTree(BoardToFen(getBoard()));
 
             double bestChildValue = simpleMiniMax(tree, 0, whiteToPlay, -350, 350);
@@ -126,57 +124,6 @@ public class AI extends Thread {
             AiTree bestChild = sortOutBestChild(tree, bestChildValue);
             FenToBoard(bestChild.getFen(), getBoard());
         }
-    }
-
-    private double negaMaxWithAlphaBeta(AiTree starterPos, int depth, double alpha, double beta) {
-
-        synchronized (pauseFlag){
-
-            while(pauseFlag.get()) {
-                try {
-                    pauseFlag.wait();
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-
-            FenToBoard(starterPos.getFen(), getBoard());
-            getBoard().rangeUpdater();
-
-            if (depth == 0){
-                return evaluate(starterPos);
-            }
-
-            if (starterPos.isGameEndInPos()){
-                if (getBoard().isCheckMate()){
-                    return -5000;
-                }else {
-                    return 0;
-                }
-            }
-
-            ArrayList<String> possibilities = starterPos.collectPossibilities(false);
-
-            AiTree nextChild;
-            for (String child : possibilities) {
-
-                nextChild = new AiTree(child);
-                starterPos.getChildren().add(nextChild);
-
-                double evaluation = -negaMaxWithAlphaBeta(nextChild, depth - 1, -beta, -alpha);
-
-                if (evaluation >= beta){
-                    break;
-                }
-
-                alpha = Math.max(alpha, evaluation);
-
-            }
-
-            starterPos.setFinalValue(alpha);
-            return alpha;
-        }
-
     }
 
     private double simpleMiniMax(AiTree starterPos, int depth, boolean maxNeeded, double alpha, double beta) {
@@ -191,41 +138,11 @@ public class AI extends Thread {
                 }
             }
 
-            FenToBoard(starterPos.getFen(), getBoard());
-            getBoard().rangeUpdater();
-//           SubmissionOrDrawRecommendation(getBoard(),null);
+            double gameOver = GameOverDecision(starterPos, false, Double.MIN_VALUE);
 
-            GameOverAction(starterPos);
-
-            if (depth == MINIMAX_DEPTH || gameFinished()) {
-                double evaluation = 0;
-                if (gameFinished()) {
-                    if (getBoard().isCheckMate()) {
-                        if (whiteToPlay) {
-                            //Sötét nyert, mert világos kapott mattot
-                            evaluation = -5000;
-                        } else {
-                            //Világos nyert, mert sötét kapott mattot
-                            evaluation = 5000;
-                        }
-                    } else if (getBoard().isSubmitted()) {
-                        if (whiteToPlay) {
-                            //Sötét nyert, mert világos adta fel
-                            evaluation = -5000;
-                        } else {
-                            //Világos nyert, mert sötét adta fel
-                            evaluation = 5000;
-                        }
-                    } else if (getBoard().isDraw()) {
-                        //TODO Kitalálni kinek hogyan súlyozzam adott helyzethez mérten
-                        evaluation = 0;
-                    }
-                } else {
-                    evaluation = evaluate(starterPos);
-                }
-
-                starterPos.setFinalValue(evaluation);
-                return evaluation;
+            if (depth == MINIMAX_DEPTH || gameFinished(gameOver)) {
+                starterPos.setFinalValue(gameOver);
+                return gameOver;
             }
 
             ArrayList<String> possibilities = starterPos.collectPossibilities(maxNeeded);
@@ -283,25 +200,98 @@ public class AI extends Thread {
         return bestChild;
     }
 
-    public static double evaluate(AiTree aiTree)  {
-
-        FenToBoard(aiTree.getFen(), getBoard());
-
-        return sumOfBoard();
+    public static double SubmissionOrDrawThinkingWithAi(){
+        if (itWorthToGiveUp()){
+            return whiteToPlay ? WHITE_SUBMITTED : BLACK_SUBMITTED;
+        } else if (itWorthToOfferOrRecommendDraw()) {
+            return DRAW;
+        }
+        return 0;
     }
 
-    public static double evaluate(){
-        return sumOfBoard();
+    public static boolean itWorthToGiveUp(){
+
+        double enemyPiecesValueSum = getBoard().getPieces(!whiteToPlay).stream().mapToDouble(p -> ((Piece) p).getVALUE()).sum();
+        double myPiecesValueSum = getBoard().getPieces(whiteToPlay).stream().mapToDouble(p -> ((Piece) p).getVALUE()).sum();
+
+        return Math.abs(enemyPiecesValueSum + myPiecesValueSum) > ROOK_BASE_VALUE + KNIGHT_OR_BISHOP_BASE_VALUE &&
+                                        getBoard().getPieces(whiteToPlay).stream().allMatch(p -> p.getType() == K || p.getType() == G);
     }
 
-    private static double sumOfBoard(){
-        //double sum = 0;
-        //for (IPiece p : getBoard().getPiecesWithoutHit()) {
-        //    sum += ((Piece) p).getVALUE();
-        //}
-        //return sum;
-        return finalValueCalculation(true) + finalValueCalculation(false);
+    public static boolean itWorthToOfferOrRecommendDraw(){
+        if (getBoard().getPieces().size() == 3 && getBoard().hasTwoKings() &&
+                getBoard().getPieces().stream().allMatch(p -> p.getType() == K || p.getType() == G)){
+            IPiece onlyPawn = null;
+            IPiece enemyKing = null;
+            for (IPiece p : getBoard().getPieces()) {
+                if (p.getType() == G){
+                    onlyPawn = p;
+                }
+            }
+            assert onlyPawn != null;
+            enemyKing = getBoard().getKing(!onlyPawn.isWhite());
+            if (onlyPawn.getJ() != 0 || onlyPawn.getJ() != MAX_WIDTH - 1){
+                return false;
+            }
+            int pawnDistance = Math.abs(onlyPawn.getJ() - onlyPawn.getEnemyStartRow());
+            int kingDistance = Math.max(Math.abs(enemyKing.getJ() - onlyPawn.getJ()), Math.abs(enemyKing.getI() - onlyPawn.getEnemyStartRow()));
+            return !(kingDistance < pawnDistance);
+        }
+        return getBoard().hasTwoKings() && getBoard().getPieces().size() == 4 &&
+                getBoard().getPieces().stream().allMatch(p -> p.getType() == K || p.getType() == H);
     }
+
+    //NegaMax
+    /*private double negaMaxWithAlphaBeta(AiTree starterPos, int depth, double alpha, double beta) {
+
+        synchronized (pauseFlag){
+
+            while(pauseFlag.get()) {
+                try {
+                    pauseFlag.wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            FenToBoard(starterPos.getFen(), getBoard());
+            getBoard().rangeUpdater();
+
+            if (depth == 0){
+                return evaluate(starterPos);
+            }
+
+            if (starterPos.isGameEndInPos()){
+                if (getBoard().isCheckMate()){
+                    return -5000;
+                }else {
+                    return 0;
+                }
+            }
+
+            ArrayList<String> possibilities = starterPos.collectPossibilities(false);
+
+            AiTree nextChild;
+            for (String child : possibilities) {
+
+                nextChild = new AiTree(child);
+                starterPos.getChildren().add(nextChild);
+
+                double evaluation = -negaMaxWithAlphaBeta(nextChild, depth - 1, -beta, -alpha);
+
+                if (evaluation >= beta){
+                    break;
+                }
+
+                alpha = Math.max(alpha, evaluation);
+
+            }
+
+            starterPos.setFinalValue(alpha);
+            return alpha;
+        }
+
+    }*/
 
     //endregion
 

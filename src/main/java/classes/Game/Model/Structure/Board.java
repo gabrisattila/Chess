@@ -8,13 +8,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static classes.Ai.Evaluator.addBaseFieldValues;
+import static classes.Ai.Evaluator.*;
 import static classes.Game.I18N.ChessGameException.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
-import static classes.Game.Model.Structure.GameOver.*;
 
 
 /**
@@ -42,16 +41,6 @@ public class Board implements IBoard {
 
     private Pair<IPiece, IPiece> checkers;
 
-    /**
-     * The first one is true if the one who comes got check mate in the current situation.
-     * Annyi bizonyos, hogy ez esetben mindig a sakkot kapott játékos lépése során derül ki, ha ő éppen mattot kapott.
-     */
-    private boolean CheckMate;
-
-    private boolean Draw;
-
-    private boolean Submitted;
-
     //endregion
 
 
@@ -65,8 +54,6 @@ public class Board implements IBoard {
         pieces = new ArrayList<>();
         whiteKing = new Piece();
         blackKing = new Piece();
-        CheckMate = false;
-        Draw = false;
     }
 
     public static Board getBoard() {
@@ -151,10 +138,6 @@ public class Board implements IBoard {
     public Location getKingsPlace(boolean forWhite){
         return getKing(forWhite).getLocation();
     }
-    
-    public boolean isGameFinished(){
-        return CheckMate || Draw || Submitted;
-    }
 
     //endregion
 
@@ -183,7 +166,7 @@ public class Board implements IBoard {
 
         clearRangesAndStuffBeforeUpdate();
         pseudos();
-        if (theBoardHasKings()){
+        if (hasTwoKings()){
             constrainPseudos();
             inspectCheck(!whiteToPlay);
             if (isNull(checkers)) {
@@ -196,33 +179,12 @@ public class Board implements IBoard {
         }
     }
 
-    public static void SubmissionOrDrawRecommendation(IBoard board, GameOver gameOver){
-        if (notNull(gameOver)){
-            if (gameOver == Submission) {
-                ((Board) board).setSubmitted(true);
-            } else {
-                ((Board) board).setDraw(true);
-            }
-            gameEndDialog(gameOver, whiteToPlay);
-            gameEndFlag.set(true);
-            for (IPiece p : getBoard().pieces) {
-                p.getPossibleRange().clear();
-            }
-//            buttonsEnabled(false);
-        } else {
-            //TODO AI part, mikor ajánljon mit.
-        }
-    }
-
     //endregion
 
     //region Update Range Main
 
     private void clearRangesAndStuffBeforeUpdate(){
         checkers = null;
-        CheckMate = false;
-        Draw = false;
-        Submitted = false;
         for (IPiece p : pieces) {
             ((Piece) p).setPossibleRange(new HashSet<>());
             ((Piece) p).setWatchedRange(new HashSet<>());
@@ -612,8 +574,8 @@ public class Board implements IBoard {
 
     //region Simple Helpers
 
-    private boolean theBoardHasKings() {
-        return pieces.stream().anyMatch(p -> p.getType() == K);
+    public boolean hasTwoKings() {
+        return pieces.stream().filter(p -> p.getType() == K).count() == 2;
     }
 
     public static Location getTheMiddleLocation(Location first, Location last){

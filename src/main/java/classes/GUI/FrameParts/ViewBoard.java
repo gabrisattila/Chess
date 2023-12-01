@@ -1,19 +1,18 @@
 package classes.GUI.FrameParts;
 
-import classes.Game.I18N.*;
 import classes.Game.I18N.Location;
 import classes.Game.Model.Structure.*;
 import lombok.*;
 
-import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 
+import static classes.GUI.Frame.Window.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Game.Model.Structure.Board.*;
-import static classes.Game.Model.Structure.GameOver.*;
+import static classes.Game.Model.Structure.GameOverOrPositionEnd.*;
 
 @Getter
 @Setter
@@ -110,14 +109,16 @@ public class ViewBoard extends Component implements IBoard {
     @Override
     public void rangeUpdater() {
 
-        GameOverAction(this);
+        GameOverDecision(this, true, subOrDrawOffer);
 
-        for (int i = 0; i < MAX_HEIGHT; i++) {
-            for (int j = 0; j < MAX_WIDTH; j++) {
-                if (getBoard().getField(i, j).isGotPiece() && notNull(getBoard().getPiece(i, j).getPossibleRange())){
-                    getPiece(i, j).getPossibleRange().addAll(getBoard().getPiece(i, j).getPossibleRange());
-                    if (getPiece(i, j).getType() == G){
-                        getPiece(i, j).getWatchedRange().addAll(getBoard().getPiece(i, j).getWatchedRange());
+        if (!gameEndFlag.get()) {
+            for (int i = 0; i < MAX_HEIGHT; i++) {
+                for (int j = 0; j < MAX_WIDTH; j++) {
+                    if (getBoard().getField(i, j).isGotPiece() && notNull(getBoard().getPiece(i, j).getPossibleRange())) {
+                        getPiece(i, j).getPossibleRange().addAll(getBoard().getPiece(i, j).getPossibleRange());
+                        if (getPiece(i, j).getType() == G) {
+                            getPiece(i, j).getWatchedRange().addAll(getBoard().getPiece(i, j).getWatchedRange());
+                        }
                     }
                 }
             }
@@ -129,6 +130,12 @@ public class ViewBoard extends Component implements IBoard {
             for (IField f : fields) {
                 ((ViewField) f).setBackColorToNormal();
             }
+        }
+    }
+
+    public void clearPiecesRanges(){
+        for (IPiece p : pieces) {
+            ((ViewPiece) p).setPossibleRange(new HashSet<>());
         }
     }
 
