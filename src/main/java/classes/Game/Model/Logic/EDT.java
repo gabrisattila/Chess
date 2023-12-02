@@ -75,9 +75,16 @@ public class EDT {
     }
 
     public static void startAI(){
-        buttonsEnabled(false);
-        ai = new AI();
-        ai.start();
+        if (!gameEndFlag.get()){
+            buttonsEnabled(false);
+            ai = new AI();
+            try {
+                sleep(300);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            ai.start();
+        }
     }
 
     public static void receivedMoveFromAi(String fen){

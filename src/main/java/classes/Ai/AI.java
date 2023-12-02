@@ -1,5 +1,6 @@
 package classes.Ai;
 
+import classes.GUI.Frame.Window;
 import classes.Game.I18N.Location;
 import classes.Game.I18N.Pair;
 import classes.Game.Model.Structure.*;
@@ -9,8 +10,8 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import static classes.Ai.FenConverter.*;
-import static classes.GUI.Frame.Window.*;
 import static classes.GUI.FrameParts.ViewBoard.*;
+import static classes.GUI.Frame.Window.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
@@ -119,14 +120,15 @@ public class AI extends Thread {
         if (!gameFinished(gameOver)) {
             AiTree tree = new AiTree(BoardToFen(getBoard()));
 
-            double bestChildValue = simpleMiniMax(tree, 0, whiteToPlay, -350, 350);
+            double bestChildValue = miniMax(tree, 0, whiteToPlay, -Double.MAX_VALUE, Double.MAX_VALUE);
 
             AiTree bestChild = sortOutBestChild(tree, bestChildValue);
+            getLogger().log(bestChild.getFen().split(" ")[6]);
             FenToBoard(bestChild.getFen(), getBoard());
         }
     }
 
-    private double simpleMiniMax(AiTree starterPos, int depth, boolean maxNeeded, double alpha, double beta) {
+    private double miniMax(AiTree starterPos, int depth, boolean maxNeeded, double alpha, double beta) {
 
         synchronized (pauseFlag){
 
@@ -149,13 +151,13 @@ public class AI extends Thread {
 
             AiTree nextChild;
             if (maxNeeded) {
-                double possibleMax = -350;
+                double possibleMax = -Double.MAX_VALUE;
                 for (String child : possibilities) {
                     nextChild = new AiTree(child);
                     starterPos.getChildren().add(nextChild);
 
-                    double evaluatedMiniMax = simpleMiniMax(nextChild, depth + 1, false, -350, 350);
-                    possibleMax = evaluatedMiniMax == -5000 ? -5000 :  Math.min(possibleMax, evaluatedMiniMax);
+                    double evaluatedMiniMax = miniMax(nextChild, depth + 1, false, alpha, beta);
+                    possibleMax = Math.max(possibleMax, evaluatedMiniMax); //GAME_OVER_CASES.contains(evaluatedMiniMax) ? evaluatedMiniMax :
                     alpha = Math.max(alpha, evaluatedMiniMax);
                     if (beta <= alpha)
                         break;
@@ -163,13 +165,13 @@ public class AI extends Thread {
                 starterPos.setFinalValue(possibleMax);
                 return possibleMax;
             } else {
-                double possibleMin = 350;
+                double possibleMin = Double.MAX_VALUE;
                 for (String child : possibilities) {
                     nextChild = new AiTree(child);
                     starterPos.getChildren().add(nextChild);
 
-                    double evaluatedMiniMax = simpleMiniMax(nextChild, depth + 1, true, -350, 350);
-                    possibleMin = evaluatedMiniMax == 5000 ? 5000 :  Math.min(possibleMin, evaluatedMiniMax);
+                    double evaluatedMiniMax = miniMax(nextChild, depth + 1, true, alpha, beta);
+                    possibleMin = Math.min(possibleMin, evaluatedMiniMax); //GAME_OVER_CASES.contains(evaluatedMiniMax) ? evaluatedMiniMax :
                     beta = Math.min(beta, evaluatedMiniMax);
                     if (beta <= alpha)
                         break;
@@ -198,15 +200,6 @@ public class AI extends Thread {
         emPassantChance = bestChild.getFen().split(" ")[3];
         castleCaseFenToBoard(bestChild.getFen().split(" ")[2]);
         return bestChild;
-    }
-
-    public static double SubmissionOrDrawThinkingWithAi(){
-        if (itWorthToGiveUp()){
-            return whiteToPlay ? WHITE_SUBMITTED : BLACK_SUBMITTED;
-        } else if (itWorthToOfferOrRecommendDraw()) {
-            return DRAW;
-        }
-        return 0;
     }
 
     public static boolean itWorthToGiveUp(){

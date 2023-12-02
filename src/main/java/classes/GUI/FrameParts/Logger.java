@@ -1,5 +1,7 @@
 package classes.GUI.FrameParts;
 
+import classes.Game.Model.Structure.Move;
+
 import javax.swing.*;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -9,9 +11,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static classes.GUI.Frame.Window.getLogger;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
-import static classes.Game.I18N.VARS.MUTABLE.whiteToPlay;
+import static classes.Game.I18N.VARS.MUTABLE.*;
+import static classes.Game.I18N.VARS.MUTABLE.stepNumber;
 
 public class Logger extends JTextArea {
 
@@ -43,6 +47,40 @@ public class Logger extends JTextArea {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static String logStep(Move move)  {
+        if (canBeLogger){
+            String step = " ";
+
+            if (whiteToPlay){
+                step += stepNumber + ". ";
+            }else {
+                step += " - ";
+                stepNumber++;
+            }
+
+            if (!move.isItIsCastle()){
+                step += move.getWhat().getType().toString().charAt(0);
+                if (notNull(move.getPlusPiece())) {
+                    step += 'x';
+                }
+                step += move.getTo().toLoggerString();
+            }else {
+                if (Math.abs(move.getPlusPiece().getSecond().getFirst().getJ() - move.getPlusPiece().getSecond().getSecond().getJ()) > 2){
+                    step += "0-0-0";
+                }else{
+                    step += "0-0";
+                }
+            }
+
+            step += '\n';
+
+            if (move.isMustLogged())
+                getLogger().log(step);
+            return step;
+        }
+        return "";
     }
 
     public void log(String message) {

@@ -1,11 +1,13 @@
 package classes.Ai;
 
 import classes.Game.Model.Structure.Field;
+import classes.Game.Model.Structure.IPiece;
+import classes.Game.Model.Structure.Piece;
 import lombok.*;
 
 import java.util.ArrayList;
 
-import static classes.Ai.FenConverter.FenToBoard;
+import static classes.Ai.FenConverter.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Game.Model.Structure.Board.*;
@@ -29,12 +31,12 @@ public class Evaluator {
     }
 
     private static double sumOfBoard(){
-        //double sum = 0;
-        //for (IPiece p : getBoard().getPiecesWithoutHit()) {
-        //    sum += ((Piece) p).getVALUE();
-        //}
-        //return sum;
-        return finalValueCalculation(true) + finalValueCalculation(false);
+        double sum = 0;
+        for (IPiece p : getBoard().getPiecesWithoutHit()) {
+            sum += ((Piece) p).getVALUE();
+        }
+        return sum;
+//        return finalValueCalculation(true) + finalValueCalculation(false);
     }
 
     //endregion
@@ -124,12 +126,12 @@ public class Evaluator {
         setBaseFieldValue(FOURTH_BASE_FIELD_VALUE, (MAX_WIDTH / 2) - fromTo, (MAX_WIDTH / 2) + fromTo, alreadyUsedBaseValues);
     }
 
-    private static void setBaseFieldValue(double baseFieldValue, int from, int to, ArrayList<Double> dontWantThatValue){
+    private static void setBaseFieldValue(double baseFieldValue, int from, int to, ArrayList<Double> dontWantTheseValues){
         Field field;
         for (int i = from; i < to; i++) {
             for (int j = from; j < to; j++) {
                 field = ((Field) getBoard().getField(i, j));
-                if (!dontWantThatValue.contains(field.getBaseValue())){
+                if (!dontWantTheseValues.contains(field.getBaseValue())){
                     field.setBaseValue(baseFieldValue);
                 }
             }

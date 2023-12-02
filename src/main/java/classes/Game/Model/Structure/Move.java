@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static classes.Ai.FenConverter.*;
+import static classes.GUI.FrameParts.Logger.*;
 import static classes.Game.I18N.Location.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.PieceType.*;
@@ -133,38 +134,6 @@ public class Move {
         move.pieceChangeOnBoard();
         move.doAfterChangeEffects();
 
-    }
-
-    private static void logStep(Move move)  {
-        if (canBeLogger && move.mustLogged){
-            String step = "";
-
-            if (whiteToPlay){
-                step += stepNumber + ". ";
-            }else {
-                step += " - ";
-                stepNumber++;
-            }
-
-            if (!move.itIsCastle){
-                step += move.what.getType().toString().charAt(0);
-                if (notNull(move.plusPiece)) {
-                    step += 'x';
-                }
-                step += move.to.toLoggerString();
-            }else {
-                if (Math.abs(move.plusPiece.getSecond().getFirst().getJ() - move.plusPiece.getSecond().getSecond().getJ()) > 2){
-                    step += "0-0-0";
-                }else{
-                    step += "0-0";
-                }
-            }
-
-            step += "\t" + move.moveDocString;
-            step += '\n';
-
-            getLogger().log(step);
-        }
     }
 
     private void moveCaseExploreAndSet() {

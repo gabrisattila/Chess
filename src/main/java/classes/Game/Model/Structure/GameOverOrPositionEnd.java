@@ -95,9 +95,9 @@ public class GameOverOrPositionEnd {
             if (notNull(board.getCheckers())){
                 if (notNull(board.getCheckers().getSecond())){
                     return board.getKing(whiteToPlay).getPossibleRange().isEmpty();
+                }else {
+                    return board.getPieces(whiteToPlay).stream().allMatch(p -> p.getPossibleRange().isEmpty());
                 }
-            }else {
-                return board.getPieces(whiteToPlay).stream().allMatch(p -> p.getPossibleRange().isEmpty());
             }
         } else {
             return board.getPieces().stream().allMatch(p -> p.isWhite() || !p.isWhite());

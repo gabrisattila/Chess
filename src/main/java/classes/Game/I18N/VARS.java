@@ -117,9 +117,9 @@ public class VARS {
 
         public static final double FOURTH_BASE_FIELD_VALUE = 1.5;
 
-        public static final double WHITE_GOT_CHECKMATE = 10000;
+        public static final double WHITE_GOT_CHECKMATE = -10000;
 
-        public static final double BLACK_GOT_CHECKMATE = -10000;
+        public static final double BLACK_GOT_CHECKMATE = 10000;
 
         public static final double DRAW = 0.005;
 
@@ -128,6 +128,14 @@ public class VARS {
         public static final double BLACK_SUBMITTED = 5000;
 
         public static final double WHITE_SUBMITTED = -5000;
+
+        public static final ArrayList<Double> GAME_OVER_CASES = new ArrayList<>(){{
+            add(WHITE_GOT_CHECKMATE);
+            add(BLACK_GOT_CHECKMATE);
+            add(DRAW);
+            add(WHITE_SUBMITTED);
+            add(BLACK_SUBMITTED);
+        }};
 
         //Eredetileg mindegyik fele ennyi
         public static final double PAWN_BASE_VALUE = 2;
@@ -139,14 +147,6 @@ public class VARS {
         public static final double QUEEN_BASE_VALUE = 18;
 
         public static final double KING_BASE_VALUE = 49;
-
-        public static final ArrayList<Double> GAME_OVER_CASES = new ArrayList<>(){{
-            add(WHITE_GOT_CHECKMATE);
-            add(BLACK_GOT_CHECKMATE);
-            add(DRAW);
-            add(WHITE_SUBMITTED);
-            add(BLACK_SUBMITTED);
-        }};
 
         public static final Set<Location> pawnMatrix = new HashSet<>(){{
             add(new Location(1, -1));
@@ -326,6 +326,7 @@ public class VARS {
             //region CheckMate
 
             put("whiteDownCheckMateInOneTwoKingOneRookOneStep3x3", "1k1/3/K1R b ---- - 1 1");
+            put("whiteDownCheckMateInOneTwoKingOneRookOneStep3x3WhiteStarts", "k2/3/K1R w ---- - 1 0");
             put("whiteDownCheckMateInOneTwoKingOneRookTwoStep4x4", "k3/4/K3/2R1 b ---- - 1 1");
             put("whiteDownCheckMateInOneTwoKingOneRookSomeSteps4x4", "k3/4/4/K2R b ---- - 1 1");
             put("whiteDownCheckMateInOneTwoKingOneQueenSteps5x5", "k4/5/5/5/K3Q b ---- - 1 1");
@@ -427,9 +428,41 @@ public class VARS {
             add(new Piece());
             add(new Piece());
             add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
         }};
 
         public static PieceSet blackPieceSet = new PieceSet(){{
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
+            add(new Piece());
             add(new Piece());
             add(new Piece());
             add(new Piece());
@@ -484,11 +517,13 @@ public class VARS {
 
         public static int evenOrOddStep = 0;
 
+        public static String lastStep = "";
+
         public static int labelCounter = 0;
 
         public static boolean canBeLogger;
 
-        public static double subOrDrawOffer = Double.MIN_VALUE;
+        public static double subOrDrawOffer = Double.MIN_VALUE + 1;
 
         public static final AtomicBoolean pauseFlag = new AtomicBoolean(false);
 

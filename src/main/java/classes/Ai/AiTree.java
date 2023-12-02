@@ -10,6 +10,7 @@ import java.util.*;
 
 import static classes.Ai.Evaluator.*;
 import static classes.Ai.FenConverter.*;
+import static classes.GUI.FrameParts.Logger.logStep;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Game.Model.Structure.Board.*;
 import static classes.Game.Model.Structure.Move.*;
@@ -82,6 +83,7 @@ public class AiTree {
         for (IPiece p : legalMoves.keySet()) {
             for (Move m : legalMoves.get(p)) {
                 Step(m);
+                lastStep = logStep(m);
                 putToPossibilityMap(possibilities, evaluate(), BoardToFen(getBoard()));
                 FenToBoard(fen, getBoard());
                 getBoard().rangeUpdater();
