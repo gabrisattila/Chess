@@ -54,17 +54,6 @@ public class Move {
 
     private boolean itIsPawnGotIn;
 
-
-    /**
-     *      ColorType_fromXfromY_toXtoY_
-     *      pluszfiguraColor/-pluszfiguraType/-_
-     *      pluszfigurahonnanX/-pluszfigurahonnanY/-_plusfigurahovaX/-pluszfigurahovaY/-_
-     *      bigCastlechangesmallCastlechange_possibleempassantXpossibleempassantY
-     * <p>
-     *      In the description above the capital letters are the ones that mark a char
-     */
-    private String moveDocString;
-
     //endregion
 
 
@@ -119,7 +108,6 @@ public class Move {
         itIsEmPassant = false;
         itIsEmPassantAuthorization = false;
         itIsPawnGotIn = false;
-        moveDocString = "";
     }
 
     //endregion
@@ -226,7 +214,7 @@ public class Move {
 
         }
 
-        moveDocumenting();
+        castleBoolsModify();
         changeEvenOrOddStep();
         if (!itIsEmPassantAuthorization)
             emPassantChance = "-";
@@ -265,147 +253,49 @@ public class Move {
                 );
     }
 
-    private void moveDocumenting(){
-        stepperDocumenting();
-        plusPieceDocumenting();
-        castleChanceDocumenting();
-        emPassantChanceDocumenting();
-        pawnGotInDocumenting();
-    }
-
-    private void stepperDocumenting(){
-        documentationStringCreation(what.isWhite() ? 'W' : 'B');
-        documentationStringCreation(what.getType().toString().charAt(0));
-        documentationStringCreation(indexNums.get(from.getI()).charAt(0));
-        documentationStringCreation(indexNums.get(from.getJ()).charAt(0));
-        documentationStringCreation(indexNums.get(to.getI()).charAt(0));
-        documentationStringCreation(indexNums.get(to.getJ()).charAt(0));
-    }
-
-    private void plusPieceDocumenting(){
-        if (notNull(plusPiece)) {
-            documentationStringCreation(plusPiece.getFirst().isWhite() ? 'W' : 'B');
-            documentationStringCreation(plusPiece.getFirst().getType().toString().charAt(0));
-            documentationStringCreation((char) plusPiece.getSecond().getFirst().getI());
-            documentationStringCreation((char) plusPiece.getSecond().getFirst().getJ());
-            if (notNull(plusPiece.getSecond().getSecond())){
-                documentationStringCreation((char) plusPiece.getSecond().getSecond().getI());
-                documentationStringCreation((char) plusPiece.getSecond().getSecond().getJ());
-            }else {
-                documentationStringCreation('-');
-                documentationStringCreation('-');
-            }
-        }else {
-            documentationStringCreation('-');
-            documentationStringCreation('-');
-            documentationStringCreation('-');
-            documentationStringCreation('-');
-            documentationStringCreation('-');
-            documentationStringCreation('-');
-        }
-    }
-
-    private void castleChanceDocumenting() {
+    private void castleBoolsModify() {
         if (what.getType() == B){
             if (whiteDown) {
                 if (from.getJ() > 4){
                     if (what.isWhite()) {
                         whiteSmallCastleEnabled = false;
-                        documentationStringCreation('K');
                     }
                     else {
                         blackSmallCastleEnabled = false;
-                        documentationStringCreation('k');
                     }
                 }else {
                     if (what.isWhite()) {
                         whiteBigCastleEnabled = false;
-                        documentationStringCreation('V');
                     }
                     else {
                         blackBigCastleEnabled = false;
-                        documentationStringCreation('v');
                     }
                 }
             } else {
                 if (from.getJ() < 4){
                     if (what.isWhite()) {
                         whiteSmallCastleEnabled = false;
-                        documentationStringCreation('K');
                     }
                     else {
                         blackSmallCastleEnabled = false;
-                        documentationStringCreation('k');
                     }
                 }else {
                     if (what.isWhite()) {
                         whiteBigCastleEnabled = false;
-                        documentationStringCreation('V');
                     }
                     else {
                         blackBigCastleEnabled = false;
-                        documentationStringCreation('v');
                     }
                 }
             }
-            documentationStringCreation('-');
         } else if (what.getType() == K) {
             if (what.isWhite()){
                 whiteSmallCastleEnabled = false;
                 whiteBigCastleEnabled = false;
-                documentationStringCreation('K');
-                documentationStringCreation('V');
             }else {
                 blackSmallCastleEnabled = false;
                 blackBigCastleEnabled = false;
-                documentationStringCreation('k');
-                documentationStringCreation('v');
             }
-        } else {
-            documentationStringCreation('-');
-            documentationStringCreation('-');
-        }
-    }
-
-    private void emPassantChanceDocumenting() {
-        documentationStringCreation(emPassantChance.charAt(0));
-        if (!"-".equals(emPassantChance)) {
-            documentationStringCreation(emPassantChance.charAt(1));
-        }else {
-            documentationStringCreation('-');
-        }
-    }
-
-    private void pawnGotInDocumenting(){
-        if (itIsPawnGotIn) {
-            documentationStringCreation('G');
-            documentationStringCreation(what.getType().toString().charAt(0));
-        }
-    }
-
-    /**
-     * @param appendThis if we append numbers (those will mean locations) it appends the first,
-     *                   and if the next isn't a number we throw RunTimeException
-     */
-    private void documentationStringCreation(char appendThis) throws RuntimeException {
-
-        if (!moveDocString.isEmpty() &&
-                Character.isDigit(moveDocString.charAt(moveDocString.length() - 1)) &&
-                !Character.isDigit(appendThis)) {
-            throw new RuntimeException("Úgy akarunk mást hozzá fűzni, " +
-                    "hogy a megkezdett docStringet még nem fejeztük be: " + moveDocString);
-        }
-
-        moveDocString += appendThis;
-
-        if (moveDocString.length() > 1 &&
-                (
-                        (Character.isLetter(appendThis) && Character.isLetter(moveDocString.charAt(moveDocString.length() - 2)) ||
-                        (Character.isDigit(appendThis) && Character.isDigit(moveDocString.charAt(moveDocString.length() - 2))) ||
-                        ('-' == appendThis && '-' == moveDocString.charAt(moveDocString.length() - 2)))
-                )
-        ){
-            moveDocString += "_";
         }
     }
 
@@ -463,175 +353,6 @@ public class Move {
         );
         return newType;
     }
-
-
-    //region StepBack
-    public static void StepBack(Move move) {
-        deCryptAndStepBackMove(move);
-        changeEvenOrOddStep();
-        logStepBack(move);
-    }
-
-    private static void logStepBack(Move move) {
-        int lineCount = getLogger().getLineCount();
-        if (move.mustLogged){
-            try {
-                int startOffset = getLogger().getLineStartOffset(lineCount - 1);
-                int endOffset = getLogger().getLineEndOffset(lineCount - 1);
-                getLogger().replaceRange("", startOffset, endOffset);
-            } catch (BadLocationException ex) {
-                ex.printStackTrace();
-            }
-        }
-    }
-
-    private static void deCryptAndStepBackMove(Move move) {
-        List<Object> backMoveParams = deCryptMoveDocStringToList(move);
-        StepBackMove(backMoveParams);
-        castleCasesSetBack(move);
-        emPassantChanceSetBack(move);
-        updateRangesBackAndFront(move);
-    }
-
-    private static List<Object> deCryptMoveDocStringToList(Move origin) {
-        Move back = new Move();
-        back.parameterize(origin.boardToMoveOn);
-
-        String[] originParams = origin.getMoveDocString().split("_");
-
-        boolean backWhatWhite = 'W' == originParams[0].charAt(0);
-        PieceType backWhatType = charToPieceType(originParams[0].charAt(1));
-        Location backWhatTo = new Location( // The from of the origin
-                Character.getNumericValue(originParams[1].charAt(0)),
-                Character.getNumericValue(originParams[1].charAt(1))
-        );
-        Location backWhatFrom = new Location(
-                Character.getNumericValue(originParams[2].charAt(0)),
-                Character.getNumericValue(originParams[2].charAt(1))
-        );
-        boolean backPlusWhite = false;
-        PieceType backPlusType = null;
-        Location backPlusTo = null;
-        Location backPlusFrom = null;
-        if ('-' != originParams[3].charAt(0)){
-            backPlusWhite = 'W' == originParams[3].charAt(0);
-            backPlusType = charToPieceType(originParams[3].charAt(1));
-            backPlusTo = new Location( // The from of the origin
-                    Character.getNumericValue(originParams[4].charAt(0)),
-                    Character.getNumericValue(originParams[4].charAt(1))
-            );
-            if ('-' != originParams[5].charAt(0)) {
-                backPlusFrom = new Location(
-                        Character.getNumericValue(originParams[5].charAt(0)),
-                        Character.getNumericValue(originParams[5].charAt(1))
-                );
-            }
-        }else {
-            back.plusPiece = null;
-        }
-
-        List<Object> backMoveParams = new ArrayList<>();
-        backMoveParams.add(back);
-        backMoveParams.add(backWhatWhite);
-        backMoveParams.add(backWhatType);
-        backMoveParams.add(backWhatTo);
-        backMoveParams.add(backWhatFrom);
-        backMoveParams.add(backPlusWhite);
-        backMoveParams.add(backPlusType);
-        backMoveParams.add(backPlusTo);
-        backMoveParams.add(backPlusFrom);
-
-        return backMoveParams;
-    }
-
-    private static void StepBackMove(List<Object> backMoveParams)  {
-
-        Move back = (Move) backMoveParams.get(0);
-        boolean backWhatWhite = (Boolean) backMoveParams.get(1);
-        PieceType backWhatType = (PieceType) backMoveParams.get(2);
-        Location backWhatTo = (Location) backMoveParams.get(3);
-        Location backWhatFrom = (Location) backMoveParams.get(4);
-        boolean backPlusWhite = (Boolean) backMoveParams.get(5);
-        PieceType backPlusType = (PieceType) backMoveParams.get(6);
-        Location backPlusTo = (Location) backMoveParams.get(7);
-        Location backPlusFrom = (Location) backMoveParams.get(8);
-
-        IBoard backBoard = back.boardToMoveOn;
-        PieceAttributes backWhatAttrs = new PieceAttributes(backWhatType, backWhatWhite ? "WHITE" : "BLACK");
-        IPiece backWhat = backBoard instanceof Board ?
-                new Piece(backWhatAttrs) :
-                new ViewPiece(createSourceStringFromGotAttributes(backWhatAttrs), backWhatAttrs);
-        IField backFromField = backBoard.getField(backWhatFrom);
-        IField backToField = backBoard.getField(backWhatTo);
-
-        backToField.setPiece(backWhat);
-        backFromField.clean();
-
-        if (notNull(backPlusType)){
-            PieceAttributes backPlusAttrs = new PieceAttributes(backPlusType, backPlusWhite ? "WHITE" : "BLACK");
-            IPiece backPlus = backBoard instanceof Board ?
-                    new Piece(backPlusAttrs) :
-                    new ViewPiece(createSourceStringFromGotAttributes(backPlusAttrs), backPlusAttrs);
-            IField backPlusFromField = null;
-            if (notNull(backPlusFrom)){
-                backPlusFromField = backBoard.getField(backPlusFrom);
-            }
-            IField backPlusToField = backBoard.getField(backPlusTo);
-
-            backPlusToField.setPiece(backPlus);
-            if (notNull(backPlusFromField)){
-                backPlusFromField.clean();
-            }
-        }
-    }
-
-    private static void castleCasesSetBack(Move origin){
-        String castleCasesChange = origin.moveDocString.split("_")[6];
-
-        for (int i = 0; i < castleCasesChange.length(); i++) {
-            switch (castleCasesChange.charAt(i)) {
-                case 'K' -> whiteSmallCastleEnabled = true;
-                case 'V' -> whiteBigCastleEnabled = true;
-                case 'k' -> blackSmallCastleEnabled = true;
-                case 'v' -> blackBigCastleEnabled = true;
-                case '-' -> {}
-            }
-        }
-    }
-
-    private static void emPassantChanceSetBack(Move origin){
-        String emPassantChanceChange = origin.moveDocString.split("_")[7];
-
-        if ('-' != emPassantChanceChange.charAt(0)){
-
-            int sor = Character.getNumericValue(emPassantChanceChange.charAt(0));
-            int oszlop = Character.getNumericValue(emPassantChanceChange.charAt(1));
-
-            for (IPiece p : origin.boardToMoveOn.getPieces()) {
-                if (p.isWhite() != whiteToPlay &&
-                        p.getType() == G &&
-                        Math.abs(sor - Integer.parseInt(String.valueOf(emPassantChance.charAt(0)))) == 1 &&
-                        Math.abs(oszlop - Integer.parseInt(String.valueOf(emPassantChance.charAt(1)))) == 1){
-                    emPassantHelper(emPassantChanceChange, p.getAttributes());
-                }
-            }
-        }
-    }
-
-    private static void pawnGotInCaseSetBack(Move origin){
-        String pawnGotInChange = origin.moveDocString.split("_").length > 8 ? origin.moveDocString.split("_")[8] : "";
-        if (!"".equals(pawnGotInChange)){
-            origin.what.getAttributes().setType(G);
-        }
-    }
-
-    private static void updateRangesBackAndFront(Move move) {
-        whiteToPlay = !whiteToPlay;
-        move.boardToMoveOn.rangeUpdater();
-        whiteToPlay = !whiteToPlay;
-    }
-
-    //endregion
 
     //endregion
 

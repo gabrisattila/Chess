@@ -575,7 +575,7 @@ public class Board implements IBoard {
     //region Simple Helpers
 
     public boolean hasTwoKings() {
-        return pieces.stream().filter(p -> p.getType() == K).count() == 2;
+        return !pieces.isEmpty() && pieces.stream().filter(p -> p.getType() == K).count() == 2;
     }
 
     public static Location getTheMiddleLocation(Location first, Location last){
@@ -603,14 +603,16 @@ public class Board implements IBoard {
     }
 
     private Set<Location> getAttackRangeWithoutKing(boolean forWhite) {
-        return pieces.stream()
+        return pieces.isEmpty() ? new HashSet<>() :
+                pieces.stream()
                 .filter(p -> (p.getType() != K && p.isWhite() == forWhite))
                 .flatMap(p -> ((Piece) p).getAttackRange().stream())
                 .collect(Collectors.toSet());
     }
 
     private Set<IPiece> getTisztek(boolean my) {
-        return pieces.stream().filter(p -> p.isWhite() == my && p.getType() != G && p.getType() != K).collect(Collectors.toSet());
+        return pieces.isEmpty() ? new HashSet<>() :
+                pieces.stream().filter(p -> p.isWhite() == my && p.getType() != G && p.getType() != K).collect(Collectors.toSet());
     }
 
     public boolean allPiecesAreTheSameColor(){
