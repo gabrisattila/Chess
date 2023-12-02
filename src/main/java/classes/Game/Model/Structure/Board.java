@@ -430,14 +430,14 @@ public class Board implements IBoard {
                     boundPieceOrKingRangeCalc(getKing(!enemy), checkers.getFirst(), checkers.getSecond())
             );
             if (locationCollectionContains(getKing(!enemy).getPossibleRange(), checkers.getFirst().getLocation())){
-                if (((Piece) checkers.getFirst()).isInDefend()){
-                    getKing(!enemy).getPossibleRange().remove(checkers.getFirst().getLocation());
+                if (!((Piece) checkers.getFirst()).isInDefend()){
+                    getKing(!enemy).getPossibleRange().add(checkers.getFirst().getLocation());
                 }
             }
             if (notNull(checkers.getSecond()) &&
                     locationCollectionContains(getKing(!enemy).getPossibleRange(), checkers.getSecond().getLocation())){
-                if (((Piece) checkers.getSecond()).isInDefend()){
-                    getKing(!enemy).getPossibleRange().remove(checkers.getSecond().getLocation());
+                if (!((Piece) checkers.getSecond()).isInDefend()){
+                    getKing(!enemy).getPossibleRange().add(checkers.getSecond().getLocation());
                 }
             }
         }

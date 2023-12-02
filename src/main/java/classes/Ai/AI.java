@@ -123,7 +123,7 @@ public class AI extends Thread {
             double bestChildValue = miniMax(tree, 0, whiteToPlay, -Double.MAX_VALUE, Double.MAX_VALUE);
 
             AiTree bestChild = sortOutBestChild(tree, bestChildValue);
-            getLogger().log(bestChild.getFen().split(" ")[6]);
+//            getLogger().log(bestChild.getFen().split(" ")[6]);
             FenToBoard(bestChild.getFen(), getBoard());
         }
     }
