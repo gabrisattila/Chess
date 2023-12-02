@@ -190,6 +190,7 @@ public class Board implements IBoard {
             ((Piece) p).setWatchedRange(new HashSet<>());
             ((Piece) p).setLegalMoves(new HashSet<>());
             ((Piece) p).setBounderPiece(null);
+            ((Piece) p).setInDefend(false);
         }
         getFields().stream()
                 .flatMap(ArrayList::stream)
@@ -432,12 +433,16 @@ public class Board implements IBoard {
             if (locationCollectionContains(getKing(!enemy).getPossibleRange(), checkers.getFirst().getLocation())){
                 if (!((Piece) checkers.getFirst()).isInDefend()){
                     getKing(!enemy).getPossibleRange().add(checkers.getFirst().getLocation());
+                }else {
+                    getKing(!enemy).getPossibleRange().remove(checkers.getFirst().getLocation());
                 }
             }
             if (notNull(checkers.getSecond()) &&
                     locationCollectionContains(getKing(!enemy).getPossibleRange(), checkers.getSecond().getLocation())){
                 if (!((Piece) checkers.getSecond()).isInDefend()){
                     getKing(!enemy).getPossibleRange().add(checkers.getSecond().getLocation());
+                }else {
+                    getKing(!enemy).getPossibleRange().remove(checkers.getSecond().getLocation());
                 }
             }
         }
@@ -603,11 +608,13 @@ public class Board implements IBoard {
     }
 
     private Set<Location> getAttackRangeWithoutKing(boolean forWhite) {
-        return pieces.isEmpty() ? new HashSet<>() :
-                pieces.stream()
-                .filter(p -> (p.getType() != K && p.isWhite() == forWhite))
-                .flatMap(p -> ((Piece) p).getAttackRange().stream())
-                .collect(Collectors.toSet());
+        Set<Location> fullAttackRange = new HashSet<>();
+        for (IPiece p : getPieces(forWhite)) {
+            if (p.getType() != K){
+                fullAttackRange.addAll(((Piece) p).getAttackRange());
+            }
+        }
+        return fullAttackRange;
     }
 
     private Set<IPiece> getTisztek(boolean my) {

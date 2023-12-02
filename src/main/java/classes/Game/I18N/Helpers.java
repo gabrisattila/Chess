@@ -7,6 +7,7 @@ import java.util.*;
 
 import static classes.GUI.FrameParts.ViewBoard.getViewBoard;
 import static classes.Game.I18N.VARS.MUTABLE.*;
+import static classes.Game.Model.Structure.Board.getBoard;
 
 public class Helpers {
 
@@ -19,48 +20,60 @@ public class Helpers {
     }
 
     public static void viewFieldPrinter(ArrayList<String> whatNeeded)  {
-        String fieldInString = "";
+        StringBuilder fieldInString = new StringBuilder();
         ViewField field;
         for (int i = 0; i < MAX_HEIGHT; i++) {
             for (int j = 0; j < MAX_WIDTH; j++) {
                 field = ((ViewField) getViewBoard().getField(i, j));
 
                 if (whatNeeded.contains("loc")){
-                    fieldInString += field.getLoc().toString();
-                    fieldInString += " ";
+                    fieldInString.append(field.getLoc().toString());
+                    fieldInString.append(" ");
                 }
                 if (whatNeeded.contains("X")){
-                    fieldInString += field.getX();
-                    fieldInString += " ";
+                    fieldInString.append(field.getX());
+                    fieldInString.append(" ");
                 }
                 if (whatNeeded.contains("Y")){
-                    fieldInString += field.getY();
-                    fieldInString += " ";
+                    fieldInString.append(field.getY());
+                    fieldInString.append(" ");
                 }
                 if (whatNeeded.contains("row")) {
-                    fieldInString += field.getRow();
-                    fieldInString += " ";
+                    fieldInString.append(field.getRow());
+                    fieldInString.append(" ");
                 }
                 if (whatNeeded.contains("col")){
-                    fieldInString += field.getCol();
-                    fieldInString += " ";
+                    fieldInString.append(field.getCol());
+                    fieldInString.append(" ");
                 }
                 if (whatNeeded.contains("color")){
-                    fieldInString += field.getFieldColor();
-                    fieldInString += " ";
+                    fieldInString.append(field.getFieldColor());
+                    fieldInString.append(" ");
                 }
                 if (whatNeeded.contains("piece")){
                     if (field.isGotPiece()){
-                        fieldInString += getViewBoard().getPiece(i, j).isWhite() ? "w_" : "b_";
-                        fieldInString += getViewBoard().getPiece(i, j).getType();
+                        fieldInString.append(getViewBoard().getPiece(i, j).isWhite() ? "w_" : "b_");
+                        fieldInString.append(getViewBoard().getPiece(i, j).getType());
                     }else {
-                        fieldInString += "null";
+                        fieldInString.append("null");
                     }
-                    fieldInString += " ";
+                    fieldInString.append(" ");
+                }
+                if (whatNeeded.contains("base")){
+                    fieldInString.append(((Field) getBoard().getField(field.getI(), field.getJ())).getBaseValue());
+                    fieldInString.append(" ");
+                }
+                if (whatNeeded.contains("watchW")){
+                    fieldInString.append(((Field) getBoard().getField(field.getI(), field.getJ())).getWhiteWatcherCount());
+                    fieldInString.append(" ");
+                }
+                if (whatNeeded.contains("watchB")){
+                    fieldInString.append(((Field) getBoard().getField(field.getI(), field.getJ())).getBlackWatcherCount());
+                    fieldInString.append(" ");
                 }
 
                 System.out.print("[" + fieldInString + "]");
-                fieldInString = "";
+                fieldInString = new StringBuilder();
             }
             System.out.println("\n");
         }

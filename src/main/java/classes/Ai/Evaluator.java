@@ -19,24 +19,17 @@ public class Evaluator {
 
     //region Evaluator
 
-    public static double evaluate(AiTree aiTree)  {
-
-        FenToBoard(aiTree.getFen(), getBoard());
-
-        return sumOfBoard();
-    }
-
     public static double evaluate(){
         return sumOfBoard();
     }
 
     private static double sumOfBoard(){
-        double sum = 0;
-        for (IPiece p : getBoard().getPiecesWithoutHit()) {
-            sum += ((Piece) p).getVALUE();
-        }
-        return sum;
-//        return finalValueCalculation(true) + finalValueCalculation(false);
+//        double sum = 0;
+//        for (IPiece p : getBoard().getPiecesWithoutHit()) {
+//            sum += ((Piece) p).getVALUE();
+//        }
+//        return sum;
+        return finalValueCalculation(true) + finalValueCalculation(false);
     }
 
     //endregion
@@ -56,7 +49,7 @@ public class Evaluator {
                 .mapToDouble(f -> ((Field) f).getFinalValue())
                 .sum();
 
-        return forWhite ? finalValue : -finalValue;
+        return finalValue;
     }
 
     //endregion

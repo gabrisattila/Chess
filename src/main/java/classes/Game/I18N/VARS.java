@@ -320,6 +320,7 @@ public class VARS {
             put("whiteDownCheckTestCheckWithQueenPiecesAroundEnemyKing", "K7/Q5rr/7k/6nn/8/8/8/8 w ---- - 1 0");
             put("whiteDownOutOfMemoryAfterCheck1", "R1B1KR2/3PPPn1/N1P2NP1/1P4pP/2pB1p1p/4p1qb/p2p4/r1b1k1nr w -Qkq - 1 0");
             put("whiteDownOutOfMemoryAfterCheck2", "2BK1BR1/3Q4/N1n3q1/3ppNpP/2b1n3/R6r/ppk2p1b/6r1 w ---- - 1 0");
+            put("problemWithCheck", "R3KB1B/PPPB1PPP/5N2/3P4/1NQ4p/1k4p1/pppp4/rnbq1bnb b ---- - 1 1");
 
             //endregion
 
@@ -399,7 +400,7 @@ public class VARS {
 
         public static int MAX_HEIGHT = 8;
 
-        public static int MINIMAX_DEPTH = 8;
+        public static int MINIMAX_DEPTH = 4;
 
         public static Character[] alreadyHappenedCastleCases = new Character[4];
 

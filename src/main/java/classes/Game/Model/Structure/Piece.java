@@ -125,7 +125,12 @@ public class Piece implements IPiece {
     }
 
     public Set<Location> getAttackRange(){
-        return getType() == G ? watchedRange : possibleRange;
+        if (getType() == G){
+            Set<Location> attackRange = new HashSet<>(possibleRange);
+            attackRange.removeIf(l -> l.getJ() == getJ());
+            return attackRange;
+        }
+        return possibleRange;
     }
 
     public Location getEmPassantLocation(){
