@@ -2,15 +2,15 @@ package classes.Ai;
 
 import classes.Game.Model.Structure.Field;
 import classes.Game.Model.Structure.IPiece;
-import classes.Game.Model.Structure.Piece;
 import lombok.*;
 
 import java.util.ArrayList;
 
-import static classes.Ai.FenConverter.*;
+import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Game.Model.Structure.Board.*;
+import static classes.Game.I18N.METHODS.*;
 
 @Getter
 public class Evaluator {
@@ -42,14 +42,11 @@ public class Evaluator {
                 .flatMap(ArrayList::stream)
                 .forEach(f -> ((Field) f).setFinalValue(forWhite));
 
-        double finalValue =
-                getBoard().getFields().stream()
-                .flatMap(ArrayList::stream)
-                .filter(f -> f.isGotPiece() && forWhite == f.getPiece().isWhite())
-                .mapToDouble(f -> ((Field) f).getFinalValue())
-                .sum();
-
-        return finalValue;
+        return getBoard().getFields().stream()
+        .flatMap(ArrayList::stream)
+        .filter(f -> f.isGotPiece() && forWhite == f.getPiece().isWhite())
+        .mapToDouble(f -> ((Field) f).getFinalValue())
+        .sum();
     }
 
     //endregion
@@ -68,7 +65,23 @@ public class Evaluator {
 
     //region Base Field Values
 
+    public static double getBaseFieldValueFor(IPiece p){
+        if (p.getType() != H){
+            if (whiteDown){
+                return p.isWhite() ? FIELD_BASE_VALUES_BY_PIECE_TYPE.get(p.getType())[p.getI()][p.getJ()] :
+                                    mirrorMatrixHorizontally(FIELD_BASE_VALUES_BY_PIECE_TYPE.get(p.getType()))[p.getI()][p.getJ()];
+            }else {
+                Double[][] mirroredVertically = mirrorMatrixVertically(FIELD_BASE_VALUES_BY_PIECE_TYPE.get(p.getType()));
+                return p.isWhite() ? mirroredVertically[p.getI()][p.getJ()] :
+                        mirrorMatrixHorizontally(mirroredVertically)[p.getI()][p.getJ()];
+            }
+        }else {
+            return FIELD_BASE_VALUES_BY_PIECE_TYPE.get(H)[p.getI()][p.getJ()];
+        }
+    }
+
     public static void addBaseFieldValues(){
+
         boolean evenOrOddBoardWidthHeight = MAX_WIDTH % 2 == 0;
         firstInnerConcentricCircleBaseFieldValues(evenOrOddBoardWidthHeight);
         if (MAX_WIDTH > 2){
@@ -80,6 +93,50 @@ public class Evaluator {
         if (MAX_WIDTH > 6){
             fourthInnerConcentricCircleBaseFieldValues(evenOrOddBoardWidthHeight);
         }
+    }
+
+    private static void pawnBaseFieldValues(){
+        pawnBaseFieldValues(true);
+        pawnBaseFieldValues(false);
+    }
+
+    private static void pawnBaseFieldValues(boolean downPlayer) {
+        
+    }
+
+    private static void knightBaseFieldValues() {
+
+    }
+
+    private static void bishopBaseFieldValues(){
+        bishopBaseFieldValues(true);
+        bishopBaseFieldValues(false);
+    }
+
+    private static void bishopBaseFieldValues(boolean downPlayer) {
+
+    }
+
+    private static void rookBaseFieldValues(){
+        rookBaseFieldValues(true);
+        rookBaseFieldValues(false);
+    }
+
+    private static void rookBaseFieldValues(boolean downPlayer){
+        
+    }
+    
+    private static void queenBaseValues() {
+
+    }
+
+    private static void kingBaseFieldValues(){
+        kingBaseFieldValues(true);
+        kingBaseFieldValues(false);
+    }
+
+    private static void kingBaseFieldValues(boolean downPlayer) {
+
     }
 
     /**

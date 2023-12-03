@@ -111,7 +111,8 @@ public class Window extends JFrame {
 
     public static void buttonsEnabled(boolean enabled){
         for (ChessButton b : buttons) {
-            if (!"Új játék".equals(b.getText()) && !"Betöltés".equals(b.getText())) {
+            if (!"Új játék".equals(b.getText()) && !"Betöltés".equals(b.getText()) &&
+                !"Szünet".equals(b.getText())) {
                 b.setEnabled(!isFirstOpen && enabled);
             }
         }

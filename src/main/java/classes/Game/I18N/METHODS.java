@@ -25,15 +25,29 @@ public class METHODS {
         });
     }
 
-    public static void fillCastleArray(char castleCase){
-        int i = 0;
-        for (int j = 0; j < alreadyHappenedCastleCases.length; j++) {
-            i++;
+    public static Double[][] mirrorMatrixHorizontally(Double[][] matrix){
+        int rows = matrix.length;
+        int cols = matrix[0].length;
+        Double[][] mirroredMatrix = new Double[rows][cols];
+
+        for (int i = 0; i < rows; i++) {
+            System.arraycopy(matrix[rows - 1 - i], 0, mirroredMatrix[i], 0, cols);
         }
-        if (i != 3){
-            i++;
-            alreadyHappenedCastleCases[i] = castleCase;
+        return mirroredMatrix;
+    }
+
+    public static Double[][] mirrorMatrixVertically(Double[][] matrix) {
+        int rows = matrix.length;
+        int cols = matrix[0].length;
+        Double[][] mirroredMatrix = new Double[rows][cols];
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                mirroredMatrix[i][j] = matrix[i][cols - 1 - j];
+            }
         }
+
+        return mirroredMatrix;
     }
 
     public static void changeEvenOrOddStep(){

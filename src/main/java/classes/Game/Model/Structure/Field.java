@@ -7,16 +7,17 @@ import classes.Game.I18N.PieceAttributes;
 import classes.Game.I18N.PieceType;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.Map;
 
-import static classes.Game.I18N.ChessGameException.throwBadTypeErrorIfNeeded;
+import static classes.Ai.Evaluator.*;
+import static classes.Game.I18N.ChessGameException.*;
 import static classes.Game.I18N.METHODS.*;
-import static classes.Game.I18N.VARS.MUTABLE.blackPieceSet;
-import static classes.Game.I18N.VARS.MUTABLE.whitePieceSet;
+import static classes.Game.I18N.VARS.MUTABLE.*;
 
 @Getter
 @Setter
-public class Field implements classes.Game.Model.Structure.IField {
+public class Field implements IField {
 
     //region Fields
 
@@ -30,7 +31,7 @@ public class Field implements classes.Game.Model.Structure.IField {
 
     private double finalValue;
 
-    private double baseValue;
+    private Double baseValue;
 
     private double kingBoost;
 
@@ -154,14 +155,20 @@ public class Field implements classes.Game.Model.Structure.IField {
     }
 
     public void setFinalValue(boolean forWhite){
-        if (forWhite ? whiteWatcherCount == 0 : blackWatcherCount == 0){
-            if (isGotPiece())
-                finalValue = getPiece().getVALUE();
-            else
-                finalValue = 0;
+        if (isGotPiece()){
+            finalValue = (Math.abs(getPiece().getVALUE())) + getBaseFieldValueFor(piece);
+            finalValue = forWhite ? finalValue : -finalValue;
         }else {
-            finalValue = (Math.abs(getPiece().getVALUE()) + getBaseValue()) * (forWhite ? whiteWatcherCount : blackWatcherCount);
+            finalValue = 0;
         }
+//        if (forWhite ? whiteWatcherCount == 0 : blackWatcherCount == 0){
+//            if (isGotPiece())
+//                finalValue = getPiece().getVALUE();
+//            else
+//                finalValue = 0;
+//        }else {
+//            // + (forWhite ? whiteWatcherCount : blackWatcherCount)
+//        }
     }
 
     //endregion

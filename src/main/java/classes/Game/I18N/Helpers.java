@@ -5,6 +5,8 @@ import classes.Game.Model.Structure.*;
 
 import java.util.*;
 
+import static classes.Ai.Evaluator.getBaseFieldValueFor;
+import static classes.Ai.FenConverter.charToPieceType;
 import static classes.GUI.FrameParts.ViewBoard.getViewBoard;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Game.Model.Structure.Board.getBoard;
@@ -60,8 +62,11 @@ public class Helpers {
                     fieldInString.append(" ");
                 }
                 if (whatNeeded.contains("base")){
-                    fieldInString.append(((Field) getBoard().getField(field.getI(), field.getJ())).getBaseValue());
-                    fieldInString.append(" ");
+                    int z = whatNeeded.indexOf("base");
+                    PieceType pieceType = charToPieceType(whatNeeded.get(z + 1).charAt(0));
+                    String white = 'w' == whatNeeded.get(z + 1).charAt(1) ? "WHITE" : "BLACK";
+                    Piece p = new Piece(new PieceAttributes(pieceType, white), new Location(i, j));
+                    fieldInString.append(getBaseFieldValueFor(p));
                 }
                 if (whatNeeded.contains("watchW")){
                     fieldInString.append(((Field) getBoard().getField(field.getI(), field.getJ())).getWhiteWatcherCount());

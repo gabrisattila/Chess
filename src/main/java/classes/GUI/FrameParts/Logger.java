@@ -11,11 +11,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static classes.GUI.Frame.Window.getLogger;
+import static classes.GUI.Frame.Window.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
-import static classes.Game.I18N.VARS.MUTABLE.stepNumber;
 
 public class Logger extends JTextArea {
 

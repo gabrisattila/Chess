@@ -54,6 +54,14 @@ public class Piece implements IPiece {
         bounderPiece = null;
     }
 
+    public Piece(PieceAttributes attributes, Location location){
+        this.attributes = attributes;
+        Location = location;
+        possibleRange = new HashSet<>();
+        watchedRange = new HashSet<>();
+        bounderPiece = null;
+    }
+
     public Piece(PieceAttributes attributes, Location Location, IBoard board)  {
         this.attributes = attributes;
         this.Location = Location;
