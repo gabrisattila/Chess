@@ -176,11 +176,13 @@ public class ViewField extends JButton implements classes.Game.Model.Structure.I
                 changeColor(lastClicked);
                 moveToClicked(clicked);
                 pieceToChange = null;
+                lastClicked = null;
                 CLICK_COUNTER--;
                 switchWhoComes();
             } else if (CLICK_COUNTER == 1) {
                 changeColor(lastClicked);
                 pieceToChange = null;
+                lastClicked = null;
                 CLICK_COUNTER--;
             }
         }
