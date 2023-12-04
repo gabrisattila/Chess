@@ -50,8 +50,12 @@ public class AiTree {
 
     //region Tree Methods
 
-    public boolean equals(AiTree node){
-        return getFen().equals(node.getFen());
+    @Override
+    public boolean equals(Object node){
+        if (!(node instanceof AiTree))
+            return false;
+
+        return getFen().equals( ((AiTree) node).getFen() );
     }
 
     public static void addToGraph(String fen){
