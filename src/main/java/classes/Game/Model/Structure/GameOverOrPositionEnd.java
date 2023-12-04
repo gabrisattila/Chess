@@ -109,9 +109,9 @@ public class GameOverOrPositionEnd {
         if (submissionOrDraw == DRAW){
             return true;
         }else {
+            thirdSimilarPositionOfTheGame = happenedList.keySet().stream().anyMatch(a -> happenedList.get(a) == 3);
             boolean nextPlayerEmptyRange = isNull(board.getCheckers()) &&
                                             board.getPieces(whiteToPlay).stream().allMatch(p -> p.getPossibleRange().isEmpty());
-            boolean thirdSimilarPositionOfTheGame = false;
             boolean allRemainingPieceIsKing = board.getPieces().size() == 2 &&
                                               board.getPieces().stream().allMatch(p -> p.getType() == K);
             boolean remained2KingAnd1KnightOr1Bishop =

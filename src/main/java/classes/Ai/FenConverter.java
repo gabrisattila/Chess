@@ -12,7 +12,7 @@ import static classes.Game.I18N.VARS.MUTABLE.*;
 
 /**
  * FEN string structure:
- *  "piecesOnTheBoard WhiteOrBlackToPlay castleCases emPassantChance stepCount evenOrOddStep lastStep"
+ *  "piecesOnTheBoard WhiteOrBlackToPlay castleCases emPassantChance stepCount evenOrOddStep"
  */
 public class FenConverter {
 
@@ -165,6 +165,23 @@ public class FenConverter {
         fenToReturn.append(lastStep);
 
         return fenToReturn.toString();
+    }
+
+    public static boolean FenEquals(String fen1, String fen2){
+        return removeStepCountFromFen(fen1).equals(removeStepCountFromFen(fen2));
+    }
+
+    public static String removeStepCountFromFen(String fen){
+        String[] fenParts = fen.split(" ");
+        return fenParts[0] +
+                ' ' +
+                fenParts[1] +
+                ' ' +
+                fenParts[2] +
+                ' ' +
+                fenParts[3] +
+                ' ' +
+                fenParts[5];
     }
 
     public static PieceAttributes charToPieceAttributes(char c){

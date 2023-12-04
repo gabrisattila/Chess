@@ -1,7 +1,6 @@
 package classes.Ai;
 
 
-import classes.Game.Model.Structure.GameOverOrPositionEnd;
 import classes.Game.Model.Structure.IPiece;
 import classes.Game.Model.Structure.Move;
 import lombok.*;
@@ -51,11 +50,27 @@ public class AiTree {
 
     //region Tree Methods
 
-    public static void addToContinuousTree(String fen)  {
-        AiTree child = new AiTree(fen);
-//        child.setFinalValue(evaluate(child));
-        for (AiTree next = continuousTree; !next.getChildren().isEmpty(); next = ((AiTree)next.getChildren().toArray()[0])){
-            next.getChildren().add(child);
+    public boolean equals(AiTree node){
+        return getFen().equals(node.getFen());
+    }
+
+    public static void addToGraph(String fen){
+        fen = removeStepCountFromFen(fen);
+        if (fullTreeOfGame.containsKey(fen)){
+            fullTreeOfGame.get(fen).add(new AiTree(fen));
+        }else {
+            fullTreeOfGame.put(fen, new HashSet<>());
+        }
+    }
+
+    public static void addToHappenedList(String fen){
+        fen = removeStepCountFromFen(fen);
+        if (happenedList.containsKey(fen)){
+            int count = happenedList.get(fen);
+            count++;
+            happenedList.put(fen, count);
+        }else {
+            happenedList.put(fen, 1);
         }
     }
 
@@ -84,7 +99,9 @@ public class AiTree {
             for (Move m : legalMoves.get(p)) {
                 Step(m);
                 lastStep = logStep(m);
-                putToPossibilityMap(possibilities, evaluate(), BoardToFen(getBoard()));
+                String newPosFen = BoardToFen(getBoard());
+                addToGraph(newPosFen);
+                putToPossibilityMap(possibilities, evaluate(), newPosFen);
                 FenToBoard(fen, getBoard());
                 getBoard().rangeUpdater();
             }

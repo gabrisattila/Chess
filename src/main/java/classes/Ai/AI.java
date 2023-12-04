@@ -1,6 +1,5 @@
 package classes.Ai;
 
-import classes.GUI.Frame.Window;
 import classes.Game.I18N.Location;
 import classes.Game.I18N.Pair;
 import classes.Game.Model.Structure.*;
@@ -9,9 +8,9 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.Random;
 
+import static classes.Ai.AiTree.*;
 import static classes.Ai.FenConverter.*;
 import static classes.GUI.FrameParts.ViewBoard.*;
-import static classes.GUI.Frame.Window.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
@@ -124,6 +123,7 @@ public class AI extends Thread {
 
             AiTree bestChild = sortOutBestChild(tree, bestChildValue);
 //            getLogger().log(bestChild.getFen().split(" ")[6]);
+            addToHappenedList(bestChild.getFen());
             FenToBoard(bestChild.getFen(), getBoard());
         }
     }

@@ -1,6 +1,5 @@
 package classes.GUI.FrameParts;
 
-import classes.Game.I18N.ChessGameException;
 import classes.Game.I18N.Location;
 import classes.Game.I18N.PieceAttributes;
 
@@ -14,8 +13,9 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Set;
 
+import static classes.Ai.AiTree.*;
+import static classes.Ai.FenConverter.*;
 import static classes.GUI.FrameParts.ViewBoard.*;
-import static classes.Game.Model.Logic.EDT.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
@@ -195,6 +195,7 @@ public class ViewField extends JButton implements classes.Game.Model.Structure.I
             Move move = new Move(pieceToChange, clicked.getLoc(), getViewBoard());
             move.setMustLogged(true);
             changeFieldColor(clicked);
+            addToHappenedList(BoardToFen(getViewBoard()));
             Step(move);
 
             if (notNull(hit))

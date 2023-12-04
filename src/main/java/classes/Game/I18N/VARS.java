@@ -478,11 +478,11 @@ public class VARS {
 
         public static int MINIMAX_DEPTH = 4;
 
-        public static Character[] alreadyHappenedCastleCases = new Character[4];
+        public static Map<String, Set<AiTree>> fullTreeOfGame = new HashMap<>();
 
-        public static String starterFen = "whiteDownStarter";
+        public static HashMap<String, Integer> happenedList = new HashMap<>();
 
-        public static AiTree continuousTree = new AiTree(starterFen);
+        public static boolean thirdSimilarPositionOfTheGame = false;
 
         public static AiTree storeTree = new AiTree();
 
