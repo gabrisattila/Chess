@@ -5,19 +5,14 @@ import classes.Game.I18N.*;
 import lombok.*;
 
 import javax.swing.*;
-import javax.swing.text.BadLocationException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
 
-import static classes.Ai.FenConverter.*;
 import static classes.GUI.FrameParts.Logger.*;
 import static classes.Game.I18N.Location.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
-import static classes.GUI.Frame.Window.*;
 import static classes.Game.Model.Structure.Board.*;
 
 @Getter
@@ -116,12 +111,13 @@ public class Move {
     //region Methods
 
     public static void Step(Move move) {
-
-        move.moveCaseExploreAndSet();
-        move.collectPlusPiece();
-        move.pieceChangeOnBoard();
-        move.doAfterChangeEffects();
-
+        synchronized (pauseFlag){
+            waitOnPause();
+            move.moveCaseExploreAndSet();
+            move.collectPlusPiece();
+            move.pieceChangeOnBoard();
+            move.doAfterChangeEffects();
+        }
     }
 
     private void moveCaseExploreAndSet() {
@@ -229,7 +225,7 @@ public class Move {
 
         if (what.getType() == K && Math.abs(from.getJ() - to.getJ()) == 2){
             return "castle";
-        } else if (what.getType() == G && to.EQUALS(stringToLocation(emPassantChance))) {
+        } else if (what.getType() == G && to.equals(stringToLocation(emPassantChance))) {
             return "emPassant";
         } else if (emPassantAuthorizationIf()) {
             return "emPassantAut";

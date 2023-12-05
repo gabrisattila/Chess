@@ -145,36 +145,41 @@ public class Board implements IBoard {
 
     @Override
     public void cleanBoard() {
-        for (ArrayList<IField> row : this.fields) {
-            for (IField f : row) {
-                if (!(f instanceof Field)){
-                    throwBadTypeErrorIfNeeded(new Object[]{
-                            f, Field.class.getName(),
-                            " ezért nem tudom elvégezni a clean műveletet.\n"
-                    });
+        synchronized (pauseFlag){
+            waitOnPause();
+            for (ArrayList<IField> row : this.fields) {
+                for (IField f : row) {
+                    if (!(f instanceof Field)) {
+                        throwBadTypeErrorIfNeeded(new Object[]{
+                                f, Field.class.getName(),
+                                " ezért nem tudom elvégezni a clean műveletet.\n"
+                        });
+                    }
+                    f.clean();
                 }
-                f.clean();
             }
+            pieces.clear();
+            whitePieceSet.clean();
+            blackPieceSet.clean();
         }
-        pieces.clear();
-        whitePieceSet.clean();
-        blackPieceSet.clean();
     }
 
     @Override
     public void rangeUpdater() {
-
-        clearRangesAndStuffBeforeUpdate();
-        pseudos();
-        if (hasTwoKings()){
-            constrainPseudos();
-            inspectCheck(!whiteToPlay);
-            if (isNull(checkers)) {
-                kingFreeRange(!whiteToPlay);
-                kingFreeRange(whiteToPlay);
-            }else {
-                kingFreeRange(!whiteToPlay);
-                kingRangeInsteadOfCheck(whiteToPlay);
+        synchronized (pauseFlag){
+            waitOnPause();
+            clearRangesAndStuffBeforeUpdate();
+            pseudos();
+            if (hasTwoKings()) {
+                constrainPseudos();
+                inspectCheck(!whiteToPlay);
+                if (isNull(checkers)) {
+                    kingFreeRange(!whiteToPlay);
+                    kingFreeRange(whiteToPlay);
+                } else {
+                    kingFreeRange(!whiteToPlay);
+                    kingRangeInsteadOfCheck(whiteToPlay);
+                }
             }
         }
     }
@@ -434,7 +439,7 @@ public class Board implements IBoard {
                 if (!((Piece) checkers.getFirst()).isInDefend()){
                     getKing(!enemy).getPossibleRange().add(checkers.getFirst().getLocation());
                 }else {
-                    getKing(!enemy).getPossibleRange().remove(checkers.getFirst().getLocation());
+                    getKing(!enemy).getPossibleRange().removeIf(l -> l.equals(checkers.getFirst().getLocation()));
                 }
             }
             if (notNull(checkers.getSecond()) &&
@@ -442,7 +447,7 @@ public class Board implements IBoard {
                 if (!((Piece) checkers.getSecond()).isInDefend()){
                     getKing(!enemy).getPossibleRange().add(checkers.getSecond().getLocation());
                 }else {
-                    getKing(!enemy).getPossibleRange().remove(checkers.getSecond().getLocation());
+                    getKing(!enemy).getPossibleRange().removeIf(l -> l.equals(checkers.getSecond().getLocation()));
                 }
             }
         }
@@ -546,7 +551,7 @@ public class Board implements IBoard {
         if (fromPiece.getType() != H && fromPiece.getType() != G && !fromPieceIsOnCorner(fromPiece, toPiece)){
             Pair<Integer, Integer> addIAddJ = addToIAddToJ(fromPiece, toPiece);
             Location line = fromPiece.getLocation().add(new Location(addIAddJ.getFirst(), addIAddJ.getSecond()));
-            while (containsLocation(line) && !toPiece.getLocation().EQUALS(line)){
+            while (containsLocation(line) && !toPiece.getLocation().equals(line)){
                 lineToPiece.add(line);
                 line = line.add(new Location(addIAddJ.getFirst(), addIAddJ.getSecond()));
             }
@@ -604,7 +609,7 @@ public class Board implements IBoard {
                 .noneMatch(i ->
                         IntStream.rangeClosed(placeToCheck.getJ() - 1, placeToCheck.getJ() + 1)
                                 .anyMatch(j ->
-                                        getKingsPlace(!my).EQUALS(new Location(i, j))));
+                                        getKingsPlace(!my).equals(new Location(i, j))));
     }
 
     private Set<Location> getAttackRangeWithoutKing(boolean forWhite) {
@@ -634,7 +639,7 @@ public class Board implements IBoard {
 
     //endregion
 
-    //region Used by AiTree
+    //region Used by AiNode
 
     public void addLegalMovesToPieces(boolean forWhite) {
         for (IPiece p : getPieces(forWhite)) {

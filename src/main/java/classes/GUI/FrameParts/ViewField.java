@@ -13,7 +13,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Set;
 
-import static classes.Ai.AiTree.*;
+import static classes.Ai.AiNode.*;
 import static classes.Ai.FenConverter.*;
 import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.METHODS.*;

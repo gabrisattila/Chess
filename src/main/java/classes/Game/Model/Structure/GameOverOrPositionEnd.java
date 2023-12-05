@@ -1,6 +1,6 @@
 package classes.Game.Model.Structure;
 
-import classes.Ai.AiTree;
+import classes.Ai.AiNode;
 import classes.GUI.FrameParts.ViewBoard;
 import lombok.*;
 
@@ -27,8 +27,8 @@ public class GameOverOrPositionEnd {
 
         if (game instanceof ViewBoard) {
             convertOneBoardToAnother(getViewBoard(), getBoard());
-        } else if (game instanceof AiTree) {
-            FenToBoard(((AiTree) game).getFen(), getBoard());
+        } else if (game instanceof AiNode) {
+            AiFenToBoard(((AiNode) game).getFen(), getBoard());
         }
 
         gameOver = gameEnd(getBoard(), directViewCase, submissionOrDrawComeFromPlayer);

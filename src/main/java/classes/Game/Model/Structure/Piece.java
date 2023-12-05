@@ -256,7 +256,7 @@ public class Piece implements IPiece {
                     if (isTherePiece(l)){
                         return enemyColor(l);
                     }else {
-                        return notNull(attributes.getPossibleEmPassant()) && l.EQUALS(getEmPassantLocation());
+                        return notNull(attributes.getPossibleEmPassant()) && l.equals(getEmPassantLocation());
                     }
                 }else {
                     return true;

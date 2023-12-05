@@ -8,6 +8,7 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.Random;
 
+import static classes.Ai.AiNode.*;
 import static classes.Ai.AiTree.*;
 import static classes.Ai.FenConverter.*;
 import static classes.GUI.FrameParts.ViewBoard.*;
@@ -63,11 +64,8 @@ public class AI extends Thread {
 
     public void moveWithSimpleAi() {
         synchronized (pauseFlag){
-            while (pauseFlag.get()) {
-                try {
-                    pauseFlag.wait();
-                } catch (InterruptedException ignored) {}
-            }
+
+            waitOnPause();
 
             double gameOver = GameOverDecision(getBoard(), false, Double.MIN_VALUE);
             if (gameFinished(gameOver))
@@ -117,28 +115,22 @@ public class AI extends Thread {
 
         double gameOver = GameOverDecision(getBoard(), true, Double.MIN_VALUE);
         if (!gameFinished(gameOver)) {
-            AiTree tree = new AiTree(BoardToFen(getBoard()));
+            AiNode tree = new AiNode(BoardToAiFen(getBoard()));
 
             double bestChildValue = miniMax(tree, 0, whiteToPlay, -Double.MAX_VALUE, Double.MAX_VALUE);
 
-            AiTree bestChild = sortOutBestChild(tree, bestChildValue);
+            AiNode bestChild = sortOutBestChild(tree, bestChildValue);
 //            getLogger().log(bestChild.getFen().split(" ")[6]);
-            addToHappenedList(bestChild.getFen());
-            FenToBoard(bestChild.getFen(), getBoard());
+            AiFenToBoard(bestChild.getFen(), getBoard());
+            addToHappenedList(AiFenToFen(bestChild.getFen()));
         }
     }
 
-    private double miniMax(AiTree starterPos, int depth, boolean maxNeeded, double alpha, double beta) {
+    private double miniMax(AiNode starterPos, int depth, boolean maxNeeded, double alpha, double beta) {
 
         synchronized (pauseFlag){
 
-            while(pauseFlag.get()) {
-                try {
-                    pauseFlag.wait();
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+            waitOnPause();
 
             double gameOver = GameOverDecision(starterPos, false, Double.MIN_VALUE);
 
@@ -148,16 +140,15 @@ public class AI extends Thread {
             }
 
             ArrayList<String> possibilities = starterPos.collectPossibilities(maxNeeded);
-
-            AiTree nextChild;
+            AiNode nextChild;
             if (maxNeeded) {
                 double possibleMax = -Double.MAX_VALUE;
                 for (String child : possibilities) {
-                    nextChild = new AiTree(child);
-                    starterPos.getChildren().add(nextChild);
+
+                    nextChild = calcNextAndAddToTree(starterPos, child);
 
                     double evaluatedMiniMax = miniMax(nextChild, depth + 1, false, alpha, beta);
-                    possibleMax = Math.max(possibleMax, evaluatedMiniMax); //GAME_OVER_CASES.contains(evaluatedMiniMax) ? evaluatedMiniMax :
+                    possibleMax = Math.max(possibleMax, evaluatedMiniMax);
                     alpha = Math.max(alpha, evaluatedMiniMax);
                     if (beta <= alpha)
                         break;
@@ -167,11 +158,11 @@ public class AI extends Thread {
             } else {
                 double possibleMin = Double.MAX_VALUE;
                 for (String child : possibilities) {
-                    nextChild = new AiTree(child);
-                    starterPos.getChildren().add(nextChild);
+
+                    nextChild = calcNextAndAddToTree(starterPos, child);
 
                     double evaluatedMiniMax = miniMax(nextChild, depth + 1, true, alpha, beta);
-                    possibleMin = Math.min(possibleMin, evaluatedMiniMax); //GAME_OVER_CASES.contains(evaluatedMiniMax) ? evaluatedMiniMax :
+                    possibleMin = Math.min(possibleMin, evaluatedMiniMax);
                     beta = Math.min(beta, evaluatedMiniMax);
                     if (beta <= alpha)
                         break;
@@ -182,14 +173,14 @@ public class AI extends Thread {
         }
     }
 
-    private AiTree sortOutBestChild(AiTree tree, double bestChildValue){
-        ArrayList<AiTree> bestChildren = new ArrayList<>();
-        for (AiTree child : tree.getChildren()) {
+    private AiNode sortOutBestChild(AiNode tree, double bestChildValue){
+        ArrayList<AiNode> bestChildren = new ArrayList<>();
+        for (AiNode child : tree.getChildren()) {
             if (child.getFinalValue() == bestChildValue) {
                 bestChildren.add(child);
             }
         }
-        AiTree bestChild;
+        AiNode bestChild;
         if (bestChildren.size() == 1) {
             bestChild = bestChildren.get(0);
         } else {
@@ -235,7 +226,7 @@ public class AI extends Thread {
     }
 
     //NegaMax
-    /*private double negaMaxWithAlphaBeta(AiTree starterPos, int depth, double alpha, double beta) {
+    /*private double negaMaxWithAlphaBeta(AiNode starterPos, int depth, double alpha, double beta) {
 
         synchronized (pauseFlag){
 
@@ -264,10 +255,10 @@ public class AI extends Thread {
 
             ArrayList<String> possibilities = starterPos.collectPossibilities(false);
 
-            AiTree nextChild;
+            AiNode nextChild;
             for (String child : possibilities) {
 
-                nextChild = new AiTree(child);
+                nextChild = new AiNode(child);
                 starterPos.getChildren().add(nextChild);
 
                 double evaluation = -negaMaxWithAlphaBeta(nextChild, depth - 1, -beta, -alpha);

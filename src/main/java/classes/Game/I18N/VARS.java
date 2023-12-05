@@ -1,6 +1,6 @@
 package classes.Game.I18N;
 
-import classes.Ai.AiTree;
+import classes.Ai.AiNode;
 import classes.GUI.FrameParts.*;
 import classes.Game.Model.Structure.*;
 
@@ -407,6 +407,7 @@ public class VARS {
             put("whiteDownCheckMateInOneTwoKingOneRookTwoStep4x4", "k3/4/K3/2R1 b ---- - 1 1");
             put("whiteDownCheckMateInOneTwoKingOneRookSomeSteps4x4", "k3/4/4/K2R b ---- - 1 1");
             put("whiteDownCheckMateInOneTwoKingOneQueenSteps5x5", "k4/5/5/5/K3Q b ---- - 1 1");
+            put("whiteGotCheckMate", "5R1K/1Pr3qP/1B2p3/6n1/5P2/1Q5p/3R1pp1/4r1k1 w ---- - 1 0");
 
             //endregion
 
@@ -420,6 +421,7 @@ public class VARS {
 
             put("whiteDownOneRookTwoKing4x4", "K3/1R2/4/k3 b ---- - 1 1");
             put("whiteDownOneRookTwoKing3x3", "K1R/3/1k1 w ---- - 1 0");
+            put("polgarVsKasparov", "3R1R1K/1Pr3PP/4p3/q5n1/3B1P2/1Q5p/5pp1/4r1k1 w ---- - 1 0");
             put("whiteDownKingTakesOwnKnight", "1RB1KBR1/P4P1P/N3P1P1/3PpN2/1pPp4/5nQ1/pp2kpp1/r1bqnbr1 b ---- - 1 1");
 
             //endregion
@@ -478,13 +480,13 @@ public class VARS {
 
         public static int MINIMAX_DEPTH = 4;
 
-        public static Map<String, Set<AiTree>> fullTreeOfGame = new HashMap<>();
+        public static Map<String, AiNode> fullTreeOfGame = new HashMap<>();
 
         public static HashMap<String, Integer> happenedList = new HashMap<>();
 
         public static boolean thirdSimilarPositionOfTheGame = false;
 
-        public static AiTree storeTree = new AiTree();
+        public static AiNode storeTree = new AiNode();
 
         public static HashSet<String> alreadyEvaluatedFens = new HashSet<>();
 

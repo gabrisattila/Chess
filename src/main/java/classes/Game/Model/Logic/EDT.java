@@ -92,6 +92,7 @@ public class EDT {
         if (theresOnlyOneAi){
             switchWhoComes();
             buttonsEnabled(true);
+            getViewBoard().setFieldColorsToNormal();
             getViewBoard().rangeUpdater();
         }else {
             startAI();

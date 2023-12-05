@@ -4,13 +4,8 @@ package classes.Game.I18N;
 import classes.GUI.FrameParts.ViewField;
 import lombok.*;
 
-import java.util.Collections;
-
 import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.METHODS.*;
-import static classes.Game.I18N.VARS.FINALS.*;
-import static classes.Game.I18N.VARS.MUTABLE.theresOnlyOneAi;
-import static classes.Game.I18N.VARS.MUTABLE.whiteAiNeeded;
 
 @Getter
 @Setter
@@ -44,16 +39,14 @@ public class Location {
 
     //region Methods
 
-    public boolean EQUALS(Location l){
-        if (notNull(l)){
-            return i == l.i && j == l.j;
-        }else {
+    public boolean equals(Object l){
+        if (!(l instanceof Location))
             return false;
-        }
+        return i == ((Location) l).i && j == ((Location) l).j;
     }
 
-    public boolean EQUALS(int i, int j){
-        return this.EQUALS(new Location(i, j));
+    public boolean equals(int i, int j){
+        return this.equals(new Location(i, j));
     }
 
     public Location add(Location l){

@@ -50,6 +50,16 @@ public class METHODS {
         return mirroredMatrix;
     }
 
+    public static void waitOnPause(){
+        while(pauseFlag.get()) {
+            try {
+                pauseFlag.wait();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
     public static void changeEvenOrOddStep(){
         if (evenOrOddStep == 0)
             evenOrOddStep = 1;
@@ -132,7 +142,7 @@ public class METHODS {
 
         for (T t : c1) {
             if (c1.toArray()[0] instanceof Location){
-                if (c2.stream().anyMatch(l -> ((Location) l).EQUALS((Location) t))){
+                if (c2.stream().anyMatch(l -> ((Location) l).equals((Location) t))){
                     list.add(t);
                 }
             }else if(c2.contains(t)) {
@@ -157,12 +167,12 @@ public class METHODS {
     }
 
     public static boolean locationCollectionContains(Set<Location> set, Location element){
-        return set.stream().anyMatch(p -> p.EQUALS(element));
+        return set.stream().anyMatch(p -> p.equals(element));
     }
 
     public static <T> boolean collectionNotContains(Collection<T> collection, T element){
         if (element instanceof Location){
-            return collection.stream().noneMatch(l -> ((Location) l).EQUALS((Location) element));
+            return collection.stream().noneMatch(l -> ((Location) l).equals((Location) element));
         }
         return !collection.contains(element);
     }

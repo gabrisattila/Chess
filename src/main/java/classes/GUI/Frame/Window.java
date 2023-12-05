@@ -116,7 +116,7 @@ public class Window extends JFrame {
                 b.setEnabled(!isFirstOpen && enabled);
             }
         }
-        for (ChessButton b : getButtons()) {
+        for (ChessButton b : buttons) {
             if ("Feladás".equals(b.getText()) || "Döntetlen".equals(b.getText())){
                 b.setEnabled(playerTurn && enabled);
             }

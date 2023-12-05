@@ -168,19 +168,19 @@ public class ChessButton extends JButton {
         }
 
         private void newGameBlackAiClicked() {
-            newGameInitialization(true, false, false);
+            newGameInitialization(true, false, false, "");
         }
 
         private void newGameWhiteAiClicked() {
-            newGameInitialization(true, true, false);
+            newGameInitialization(true, true, false, "");
         }
 
         private void newGameAiVsAiClicked() {
-            newGameInitialization(false, false, false);
+            newGameInitialization(false, false, false, "");
         }
 
         private void newGameTestClicked() {
-            newGameInitialization(true, false, true);
+            newGameInitialization(true, false, true, "");
         }
 
         private void pauseClicked() {
@@ -221,46 +221,10 @@ public class ChessButton extends JButton {
                 File selectedFile = fileChooser.getSelectedFile();
 
                 JOptionPane.showMessageDialog(null, "A kiválasztott fájl: " + selectedFile.getAbsolutePath());
-                // Ai vs Ai
-                int whiteSideOption = - 1;
-                int aiVsAiOption = JOptionPane.showOptionDialog(
-                        null,
-                        "Ai vs Ai?",
-                        "Ai vs Ai választás",
-                        JOptionPane.YES_NO_OPTION,
-                        JOptionPane.QUESTION_MESSAGE,
-                        null,
-                        new Object[]{"Igen", "Nem"},
-                        null
-                );
-
-                if (aiVsAiOption == JOptionPane.YES_OPTION) {
-                    JOptionPane.showMessageDialog(null, "Ai vs Ai választás: Igen");
-                } else {
-                    // Sötéttel szeretnél lenni?
-                    whiteSideOption = JOptionPane.showOptionDialog(
-                            null,
-                            "Világossal szeretnél lenni?",
-                            "Szín válssztás",
-                            JOptionPane.YES_NO_OPTION,
-                            JOptionPane.QUESTION_MESSAGE,
-                            null,
-                            new Object[]{"Igen", "Nem"},
-                            null
-                    );
-
-                    if (whiteSideOption == JOptionPane.YES_OPTION) {
-                        JOptionPane.showMessageDialog(null, "Világossal szeretnél lenni: Igen");
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Világossal szeretnél lenni: Nem");
-                    }
-                }
                 BufferedReader reader = new BufferedReader(new FileReader(selectedFile));
                 String fen = reader.readLine();
-                newGameInitialization(
-                        0 == aiVsAiOption, 1 == whiteSideOption,
-                        false
-                );
+
+                newGameInitialization(true, "w".equals(fen.split(" ")[1]), false, fen);
             } else {
                 JOptionPane.showMessageDialog(null, "Fájl kiválasztás megszakítva.");
             }
@@ -285,16 +249,15 @@ public class ChessButton extends JButton {
             System.exit(0);
         }
 
-        private void newGameInitialization(boolean oneAi, boolean whiteAi, boolean test) {
+        private void newGameInitialization(boolean oneAi, boolean whiteAi, boolean test, String setUpFen) {
             gameEndFlag.set(false);
             stepNumber = 1;
             theresOnlyOneAi = oneAi;
             whiteAiNeeded = whiteAi;
             isTest = test;
-            String setUpFen = "";
 
-            if (isTest){
-                setUpFen = testFens.get("problemWithCheck");
+            if (isTest && "".equals(setUpFen)){
+                setUpFen = testFens.get("polgarVsKasparov");
 //                whiteAiNeeded = setUpFen.split(" ")[1].charAt(0) == 'w';
             }
 
@@ -312,9 +275,9 @@ public class ChessButton extends JButton {
 
             getWindow().addGameBoard(getWindow());
             setUpSides(setUpFen);
-            initialization();
             buttonsEnabled(true);
             labelTexting(!oneAi || !whiteAi);
+            initialization();
         }
 
         private void saveBoard(IBoard board)  {
