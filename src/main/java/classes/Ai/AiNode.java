@@ -93,7 +93,7 @@ public class AiNode {
         for (IPiece p : legalMoves.keySet()) {
             for (Move m : legalMoves.get(p)) {
                 Step(m);
-                lastStep = logStep(m);
+//                lastStep = logStep(m);
                 String newPosFen = BoardToAiFen(getBoard());
                 putToPossibilityMap(possibilities, evaluate(), newPosFen);
                 AiFenToBoard(fen, getBoard());

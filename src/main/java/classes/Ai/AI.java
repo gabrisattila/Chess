@@ -10,6 +10,7 @@ import java.util.Random;
 
 import static classes.Ai.AiNode.*;
 import static classes.Ai.AiTree.*;
+import static classes.Ai.Evaluator.*;
 import static classes.Ai.FenConverter.*;
 import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.METHODS.*;
@@ -117,6 +118,7 @@ public class AI extends Thread {
         if (!gameFinished(gameOver)) {
             AiNode tree = new AiNode(BoardToAiFen(getBoard()));
 
+//            double bestChildValue = negaMax(tree, MINIMAX_DEPTH, -Double.MAX_VALUE, Double.MAX_VALUE);
             double bestChildValue = miniMax(tree, 0, whiteToPlay, -Double.MAX_VALUE, Double.MAX_VALUE);
 
             AiNode bestChild = sortOutBestChild(tree, bestChildValue);
@@ -226,31 +228,16 @@ public class AI extends Thread {
     }
 
     //NegaMax
-    /*private double negaMaxWithAlphaBeta(AiNode starterPos, int depth, double alpha, double beta) {
+    private double negaMax(AiNode starterPos, int depth, double alpha, double beta) {
 
         synchronized (pauseFlag){
 
-            while(pauseFlag.get()) {
-                try {
-                    pauseFlag.wait();
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+            waitOnPause();
 
-            FenToBoard(starterPos.getFen(), getBoard());
-            getBoard().rangeUpdater();
-
-            if (depth == 0){
-                return evaluate(starterPos);
-            }
-
-            if (starterPos.isGameEndInPos()){
-                if (getBoard().isCheckMate()){
-                    return -5000;
-                }else {
-                    return 0;
-                }
+            double gameEnd = GameOverDecision(starterPos, false, Double.MIN_VALUE);
+            if (depth == 0 || gameFinished(gameEnd)){
+                starterPos.setFinalValue(gameEnd);
+                return gameEnd;
             }
 
             ArrayList<String> possibilities = starterPos.collectPossibilities(false);
@@ -258,10 +245,10 @@ public class AI extends Thread {
             AiNode nextChild;
             for (String child : possibilities) {
 
-                nextChild = new AiNode(child);
+                nextChild = calcNextAndAddToTree(starterPos, child);
                 starterPos.getChildren().add(nextChild);
 
-                double evaluation = -negaMaxWithAlphaBeta(nextChild, depth - 1, -beta, -alpha);
+                double evaluation = -negaMax(nextChild, depth - 1, -beta, -alpha);
 
                 if (evaluation >= beta){
                     break;
@@ -275,7 +262,7 @@ public class AI extends Thread {
             return alpha;
         }
 
-    }*/
+    }
 
     //endregion
 

@@ -156,8 +156,9 @@ public class Field implements IField {
 
     public void setFinalValue(boolean forWhite){
         if (isGotPiece()){
-            finalValue = (Math.abs(getPiece().getVALUE())) + getBaseFieldValueFor(piece);
-            finalValue = forWhite ? finalValue : -finalValue;
+//            finalValue = (Math.abs(getPiece().getVALUE())) + getBaseFieldValueFor(piece);
+//            finalValue = forWhite ? finalValue : -finalValue;
+            finalValue = getPiece().getVALUE();
         }else {
             finalValue = 0;
         }

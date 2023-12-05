@@ -362,6 +362,7 @@ public class VARS {
             put("whiteDown2And2Pawn", "8/8/8/P3P3/8/8/3p1p2/8 w ---- - 1 0");
             put("blackDown2And2Pawn", "8/8/8/4p3/8/8/3P1P2/8 b ---- - 1 1");
             put("whiteDown1And2Pawn", "8/8/8/4P3/8/8/3p1p2/8 w ---- - 1 0");
+            put("blackDownSneakyEmPassant", "8/5p2/4p3/r5PK/k7/8/8/8 b ---- - 1 1");
 
             //endregion
 
@@ -424,6 +425,8 @@ public class VARS {
             put("polgarVsKasparov", "3R1R1K/1Pr3PP/4p3/q5n1/3B1P2/1Q5p/5pp1/4r1k1 w ---- - 1 0");
             put("whiteDownKingTakesOwnKnight", "1RB1KBR1/P4P1P/N3P1P1/3PpN2/1pPp4/5nQ1/pp2kpp1/r1bqnbr1 b ---- - 1 1");
             put("blackMustTakeRookButItIsnt", "3R1R1K/1Pq2nPP/4p3/8/1Q3P2/7p/5pp1/4r1k1 w ---- - 1 0");
+            put("polgarVsKasparov25", "2r1r2k/1bqnbpp1/pp1p1n1p/4pP2/P3P2B/2N2B2/1PPN2PP/3RRQ1K b ---- - 5 1");
+
             //endregion
 
             //endregion
