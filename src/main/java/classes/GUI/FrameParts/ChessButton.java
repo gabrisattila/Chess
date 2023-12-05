@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Date;
 
 import static classes.Ai.FenConverter.*;
@@ -220,11 +221,12 @@ public class ChessButton extends JButton {
 
                 File selectedFile = fileChooser.getSelectedFile();
 
-                JOptionPane.showMessageDialog(null, "A kiválasztott fájl: " + selectedFile.getAbsolutePath());
+                JOptionPane.showMessageDialog(null, "A kiválasztott fájl: " + selectedFile.getName());
                 BufferedReader reader = new BufferedReader(new FileReader(selectedFile));
+                String aiColor = reader.readLine();
                 String fen = reader.readLine();
 
-                newGameInitialization(true, "w".equals(fen.split(" ")[1]), false, fen);
+                newGameInitialization(true, "whiteAi".equals(aiColor), false, fen);
             } else {
                 JOptionPane.showMessageDialog(null, "Fájl kiválasztás megszakítva.");
             }
@@ -257,7 +259,7 @@ public class ChessButton extends JButton {
             isTest = test;
 
             if (isTest && "".equals(setUpFen)){
-                setUpFen = testFens.get("polgarVsKasparov");
+                setUpFen = testFens.get("blackMustTakeRookButItIsnt");
 //                whiteAiNeeded = setUpFen.split(" ")[1].charAt(0) == 'w';
             }
 
@@ -275,7 +277,7 @@ public class ChessButton extends JButton {
 
             getWindow().addGameBoard(getWindow());
             setUpSides(setUpFen);
-            buttonsEnabled(true);
+            buttonsEnabled(new ArrayList<>(){{add("All");}});
             labelTexting(!oneAi || !whiteAi);
             initialization();
         }
@@ -287,7 +289,13 @@ public class ChessButton extends JButton {
             String savePath = "src\\main\\Saves\\" + save + ".txt";
             File file = new File(savePath);
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-                writer.write(fen);
+
+                if (theresOnlyOneAi) {
+                    writer.write((whiteAiNeeded ? "whiteAi\n" : "blackAi\n") + fen);
+                }
+                else {
+                    writer.write("whiteDown" + "blackAi\n" + fen);
+                }
                 showFlashFrame("<html><div style='text-align: center;'>A mentés megtörtént a<br>" +
                         "src\\main\\java\\Saves helyre<br>" +
                         save +".txt</div></html>", 3);

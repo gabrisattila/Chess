@@ -6,6 +6,8 @@ import lombok.*;
 
 import javax.swing.*;
 
+import java.util.ArrayList;
+
 import static classes.Ai.AI.*;
 import static classes.Ai.Evaluator.*;
 import static classes.Ai.FenConverter.*;
@@ -143,7 +145,7 @@ public class GameOverOrPositionEnd {
     private static void finalGameEnd(boolean directViewCase){
         if (directViewCase) {
             gameEndFlag.set(true);
-            buttonsEnabled(false);
+            buttonsEnabled(new ArrayList<>(){{add("None");}});
             getViewBoard().clearPiecesRanges();
         }
     }

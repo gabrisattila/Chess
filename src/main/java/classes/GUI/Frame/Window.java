@@ -95,7 +95,7 @@ public class Window extends JFrame {
 
     private void addButtonsAndMayBeTheLoggerToo() {
         addButtons();
-        buttonsEnabled(true);
+        buttonsEnabled(new ArrayList<>(){{add("Új játék"); add("Betöltés"); }});
 
         canBeLogger = false;
         if (canBeLogger) {
@@ -109,17 +109,21 @@ public class Window extends JFrame {
         }
     }
 
-    public static void buttonsEnabled(boolean enabled){
-        for (ChessButton b : buttons) {
-            if (!"Új játék".equals(b.getText()) && !"Betöltés".equals(b.getText()) &&
-                !"Szünet".equals(b.getText())) {
-                b.setEnabled(!isFirstOpen && enabled);
+    public static void buttonsEnabled(ArrayList<String> enabledButtons){
+        if (enabledButtons.contains("All")){
+            for (ChessButton b : buttons) {
+                b.setEnabled(true);
             }
+            return;
+        }
+        if (enabledButtons.contains("None")){
+            for (ChessButton b : buttons) {
+                b.setEnabled(false);
+            }
+            return;
         }
         for (ChessButton b : buttons) {
-            if ("Feladás".equals(b.getText()) || "Döntetlen".equals(b.getText())){
-                b.setEnabled(playerTurn && enabled);
-            }
+            b.setEnabled(enabledButtons.contains(b.getText()));
         }
     }
 

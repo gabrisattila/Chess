@@ -423,7 +423,7 @@ public class VARS {
             put("whiteDownOneRookTwoKing3x3", "K1R/3/1k1 w ---- - 1 0");
             put("polgarVsKasparov", "3R1R1K/1Pr3PP/4p3/q5n1/3B1P2/1Q5p/5pp1/4r1k1 w ---- - 1 0");
             put("whiteDownKingTakesOwnKnight", "1RB1KBR1/P4P1P/N3P1P1/3PpN2/1pPp4/5nQ1/pp2kpp1/r1bqnbr1 b ---- - 1 1");
-
+            put("blackMustTakeRookButItIsnt", "3R1R1K/1Pq2nPP/4p3/8/1Q3P2/7p/5pp1/4r1k1 w ---- - 1 0");
             //endregion
 
             //endregion

@@ -6,6 +6,8 @@ import lombok.*;
 import javax.swing.*;
 
 
+import java.util.ArrayList;
+
 import static classes.Ai.FenConverter.*;
 import static classes.GUI.Frame.Window.*;
 import static classes.GUI.FrameParts.ViewBoard.*;
@@ -76,7 +78,7 @@ public class EDT {
 
     public static void startAI(){
         if (!gameEndFlag.get()){
-            buttonsEnabled(false);
+            buttonsEnabled(new ArrayList<>(){{add("Mentés"); add("Szünet");}});
             ai = new AI();
             try {
                 sleep(300);
@@ -91,10 +93,11 @@ public class EDT {
         setUpViewBoard(fen);
         if (theresOnlyOneAi){
             switchWhoComes();
-            buttonsEnabled(true);
+            buttonsEnabled(new ArrayList<>(){{add("All");}});
             getViewBoard().setFieldColorsToNormal();
             getViewBoard().rangeUpdater();
         }else {
+            buttonsEnabled(new ArrayList<>(){{add("Mentés"); add("Szünet");}});
             startAI();
         }
     }
