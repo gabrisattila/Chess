@@ -119,7 +119,10 @@ public class AI extends Thread {
             AiNode tree = new AiNode(BoardToAiFen(getBoard()));
 
 //            double bestChildValue = negaMax(tree, MINIMAX_DEPTH, -Double.MAX_VALUE, Double.MAX_VALUE);
+            int startTime = (int) System.currentTimeMillis();
             double bestChildValue = miniMax(tree, 0, whiteToPlay, -Double.MAX_VALUE, Double.MAX_VALUE);
+            int endTime = (int) System.currentTimeMillis();
+            System.out.println(endTime - startTime);
 
             AiNode bestChild = sortOutBestChild(tree, bestChildValue);
 //            getLogger().log(bestChild.getFen().split(" ")[6]);

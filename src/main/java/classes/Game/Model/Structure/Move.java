@@ -5,6 +5,7 @@ import classes.Game.I18N.*;
 import lombok.*;
 
 import javax.swing.*;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 import static classes.GUI.FrameParts.Logger.*;
@@ -13,6 +14,8 @@ import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
+import static classes.Game.Model.Structure.BitBoard.BBVars.*;
+import static classes.Game.Model.Structure.BitBoard.BitBoards.*;
 import static classes.Game.Model.Structure.Board.*;
 
 @Getter
@@ -348,6 +351,42 @@ public class Move {
                         BlackPieceChoiceInsteadOfPawnGotIn.get(result).getImage()
         );
         return newType;
+    }
+
+    //endregion
+
+
+    //region Methods With BitBoards
+
+    public static long pawnMoves(){
+
+        HITTABLE_BY_BLACK = whitePawn | whiteKnight | whiteBishop | whiteRook | whiteQueen;
+        HITTABLE_BY_WHITE = blackPawn | blackKnight | blackBishop | blackRook | blackQueen;
+        EMPTY = ~mergeFullBitBoard(collectPieceBoardsToOneList());
+
+        long PAWN_MOVES = 0L;
+
+        if (whiteToPlay){
+            //Előre sima 1
+            PAWN_MOVES |= (whiteDown ? whitePawn << 8 : whitePawn >> 8) & EMPTY;
+            //Előre sima 2
+            PAWN_MOVES |= (whiteDown ? whitePawn << 16 : whitePawn >> 16) & EMPTY;
+            //Jobbra üt
+            PAWN_MOVES |= (whiteDown ? (whitePawn << 7 & ~COL_A) : (whitePawn >> 9 & ~COL_H)) & HITTABLE_BY_BLACK;
+            //Balra üt
+            PAWN_MOVES |= (whiteDown ? (whitePawn << 9 & ~COL_H) : (whitePawn >> 7 & ~COL_A)) & HITTABLE_BY_BLACK;
+        }else {
+            //Előre sima 1
+            PAWN_MOVES |= (whiteDown ? blackPawn >> 8 : blackPawn << 8) & EMPTY;
+            //Előre sima 2
+            PAWN_MOVES |= (whiteDown ? blackPawn >> 16 : blackPawn << 16) & EMPTY;
+            //Jobbra üt
+            PAWN_MOVES |= (whiteDown ? (blackPawn >> 9 & ~COL_A) : (blackPawn << 7 & ~COL_H)) & HITTABLE_BY_WHITE;
+            //Balra üt
+            PAWN_MOVES |= (whiteDown ? (blackPawn >> 7 & ~COL_H) : (blackPawn << 9 & ~COL_A)) & HITTABLE_BY_WHITE;
+        }
+        
+        return PAWN_MOVES;
     }
 
     //endregion

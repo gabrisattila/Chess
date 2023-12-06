@@ -5,6 +5,7 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import static classes.Ai.FenConverter.FenToBitBoardFen;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Game.Model.Structure.BitBoard.BBVars.*;
@@ -30,29 +31,43 @@ public class BitBoards {
 
     //region Methods
 
-    private void setUpStarterBitBoards(){
+    public static void setUpStarterBitBoards(){
 //        whiteDown = false;
         String starterFen =
-                (whiteDown ? bbUsualFens.get("bbWhiteDownStarter") : bbUsualFens.get("bbBlackDownStarter"))
-                        .split(" ")[0];
+                (whiteDown ?
+                        FenToBitBoardFen(usualFens.get("bbWhiteDownStarter")) :
+                        FenToBitBoardFen(usualFens.get("bbBlackDownStarter"))
+                ).split(" ")[0];
+        setUpBitBoard(starterFen);
+        
+    }
+
+    public static void setUpBitBoard(String fen){
+        String bbFen = FenToBitBoardFen(fen);
+        String pieces = bbFen.split(" ")[0];
         for (char c : englishPieceLetters) {
             switch (c){
-                case 'p' -> blackPawn = FenPiecesToBitBoard(starterFen, c);
-                case 'n' -> blackKnight = FenPiecesToBitBoard(starterFen, c);
-                case 'b' -> blackBishop = FenPiecesToBitBoard(starterFen, c);
-                case 'r' -> blackRook = FenPiecesToBitBoard(starterFen, c);
-                case 'q' -> blackQueen = FenPiecesToBitBoard(starterFen, c);
-                case 'k' -> blackKing = FenPiecesToBitBoard(starterFen, c);
-                case 'P' -> whitePawn = FenPiecesToBitBoard(starterFen, c);
-                case 'N' -> whiteKnight = FenPiecesToBitBoard(starterFen, c);
-                case 'B' -> whiteBishop = FenPiecesToBitBoard(starterFen, c);
-                case 'R' -> whiteRook = FenPiecesToBitBoard(starterFen, c);
-                case 'Q' -> whiteQueen = FenPiecesToBitBoard(starterFen, c);
-                case 'K' -> whiteKing = FenPiecesToBitBoard(starterFen, c);
+                case 'p' -> blackPawn = FenPiecesToBitBoard(pieces, c);
+                case 'n' -> blackKnight = FenPiecesToBitBoard(pieces, c);
+                case 'b' -> blackBishop = FenPiecesToBitBoard(pieces, c);
+                case 'r' -> blackRook = FenPiecesToBitBoard(pieces, c);
+                case 'q' -> blackQueen = FenPiecesToBitBoard(pieces, c);
+                case 'k' -> blackKing = FenPiecesToBitBoard(pieces, c);
+                case 'P' -> whitePawn = FenPiecesToBitBoard(pieces, c);
+                case 'N' -> whiteKnight = FenPiecesToBitBoard(pieces, c);
+                case 'B' -> whiteBishop = FenPiecesToBitBoard(pieces, c);
+                case 'R' -> whiteRook = FenPiecesToBitBoard(pieces, c);
+                case 'Q' -> whiteQueen = FenPiecesToBitBoard(pieces, c);
+                case 'K' -> whiteKing = FenPiecesToBitBoard(pieces, c);
             }
         }
     }
 
+    /**
+     * @param Fen always should be the first part of a BitBoardFen String
+     * @param piece the type of BitBoard we want to create
+     * @return the BitBoard
+     */
     public static long FenPiecesToBitBoard(String Fen, char piece){
         long bitBoard = 0;
 
@@ -115,7 +130,7 @@ public class BitBoards {
         return sb.toString();
     }
 
-    public ArrayList<Long> collectPieceBoardsToOneList(){
+    public static ArrayList<Long> collectPieceBoardsToOneList(){
         ArrayList<Long> boards = new ArrayList<>();
         boards.add(whitePawn);
         boards.add(whiteKnight);

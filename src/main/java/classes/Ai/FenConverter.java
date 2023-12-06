@@ -17,18 +17,24 @@ import static classes.Game.I18N.VARS.MUTABLE.*;
 public class FenConverter {
 
     /**
-     * @param fen always must be only the piece part of a normal fen
-     * @return the same cols and rows, but in reverse order. Just like we use it for a BitBoard
+     * @param fen original fen
+     * @return the same cols and rows, but in reverse order in the pieces part. Just like we use it for a BitBoard
      */
     public static String FenToBitBoardFen(String fen){
-        String[] originFenParts = fen.split("/");
-        StringBuilder bbFen = new StringBuilder();
-        for (int i = originFenParts.length - 1; i >= 0; i--) {
-            bbFen.append(originFenParts[i]);
+        String[] originFenParts = fen.split(" ");
+        String pieces = originFenParts[0];
+        String originOtherParts = originFenParts[1] + ' ' + originFenParts[2] + ' ' + originFenParts[3] + ' ' +
+                                    originFenParts[4] + ' ' + originFenParts[5];
+        String[] originPiecesParts = pieces.split("/");
+        StringBuilder bbFenPieces = new StringBuilder();
+        for (int i = originPiecesParts.length - 1; i >= 0; i--) {
+            bbFenPieces.append(originPiecesParts[i]);
             if (i != 0)
-                bbFen.append('/');
+                bbFenPieces.append('/');
         }
-        return bbFen.toString();
+        bbFenPieces.append(' ');
+        bbFenPieces.append(originOtherParts);
+        return bbFenPieces.toString();
     }
 
     private static void FenToBoard(String fen, IBoard board, boolean isAiFen) {
