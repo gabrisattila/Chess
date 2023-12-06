@@ -287,7 +287,6 @@ public class VARS {
             add('B');
         }};
 
-
         public static final ArrayList<Character> pieceLetters = new ArrayList<>(){{
             add('G');
             add('H');
@@ -333,6 +332,9 @@ public class VARS {
         public static Map<String, String> usualFens = new HashMap<>(){{
             put("whiteDownStarter", "RNBQKBNR/PPPPPPPP/8/8/8/8/pppppppp/rnbqkbnr w KQkq - 1 0");
             put("blackDownStarter", "rnbkqbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBKQBNR w KQkq - 1 0");
+
+            put("white[0, 0]StarterBitBoard", "RNBKQBNR/PPPPPPPP/8/8/8/8/pppppppp/rnbkqbnr w KQkq - 1 0");
+            put("black[0, 0]StarterBitBoard", "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 1 0");
         }};
 
         public static Map<String, String> testFens = new HashMap<>(){{

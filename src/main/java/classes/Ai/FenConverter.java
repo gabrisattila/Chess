@@ -16,36 +16,19 @@ import static classes.Game.I18N.VARS.MUTABLE.*;
  */
 public class FenConverter {
 
-    public static String AiFenToFen(String fen){
-        String[] fenParts = fen.split(" ");
-        stepNumber++;
-        return fenParts[0] +
-                ' ' +
-                fenParts[1] +
-                ' ' +
-                fenParts[2] +
-                ' ' +
-                fenParts[3] +
-                ' ' +
-                stepNumber +
-                ' ' +
-                fenParts[4];
-    }
-
-    public static void AiFenToBoard(String fen, IBoard board){
-        FenToBoard(fen, board, true);
-    }
-
-    public static String BoardToAiFen(IBoard board){
-        return BoardToFen(board, true);
-    }
-
-    public static void FenToBoard(String fen, IBoard board){
-        FenToBoard(fen, board, false);
-    }
-
-    public static String BoardToFen(IBoard board){
-        return BoardToFen(board, false);
+    /**
+     * @param fen always must be only the piece part of a normal fen
+     * @return the same cols and rows, but in reverse order. Just like we use it for a BitBoard
+     */
+    public static String FenToBitBoardFen(String fen){
+        String[] originFenParts = fen.split("/");
+        StringBuilder bbFen = new StringBuilder();
+        for (int i = originFenParts.length - 1; i >= 0; i--) {
+            bbFen.append(originFenParts[i]);
+            if (i != 0)
+                bbFen.append('/');
+        }
+        return bbFen.toString();
     }
 
     private static void FenToBoard(String fen, IBoard board, boolean isAiFen) {
@@ -209,6 +192,38 @@ public class FenConverter {
 
             return fenToReturn.toString();
         }
+    }
+
+    public static String AiFenToFen(String fen){
+        String[] fenParts = fen.split(" ");
+        stepNumber++;
+        return fenParts[0] +
+                ' ' +
+                fenParts[1] +
+                ' ' +
+                fenParts[2] +
+                ' ' +
+                fenParts[3] +
+                ' ' +
+                stepNumber +
+                ' ' +
+                fenParts[4];
+    }
+
+    public static void AiFenToBoard(String fen, IBoard board){
+        FenToBoard(fen, board, true);
+    }
+
+    public static String BoardToAiFen(IBoard board){
+        return BoardToFen(board, true);
+    }
+
+    public static void FenToBoard(String fen, IBoard board){
+        FenToBoard(fen, board, false);
+    }
+
+    public static String BoardToFen(IBoard board){
+        return BoardToFen(board, false);
     }
 
     public static boolean FenEquals(String fen1, String fen2){
