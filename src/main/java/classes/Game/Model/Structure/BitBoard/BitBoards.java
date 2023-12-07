@@ -3,9 +3,8 @@ package classes.Game.Model.Structure.BitBoard;
 import lombok.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
-import static classes.Ai.FenConverter.FenToBitBoardFen;
+import static classes.Ai.FenConverter.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Game.Model.Structure.BitBoard.BBVars.*;
@@ -18,26 +17,17 @@ public class BitBoards {
 
     //endregion
 
-    public BitBoards(){
-        setUpStarterBitBoards();
-        ArrayList<Long> boards = collectPieceBoardsToOneList();
-        boards = new ArrayList<>();
-        boards.add(whiteKing);
-//        boards.add(whitePawn);
-        long fullBoard = mergeFullBitBoard(boards);
-        System.out.println(toString(fullBoard));
-//        System.out.println(drawFullBitBoard());
+    public BitBoards(String fen){
+        setUpBitBoard(fen);
     }
 
     //region Methods
 
+    //region Fen To BitBoards
+
     public static void setUpStarterBitBoards(){
 //        whiteDown = false;
-        String starterFen =
-                (whiteDown ?
-                        FenToBitBoardFen(usualFens.get("bbWhiteDownStarter")) :
-                        FenToBitBoardFen(usualFens.get("bbBlackDownStarter"))
-                ).split(" ")[0];
+        String starterFen = whiteDown ? usualFens.get("whiteDownStarter") : usualFens.get("blackDownStarter");
         setUpBitBoard(starterFen);
         
     }
@@ -115,20 +105,72 @@ public class BitBoards {
         return bitBoard;
     }
 
-    public static String toString(long bitBoard){
-        StringBuilder sb = new StringBuilder();
-        for (int i = 63; i >= 0; i--) {
-            long mask = 1L << i;
-            long maskedBit = (bitBoard & mask);
-            sb.append(maskedBit == 0 ? '0' : '1');
-            if ((i % 8) == 0) {
-                sb.append('\n'); // Minden 8. bit után sortörés
-            } else {
-                sb.append(" ");
+    //endregion
+
+    //region Bit Boards To Fen
+
+    public static String bitBoardsToFenPieces() {
+        StringBuilder fenPieces = new StringBuilder();
+        StringBuilder row = new StringBuilder();
+        int counter = 0;
+        for (int i = 0; i < MAX_WIDTH * MAX_HEIGHT; i++) {
+            counter = upgradeCounter(i, counter);
+            counter = getCounterAndAppendToFen(row, counter, i, whitePawn, whiteKnight, whiteBishop, whiteRook, whiteQueen, whiteKing, true);
+            counter = getCounterAndAppendToFen(row, counter, i, blackPawn, blackKnight, blackBishop, blackRook, blackQueen, blackKing, false);
+            if ((i + 1) % 8 == 0){
+                if (counter != 0)
+                    row.append(counter);
+                counter = 0;
+                row.reverse();
+                if (i + 1 != MAX_WIDTH * MAX_HEIGHT)
+                    row.append('/');
+                fenPieces.append(row);
+                row.setLength(0);
             }
         }
-        return sb.toString();
+
+        return fenPieces.toString();
     }
+
+    private static int getCounterAndAppendToFen(StringBuilder fenPieces, int counter, int i,
+                                                long pawn, long knight, long bishop, long rook, long queen, long king,
+                                                boolean forWhite) {
+        counter = appendToOnGoingFen(pawn, fenPieces, counter, i, forWhite ? 'G' : 'g');
+        counter = appendToOnGoingFen(knight, fenPieces, counter, i, forWhite ? 'H' : 'h');
+        counter = appendToOnGoingFen(bishop, fenPieces, counter, i, forWhite ? 'F' : 'f');
+        counter = appendToOnGoingFen(rook, fenPieces, counter, i, forWhite ? 'B' : 'b');
+        counter = appendToOnGoingFen(queen, fenPieces, counter, i, forWhite ? 'V' : 'v');
+        counter = appendToOnGoingFen(king, fenPieces, counter, i, forWhite ? 'K' : 'k');
+        return counter;
+    }
+
+    private static int appendToOnGoingFen(long bitBoardOfAPiece, StringBuilder fenPieces, int counter, int i, char pieceType){
+        if ( ((bitBoardOfAPiece >> i) & 1) == 1 ) {
+            if (counter != 0)
+                fenPieces.append(counter);
+            fenPieces.append(pieceType);
+            counter = 0;
+        }
+        return counter;
+    }
+
+    private static int upgradeCounter(int i, int counter){
+        if (
+                counterCanBeUpgraded(whitePawn, i) && counterCanBeUpgraded(whiteBishop, i) && counterCanBeUpgraded(whiteKnight, i) &&
+                        counterCanBeUpgraded(whiteRook, i) && counterCanBeUpgraded(whiteQueen, i) && counterCanBeUpgraded(whiteKing, i) &&
+                        counterCanBeUpgraded(blackPawn, i) && counterCanBeUpgraded(blackBishop, i) && counterCanBeUpgraded(blackKnight, i) &&
+                        counterCanBeUpgraded(blackRook, i) && counterCanBeUpgraded(blackQueen, i) && counterCanBeUpgraded(blackKing, i)
+        ){
+            counter++;
+        }
+        return counter;
+    }
+
+    private static boolean counterCanBeUpgraded(long bitBoardOfAPiece, int i){
+        return  ((bitBoardOfAPiece >> i) & 1) != 1;
+    }
+
+    //endregion
 
     public static ArrayList<Long> collectPieceBoardsToOneList(){
         ArrayList<Long> boards = new ArrayList<>();
@@ -155,43 +197,19 @@ public class BitBoards {
         return fullBoard;
     }
 
-
-
-    public String drawFullBitBoard(){
-        return drawFullBitBoard(whitePawn, whiteKnight, whiteBishop,
-                whiteRook, whiteQueen, whiteKing,
-                blackPawn, blackKnight, blackBishop,
-                blackRook, blackQueen, blackKing);
-    }
-
-    public static String drawFullBitBoard(long WP, long WN, long WB,
-                                          long WR, long WQ, long WK,
-                                          long BP, long BN, long BB,
-                                          long BR,long BQ,long BK) {
-        String[][] chessBoard = new String[8][8];
-        for (int i = 0; i < 64; i++) {
-            chessBoard[i/8][i%8] = " ";
+    public static String toString(long bitBoard){
+        StringBuilder sb = new StringBuilder();
+        for (int i = 63; i >= 0; i--) {
+            long mask = 1L << i;
+            long maskedBit = (bitBoard & mask);
+            sb.append(maskedBit == 0 ? '0' : '1');
+            if ((i % 8) == 0) {
+                sb.append('\n'); // Minden 8. bit után sortörés
+            } else {
+                sb.append(" ");
+            }
         }
-        for (int i = 0; i < 64; i--) {
-            if (((WP>>i)&1)==1) {chessBoard[i/8][i%8]="P";}
-            if (((WN>>i)&1)==1) {chessBoard[i/8][i%8]="N";}
-            if (((WB>>i)&1)==1) {chessBoard[i/8][i%8]="B";}
-            if (((WR>>i)&1)==1) {chessBoard[i/8][i%8]="R";}
-            if (((WQ>>i)&1)==1) {chessBoard[i/8][i%8]="Q";}
-            if (((WK>>i)&1)==1) {chessBoard[i/8][i%8]="K";}
-            if (((BP>>i)&1)==1) {chessBoard[i/8][i%8]="p";}
-            if (((BN>>i)&1)==1) {chessBoard[i/8][i%8]="n";}
-            if (((BB>>i)&1)==1) {chessBoard[i/8][i%8]="b";}
-            if (((BR>>i)&1)==1) {chessBoard[i/8][i%8]="r";}
-            if (((BQ>>i)&1)==1) {chessBoard[i/8][i%8]="q";}
-            if (((BK>>i)&1)==1) {chessBoard[i/8][i%8]="k";}
-        }
-        StringBuilder fullBoard = new StringBuilder();
-        for (int i=0;i<8;i++) {
-            fullBoard.append(Arrays.toString(chessBoard[i]));
-            fullBoard.append('\n');
-        }
-        return fullBoard.toString();
+        return sb.toString();
     }
 
     //endregion

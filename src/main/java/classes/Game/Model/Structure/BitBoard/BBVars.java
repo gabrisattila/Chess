@@ -86,5 +86,10 @@ public class BBVars {
         add('P'); add('N'); add('B'); add('R'); add('Q'); add('K');
     }};
 
+    public static final ArrayList<Character> hunPieceLetters = new ArrayList<>(){{
+        add('g'); add('h'); add('f'); add('b'); add('v'); add('k');
+        add('G'); add('H'); add('F'); add('B'); add('v'); add('K');
+    }};
+
 }
 
