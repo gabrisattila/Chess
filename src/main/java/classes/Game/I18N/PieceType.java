@@ -14,6 +14,10 @@ public enum PieceType {
 
     K;
 
+    public boolean equals(PieceType type){
+        return this == type;
+    }
+
     public char toLowerCase(){
         switch (this){
             case G -> {

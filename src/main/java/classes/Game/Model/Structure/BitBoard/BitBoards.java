@@ -1,13 +1,18 @@
 package classes.Game.Model.Structure.BitBoard;
 
+import classes.Game.I18N.PieceType;
 import lombok.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import static classes.Ai.FenConverter.*;
+import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Game.Model.Structure.BitBoard.BBVars.*;
+import static classes.Game.Model.Structure.Move.*;
 
 @Getter
 @Setter
@@ -17,9 +22,13 @@ public class BitBoards {
 
     //endregion
 
+    //region Constructor
+
     public BitBoards(String fen){
         setUpBitBoard(fen);
     }
+
+    //endregion
 
     //region Methods
 
@@ -172,6 +181,50 @@ public class BitBoards {
 
     //endregion
 
+
+    //region Moves
+
+    public ArrayList<Map<Integer, ArrayList<Integer>>> listOfPiecesStartLocsAndEndLocs(boolean forWhite){
+        ArrayList<Map<Integer, ArrayList<Integer>>> list = new ArrayList<>();
+        list.add(getGivenPiecesStartLocAndPossibleEndLocs(forWhite ? whitePawn : blackPawn, G, forWhite));
+        list.add(getGivenPiecesStartLocAndPossibleEndLocs(forWhite ? whiteBishop : blackBishop, F, forWhite));
+        list.add(getGivenPiecesStartLocAndPossibleEndLocs(forWhite ? whiteKnight : blackKnight, H, forWhite));
+        list.add(getGivenPiecesStartLocAndPossibleEndLocs(forWhite ? whiteRook : blackRook, B, forWhite));
+        list.add(getGivenPiecesStartLocAndPossibleEndLocs(forWhite ? whiteQueen : blackQueen, V, forWhite));
+        list.add(getGivenPiecesStartLocAndPossibleEndLocs(forWhite ? whitePawn : blackKing, K, forWhite));
+        return list;
+    }
+
+    public Map<Integer, ArrayList<Integer>> getGivenPiecesStartLocAndPossibleEndLocs(long bitBoardOfAPiece, PieceType type, boolean isWhite){
+        Map<Integer, ArrayList<Integer>> startEndsPairs = new HashMap<>();
+        ArrayList<Integer> pieceStartPosFromThisType = getPiecesStartIndexesOnABoard(bitBoardOfAPiece);
+        for (int i : pieceStartPosFromThisType) {
+            switch (type){
+                case G -> startEndsPairs.put(i, pawnMoves(isWhite, i, bitBoardOfAPiece));
+                case H -> startEndsPairs.put(i, bishopMoves(isWhite, i, bitBoardOfAPiece));
+                case F -> startEndsPairs.put(i, knightMoves(isWhite, i, bitBoardOfAPiece));
+                case B -> startEndsPairs.put(i, rookMoves(isWhite, i, bitBoardOfAPiece));
+                case V -> startEndsPairs.put(i, queenMoves(isWhite, i, bitBoardOfAPiece));
+                case K -> startEndsPairs.put(i, kingMoves(isWhite, i, bitBoardOfAPiece));
+            }
+        }
+        return startEndsPairs;
+    }
+
+    /**
+     * @param bitBoardOfAPiece We know what is the pieceType of the bitBoard
+     * @return all the start indexes of the pieces from the bitBoard
+     */
+    public ArrayList<Integer> getPiecesStartIndexesOnABoard(long bitBoardOfAPiece){
+        ArrayList<Integer> indexesOfPieces = new ArrayList<>();
+        for (int i = 0; i < 64; i++) {
+            if (((1L << i) & bitBoardOfAPiece) == 1){
+                indexesOfPieces.add(i);
+            }
+        }
+        return indexesOfPieces;
+    }
+
     public static ArrayList<Long> collectPieceBoardsToOneList(){
         ArrayList<Long> boards = new ArrayList<>();
         boards.add(whitePawn);
@@ -211,6 +264,8 @@ public class BitBoards {
         }
         return sb.toString();
     }
+
+    //endregion
 
     //endregion
 

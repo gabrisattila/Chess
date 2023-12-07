@@ -9,5 +9,7 @@ public class Main {
 //        new EDT();
         setUpStarterBitBoards();
         System.out.println(bitBoardsToFenPieces());
+
+
     }
 }
