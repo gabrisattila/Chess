@@ -404,7 +404,7 @@ public class Move {
         HITTABLE_BY_WHITE = blackPawn | blackKnight | blackBishop | blackRook | blackQueen;
         EMPTY = ~mergeFullBitBoard(collectPieceBoardsToOneList());
 
-        ArrayList<Long> pawnMoves = new ArrayList<>();
+        ArrayList<Integer> pawnMoves = new ArrayList<>();
         Long newPlaceOfPawn = forWhite ? whitePawn : blackPawn;
         if (forWhite){
             //Előre sima 1
@@ -429,7 +429,7 @@ public class Move {
 //            PAWN_MOVES |= (whiteDown ? (blackPawn >> 7 & ~COL_H) : (blackPawn << 9 & ~COL_A)) & HITTABLE_BY_WHITE;
         }
         
-        return null;
+        return pawnMoves;
     }
 
     public static ArrayList<Integer> knightMoves(boolean forWhite, int indexOfASinglePawn, long bitBoardOfPawns){
