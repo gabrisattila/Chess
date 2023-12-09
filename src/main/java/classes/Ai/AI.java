@@ -3,6 +3,8 @@ package classes.Ai;
 import classes.Game.I18N.Location;
 import classes.Game.I18N.Pair;
 import classes.Game.Model.Structure.*;
+import classes.Game.Model.Structure.BitBoard.BitBoardMoves;
+import classes.Game.Model.Structure.BitBoard.BitBoards;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -17,6 +19,8 @@ import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.Model.Logic.EDT.*;
+import static classes.Game.Model.Structure.BitBoard.BBVars.*;
+import static classes.Game.Model.Structure.BitBoard.BitBoards.*;
 import static classes.Game.Model.Structure.Board.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Game.Model.Structure.GameOverOrPositionEnd.*;
@@ -121,6 +125,9 @@ public class AI extends Thread {
 //            double bestChildValue = negaMax(tree, MINIMAX_DEPTH, -Double.MAX_VALUE, Double.MAX_VALUE);
             int startTime = (int) System.currentTimeMillis();
             double bestChildValue = miniMax(tree, 0, whiteToPlay, -Double.MAX_VALUE, Double.MAX_VALUE);
+//            double bestChildValue = miniMaxWithBitBoards(tree, 0, whiteToPlay, -Double.MAX_VALUE, Double.MAX_VALUE,
+//                    whitePawn, whiteBishop, whiteKnight, whiteRook, whiteQueen, whiteKing,
+//                    blackPawn, blackBishop, blackKnight, blackRook, blackQueen, blackKing);
             int endTime = (int) System.currentTimeMillis();
             System.out.println(endTime - startTime);
 
@@ -128,6 +135,59 @@ public class AI extends Thread {
 //            getLogger().log(bestChild.getFen().split(" ")[6]);
             AiFenToBoard(bestChild.getFen(), getBoard());
             addToHappenedList(AiFenToFen(bestChild.getFen()));
+        }
+    }
+
+    private double miniMaxWithBitBoards(
+            AiNode starterPos, int depth, boolean maxNeeded, double alpha, double beta,
+            long whitePawn, long whiteBishop, long whiteKnight, long whiteRook, long whiteKing, long whiteQueen,
+            long blackPawn, long blackBishop, long blackKnight, long blackRook, long blackKing, long blackQueen
+    ){
+        synchronized (pauseFlag){
+            waitOnPause();
+
+            if (depth == MINIMAX_DEPTH){
+                return evaluate(FenToBoard(bitBoardsToFenPieces(), getBoard()));
+            }
+
+            String possibleMoves = BitBoardMoves.possibleMoves(   
+                    maxNeeded,
+                    whitePawn,  whiteBishop,  whiteKnight,  whiteRook,  whiteKing,  whiteQueen,
+                    blackPawn,  blackBishop,  blackKnight,  blackRook,  blackKing,  blackQueen
+            );
+            long nextWhitePawn,  nextWhiteBishop,  nextWhiteKnight,  nextWhiteRook,  nextWhiteKing,  nextWhiteQueen,
+                    nextBlackPawn,  nextBlackBishop,  nextBlackKnight,  nextBlackRook,  nextBlackKing,  nextBlackQueen;
+            if (maxNeeded){
+                double possibleMax = -Double.MAX_VALUE;
+                for (int i = 0; i < possibleMoves.length(); i += 4) {
+                    // Make Moves on BitBoards
+                    double evaluationOfThisNode = miniMaxWithBitBoards(
+                            new AiNode(), depth++, false, alpha, beta,
+                            nextWhitePawn,  nextWhiteBishop,  nextWhiteKnight,  nextWhiteRook,  nextWhiteKing,  nextWhiteQueen,
+                            nextBlackPawn,  nextBlackBishop,  nextBlackKnight,  nextBlackRook,  nextBlackKing,  nextBlackQueen
+                    );
+                    possibleMax = Math.max(evaluationOfThisNode, possibleMax);
+                    alpha = Math.max(alpha, evaluationOfThisNode);
+                    if (beta <= alpha)
+                        break;
+                }
+                starterPos.setFinalValue(possibleMax);
+                return possibleMax;
+            }else {
+                double possibleMin = Double.MAX_VALUE;
+                for (int i = 0; i < possibleMoves.length(); i += 4) {
+                    // Make Moves on BitBoards
+                    double evaluationOfThisNode = miniMaxWithBitBoards(
+                            new AiNode(), depth++, true, alpha, beta,
+                            nextWhitePawn,  nextWhiteBishop,  nextWhiteKnight,  nextWhiteRook,  nextWhiteKing,  nextWhiteQueen,
+                            nextBlackPawn,  nextBlackBishop,  nextBlackKnight,  nextBlackRook,  nextBlackKing,  nextBlackQueen
+                    );
+                    possibleMin = Math.min(evaluationOfThisNode, possibleMin);
+                    beta = Math.min(alpha, evaluationOfThisNode);
+                    if (beta <= alpha)
+                        break;
+                }
+            }
         }
     }
 
