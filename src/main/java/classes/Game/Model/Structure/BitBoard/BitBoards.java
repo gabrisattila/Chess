@@ -184,33 +184,6 @@ public class BitBoards {
 
     //region Moves
 
-    public ArrayList<Map<Integer, ArrayList<Integer>>> listOfPiecesStartLocsAndEndLocs(boolean forWhite){
-        ArrayList<Map<Integer, ArrayList<Integer>>> list = new ArrayList<>();
-        list.add(getGivenPiecesStartLocAndPossibleEndLocs(forWhite ? whitePawn : blackPawn, G, forWhite));
-        list.add(getGivenPiecesStartLocAndPossibleEndLocs(forWhite ? whiteBishop : blackBishop, F, forWhite));
-        list.add(getGivenPiecesStartLocAndPossibleEndLocs(forWhite ? whiteKnight : blackKnight, H, forWhite));
-        list.add(getGivenPiecesStartLocAndPossibleEndLocs(forWhite ? whiteRook : blackRook, B, forWhite));
-        list.add(getGivenPiecesStartLocAndPossibleEndLocs(forWhite ? whiteQueen : blackQueen, V, forWhite));
-        list.add(getGivenPiecesStartLocAndPossibleEndLocs(forWhite ? whitePawn : blackKing, K, forWhite));
-        return list;
-    }
-
-    public Map<Integer, ArrayList<Integer>> getGivenPiecesStartLocAndPossibleEndLocs(long bitBoardOfAPiece, PieceType type, boolean isWhite){
-        Map<Integer, ArrayList<Integer>> startEndsPairs = new HashMap<>();
-        ArrayList<Integer> pieceStartPosFromThisType = getPiecesStartIndexesOnABoard(bitBoardOfAPiece);
-        for (int i : pieceStartPosFromThisType) {
-            switch (type){
-                case G -> startEndsPairs.put(i, pawnMoves(isWhite, i, bitBoardOfAPiece));
-                case H -> startEndsPairs.put(i, bishopMoves(isWhite, i, bitBoardOfAPiece));
-                case F -> startEndsPairs.put(i, knightMoves(isWhite, i, bitBoardOfAPiece));
-                case B -> startEndsPairs.put(i, rookMoves(isWhite, i, bitBoardOfAPiece));
-                case V -> startEndsPairs.put(i, queenMoves(isWhite, i, bitBoardOfAPiece));
-                case K -> startEndsPairs.put(i, kingMoves(isWhite, i, bitBoardOfAPiece));
-            }
-        }
-        return startEndsPairs;
-    }
-
     /**
      * @param bitBoardOfAPiece We know what is the pieceType of the bitBoard
      * @return all the start indexes of the pieces from the bitBoard

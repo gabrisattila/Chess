@@ -138,6 +138,7 @@ public class AI extends Thread {
         }
     }
 
+    /*
     private double miniMaxWithBitBoards(
             AiNode starterPos, int depth, boolean maxNeeded, double alpha, double beta,
             long whitePawn, long whiteBishop, long whiteKnight, long whiteRook, long whiteKing, long whiteQueen,
@@ -190,6 +191,7 @@ public class AI extends Thread {
             }
         }
     }
+    */
 
     private double miniMax(AiNode starterPos, int depth, boolean maxNeeded, double alpha, double beta) {
 
