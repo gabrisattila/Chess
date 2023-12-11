@@ -155,8 +155,8 @@ public class BitBoardMoves {
         long i = usedF & -usedF;
         long possibility = 0L;
         while (i != 0){
-            int iLoc = Long.numberOfLeadingZeros(i);
-            possibility = diagonalAndAntiDiagonalMoves(iLoc) & (forWhite ? HITTABLE_BY_WHITE : HITTABLE_BY_BLACK);
+            int iLoc = 63 - Long.numberOfLeadingZeros(i);
+            possibility = diagonalAndAntiDiagonalMoves(iLoc) | (forWhite ? HITTABLE_BY_WHITE : HITTABLE_BY_BLACK);
             usedF &= ~i;
             i = usedF & -usedF;
         }
@@ -200,12 +200,12 @@ public class BitBoardMoves {
     }
 
     public static long diagonalAndAntiDiagonalMoves(int start){
-        long s = 1L << start;
+        long binaryStart = 1L << start;
         int rowIndex = start / 8, colIndex = (start % 8);
-        long firstPart = ((OCCUPIED & DiagonalMasks8[rowIndex + colIndex]) - (2 * s)) ^
-                Long.reverse(Long.reverse(OCCUPIED & DiagonalMasks8[rowIndex + colIndex]) - (2 * Long.reverse(s)));
-        long secondPart = ((OCCUPIED & AntiDiagonalMasks8[rowIndex + 7 - colIndex]) - (2 * s)) ^
-                Long.reverse(Long.reverse(OCCUPIED & AntiDiagonalMasks8[rowIndex + 7 - colIndex]) - (2 * Long.reverse(s)));
+        long firstPart = ((OCCUPIED & DiagonalMasks8[rowIndex + colIndex]) - (2 * binaryStart)) ^
+                Long.reverse(Long.reverse(OCCUPIED & DiagonalMasks8[rowIndex + colIndex]) - (2 * Long.reverse(binaryStart)));
+        long secondPart = ((OCCUPIED & AntiDiagonalMasks8[rowIndex + 7 - colIndex]) - (2 * binaryStart)) ^
+                Long.reverse(Long.reverse(OCCUPIED & AntiDiagonalMasks8[rowIndex + 7 - colIndex]) - (2 * Long.reverse(binaryStart)));
         return firstPart & DiagonalMasks8[rowIndex + colIndex] | secondPart & AntiDiagonalMasks8[rowIndex + 7 - colIndex];
     }
 
