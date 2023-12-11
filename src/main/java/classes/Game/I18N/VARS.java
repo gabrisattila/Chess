@@ -341,6 +341,7 @@ public class VARS {
 
             //region Simple Piece Tests
 
+            put("whiteDownWithOutPawns", "RNBQKBNR/8/8/8/8/8/8/rnbqkbnr w KQkq - 1 0");
             put("onlyTwoKnights8x8", "1N4N1/8/8/8/8/8/8/1n4n1 w ---- - 1 0");
             put("onlyKnights4x4", "1N2/4/4/2n1 w ---- - 1 0");
             put("onlyBishops", "2B2B2/8/8/8/8/8/8/2b2b2 w ---- - 1 0");

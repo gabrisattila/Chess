@@ -22,13 +22,13 @@ public class BitBoardMoves {
             add(bG); add(bH); add(bF); add(bB); add(bV); add(bK);}});
         EMPTY = ~OCCUPIED;
 
-        String moves = pawnMoves(maxNeeded, maxNeeded ? wG : bG, emPassantChance, wG, wV, bG, bV);
+        String moves = "";//pawnMoves(maxNeeded, maxNeeded ? wG : bG, emPassantChance, wG, wV, bG, bV);
 //        moves += knightMoves();
-//        moves += bishopMoves();
-//        moves += rookMoves();
-//        moves += queenMoves();
+        moves += bishopMoves(wF, bF);
+        moves += rookMoves(wB, bB);
+        moves += queenMoves(wV, bV);
 //        moves += kingMoves();
-
+        int moveCount = moves.split("_").length;
         return moves;
     }
 
@@ -147,49 +147,59 @@ public class BitBoardMoves {
         return null;
     }
 
-    public static long bishopMoves(boolean forWhite, long wF, long bF){
-        StringBuilder moves = new StringBuilder();
-
-        long usedF = forWhite ? wF : bF;
-        
-        long i = usedF & -usedF;
-        long possibility = 0L;
-        int x = 0;
-        while (i != 0){
-            int iLoc = 63 - Long.numberOfLeadingZeros(i);
-            possibility |= diagonalAndAntiDiagonalMoves(iLoc) | (forWhite ? HITTABLE_BY_WHITE : HITTABLE_BY_BLACK);
-            usedF &= ~i;
-            x++;
-            i = usedF & -usedF;
-        }
-
-        /*PieceType type,
-          StringBuilder moves,
-          int plusToOriginPosition,
-          long cantCountThatBoardPart,
-          long shouldBeInThatPart,
-          boolean forWhite,
-          long piecesBitBoard,
-          long plusBoardQueenOrRook,
-          long enemyPawnBoard*/
-
-//        return moves.toString();
-        return possibility;
+    public static String bishopMoves(long wF, long bF){
+        return slidingPieceMoves(F.toString(whiteToPlay), wF, bF);
     }
 
-    public static String rookMoves(boolean forWhite, int indexOfASinglePawn, long bitBoardOfPawns){
-        //TODO returns the possible end indexes of the rook which stands on the given index
-        return null;
+    public static String rookMoves(long wB, long bB){
+        return slidingPieceMoves(B.toString(whiteToPlay), wB, bB);
     }
 
-    public static String queenMoves(boolean forWhite, int indexOfASinglePawn, long bitBoardOfPawns){
-        //TODO returns the possible end indexes of the queen which stands on the given index
-        return null;
+    public static String queenMoves(long wV, long bV){
+        return slidingPieceMoves(V.toString(whiteToPlay), wV, bV);
     }
 
     public static String kingMoves(boolean forWhite, int indexOfASinglePawn, long bitBoardOfPawns){
         //TODO returns the possible end indexes of the king which stands on the given index
         return null;
+    }
+
+    public static String slidingPieceMoves(String type, long w, long b){
+        StringBuilder moves = new StringBuilder();
+
+        long used = Character.isUpperCase(type.charAt(0)) ? w : b;
+
+        long i = used & -used;
+        long possibility = 0L;
+        while (i != 0){
+            int iLoc = 63 - Long.numberOfLeadingZeros(i);
+
+            switch (type.charAt(0)){
+                case 'F', 'f' -> possibility |= diagonalAndAntiDiagonalMoves(iLoc);
+                case 'B', 'b' -> possibility |= horizontalAndVerticalMoves(iLoc);
+                default -> possibility |= diagonalAndAntiDiagonalMoves(iLoc) | horizontalAndVerticalMoves(iLoc);
+            }
+
+            possibility &= (whiteToPlay ? HITTABLE_BY_WHITE : HITTABLE_BY_BLACK) | EMPTY;
+            long j = possibility & -possibility;
+
+            while (j != 0)
+            {
+                int jLoc = Long.numberOfTrailingZeros(j);
+                moves.append(type);
+                moves.append('-');
+                moves.append(iLoc);
+                moves.append('-');
+                moves.append(jLoc);
+                moves.append('_');
+                possibility &= ~j;
+                j = possibility & -possibility;
+            }
+            used &= ~i;
+            i = used & -used;
+        }
+
+        return moves.toString();
     }
 
     public static long horizontalAndVerticalMoves(int start){

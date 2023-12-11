@@ -12,7 +12,7 @@ import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Game.Model.Structure.BitBoard.BBVars.*;
-import static classes.Game.Model.Structure.Move.*;
+import static classes.Game.Model.Structure.Board.*;
 
 @Getter
 @Setter
@@ -42,6 +42,7 @@ public class BitBoards {
     }
 
     public static void setUpBitBoard(String fen){
+        FenToBoard(fen, getBoard());
         String bbFen = FenToBitBoardFen(fen);
         String pieces = bbFen.split(" ")[0];
         for (char c : englishPieceLetters) {
