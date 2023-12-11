@@ -154,12 +154,15 @@ public class BitBoardMoves {
         
         long i = usedF & -usedF;
         long possibility = 0L;
+        int x = 0;
         while (i != 0){
             int iLoc = 63 - Long.numberOfLeadingZeros(i);
-            possibility = diagonalAndAntiDiagonalMoves(iLoc) | (forWhite ? HITTABLE_BY_WHITE : HITTABLE_BY_BLACK);
+            possibility |= diagonalAndAntiDiagonalMoves(iLoc) | (forWhite ? HITTABLE_BY_WHITE : HITTABLE_BY_BLACK);
             usedF &= ~i;
+            x++;
             i = usedF & -usedF;
         }
+
         /*PieceType type,
           StringBuilder moves,
           int plusToOriginPosition,
