@@ -343,7 +343,8 @@ public class VARS {
 
             put("onlyTwoKnights8x8", "1N4N1/8/8/8/8/8/8/1n4n1 w ---- - 1 0");
             put("onlyKnights4x4", "1N2/4/4/2n1 w ---- - 1 0");
-            put("onlyBishops", "2F2F2/8/8/8/8/8/8/2f2f2 w ---- - 1 0");
+            put("onlyBishops", "2B2B2/8/8/8/8/8/8/2b2b2 w ---- - 1 0");
+            put("onlyRooks", "R6R/8/8/8/8/8/8/r6r w ---- - 1 0");
             put("onlyTwoBishops6x6", "1F4/6/6/6/6/4f1 w ---- - 1 0");
             put("onlyTwoRooks6x6", "B5/6/6/6/6/5b w ---- - 1 0");
             put("onlyTwoQueens6x6", "2V3/6/6/6/6/3v2 w ---- - 1 0");
