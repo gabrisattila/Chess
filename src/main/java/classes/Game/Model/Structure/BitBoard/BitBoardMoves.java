@@ -128,16 +128,21 @@ public class BitBoardMoves {
         return "";
     }
 
-    public String knightMoves(long theBitBoardOfPawns, String emPassantChance,
+    public String knightMoves(long theBitBoardOfPawns,
                               long wG, long wH, long wF, long wB, long wV, long wK,
                               long bG, long bH, long bF, long bB, long bV, long bK){
         //TODO returns the possible end indexes of the knight which stands on the given index
         return null;
     }
 
-    public String bishopMoves(boolean forWhite, int indexOfASinglePawn, long bitBoardOfPawns){
-        //TODO returns the possible end indexes of the bishop which stands on the given index
-        return null;
+    public String bishopMoves(long theBitBoardOfPawns,
+                              long wG, long wH, long wF, long wB, long wV, long wK,
+                              long bG, long bH, long bF, long bB, long bV, long bK){
+        StringBuilder moves = new StringBuilder();
+
+
+
+        return moves.toString();
     }
 
     public String rookMoves(boolean forWhite, int indexOfASinglePawn, long bitBoardOfPawns){
@@ -153,6 +158,27 @@ public class BitBoardMoves {
     public String kingMoves(boolean forWhite, int indexOfASinglePawn, long bitBoardOfPawns){
         //TODO returns the possible end indexes of the king which stands on the given index
         return null;
+    }
+
+    private long horizontalAndVerticalMoves(int start){
+        long s = 1L << start;
+        int rowMaskIndex = start / 8;
+        long horizontal = (OCCUPIED - 2 * s) ^ Long.reverse(Long.reverse(OCCUPIED) - Long.reverse(2 * s));
+        int colMaskIndex = start % 8;
+        long vertical = ((OCCUPIED & ColMasks8[colMaskIndex]) - (2 * s)) ^
+                Long.reverse(Long.reverse(OCCUPIED & ColMasks8[colMaskIndex]) - Long.reverse(2 * s));
+        return horizontal & RowMasks8[rowMaskIndex] | vertical & ColMasks8[colMaskIndex];
+    }
+
+    private long diagonalAndAntiDiagonalMoves(int start){
+        long s = 1L << start;
+        int dMaskIndex = start / 8 + start % 8;
+        long diagonals = ((OCCUPIED & DiagonalMasks8[dMaskIndex]) - (2 * s)) ^
+                Long.reverse(Long.reverse(OCCUPIED & DiagonalMasks8[dMaskIndex]) - (2 * Long.reverse(s)));
+        int adMaskIndex = (start / 8) + 7 - start % 8;
+        long antiDiagonals = ((OCCUPIED & AntiDiagonalMasks8[adMaskIndex] - (2 * s))) ^
+                Long.reverse(Long.reverse(OCCUPIED & AntiDiagonalMasks8[adMaskIndex]) - (2 * Long.reverse(s)));
+        return diagonals & DiagonalMasks8[dMaskIndex] | antiDiagonals & AntiDiagonalMasks8[adMaskIndex];
     }
 
 
