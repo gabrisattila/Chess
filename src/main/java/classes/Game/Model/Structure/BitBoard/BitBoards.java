@@ -42,7 +42,7 @@ public class BitBoards {
     }
 
     public static void setUpBitBoard(String fen){
-        FenToBoard(fen, getBoard());
+//        FenToBoard(fen, getBoard());
         String bbFen = FenToBitBoardFen(fen);
         String pieces = bbFen.split(" ")[0];
         for (char c : englishPieceLetters) {

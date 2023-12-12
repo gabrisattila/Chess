@@ -1,16 +1,21 @@
 package classes.Game.Model.Structure.BitBoard;
 
+import classes.Game.I18N.Pair;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
+import static classes.Game.I18N.VARS.MUTABLE.whiteDown;
 import static classes.Game.Model.Structure.BitBoard.BBVars.*;
 import static classes.Game.Model.Structure.BitBoard.BitBoards.*;
 
 public class BitBoardMoves {
 
-    public static String possibleMoves(boolean maxNeeded, int emPassantChance,
+    public static String possibleMoves(boolean maxNeeded, int emPassantChance, 
+                                       boolean whiteKingCastleEnabled, boolean whiteQueenCastleEnabled,
+                                       boolean blackKingCastleEnabled, boolean blackQueenCastleEnabled,
                                        long wG, long wH, long wF, long wB, long wV, long wK,
                                        long bG, long bH, long bF, long bB, long bV, long bK) {
 
@@ -21,11 +26,19 @@ public class BitBoardMoves {
         EMPTY = ~OCCUPIED;
 
         String moves = pawnMoves(maxNeeded, maxNeeded ? wG : bG, emPassantChance, wG, bG);
+        moves += "\n";
         moves += knightMoves(maxNeeded, wH, bH);
+        moves += "\n";
         moves += bishopMoves(maxNeeded, wF, bF);
+        moves += "\n";
         moves += rookMoves(maxNeeded, wB, bB);
+        moves += "\n";
         moves += queenMoves(maxNeeded, wV, bV);
-        moves += kingMoves(maxNeeded, wK, bK);
+        moves += "\n";
+        moves += kingMoves(
+                maxNeeded, whiteKingCastleEnabled, whiteQueenCastleEnabled,
+                blackKingCastleEnabled, blackQueenCastleEnabled,
+                wG, wH, wF, wB, wV, wK, bG, bH, bF, bB, bV, bK, OCCUPIED);
         int moveCount = moves.split("_").length;
         return moves;
     }
@@ -165,9 +178,17 @@ public class BitBoardMoves {
         return slidingPieceMoves(V.toString(forWhite), wV, bV);
     }
 
-    public static String kingMoves(boolean forWhite, long wK, long bK){
+    public static String kingMoves(boolean forWhite,
+                                   boolean wKC, boolean wQC, boolean bKC, boolean bQC,
+                                   long wG, long wH, long wF, long wB, long wV, long wK,
+                                   long bG, long bH, long bF, long bB, long bV, long bK,
+                                   long occ){
         String type = forWhite ? "K" : "k";
-        return moveDocStringExceptPawn(type, wK, bK);
+        String moves = moveDocStringExceptPawn(type, wK, bK);
+        moves += castle(
+                type,  wKC,  wQC,  bKC,  bQC,
+                wG,  wH,  wF,  wB,  wV,  wK, bG,  bH,  bF,  bB,  bV,  bK, occ);
+        return moves;
     }
 
     public static String slidingPieceMoves(String type, long w, long b){
@@ -236,7 +257,7 @@ public class BitBoardMoves {
                 moves.append('-');
                 moves.append(endLoc);
                 moves.append(rookMoveNote(type, startLoc));
-                moves.append(kingMoveNote(type, startLoc));
+                moves.append(kingMoveNote(type));
                 moves.append('_');
                 possibility &= ~j;
                 j = possibility & -possibility;
@@ -291,6 +312,41 @@ public class BitBoardMoves {
         return possibility;
     }
 
+    private static String castle(String type,
+                                 boolean wKC, boolean wQC, boolean bKC, boolean bQC,
+                                 long wG, long wH, long wF, long wB, long wV, long wK,
+                                 long bG, long bH, long bF, long bB, long bV, long bK,
+                                 long occupied){
+        String castlePlaces = "";
+        boolean forWhite = Character.isUpperCase(type.charAt(0));
+
+        long unsafe = unsafeFor(forWhite, wG, wH, wF, wB, wV, wK, bG, bH, bF, bB, bV, bK);
+
+        if (isKingSideCastleEnabled(forWhite, whiteDown, forWhite ? wKC : bKC, forWhite ? wK : bK,
+                                    forWhite ? wB : bB, unsafe, occupied)){
+            castlePlaces += castleDoc(type, whiteDown, true);
+        }
+        if (isQueenSideCastleEnabled(forWhite, whiteDown, forWhite ? wQC : bQC, forWhite ? wK : bK,
+                                     forWhite ? wB : bB, unsafe, occupied)){
+            castlePlaces += castleDoc(type, whiteDown, false);
+        }
+        
+        return castlePlaces;
+    }
+
+    private static String castleDoc(String type, boolean whiteDown, boolean kingSide){
+        boolean forWhite = Character.isUpperCase(type.charAt(0));
+        int[] castleIndexes = indexesInCastle(whiteDown, forWhite, kingSide);
+        String castlePlaces = type;
+        castlePlaces += "-";
+        castlePlaces += whiteDown ? (forWhite ? 3 : 59) : (forWhite ? 60 : 4);
+        castlePlaces += "-";
+        castlePlaces += castleIndexes[0];
+        castlePlaces += kingMoveNote(type);
+        castlePlaces += "_";
+        return castlePlaces;
+    }
+
     private static String rookMoveNote(String type, int startLoc){
         if (("B".equals(type) || "b".equals(type)) && Arrays.stream(corners).anyMatch(c -> c == startLoc)){
             if ((1L << startLoc & KING_SIDE) != 0){
@@ -302,11 +358,92 @@ public class BitBoardMoves {
         return "";
     }
 
-    private static String kingMoveNote(String type, int startLoc){
+    private static String kingMoveNote(String type){
         if ("K".equals(type) || "k".equals(type)){
             return "K".equals(type) ? "-KV" : "-kv";
         }
         return "";
+    }
+    
+    private static boolean isKingSideCastleEnabled(boolean forWhite, boolean whiteDown, 
+                                                   boolean smallCastleEnabled, long kingBoard, long rookBoard, long unsafe, long occupied){
+        int smallCastlePoint, smallCastleRoad, rookOrigin, kingOrigin;
+        if (!smallCastleEnabled)
+            return false;
+        int[] castleIndexes = indexesInCastle(whiteDown, forWhite, true);
+
+        smallCastlePoint = castleIndexes[0];
+        smallCastleRoad = castleIndexes[1];
+        rookOrigin = castleIndexes[2];
+        kingOrigin = castleIndexes[3];
+
+        return castleIsEnabled(kingOrigin, rookOrigin, smallCastleRoad, smallCastlePoint,
+                                kingBoard, rookBoard, unsafe, occupied);
+
+    }
+    
+    private static boolean isQueenSideCastleEnabled(boolean forWhite, boolean whiteDown,
+                                                    boolean bigCastleEnabled, long kingBoard, long rookBoard, long unsafe, long occupied){
+        int bigCastlePoint, bigCastleRoad, rookOrigin, kingOrigin, rookPlusRoad;
+        if (!bigCastleEnabled)
+            return false;
+
+        int[] castleIndexes = indexesInCastle(whiteDown, forWhite, false);
+
+        bigCastlePoint = castleIndexes[0];
+        bigCastleRoad = castleIndexes[1];
+        rookOrigin = castleIndexes[2];
+        kingOrigin = castleIndexes[3];
+        rookPlusRoad = castleIndexes[4];
+
+        return  castleIsEnabled(
+                kingOrigin, rookOrigin, bigCastleRoad, bigCastlePoint,
+                kingBoard, rookBoard, unsafe, occupied
+                ) &&
+                (1L << rookPlusRoad & occupied) == 0;
+    }
+
+    /**
+     * @return a new array what contains the next elements
+     * kingPointInCastle, kingRoadInCastle / newPlaceOfRook, rookOriginPoint, kingOriginPoint, rookPlusRoad if there were (big castle)
+     */
+    private static int[] indexesInCastle(boolean whiteDown, boolean forWhite, boolean kingSide){
+        int[] indexes = new int[5];
+        if (kingSide){
+            if (whiteDown){
+                indexes[0] = forWhite ? 1 : 57;
+                indexes[1] = forWhite ? 2 : 58;
+                indexes[2] = forWhite ? 0 : 56;
+                indexes[3] = forWhite ? 3 : 59;
+            }else {
+                indexes[0] = forWhite ? 62 : 6;
+                indexes[1] = forWhite ? 61 : 5;
+                indexes[2] = forWhite ? 63 : 7;
+                indexes[3] = forWhite ? 60 : 4;
+            }
+        }else {
+            if (whiteDown){
+                indexes[0] = forWhite ? 5 : 61;
+                indexes[1] = forWhite ? 4 : 60;
+                indexes[2] = forWhite ? 7 : 63;
+                indexes[3] = forWhite ? 3 : 59;
+                indexes[4] = forWhite ? 6 : 62;
+            }else {
+                indexes[0] = forWhite ? 58 : 2;
+                indexes[1] = forWhite ? 59 : 3;
+                indexes[2] = forWhite ? 56 : 0;
+                indexes[3] = forWhite ? 60 : 4;
+                indexes[4] = forWhite ? 57 : 1;
+            }
+        }
+        return indexes;
+    }
+
+    private static boolean castleIsEnabled(int kingOrigin, int rookOrigin, int bigCastleRoad, int bigCastlePoint,
+                                    long kingBoard, long rookBoard, long unsafe, long occupied){
+        return  (1L << rookOrigin & rookBoard) != 0 && (1L << kingOrigin & kingBoard) != 0 &&
+                (1L << bigCastleRoad & unsafe) == 0 && (1L << bigCastleRoad & occupied) == 0 &&
+                (1L << bigCastlePoint & unsafe) == 0 && (1L << bigCastlePoint & occupied) == 0;
     }
 
     private static void doPawnPromotionChangesIfThereWere(String type, int endIndex, boolean forWhite,
