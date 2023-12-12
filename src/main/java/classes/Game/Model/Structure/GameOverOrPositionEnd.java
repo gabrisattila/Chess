@@ -2,6 +2,7 @@ package classes.Game.Model.Structure;
 
 import classes.Ai.AiNode;
 import classes.GUI.FrameParts.ViewBoard;
+import classes.Game.I18N.PieceType;
 import lombok.*;
 
 import javax.swing.*;
@@ -118,16 +119,16 @@ public class GameOverOrPositionEnd {
                                               board.getPieces().stream().allMatch(p -> p.getType() == K);
             boolean remained2KingAnd1KnightOr1Bishop =
                                               board.getPieces().size() == 3 &&
-                                              board.getPieces().stream().allMatch(p -> p.getType() == K || p.getType() == H || p.getType() == F);
+                                              board.getPieces().stream().allMatch(p -> p.getType() == K || p.getType() == N || p.getType() == PieceType.R);
             boolean remained2KingAnd2Knight = board.getPieces().size() == 4;
             if (remained2KingAnd2Knight){
                 IPiece possibleKnight = null, possibleBishop = null;
                 int knightCount = 0, bishopCount = 0;
                 for (IPiece p : board.getPieces()) {
-                    if (p.getType() == F) {
+                    if (p.getType() == PieceType.R) {
                         possibleBishop = p;
                         bishopCount++;
-                    } else if (p.getType() == H) {
+                    } else if (p.getType() == N) {
                         possibleKnight = p;
                         knightCount++;
                     }

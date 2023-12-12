@@ -145,11 +145,11 @@ public class BitBoards {
     private static int getCounterAndAppendToFen(StringBuilder fenPieces, int counter, int i,
                                                 long pawn, long knight, long bishop, long rook, long queen, long king,
                                                 boolean forWhite) {
-        counter = appendToOnGoingFen(pawn, fenPieces, counter, i, forWhite ? 'G' : 'g');
-        counter = appendToOnGoingFen(knight, fenPieces, counter, i, forWhite ? 'H' : 'h');
-        counter = appendToOnGoingFen(bishop, fenPieces, counter, i, forWhite ? 'F' : 'f');
-        counter = appendToOnGoingFen(rook, fenPieces, counter, i, forWhite ? 'B' : 'b');
-        counter = appendToOnGoingFen(queen, fenPieces, counter, i, forWhite ? 'V' : 'v');
+        counter = appendToOnGoingFen(pawn, fenPieces, counter, i, forWhite ? 'P' : 'p');
+        counter = appendToOnGoingFen(knight, fenPieces, counter, i, forWhite ? 'N' : 'n');
+        counter = appendToOnGoingFen(bishop, fenPieces, counter, i, forWhite ? 'B' : 'b');
+        counter = appendToOnGoingFen(rook, fenPieces, counter, i, forWhite ? 'R' : 'r');
+        counter = appendToOnGoingFen(queen, fenPieces, counter, i, forWhite ? 'Q' : 'q');
         counter = appendToOnGoingFen(king, fenPieces, counter, i, forWhite ? 'K' : 'k');
         return counter;
     }

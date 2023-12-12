@@ -32,6 +32,10 @@ public class AiNode {
 
     //region Constructor
 
+    public AiNode(long bitBoard){
+        children = new HashSet<>();
+    }
+
     public AiNode(){
 
         children = new HashSet<>();

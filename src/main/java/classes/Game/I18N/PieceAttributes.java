@@ -68,10 +68,10 @@ public class PieceAttributes {
 
     public void valueSetting(){
         switch (getType()){
-            case G -> VALUE = isWhite() ? PAWN_BASE_VALUE : - PAWN_BASE_VALUE;
-            case H, F -> VALUE = isWhite() ? KNIGHT_OR_BISHOP_BASE_VALUE : - KNIGHT_OR_BISHOP_BASE_VALUE;
-            case B -> VALUE = isWhite() ? ROOK_BASE_VALUE : - ROOK_BASE_VALUE;
-            case V -> VALUE = isWhite() ? QUEEN_BASE_VALUE : - QUEEN_BASE_VALUE;
+            case P -> VALUE = isWhite() ? PAWN_BASE_VALUE : - PAWN_BASE_VALUE;
+            case N, B -> VALUE = isWhite() ? KNIGHT_OR_BISHOP_BASE_VALUE : - KNIGHT_OR_BISHOP_BASE_VALUE;
+            case R -> VALUE = isWhite() ? ROOK_BASE_VALUE : - ROOK_BASE_VALUE;
+            case Q -> VALUE = isWhite() ? QUEEN_BASE_VALUE : - QUEEN_BASE_VALUE;
             case K -> VALUE = isWhite() ? KING_BASE_VALUE : - KING_BASE_VALUE;
         }
     }

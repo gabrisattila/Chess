@@ -1,19 +1,21 @@
 package classes.Game.Model.Structure.BitBoard;
 
-import classes.Game.I18N.Pair;
+import classes.Game.I18N.PieceType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import static classes.Game.I18N.PieceType.*;
-import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Game.I18N.VARS.MUTABLE.whiteDown;
 import static classes.Game.Model.Structure.BitBoard.BBVars.*;
 import static classes.Game.Model.Structure.BitBoard.BitBoards.*;
 
 public class BitBoardMoves {
 
-    public static String possibleMoves(boolean maxNeeded, int emPassantChance, 
+
+    //region Methods With BitBoards
+
+    public static String possibleMoves(boolean maxNeeded, int emPassantChance,
                                        boolean whiteKingCastleEnabled, boolean whiteQueenCastleEnabled,
                                        boolean blackKingCastleEnabled, boolean blackQueenCastleEnabled,
                                        long wG, long wH, long wF, long wB, long wV, long wK,
@@ -26,15 +28,10 @@ public class BitBoardMoves {
         EMPTY = ~OCCUPIED;
 
         String moves = pawnMoves(maxNeeded, maxNeeded ? wG : bG, emPassantChance, wG, bG);
-        moves += "\n";
         moves += knightMoves(maxNeeded, wH, bH);
-        moves += "\n";
         moves += bishopMoves(maxNeeded, wF, bF);
-        moves += "\n";
         moves += rookMoves(maxNeeded, wB, bB);
-        moves += "\n";
         moves += queenMoves(maxNeeded, wV, bV);
-        moves += "\n";
         moves += kingMoves(
                 maxNeeded, whiteKingCastleEnabled, whiteQueenCastleEnabled,
                 blackKingCastleEnabled, blackQueenCastleEnabled,
@@ -43,30 +40,28 @@ public class BitBoardMoves {
         return moves;
     }
 
-    //region Methods With BitBoards
+    public static long moveAPieceOnBoard(String move, long boardToMoveOn){
 
-    public static void moveAPieceOnBoard(long bitBoardOfPiece, long bitBoardOfSecondPiece,
-                                         int startIndexOfStepper, int endIndexOfStepper,
-                                         int startIndexOfSecondPiece, int endIndexOfSecondPiece,
-                                         boolean isItEmPassant, boolean isItEmPassantAuthorization,
-                                         boolean isItCastle, boolean isItPawnGotIn){
-        long helperBoard = 1L << startIndexOfStepper;
-        bitBoardOfPiece &= ~helperBoard;
-        helperBoard = 1L << endIndexOfStepper;
-        bitBoardOfPiece |= helperBoard;
-        if (bitBoardOfSecondPiece != 0){
-            if (isItCastle){
-                helperBoard = 1L << startIndexOfSecondPiece;
-                bitBoardOfSecondPiece &= ~helperBoard;
-                helperBoard = 1L << endIndexOfSecondPiece;
-                bitBoardOfSecondPiece |= helperBoard;
-            } else if (isItEmPassant) {
-                //TODO Megvcsinálni az emPassant esetet.
-            }else {
-                helperBoard = 1L << startIndexOfSecondPiece;
-                bitBoardOfSecondPiece &= ~helperBoard;
+        String[] moveParts = move.split("-");
+
+        String type = moveParts[0];
+        int start = Integer.parseInt(moveParts[1]);
+        int end = Integer.parseInt(moveParts[2]);
+        if ((1L << start & boardToMoveOn) != 0){ //megfelelő board
+            boardToMoveOn &= ~(1L << start);
+        }
+        boardToMoveOn |= (1L << end);
+        if ("P".equals(type) || "p".equals(type)){
+            //TODO itWereEmPassant
+            //TODO Pawn promotion ellenőrzés
+        }
+        if (moveParts.length > 3){ // emPassant Or Castle Modification happened
+            if (Character.isDigit(moveParts[3].charAt(0))){ //emPassant Authorization happened
+
+            }else { //Castle case modification happened
             }
         }
+        return boardToMoveOn;
     }
 
     public static long unsafeFor(boolean forWhite,
@@ -80,10 +75,10 @@ public class BitBoardMoves {
             unsafe |= whiteDown ? (wG << 7 & ~COL_A) : (wG >> 9 & ~COL_H);
             unsafe |= whiteDown ? (wG << 9 & ~COL_H) : (wG >> 7 & ~COL_A);
         }
-        unsafe |= movePossibilities(forWhite ? "h" : "H", wH, bH);
-        unsafe |= movePossibilities(forWhite ? "f" : "F", wF, bF);
-        unsafe |= movePossibilities(forWhite ? "b" : "B", wB, bB);
-        unsafe |= movePossibilities(forWhite ? "v" : "V", wV, bV);
+        unsafe |= movePossibilities(forWhite ? "n" : "N", wH, bH);
+        unsafe |= movePossibilities(forWhite ? "b" : "B", wF, bF);
+        unsafe |= movePossibilities(forWhite ? "r" : "R", wB, bB);
+        unsafe |= movePossibilities(forWhite ? "q" : "Q", wV, bV);
         unsafe |= movePossibilities(forWhite ? "k" : "K", wK, bK);
         
         return unsafe;
@@ -162,20 +157,20 @@ public class BitBoardMoves {
     }
 
     public static String knightMoves(boolean forWhite, long wH, long bH){
-        String type = forWhite ? "H" : "h";
+        String type = forWhite ? "N" : "n";
         return moveDocStringExceptPawn(type, wH, bH);
     }
 
     public static String bishopMoves(boolean forWhite, long wF, long bF){
-        return slidingPieceMoves(F.toString(forWhite), wF, bF);
+        return slidingPieceMoves(PieceType.R.toString(forWhite), wF, bF);
     }
 
     public static String rookMoves(boolean forWhite, long wB, long bB){
-        return slidingPieceMoves(B.toString(forWhite), wB, bB);
+        return slidingPieceMoves(R.toString(forWhite), wB, bB);
     }
 
     public static String queenMoves(boolean forWhite, long wV, long bV){
-        return slidingPieceMoves(V.toString(forWhite), wV, bV);
+        return slidingPieceMoves(Q.toString(forWhite), wV, bV);
     }
 
     public static String kingMoves(boolean forWhite,
@@ -218,15 +213,15 @@ public class BitBoardMoves {
     private static void moveDocStringPawn(boolean forWhite, StringBuilder moves, long used, int difference, long enemyPawn){
         long possibility = used & -used;
 
-        String type = forWhite ? "G" : "g";
+        String type = forWhite ? "P" : "p";
         while (possibility != 0)
         {
             int index = Long.numberOfTrailingZeros(possibility);
             moves.append(type);
             moves.append('-');
-            moves.append(index + difference);
-            moves.append('-');
             moves.append(index);
+            moves.append('-');
+            moves.append(index + difference);
             appendEmPassantAutIfThereWas(type, moves, index + difference, index, enemyPawn);
             moves.append('_');
             used &= ~possibility;
@@ -290,7 +285,7 @@ public class BitBoardMoves {
     private static long movingPossibilities(String type, int startLoc){
         long possibility = 0L;
         boolean forWhite = Character.isUpperCase(type.charAt(0));
-        if ("K".equals(type) || "k".equals(type) || "H".equals(type) || "h".equals(type)) {
+        if ("K".equals(type) || "k".equals(type) || "N".equals(type) || "n".equals(type)) {
             if ("K".equals(type) || "k".equals(type)){
                 possibility = startLoc >= 9 ? KING_SPAN << (startLoc - 9) : KING_SPAN >> (9 - startLoc);
             }else {
@@ -303,8 +298,8 @@ public class BitBoardMoves {
             }
         } else {
             switch (type.charAt(0)){
-                case 'F', 'f' -> possibility |= diagonalAndAntiDiagonalMoves(startLoc);
-                case 'B', 'b' -> possibility |= horizontalAndVerticalMoves(startLoc);
+                case 'B', 'b' -> possibility |= diagonalAndAntiDiagonalMoves(startLoc);
+                case 'R', 'r' -> possibility |= horizontalAndVerticalMoves(startLoc);
                 default -> possibility |= diagonalAndAntiDiagonalMoves(startLoc) | horizontalAndVerticalMoves(startLoc);
             }
         }
@@ -348,11 +343,11 @@ public class BitBoardMoves {
     }
 
     private static String rookMoveNote(String type, int startLoc){
-        if (("B".equals(type) || "b".equals(type)) && Arrays.stream(corners).anyMatch(c -> c == startLoc)){
+        if (("R".equals(type) || "r".equals(type)) && Arrays.stream(corners).anyMatch(c -> c == startLoc)){
             if ((1L << startLoc & KING_SIDE) != 0){
                 return Character.isUpperCase(type.charAt(0)) ? "-K" : "-k";
             } else if ((1L << startLoc & QUEEN_SIDE) != 0) {
-                return Character.isUpperCase(type.charAt(0)) ? "-V" : "-v";
+                return Character.isUpperCase(type.charAt(0)) ? "-Q" : "-q";
             }
         }
         return "";
@@ -455,7 +450,7 @@ public class BitBoardMoves {
 
     private static void appendEmPassantAutIfThereWas(String type, StringBuilder moves,
                                                      int startIndex, int endIndex, long enemyPawns){
-        if ("G".equals(type) || "g".equals(type)){
+        if ("P".equals(type) || "p".equals(type)){
             if (Math.abs(startIndex - endIndex) == 16){
                 long plusSidePossibility = 1L << (endIndex + 1) & enemyPawns & (whiteDown ? ~COL_H : ~COL_A);
                 long minusSidePossibility = 1L << (endIndex - 1) & enemyPawns & (whiteDown ? ~COL_A : ~COL_H);
@@ -475,7 +470,7 @@ public class BitBoardMoves {
     }
 
     private static boolean itIsPawnPromotion(String type, int endIndex, boolean forWhite){
-        if ("G".equals(type) || "g".equals(type)){
+        if ("P".equals(type) || "p".equals(type)){
             return forWhite ? (1L << endIndex & ROW_8) == 1 : (1L << endIndex & ROW_1) == 1;
         }
         return false;

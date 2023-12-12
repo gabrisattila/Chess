@@ -66,7 +66,7 @@ public class Evaluator {
     //region Base Field Values
 
     public static double getBaseFieldValueFor(IPiece p){
-        if (p.getType() != H){
+        if (p.getType() != N){
             if (whiteDown){
                 return p.isWhite() ? FIELD_BASE_VALUES_BY_PIECE_TYPE.get(p.getType())[p.getI()][p.getJ()] :
                                     mirrorMatrixHorizontally(FIELD_BASE_VALUES_BY_PIECE_TYPE.get(p.getType()))[p.getI()][p.getJ()];
@@ -76,7 +76,7 @@ public class Evaluator {
                         mirrorMatrixHorizontally(mirroredVertically)[p.getI()][p.getJ()];
             }
         }else {
-            return FIELD_BASE_VALUES_BY_PIECE_TYPE.get(H)[p.getI()][p.getJ()];
+            return FIELD_BASE_VALUES_BY_PIECE_TYPE.get(N)[p.getI()][p.getJ()];
         }
     }
 

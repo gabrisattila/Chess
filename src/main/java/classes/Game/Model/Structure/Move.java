@@ -5,7 +5,6 @@ import classes.Game.I18N.*;
 import lombok.*;
 
 import javax.swing.*;
-import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 import static classes.GUI.FrameParts.Logger.*;
@@ -14,8 +13,6 @@ import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
-import static classes.Game.Model.Structure.BitBoard.BBVars.*;
-import static classes.Game.Model.Structure.BitBoard.BitBoards.*;
 import static classes.Game.Model.Structure.Board.*;
 
 @Getter
@@ -138,12 +135,12 @@ public class Move {
 
         if (itIsCastle){
 
-            plusPiece.setFirst(new PieceAttributes(B, what.isWhite() ? "WHITE" : "BLACK"));
+            plusPiece.setFirst(new PieceAttributes(R, what.isWhite() ? "WHITE" : "BLACK"));
             plusPiece.setSecond(new Pair<>(plusPieceFrom(), plusPieceTo()));
 
         } else if (itIsEmPassant) {
 
-            plusPiece.setFirst(new PieceAttributes(G, !what.isWhite() ? "WHITE" : "BLACK"));
+            plusPiece.setFirst(new PieceAttributes(P, !what.isWhite() ? "WHITE" : "BLACK"));
             plusPiece.setSecond(new Pair<>(plusPieceFrom(), plusPieceTo()));
 
         } else if (notNull(boardToMoveOn.getPiece(to))) {
@@ -206,7 +203,7 @@ public class Move {
             if (what instanceof ViewPiece){
                 newType = pawnGotInCaseView();
             }else {
-                newType = V;
+                newType = Q;
             }
 
             what.getAttributes().setType(newType);
@@ -228,11 +225,11 @@ public class Move {
 
         if (what.getType() == K && Math.abs(from.getJ() - to.getJ()) == 2){
             return "castle";
-        } else if (what.getType() == G && to.equals(stringToLocation(emPassantChance))) {
+        } else if (what.getType() == P && to.equals(stringToLocation(emPassantChance))) {
             return "emPassant";
         } else if (emPassantAuthorizationIf()) {
             return "emPassantAut";
-        } else if (what.getType() == G && to.getI() == what.getEnemyStartRow()) {
+        } else if (what.getType() == P && to.getI() == what.getEnemyStartRow()) {
             return "pawnGotIn";
         } else {
             return "";
@@ -241,11 +238,11 @@ public class Move {
     }
 
     private boolean emPassantAuthorizationIf() {
-        return what.getType() == G && Math.abs(what.getI() - to.getI()) == 2 &&
+        return what.getType() == P && Math.abs(what.getI() - to.getI()) == 2 &&
                 locationCollectionContains(
                         //Itt azt nézzük meg, hogy a közbülső mezőt tartalmazza-e bármely ellenfél gyalog watchRange-e
                         getBoard().getPieces().stream()
-                                .filter(p -> p.isWhite() != what.isWhite() && p.getType() == G)
+                                .filter(p -> p.isWhite() != what.isWhite() && p.getType() == P)
                                 .flatMap(p -> p.getWatchedRange().stream())
                                 .collect(Collectors.toSet()),
                         getTheMiddleLocation(what.getLocation(), to)
@@ -253,7 +250,7 @@ public class Move {
     }
 
     private void castleBoolsModify() {
-        if (what.getType() == B){
+        if (what.getType() == R){
             if (whiteDown) {
                 if (from.getJ() > 4){
                     if (what.isWhite()) {
@@ -337,10 +334,10 @@ public class Move {
                 null);
         PieceType newType;
         switch (result){
-            case 0 -> newType = H;
-            case 1 -> newType = F;
-            case 2 -> newType = B;
-            case 3 -> newType = V;
+            case 0 -> newType = N;
+            case 1 -> newType = PieceType.R;
+            case 2 -> newType = R;
+            case 3 -> newType = Q;
             default -> throw new IllegalStateException("Unexpected value: " + result);
         }
         pieceToChange.getAttributes().setType(newType);

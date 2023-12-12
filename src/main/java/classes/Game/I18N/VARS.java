@@ -189,11 +189,11 @@ public class VARS {
         };
         
         public static final Map<PieceType, Double[][]> FIELD_BASE_VALUES_BY_PIECE_TYPE = new HashMap<>(){{
-            put(G, PAWN_BASE_VALUE_MATRIX);
-            put(H, KNIGHT_BASE_VALUE_MATRIX);
-            put(F, BISHOP_BASE_VALUE_MATRIX);
-            put(B, ROOK_BASE_VALUE_MATRIX);
-            put(V, QUEEN_BASE_VALUE_MATRIX);
+            put(P, PAWN_BASE_VALUE_MATRIX);
+            put(N, KNIGHT_BASE_VALUE_MATRIX);
+            put(PieceType.R, BISHOP_BASE_VALUE_MATRIX);
+            put(R, ROOK_BASE_VALUE_MATRIX);
+            put(Q, QUEEN_BASE_VALUE_MATRIX);
             put(K, KING_BASE_VALUE_MATRIX);
         }};
 
@@ -268,11 +268,11 @@ public class VARS {
         }};
 
         public static final Map<PieceType, Set<Location>> matrixChooser = new HashMap<>(){{
-            put(G, pawnMatrix);
-            put(H, knightMatrix);
-            put(F, bishopMatrix);
-            put(B, rookMatrix);
-            put(V, qkMatrix);
+            put(P, pawnMatrix);
+            put(N, knightMatrix);
+            put(B, bishopMatrix);
+            put(R, rookMatrix);
+            put(Q, qkMatrix);
             put(K, qkMatrix);
         }};
 
@@ -288,11 +288,11 @@ public class VARS {
         }};
 
         public static final ArrayList<Character> pieceLetters = new ArrayList<>(){{
-            add('G');
-            add('H');
-            add('F');
+            add('P');
+            add('N');
             add('B');
-            add('V');
+            add('R');
+            add('Q');
             add('K');
         }};
 
@@ -444,36 +444,36 @@ public class VARS {
 
             //Világos
 
-            add(new ViewPiece("src\\main\\resources\\Figura_Images\\w_gyalog.png"));
-            add(new ViewPiece("src\\main\\resources\\Figura_Images\\w_huszar.png"));
-            add(new ViewPiece("src\\main\\resources\\Figura_Images\\w_futo.png"));
-            add(new ViewPiece("src\\main\\resources\\Figura_Images\\w_bastya.png"));
-            add(new ViewPiece("src\\main\\resources\\Figura_Images\\w_vezer.png"));
-            add(new ViewPiece("src\\main\\resources\\Figura_Images\\w_kiraly.png"));
+            add(new ViewPiece("src\\main\\resources\\Figura_Images\\w_pawn.png"));
+            add(new ViewPiece("src\\main\\resources\\Figura_Images\\w_night.png"));
+            add(new ViewPiece("src\\main\\resources\\Figura_Images\\w_bishop.png"));
+            add(new ViewPiece("src\\main\\resources\\Figura_Images\\w_rook.png"));
+            add(new ViewPiece("src\\main\\resources\\Figura_Images\\w_queen.png"));
+            add(new ViewPiece("src\\main\\resources\\Figura_Images\\w_king.png"));
 
             //Sötét
 
-            add(new ViewPiece("src\\main\\resources\\Figura_Images\\b_gyalog.png"));
-            add(new ViewPiece("src\\main\\resources\\Figura_Images\\b_huszar.png"));
-            add(new ViewPiece("src\\main\\resources\\Figura_Images\\b_futo.png"));
-            add(new ViewPiece("src\\main\\resources\\Figura_Images\\b_bastya.png"));
-            add(new ViewPiece("src\\main\\resources\\Figura_Images\\b_vezer.png"));
-            add(new ViewPiece("src\\main\\resources\\Figura_Images\\b_kiraly.png"));
+            add(new ViewPiece("src\\main\\resources\\Figura_Images\\b_pawn.png"));
+            add(new ViewPiece("src\\main\\resources\\Figura_Images\\b_night.png"));
+            add(new ViewPiece("src\\main\\resources\\Figura_Images\\b_bishop.png"));
+            add(new ViewPiece("src\\main\\resources\\Figura_Images\\b_rook.png"));
+            add(new ViewPiece("src\\main\\resources\\Figura_Images\\b_queen.png"));
+            add(new ViewPiece("src\\main\\resources\\Figura_Images\\b_king.png"));
 
         }};
 
         public final static ArrayList<ImageIcon> WhitePieceChoiceInsteadOfPawnGotIn = new ArrayList<>(){{
-            add(new ImageIcon("src\\main\\resources\\Figura_Images\\w_huszar.png"));
-            add(new ImageIcon("src\\main\\resources\\Figura_Images\\w_futo.png"));
-            add(new ImageIcon("src\\main\\resources\\Figura_Images\\w_bastya.png"));
-            add(new ImageIcon("src\\main\\resources\\Figura_Images\\w_vezer.png"));
+            add(new ImageIcon("src\\main\\resources\\Figura_Images\\w_night.png"));
+            add(new ImageIcon("src\\main\\resources\\Figura_Images\\w_bishop.png"));
+            add(new ImageIcon("src\\main\\resources\\Figura_Images\\w_rook.png"));
+            add(new ImageIcon("src\\main\\resources\\Figura_Images\\w_queen.png"));
         }};
 
         public final static ArrayList<ImageIcon> BlackPieceChoiceInsteadOfPawnGotIn = new ArrayList<>(){{
-            add(new ImageIcon("src\\main\\resources\\Figura_Images\\b_huszar.png"));
-            add(new ImageIcon("src\\main\\resources\\Figura_Images\\b_futo.png"));
-            add(new ImageIcon("src\\main\\resources\\Figura_Images\\b_bastya.png"));
-            add(new ImageIcon("src\\main\\resources\\Figura_Images\\b_vezer.png"));
+            add(new ImageIcon("src\\main\\resources\\Figura_Images\\b_night.png"));
+            add(new ImageIcon("src\\main\\resources\\Figura_Images\\b_bishop.png"));
+            add(new ImageIcon("src\\main\\resources\\Figura_Images\\b_rook.png"));
+            add(new ImageIcon("src\\main\\resources\\Figura_Images\\b_queen.png"));
         }};
 
         //endregion
@@ -486,7 +486,7 @@ public class VARS {
 
         public static int MAX_HEIGHT = 8;
 
-        public static int MINIMAX_DEPTH = 6;
+        public static int MINIMAX_DEPTH = 1;
 
         public static Map<String, AiNode> fullTreeOfGame = new HashMap<>();
 

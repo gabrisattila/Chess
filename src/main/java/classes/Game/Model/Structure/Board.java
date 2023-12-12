@@ -286,14 +286,14 @@ public class Board implements IBoard {
     private boolean isOnTheSameLineWithMyKing(IPiece enemyTiszt) {
         IPiece myKing = getKing(!enemyTiszt.isWhite());
         switch (enemyTiszt.getType()){
-            case V -> {
+            case Q -> {
                 return myKing.getI() == enemyTiszt.getI() || myKing.getJ() == enemyTiszt.getJ() ||
                         Math.abs(myKing.getI() - enemyTiszt.getI()) == Math.abs(myKing.getJ() - enemyTiszt.getJ());
             }
-            case B -> {
+            case R -> {
                 return myKing.getI() == enemyTiszt.getI() || myKing.getJ() == enemyTiszt.getJ();
             }
-            case F -> {
+            case B -> {
                 return Math.abs(myKing.getI() - enemyTiszt.getI()) == Math.abs(myKing.getJ() - enemyTiszt.getJ());
             }
             default -> {
@@ -420,7 +420,7 @@ public class Board implements IBoard {
     }
 
     private void kingStepOutFromCheck(boolean enemy)  {
-        if (checkers.getFirst().getType() == H || checkers.getFirst().getType() == G){
+        if (checkers.getFirst().getType() == N || checkers.getFirst().getType() == P){
             for (Location l : matrixChooser.get(K)) {
                 l = getKingsPlace(!enemy).add(l);
                 if (
@@ -548,7 +548,7 @@ public class Board implements IBoard {
 
     private ArrayList<Location> lineFromAPieceToAnother(IPiece fromPiece, IPiece toPiece) {
         ArrayList<Location> lineToPiece = new ArrayList<>();
-        if (fromPiece.getType() != H && fromPiece.getType() != G && !fromPieceIsOnCorner(fromPiece, toPiece)){
+        if (fromPiece.getType() != N && fromPiece.getType() != P && !fromPieceIsOnCorner(fromPiece, toPiece)){
             Pair<Integer, Integer> addIAddJ = addToIAddToJ(fromPiece, toPiece);
             Location line = fromPiece.getLocation().add(new Location(addIAddJ.getFirst(), addIAddJ.getSecond()));
             while (containsLocation(line) && !toPiece.getLocation().equals(line)){
@@ -624,7 +624,7 @@ public class Board implements IBoard {
 
     private Set<IPiece> getTisztek(boolean my) {
         return pieces.isEmpty() ? new HashSet<>() :
-                pieces.stream().filter(p -> p.isWhite() == my && p.getType() != G && p.getType() != K).collect(Collectors.toSet());
+                pieces.stream().filter(p -> p.isWhite() == my && p.getType() != P && p.getType() != K).collect(Collectors.toSet());
     }
 
     public boolean allPiecesAreTheSameColor(){

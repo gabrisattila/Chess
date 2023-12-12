@@ -7,7 +7,6 @@ import lombok.*;
 import java.awt.*;
 import java.util.*;
 
-import static classes.GUI.Frame.Window.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
@@ -116,7 +115,7 @@ public class ViewBoard extends Component implements IBoard {
                 for (int j = 0; j < MAX_WIDTH; j++) {
                     if (getBoard().getField(i, j).isGotPiece() && notNull(getBoard().getPiece(i, j).getPossibleRange())) {
                         getPiece(i, j).getPossibleRange().addAll(getBoard().getPiece(i, j).getPossibleRange());
-                        if (getPiece(i, j).getType() == G) {
+                        if (getPiece(i, j).getType() == P) {
                             getPiece(i, j).getWatchedRange().addAll(getBoard().getPiece(i, j).getWatchedRange());
                         }
                     }

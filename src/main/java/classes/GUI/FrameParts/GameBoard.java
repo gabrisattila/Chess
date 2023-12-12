@@ -225,7 +225,7 @@ public class GameBoard extends JLayeredPane {
 
         if (nums.get(0) == '8')
             Collections.reverse(nums);
-        if (abc.get(0) == 'H')
+        if (abc.get(0) == 'N')
             Collections.reverse(abc);
         for (int j = 0; j < MAX_HEIGHT; j++) {
             for (int k = 0; k < MAX_WIDTH; k++) {

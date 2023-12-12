@@ -11,7 +11,7 @@ package classes.Game.Model.Structure.BitBoard;
 //The third is the end index, where the piece goes
 //The next ones aren't necessary. Only needed if mentioned changes occurred.
 //The fourth can be k or K if the move disturbed the king side castle
-//The fifth can be v or V if the move disturbed the queen side castle
+//The fifth can be q or Q if the move disturbed the queen side castle
 // (color depends on that the letter is capital or not) for the last two case
 //The sixth is an index where shows the index of a pawn that offered itself for emPassant
 //And the last is separator

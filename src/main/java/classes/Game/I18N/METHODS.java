@@ -249,16 +249,16 @@ public class METHODS {
             if (current != 'k' && current != 'K' &&
                     Character.isLetter(current)) {
                 switch (current) {
-                    case 'p' -> stringBuilder.append('g');
-                    case 'P' -> stringBuilder.append('G');
-                    case 'n' -> stringBuilder.append('h');
-                    case 'N' -> stringBuilder.append('H');
-                    case 'b' -> stringBuilder.append('f');
-                    case 'B' -> stringBuilder.append('F');
-                    case 'r' -> stringBuilder.append('b');
-                    case 'R' -> stringBuilder.append('B');
-                    case 'q' -> stringBuilder.append('v');
-                    case 'Q' -> stringBuilder.append('V');
+                    case 'p' -> stringBuilder.append('p');
+                    case 'P' -> stringBuilder.append('P');
+                    case 'n' -> stringBuilder.append('n');
+                    case 'N' -> stringBuilder.append('N');
+                    case 'b' -> stringBuilder.append('b');
+                    case 'B' -> stringBuilder.append('B');
+                    case 'r' -> stringBuilder.append('r');
+                    case 'R' -> stringBuilder.append('R');
+                    case 'q' -> stringBuilder.append('q');
+                    case 'Q' -> stringBuilder.append('Q');
                 }
             }else {
                 stringBuilder.append(current);

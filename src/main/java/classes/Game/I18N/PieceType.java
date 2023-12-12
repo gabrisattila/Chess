@@ -1,18 +1,16 @@
 package classes.Game.I18N;
 
-import lombok.Setter;
-
 public enum PieceType {
 
-    G,
+    P,
 
-    H,
-
-    F,
+    N,
 
     B,
 
-    V,
+    R,
+
+    Q,
 
     K;
 
@@ -22,20 +20,20 @@ public enum PieceType {
 
     public String toString(boolean forWhite){
         switch (this){
-            case G -> {
-                return forWhite ? "G" : "g";
+            case P -> {
+                return forWhite ? "P" : "p";
             }
-            case H -> {
-                return forWhite ? "H" : "h";
-            }
-            case F -> {
-                return forWhite ? "F" : "f";
+            case N -> {
+                return forWhite ? "N" : "n";
             }
             case B -> {
                 return forWhite ? "B" : "b";
             }
-            case V -> {
-                return forWhite ? "V" : "v";
+            case R -> {
+                return forWhite ? "R" : "r";
+            }
+            case Q -> {
+                return forWhite ? "Q" : "q";
             }
             case K -> {
                 return forWhite ? "K" : "k";
@@ -46,20 +44,20 @@ public enum PieceType {
 
     public char toLowerCase(){
         switch (this){
-            case G -> {
-                return 'g';
+            case P -> {
+                return 'p';
             }
-            case H -> {
-                return 'h';
-            }
-            case F -> {
-                return 'f';
+            case N -> {
+                return 'n';
             }
             case B -> {
                 return 'b';
             }
-            case V -> {
-                return 'v';
+            case R -> {
+                return 'r';
+            }
+            case Q -> {
+                return 'q';
             }
             default -> {
                 return 'k';

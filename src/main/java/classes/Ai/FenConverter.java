@@ -161,7 +161,7 @@ public class FenConverter {
                 fenToReturn.append('-');
 
             if (whiteBigCastleEnabled)
-                fenToReturn.append('V');
+                fenToReturn.append('Q');
             else
                 fenToReturn.append('-');
 
@@ -171,7 +171,7 @@ public class FenConverter {
                 fenToReturn.append('-');
 
             if (blackBigCastleEnabled)
-                fenToReturn.append('v');
+                fenToReturn.append('q');
             else
                 fenToReturn.append('-');
 
@@ -259,12 +259,12 @@ public class FenConverter {
     public static PieceType charToPieceType(char c){
         PieceType type;
         type = switch (c) {
-            case 'h', 'H' -> H;
-            case 'f', 'F' -> F;
+            case 'n', 'N' -> N;
             case 'b', 'B' -> B;
-            case 'v', 'V' -> V;
+            case 'r', 'R' -> R;
+            case 'q', 'Q' -> Q;
             case 'k', 'K' -> K;
-            default -> G;
+            default -> P;
         };
         return type;
     }
@@ -272,11 +272,11 @@ public class FenConverter {
     private static char pieceAttributesToChar(PieceAttributes piece){
         char pieceChar;
         pieceChar = switch (piece.getType()){
-            case G -> 'G';
-            case H -> 'H';
-            case F -> 'F';
+            case P -> 'P';
+            case N -> 'N';
             case B -> 'B';
-            case V -> 'V';
+            case R -> 'R';
+            case Q -> 'Q';
             case K -> 'K';
         };
         if (!piece.isWhite())
@@ -291,12 +291,12 @@ public class FenConverter {
         sb.append(attributes.isWhite() ? "w_" : "b_");
         String type;
         switch (attributes.getType()){
-            case G -> type = "gyalog";
-            case H -> type = "huszar";
-            case F -> type = "futo";
-            case B -> type = "bastya";
-            case V -> type = "vezer";
-            default -> type = "kiraly";
+            case P -> type = "pawn";
+            case N -> type = "night";
+            case B -> type = "bishop";
+            case R -> type = "rook";
+            case Q -> type = "queen";
+            default -> type = "king";
         }
         sb.append(type);
         sb.append(".png");
@@ -306,7 +306,7 @@ public class FenConverter {
 
     private static void emPassantFenToBoard(String emPassant, PieceAttributes piece, int sor, int oszlop){
         if (piece.isWhite() == whiteToPlay &&
-                piece.getType() == G &&
+                piece.getType() == P &&
                 Math.abs(sor - Character.getNumericValue(emPassant.charAt(0))) == 1 &&
                 Math.abs(oszlop - Character.getNumericValue(emPassant.charAt(1))) == 1
         )
@@ -337,11 +337,11 @@ public class FenConverter {
 
         whiteSmallCastleEnabled = 'K' == castleCases.charAt(0);
 
-        whiteBigCastleEnabled = 'V' == castleCases.charAt(1);
+        whiteBigCastleEnabled = 'Q' == castleCases.charAt(1);
 
         blackSmallCastleEnabled = 'k' == castleCases.charAt(2);
 
-        blackBigCastleEnabled = 'v' == castleCases.charAt(3);
+        blackBigCastleEnabled = 'q' == castleCases.charAt(3);
 
     }
 

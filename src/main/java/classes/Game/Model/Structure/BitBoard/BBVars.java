@@ -135,8 +135,8 @@ public class BBVars {
     }};
 
     public static final ArrayList<Character> hunPieceLetters = new ArrayList<>(){{
-        add('g'); add('h'); add('f'); add('b'); add('v'); add('k');
-        add('G'); add('H'); add('F'); add('B'); add('v'); add('K');
+        add('p'); add('n'); add('b'); add('b'); add('v'); add('k');
+        add('P'); add('N'); add('B'); add('B'); add('v'); add('K');
     }};
 
 }

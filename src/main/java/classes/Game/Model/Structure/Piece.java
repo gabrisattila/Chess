@@ -133,7 +133,7 @@ public class Piece implements IPiece {
     }
 
     public Set<Location> getAttackRange(){
-        if (getType() == G){
+        if (getType() == P){
             Set<Location> attackRange = new HashSet<>(possibleRange);
             attackRange.removeIf(l -> l.getJ() == getJ());
             return attackRange;
@@ -175,37 +175,37 @@ public class Piece implements IPiece {
 
     private Set<Location> getRange(PieceType type, boolean posOrWatch)  {
         switch (type){
-            case G -> {
-                return range(G, posOrWatch);
+            case P -> {
+                return range(P, posOrWatch);
             }
-            case H -> {
-                return range(H, posOrWatch);
-            }
-            case F -> {
-                return range(F, posOrWatch);
+            case N -> {
+                return range(N, posOrWatch);
             }
             case B -> {
                 return range(B, posOrWatch);
             }
-            case V -> {
-                return range(V, posOrWatch);
+            case R -> {
+                return range(R, posOrWatch);
+            }
+            case Q -> {
+                return range(Q, posOrWatch);
             }
         }
-        return range(G, posOrWatch);
+        return range(P, posOrWatch);
     }
 
     private Set<Location> range(PieceType type, boolean posOrWatch)  {
         Set<Location> range = new HashSet<>();
-        Set<Location> optionsToIterateTrough = type == G && getEnemyStartRow() > getOwnStartRow() ?
+        Set<Location> optionsToIterateTrough = (type == P && getEnemyStartRow() > getOwnStartRow()) ?
                 matrixChooser.get(type) :
                 locationSetTimesN(matrixChooser.get(type), - 1);
         for (Location loc : optionsToIterateTrough) {
             Location locForCalculation = loc.add(Location);
-            if (type == G){
+            if (type == P){
                 if (pawnCase(locForCalculation, posOrWatch)){
                     range.add(locForCalculation);
                 }
-            } else if (type == H){
+            } else if (type == N){
                 if (containsLocation(locForCalculation)){
                     if (isTherePiece(locForCalculation)){
                         if (posOrWatch){
