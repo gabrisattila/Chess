@@ -14,14 +14,14 @@ public class Main {
 //           exceptionIgnorer();
 //        new EDT();
 //        setUpStarterBitBoards();
-        setUpBitBoard(VARS.FINALS.testFens.get("onlyTwoKnights8x8"));
+        setUpBitBoard(VARS.FINALS.testFens.get("onlyTwoKings8x8"));
         for (int i = 63; i >= 0; i--) {
             System.out.print((i < 10 ? " " : "") + i + " ");
             if (i % 8 == 0){
                 System.out.println();
             }
         }
-        System.out.println(BitBoardMoves.possibleMoves(false, -1,
+        System.out.println(BitBoardMoves.possibleMoves(true, -1,
                 whitePawn, whiteKnight, whiteBishop, whiteRook, whiteQueen, whiteKing,
                 blackPawn, blackKnight, blackBishop, blackRook, blackQueen, blackKing));
     }

@@ -25,7 +25,7 @@ public class BitBoardMoves {
         moves += bishopMoves(maxNeeded, wF, bF);
         moves += rookMoves(maxNeeded, wB, bB);
         moves += queenMoves(maxNeeded, wV, bV);
-//        moves += kingMoves();
+        moves += kingMoves(maxNeeded, wK, bK);
         int moveCount = moves.split("_").length;
         return moves;
     }
@@ -54,6 +54,26 @@ public class BitBoardMoves {
                 bitBoardOfSecondPiece &= ~helperBoard;
             }
         }
+    }
+
+    public static long unsafeFor(boolean forWhite,
+                                 long wG, long wH, long wF, long wB, long wV, long wK,
+                                 long bG, long bH, long bF, long bB, long bV, long bK){
+        long unsafe = 0L;
+        if (forWhite){
+            unsafe |= (whiteDown ? (bG >> 7 & ~COL_A) : (bG << 9 & ~COL_H));
+            unsafe |= (whiteDown ? (bG >> 9 & ~COL_H) : (bG << 7 & ~COL_A));
+        } else {
+            unsafe |= whiteDown ? (wG << 7 & ~COL_A) : (wG >> 9 & ~COL_H);
+            unsafe |= whiteDown ? (wG << 9 & ~COL_H) : (wG >> 7 & ~COL_A);
+        }
+        unsafe |= movePossibilities(forWhite ? "h" : "H", wH, bH);
+        unsafe |= movePossibilities(forWhite ? "f" : "F", wF, bF);
+        unsafe |= movePossibilities(forWhite ? "b" : "B", wB, bB);
+        unsafe |= movePossibilities(forWhite ? "v" : "V", wV, bV);
+        unsafe |= movePossibilities(forWhite ? "k" : "K", wK, bK);
+        
+        return unsafe;
     }
 
 
@@ -93,7 +113,7 @@ public class BitBoardMoves {
             moveDocStringPawn(true, moves, pawnMoves, plusToGetOrigin, bG);
 
             //Balra üt
-            pawnMoves = (whiteDown ? (whitePawn << 9 & ~COL_H) : (whitePawn >> 7 & ~COL_A))
+            pawnMoves = (whiteDown ? (theBitBoardOfPawns << 9 & ~COL_H) : (theBitBoardOfPawns >> 7 & ~COL_A))
                         & shouldBeInThatPart;
             plusToGetOrigin = whiteDown ? -9 : 7;
             moveDocStringPawn(true, moves, pawnMoves, plusToGetOrigin, bG);
@@ -119,7 +139,7 @@ public class BitBoardMoves {
             moveDocStringPawn(false, moves, pawnMoves, plusToGetOrigin, wG);
 
             //Balra üt
-            pawnMoves = (whiteDown ? (whitePawn >> 9 & ~COL_H) : (whitePawn << 7 & ~COL_A))
+            pawnMoves = (whiteDown ? (theBitBoardOfPawns >> 9 & ~COL_H) : (theBitBoardOfPawns << 7 & ~COL_A))
                         & shouldBeInThatPart;
             plusToGetOrigin = whiteDown ? 9 : -7;
             moveDocStringPawn(false, moves, pawnMoves, plusToGetOrigin, wG);
@@ -130,7 +150,7 @@ public class BitBoardMoves {
 
     public static String knightMoves(boolean forWhite, long wH, long bH){
         String type = forWhite ? "H" : "h";
-        return moveDocStringTisztek(type, wH, bH);
+        return moveDocStringExceptPawn(type, wH, bH);
     }
 
     public static String bishopMoves(boolean forWhite, long wF, long bF){
@@ -145,13 +165,13 @@ public class BitBoardMoves {
         return slidingPieceMoves(V.toString(forWhite), wV, bV);
     }
 
-    public static String kingMoves(boolean forWhite, int indexOfASinglePawn, long bitBoardOfPawns){
-        //TODO returns the possible end indexes of the king which stands on the given index
-        return null;
+    public static String kingMoves(boolean forWhite, long wK, long bK){
+        String type = forWhite ? "K" : "k";
+        return moveDocStringExceptPawn(type, wK, bK);
     }
 
     public static String slidingPieceMoves(String type, long w, long b){
-        return moveDocStringTisztek(type, w, b);
+        return moveDocStringExceptPawn(type, w, b);
     }
 
     public static long horizontalAndVerticalMoves(int start){
@@ -193,7 +213,7 @@ public class BitBoardMoves {
         }
     }
 
-    private static String moveDocStringTisztek(String type, long w, long b){
+    private static String moveDocStringExceptPawn(String type, long w, long b){
         StringBuilder moves = new StringBuilder();
 
         boolean forWhite = Character.isUpperCase(type.charAt(0));
@@ -216,6 +236,7 @@ public class BitBoardMoves {
                 moves.append('-');
                 moves.append(endLoc);
                 moves.append(rookMoveNote(type, startLoc));
+                moves.append(kingMoveNote(type, startLoc));
                 moves.append('_');
                 possibility &= ~j;
                 j = possibility & -possibility;
@@ -226,18 +247,40 @@ public class BitBoardMoves {
 
         return moves.toString();
     }
+    
+    private static long movePossibilities(String type, long w, long b){
+        boolean forWhite = Character.isUpperCase(type.charAt(0));
+        long used = forWhite ? w : b;
+        
+        long i = used & -used;
+        long possibility = 0L;
+        while (i != 0){
+            int startLoc = 63 - Long.numberOfLeadingZeros(i);
+
+            possibility |= movingPossibilities(type, startLoc);
+
+            used &= ~i;
+            i = used & -used;
+        }
+        
+        return possibility;
+    }
 
     private static long movingPossibilities(String type, int startLoc){
         long possibility = 0L;
         boolean forWhite = Character.isUpperCase(type.charAt(0));
-        if ("H".equals(type) || "h".equals(type)){
-            possibility = startLoc >= 18 ? (KNIGHT_SPAN << (startLoc - 18)) : (KNIGHT_SPAN >> (18 - startLoc));
+        if ("K".equals(type) || "k".equals(type) || "H".equals(type) || "h".equals(type)) {
+            if ("K".equals(type) || "k".equals(type)){
+                possibility = startLoc >= 9 ? KING_SPAN << (startLoc - 9) : KING_SPAN >> (9 - startLoc);
+            }else {
+                possibility = startLoc >= 18 ? (KNIGHT_SPAN << (startLoc - 18)) : (KNIGHT_SPAN >> (18 - startLoc));
+            }
             if ((1L << startLoc & COL_GH) != 0){
                 possibility &= ~COL_AB;
             } else if ((1L << startLoc & COL_AB) != 0) {
                 possibility &= ~COL_GH;
             }
-        }else {
+        } else {
             switch (type.charAt(0)){
                 case 'F', 'f' -> possibility |= diagonalAndAntiDiagonalMoves(startLoc);
                 case 'B', 'b' -> possibility |= horizontalAndVerticalMoves(startLoc);
@@ -255,6 +298,13 @@ public class BitBoardMoves {
             } else if ((1L << startLoc & QUEEN_SIDE) != 0) {
                 return Character.isUpperCase(type.charAt(0)) ? "-V" : "-v";
             }
+        }
+        return "";
+    }
+
+    private static String kingMoveNote(String type, int startLoc){
+        if ("K".equals(type) || "k".equals(type)){
+            return "K".equals(type) ? "-KV" : "-kv";
         }
         return "";
     }
@@ -285,10 +335,6 @@ public class BitBoardMoves {
 
     private static boolean isItCastle(String type, int startIndex, int endIndex){
         return ("K".equals(type) || "k".equals(type)) && 2 == Math.abs(startIndex - endIndex);
-    }
-
-    private static boolean itWasRookMove(String type){
-        return "B".equals(type) || "b".equals(type);
     }
 
     private static boolean itIsPawnPromotion(String type, int endIndex, boolean forWhite){
