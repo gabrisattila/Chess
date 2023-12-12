@@ -65,6 +65,10 @@ public class BBVars {
 
     public static final long QUEEN_SIDE = whiteDown ? ~1085102592571150095L : 1085102592571150095L;
 
+    public static long KING_SPAN = 460039L;
+
+    public static long KNIGHT_SPAN = 43234889994L;
+
     public static final long KING_B7 = 460039L;
 
     public static final long KNIGHT_C6 = 43234889994L;

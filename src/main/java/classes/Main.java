@@ -14,7 +14,7 @@ public class Main {
 //           exceptionIgnorer();
 //        new EDT();
 //        setUpStarterBitBoards();
-        setUpBitBoard(VARS.FINALS.testFens.get("whiteDownWithOutPawns"));
+        setUpBitBoard(VARS.FINALS.testFens.get("onlyTwoKnights8x8"));
         for (int i = 63; i >= 0; i--) {
             System.out.print((i < 10 ? " " : "") + i + " ");
             if (i % 8 == 0){

@@ -21,7 +21,7 @@ public class BitBoardMoves {
         EMPTY = ~OCCUPIED;
 
         String moves = pawnMoves(maxNeeded, maxNeeded ? wG : bG, emPassantChance, wG, bG);
-//        moves += knightMoves();
+        moves += knightMoves(maxNeeded, wH, bH);
         moves += bishopMoves(maxNeeded, wF, bF);
         moves += rookMoves(maxNeeded, wB, bB);
         moves += queenMoves(maxNeeded, wV, bV);
@@ -128,11 +128,9 @@ public class BitBoardMoves {
         return moves.toString();
     }
 
-    public static String knightMoves(long theBitBoardOfPawns,
-                                     long wG, long wH, long wF, long wB, long wV, long wK,
-                                     long bG, long bH, long bF, long bB, long bV, long bK){
-        //TODO returns the possible end indexes of the knight which stands on the given index
-        return null;
+    public static String knightMoves(boolean forWhite, long wH, long bH){
+        String type = forWhite ? "H" : "h";
+        return moveDocStringTisztek(type, wH, bH);
     }
 
     public static String bishopMoves(boolean forWhite, long wF, long bF){
@@ -153,42 +151,7 @@ public class BitBoardMoves {
     }
 
     public static String slidingPieceMoves(String type, long w, long b){
-        StringBuilder moves = new StringBuilder();
-
-        long used = Character.isUpperCase(type.charAt(0)) ? w : b;
-
-        long i = used & -used;
-        long possibility = 0L;
-        while (i != 0){
-            int startLoc = 63 - Long.numberOfLeadingZeros(i);
-
-            switch (type.charAt(0)){
-                case 'F', 'f' -> possibility |= diagonalAndAntiDiagonalMoves(startLoc);
-                case 'B', 'b' -> possibility |= horizontalAndVerticalMoves(startLoc);
-                default -> possibility |= diagonalAndAntiDiagonalMoves(startLoc) | horizontalAndVerticalMoves(startLoc);
-            }
-
-            possibility &= (whiteToPlay ? HITTABLE_BY_WHITE : HITTABLE_BY_BLACK) | EMPTY;
-            long j = possibility & -possibility;
-
-            while (j != 0)
-            {
-                int endLoc = Long.numberOfTrailingZeros(j);
-                moves.append(type);
-                moves.append('-');
-                moves.append(startLoc);
-                moves.append('-');
-                moves.append(endLoc);
-                moves.append(rookMoveNote(startLoc, type));
-                moves.append('_');
-                possibility &= ~j;
-                j = possibility & -possibility;
-            }
-            used &= ~i;
-            i = used & -used;
-        }
-
-        return moves.toString();
+        return moveDocStringTisztek(type, w, b);
     }
 
     public static long horizontalAndVerticalMoves(int start){
@@ -230,7 +193,62 @@ public class BitBoardMoves {
         }
     }
 
-    private static String rookMoveNote(int startLoc, String type){
+    private static String moveDocStringTisztek(String type, long w, long b){
+        StringBuilder moves = new StringBuilder();
+
+        boolean forWhite = Character.isUpperCase(type.charAt(0));
+        long used = forWhite ? w : b;
+
+        long i = used & -used;
+        long possibility;
+        while (i != 0){
+            int startLoc = 63 - Long.numberOfLeadingZeros(i);
+
+            possibility = movingPossibilities(type, startLoc);
+            long j = possibility & -possibility;
+
+            while (j != 0)
+            {
+                int endLoc = Long.numberOfTrailingZeros(j);
+                moves.append(type);
+                moves.append('-');
+                moves.append(startLoc);
+                moves.append('-');
+                moves.append(endLoc);
+                moves.append(rookMoveNote(type, startLoc));
+                moves.append('_');
+                possibility &= ~j;
+                j = possibility & -possibility;
+            }
+            used &= ~i;
+            i = used & -used;
+        }
+
+        return moves.toString();
+    }
+
+    private static long movingPossibilities(String type, int startLoc){
+        long possibility = 0L;
+        boolean forWhite = Character.isUpperCase(type.charAt(0));
+        if ("H".equals(type) || "h".equals(type)){
+            possibility = startLoc >= 18 ? (KNIGHT_SPAN << (startLoc - 18)) : (KNIGHT_SPAN >> (18 - startLoc));
+            if ((1L << startLoc & COL_GH) != 0){
+                possibility &= ~COL_AB;
+            } else if ((1L << startLoc & COL_AB) != 0) {
+                possibility &= ~COL_GH;
+            }
+        }else {
+            switch (type.charAt(0)){
+                case 'F', 'f' -> possibility |= diagonalAndAntiDiagonalMoves(startLoc);
+                case 'B', 'b' -> possibility |= horizontalAndVerticalMoves(startLoc);
+                default -> possibility |= diagonalAndAntiDiagonalMoves(startLoc) | horizontalAndVerticalMoves(startLoc);
+            }
+        }
+        possibility &= (forWhite ? HITTABLE_BY_WHITE : HITTABLE_BY_BLACK) | EMPTY;
+        return possibility;
+    }
+
+    private static String rookMoveNote(String type, int startLoc){
         if (("B".equals(type) || "b".equals(type)) && Arrays.stream(corners).anyMatch(c -> c == startLoc)){
             if ((1L << startLoc & KING_SIDE) != 0){
                 return Character.isUpperCase(type.charAt(0)) ? "-K" : "-k";
