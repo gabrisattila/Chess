@@ -1,9 +1,7 @@
 package classes.Game.Model.Structure.BitBoard;
 
-import classes.Game.I18N.PieceType;
-
-import java.nio.file.attribute.UserDefinedFileAttributeView;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
@@ -24,9 +22,9 @@ public class BitBoardMoves {
 
         String moves = pawnMoves(maxNeeded, maxNeeded ? wG : bG, emPassantChance, wG, bG);
 //        moves += knightMoves();
-        moves += bishopMoves(wF, bF);
-        moves += rookMoves(wB, bB);
-        moves += queenMoves(wV, bV);
+        moves += bishopMoves(maxNeeded, wF, bF);
+        moves += rookMoves(maxNeeded, wB, bB);
+        moves += queenMoves(maxNeeded, wV, bV);
 //        moves += kingMoves();
         int moveCount = moves.split("_").length;
         return moves;
@@ -137,16 +135,16 @@ public class BitBoardMoves {
         return null;
     }
 
-    public static String bishopMoves(long wF, long bF){
-        return slidingPieceMoves(F.toString(whiteToPlay), wF, bF);
+    public static String bishopMoves(boolean forWhite, long wF, long bF){
+        return slidingPieceMoves(F.toString(forWhite), wF, bF);
     }
 
-    public static String rookMoves(long wB, long bB){
-        return slidingPieceMoves(B.toString(whiteToPlay), wB, bB);
+    public static String rookMoves(boolean forWhite, long wB, long bB){
+        return slidingPieceMoves(B.toString(forWhite), wB, bB);
     }
 
-    public static String queenMoves(long wV, long bV){
-        return slidingPieceMoves(V.toString(whiteToPlay), wV, bV);
+    public static String queenMoves(boolean forWhite, long wV, long bV){
+        return slidingPieceMoves(V.toString(forWhite), wV, bV);
     }
 
     public static String kingMoves(boolean forWhite, int indexOfASinglePawn, long bitBoardOfPawns){
@@ -181,7 +179,7 @@ public class BitBoardMoves {
                 moves.append(startLoc);
                 moves.append('-');
                 moves.append(endLoc);
-
+                moves.append(rookMoveNote(startLoc, type));
                 moves.append('_');
                 possibility &= ~j;
                 j = possibility & -possibility;
@@ -232,14 +230,15 @@ public class BitBoardMoves {
         }
     }
 
-    private static void appendAndDoCastleChangesIfThereWere(StringBuilder moves, String type,
-                                                            int startIndex, int endIndex, long rookBoard){
-        if (isItCastle(type, startIndex, endIndex)){
-
+    private static String rookMoveNote(int startLoc, String type){
+        if (("B".equals(type) || "b".equals(type)) && Arrays.stream(corners).anyMatch(c -> c == startLoc)){
+            if ((1L << startLoc & KING_SIDE) != 0){
+                return Character.isUpperCase(type.charAt(0)) ? "-K" : "-k";
+            } else if ((1L << startLoc & QUEEN_SIDE) != 0) {
+                return Character.isUpperCase(type.charAt(0)) ? "-V" : "-v";
+            }
         }
-        if (itWasRookMove(type)){
-
-        }
+        return "";
     }
 
     private static void doPawnPromotionChangesIfThereWere(String type, int endIndex, boolean forWhite,

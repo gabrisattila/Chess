@@ -55,6 +55,8 @@ public class BBVars {
 
     public static final long ROW_5 = whiteDown ? 1095216660480L : 4278190080L;
 
+    public static final Integer[] corners = new Integer[]{0, 7, 56, 63};
+
     public static final long CENTRE = 103481868288L;
 
     public static final long EXTENDED_CENTRE = 66229406269440L;
