@@ -359,7 +359,7 @@ public class VARS {
 
             //region EmPassant Case
 
-            put("whiteDownWhitePawnsFrontEmPassant", "8/8/8/PPPPPPPP/8/8/pppppppp/8 w ---- - 1 0");
+            put("whiteDownWhitePawnsFrontEmPassant", "8/8/8/PPPPPPP1/7P/8/pppppppp/8 w ---- - 1 0");
             put("whiteDownBlackPawnsFrontEmPassant", "8/PPPPPPPP/8/8/pppppppp/8/8/8 w ---- - 1 0");
             put("blackDownBlackPawnsFrontEmPassant", "8/8/8/pppppppp/8/8/PPPPPPPP/8 w ---- - 1 0");
             put("blackDownWhitePawnsFrontEmPassant", "8/pppppppp/8/8/PPPPPPPP/8/8/8 w ---- - 1 0");
