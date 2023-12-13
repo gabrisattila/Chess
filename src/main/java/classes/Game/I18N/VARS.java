@@ -486,7 +486,7 @@ public class VARS {
 
         public static int MAX_HEIGHT = 8;
 
-        public static int MINIMAX_DEPTH = 1;
+        public static int MINIMAX_DEPTH = 6;
 
         public static Map<String, AiNode> fullTreeOfGame = new HashMap<>();
 

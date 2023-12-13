@@ -40,27 +40,67 @@ public class BitBoardMoves {
         return moves;
     }
 
-    public static long moveAPieceOnBoard(String move, long boardToMoveOn){
+    public static long moveAPieceOnBoard(String move, long boardToMoveOn, String typeOfBoard){
 
         String[] moveParts = move.split("-");
 
         String type = moveParts[0];
         int start = Integer.parseInt(moveParts[1]);
         int end = Integer.parseInt(moveParts[2]);
-        if ((1L << start & boardToMoveOn) != 0){ //megfelelő board
+        if ((boardToMoveOn >> start & 1) == 1){
             boardToMoveOn &= ~(1L << start);
+            boardToMoveOn |= (1L << end);
+        }else {
+            boardToMoveOn &= ~(1L << end);
         }
-        boardToMoveOn |= (1L << end);
-        if ("P".equals(type) || "p".equals(type)){
-            //TODO itWereEmPassant
-            //TODO Pawn promotion ellenőrzés
-        }
-        if (moveParts.length > 3){ // emPassant Or Castle Modification happened
-            if (Character.isDigit(moveParts[3].charAt(0))){ //emPassant Authorization happened
 
-            }else { //Castle case modification happened
+        //Pawn Promotion Action
+        if (("P".equals(type) && (1L << end & ROW_8) != 0)){
+            if ("P".equals(typeOfBoard)){
+                boardToMoveOn &= ~1L << end;
+            } else if ("Q".equals(typeOfBoard)) {
+                boardToMoveOn |= 1L << end;
             }
         }
+        if (("p".equals(type) && (1L << end & ROW_1) != 0)){
+            if ("p".equals(typeOfBoard)){
+                boardToMoveOn &= ~1L << end;
+            } else if ("q".equals(typeOfBoard)) {
+                boardToMoveOn |= 1L << end;
+            }
+        }
+
+        //EmPassant Action
+        if (("P".equals(type) || "p".equals(type)) && (Math.abs(start - end) == 7 || Math.abs(start - end) == 9)){
+            if ("P".equals(type) && "p".equals(typeOfBoard)){
+                if ((1L << end & boardToMoveOn) == 0){ //EmPassant with white
+                    if (whiteDown){
+                        boardToMoveOn &= ~(1L << (end - 8));
+                    }else {
+                        boardToMoveOn &= ~(1L << (end + 8));
+                    }
+                }
+            } else if ("p".equals(type) && "P".equals(typeOfBoard)) {
+                if ((1L << end & boardToMoveOn) == 0){ //EmPassant with black
+                    if (whiteDown){
+                        boardToMoveOn &= ~(1L << (end + 8));
+                    }else {
+                        boardToMoveOn &= ~(1L << (end - 8));
+                    }
+                }
+            }
+        }
+
+        //Castle Action
+        if (("K".equals(type) || "k".equals(type)) && Math.abs(start - end) == 2){
+            int[] kingCastleIndexes = indexesInCastle(whiteDown, "K".equals(type), true);
+            int[] queenCastleIndexes = indexesInCastle(whiteDown, "K".equals(type), false);
+            if (("K".equals(type) && "R".equals(typeOfBoard)) || ("k".equals(type) && "r".equals(typeOfBoard))){
+                boardToMoveOn &= ~(1L << (end == kingCastleIndexes[0] ? kingCastleIndexes : queenCastleIndexes)[2]);
+                boardToMoveOn |= 1L << (end == kingCastleIndexes[0] ? kingCastleIndexes : queenCastleIndexes)[1];
+            }
+        }
+
         return boardToMoveOn;
     }
 

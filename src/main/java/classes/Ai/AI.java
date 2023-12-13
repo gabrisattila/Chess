@@ -19,6 +19,7 @@ import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.Model.Logic.EDT.*;
 import static classes.Game.Model.Structure.BitBoard.BBVars.*;
 import static classes.Game.Model.Structure.BitBoard.BitBoardMoves.moveAPieceOnBoard;
+import static classes.Game.Model.Structure.BitBoard.BitBoardMoves.unsafeFor;
 import static classes.Game.Model.Structure.BitBoard.BitBoards.*;
 import static classes.Game.Model.Structure.Board.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
@@ -124,11 +125,11 @@ public class AI extends Thread {
 
 //            double bestChildValue = negaMax(tree, MINIMAX_DEPTH, -Double.MAX_VALUE, Double.MAX_VALUE);
             int startTime = (int) System.currentTimeMillis();
-//            double bestChildValue = miniMax(tree, 0, whiteToPlay, -Double.MAX_VALUE, Double.MAX_VALUE);
-            double bestChildValue = miniMaxWithBitBoards(tree, 0, whiteToPlay, -Double.MAX_VALUE, Double.MAX_VALUE, -1,
-                    whiteSmallCastleEnabled, whiteBigCastleEnabled, blackSmallCastleEnabled, blackBigCastleEnabled,
-                    whitePawn, whiteBishop, whiteKnight, whiteRook, whiteQueen, whiteKing,
-                    blackPawn, blackBishop, blackKnight, blackRook, blackQueen, blackKing);
+            double bestChildValue = miniMax(tree, 0, whiteToPlay, -Double.MAX_VALUE, Double.MAX_VALUE);
+//            double bestChildValue = miniMaxWithBitBoards(tree, 0, whiteToPlay, -Double.MAX_VALUE, Double.MAX_VALUE, -1,
+//                    whiteSmallCastleEnabled, whiteBigCastleEnabled, blackSmallCastleEnabled, blackBigCastleEnabled,
+//                    whitePawn, whiteBishop, whiteKnight, whiteRook, whiteQueen, whiteKing,
+//                    blackPawn, blackBishop, blackKnight, blackRook, blackQueen, blackKing);
             int endTime = (int) System.currentTimeMillis();
             System.out.println(endTime - startTime);
 
@@ -143,8 +144,8 @@ public class AI extends Thread {
     private double miniMaxWithBitBoards(
             AiNode starterPos, int depth, boolean maxNeeded, double alpha, double beta,
             int emPassant, boolean wKC, boolean wQC, boolean bKC, boolean bQC,
-            long whitePawn, long whiteBishop, long whiteKnight, long whiteRook, long whiteKing, long whiteQueen,
-            long blackPawn, long blackBishop, long blackKnight, long blackRook, long blackKing, long blackQueen
+            long whitePawn, long whiteBishop, long whiteKnight, long whiteRook, long whiteQueen, long whiteKing,
+            long blackPawn, long blackBishop, long blackKnight, long blackRook, long blackQueen, long blackKing
     ){
         synchronized (pauseFlag){
             waitOnPause();
@@ -156,58 +157,100 @@ public class AI extends Thread {
                                         - KNIGHT_OR_BISHOP_BASE_VALUE * Long.bitCount(blackBishop));
                 int rookPoint = (int) (ROOK_BASE_VALUE * Long.bitCount(whiteRook) - ROOK_BASE_VALUE * Long.bitCount(blackRook));
                 int queenPoint = (int) (QUEEN_BASE_VALUE * Long.bitCount(whiteQueen) - QUEEN_BASE_VALUE * Long.bitCount(blackQueen));
-                return pawnPoint + knightPoint + bishopPoint + rookPoint + queenPoint;
+                int finalValue = pawnPoint + knightPoint + bishopPoint + rookPoint + queenPoint;
+                starterPos.setFinalValue(finalValue);
+                return finalValue;
             }
 
             String possibleMoves = BitBoardMoves.possibleMoves(   
                     maxNeeded, emPassant, wKC,  wQC,  bKC,  bQC,
-                    whitePawn,  whiteBishop,  whiteKnight,  whiteRook,  whiteKing,  whiteQueen,
-                    blackPawn,  blackBishop,  blackKnight,  blackRook,  blackKing,  blackQueen
+                    whitePawn,  whiteBishop,  whiteKnight,  whiteRook, whiteQueen, whiteKing,
+                    blackPawn,  blackBishop,  blackKnight,  blackRook, blackQueen, blackKing
             );
             String[] possibleMovesList = possibleMoves.split("_");
-            long nextWhitePawn,  nextWhiteBishop,  nextWhiteKnight,  nextWhiteRook,  nextWhiteKing,  nextWhiteQueen,
-                    nextBlackPawn,  nextBlackBishop,  nextBlackKnight,  nextBlackRook,  nextBlackKing,  nextBlackQueen;
+            long nextWhitePawn = 0,  nextWhiteBishop = 0,  nextWhiteKnight = 0,  nextWhiteRook = 0,  nextWhiteKing = 0,  nextWhiteQueen = 0,
+                    nextBlackPawn = 0,  nextBlackBishop = 0,  nextBlackKnight = 0,  nextBlackRook = 0,  nextBlackKing = 0,  nextBlackQueen = 0;
+            int emPassantChance = 0;
             if (maxNeeded){
                 double possibleMax = -Double.MAX_VALUE;
-                for (String move : possibleMovesList) {
-                    nextWhitePawn = moveAPieceOnBoard(move, whitePawn);
-                    nextWhiteBishop = moveAPieceOnBoard(move, whiteBishop);
-                    nextWhiteKnight = moveAPieceOnBoard(move, whiteKnight);
-                    nextWhiteRook = moveAPieceOnBoard(move, whiteRook);
-                    nextWhiteQueen = moveAPieceOnBoard(move, whiteQueen);
-                    nextWhiteKing = moveAPieceOnBoard(move, whiteKing);
-                    nextBlackPawn = moveAPieceOnBoard(move, blackPawn);
-                    nextBlackBishop = moveAPieceOnBoard(move, blackBishop);
-                    nextBlackKnight = moveAPieceOnBoard(move, blackKnight);
-                    nextBlackRook = moveAPieceOnBoard(move, blackRook);
-                    nextBlackQueen = moveAPieceOnBoard(move, blackQueen);
-                    nextBlackKing = moveAPieceOnBoard(move, blackKing);
-                    boolean newWKC = wKC, newWQC = wQC, newBKC = bKC, newBQC = bQC;
-                    if (move.split("-").length > 3 && Character.isLetter(move.split("-")[3].charAt(0))){
-                        String castleModification = move.split("-")[3];
-                        if (castleModification.length() == 1){
-                            switch (castleModification){
-                                case "K" -> newWKC = false;  
-                                case "Q" -> newWQC = false;
-                                case "k" -> newBKC = false;
-                                case "q" -> newBQC = false;
-                            }
+                for (int i = 0; i < possibleMovesList.length; i++) {
+                    boolean b = true;
+                    String move = "";
+                    while (b){
+                        move = possibleMovesList[i];
+                        nextWhitePawn = moveAPieceOnBoard(move, whitePawn, "P");
+                        nextWhiteBishop = moveAPieceOnBoard(move, whiteBishop, "B");
+                        nextWhiteKnight = moveAPieceOnBoard(move, whiteKnight, "N");
+                        nextWhiteRook = moveAPieceOnBoard(move, whiteRook, "R");
+                        nextWhiteQueen = moveAPieceOnBoard(move, whiteQueen, "Q");
+                        nextWhiteKing = moveAPieceOnBoard(move, whiteKing, "K");
+                        nextBlackPawn = moveAPieceOnBoard(move, blackPawn, "p");
+                        nextBlackBishop = moveAPieceOnBoard(move, blackBishop, "b");
+                        nextBlackKnight = moveAPieceOnBoard(move, blackKnight, "n");
+                        nextBlackRook = moveAPieceOnBoard(move, blackRook, "r");
+                        nextBlackQueen = moveAPieceOnBoard(move, blackQueen, "q");
+                        nextBlackKing = moveAPieceOnBoard(move, blackKing, "k");
+                        if ((nextWhiteKing &
+                                unsafeFor(true,
+                                        nextWhitePawn, nextWhiteBishop, nextWhiteKnight, nextWhiteRook, nextWhiteQueen, nextWhiteKing,
+                                        nextBlackPawn, nextBlackKnight, nextBlackBishop, nextBlackRook, nextBlackQueen, nextBlackKing)) != 0){
+                            i++;
                         }else {
-                            if (Character.isUpperCase(castleModification.charAt(0))){
-                                newWKC = false;
-                                newWQC = false;
-                            }
+                            b = false;
+                        }
+                        if (i >= possibleMovesList.length){
+                            b = false;
                         }
                     }
                     
-                    double evaluationOfThisNode = miniMaxWithBitBoards(
-                            new AiNode(), depth++, false, alpha, beta, 0,
-                            newWKC, newWQC, newBKC, newBQC,
-                            nextWhitePawn,  nextWhiteBishop,  nextWhiteKnight,  nextWhiteRook,  nextWhiteKing,  nextWhiteQueen,
-                            nextBlackPawn,  nextBlackBishop,  nextBlackKnight,  nextBlackRook,  nextBlackKing,  nextBlackQueen
-                    );
-                    possibleMax = Math.max(evaluationOfThisNode, possibleMax);
-                    alpha = Math.max(alpha, evaluationOfThisNode);
+                    double evaluationOfTheNode = WHITE_GOT_CHECKMATE;
+                    
+                    if ("".equals(move)){
+                        if ((whiteKing &
+                                unsafeFor(true,
+                                        whitePawn, whiteBishop, whiteKnight, whiteRook, whiteQueen, whiteKing,
+                                        blackPawn, blackKnight, blackBishop, blackRook, blackQueen, blackKing)) == 0){
+                            //DRAW
+                            evaluationOfTheNode = DRAW;
+                        }
+
+                    }else {
+                        AiNode next = new AiNode();
+                        starterPos.getChildren().add(next);
+                        boolean newWKC = wKC, newWQC = wQC, newBKC = bKC, newBQC = bQC;
+                        if (move.split("-").length > 3){
+                            if (Character.isLetter(move.split("-")[3].charAt(0))) {
+                                String castleModification = move.split("-")[3];
+                                if (castleModification.length() == 1){
+                                    switch (castleModification){
+                                        case "K" -> newWKC = false;
+                                        case "Q" -> newWQC = false;
+                                        case "k" -> newBKC = false;
+                                        case "q" -> newBQC = false;
+                                    }
+                                }else {
+                                    if (Character.isUpperCase(castleModification.charAt(0))){
+                                        newWKC = false;
+                                        newWQC = false;
+                                    }else {
+                                        newBKC = false;
+                                        newBQC = false;
+                                    }
+                                }
+                            }else {
+                                emPassantChance = Integer.parseInt(move.split("-")[3]);
+                            }
+                        }
+
+                        evaluationOfTheNode = miniMaxWithBitBoards(
+                                next, depth + 1, false, alpha, beta, emPassantChance,
+                                newWKC, newWQC, newBKC, newBQC,
+                                nextWhitePawn,  nextWhiteBishop,  nextWhiteKnight,  nextWhiteRook, nextWhiteQueen, nextWhiteKing,
+                                nextBlackPawn,  nextBlackBishop,  nextBlackKnight,  nextBlackRook, nextBlackQueen, nextBlackKing
+                        );
+                    }
+                    possibleMax = Math.max(evaluationOfTheNode, possibleMax);
+                    alpha = Math.max(alpha, evaluationOfTheNode);
                     if (beta <= alpha)
                         break;
                 }
@@ -215,44 +258,84 @@ public class AI extends Thread {
                 return possibleMax;
             }else {
                 double possibleMin = Double.MAX_VALUE;
-                for (String move : possibleMovesList) {
-                    nextWhitePawn = moveAPieceOnBoard(move, whitePawn);
-                    nextWhiteBishop = moveAPieceOnBoard(move, whiteBishop);
-                    nextWhiteKnight = moveAPieceOnBoard(move, whiteKnight);
-                    nextWhiteRook = moveAPieceOnBoard(move, whiteRook);
-                    nextWhiteQueen = moveAPieceOnBoard(move, whiteQueen);
-                    nextWhiteKing = moveAPieceOnBoard(move, whiteKing);
-                    nextBlackPawn = moveAPieceOnBoard(move, blackPawn);
-                    nextBlackBishop = moveAPieceOnBoard(move, blackBishop);
-                    nextBlackKnight = moveAPieceOnBoard(move, blackKnight);
-                    nextBlackRook = moveAPieceOnBoard(move, blackRook);
-                    nextBlackQueen = moveAPieceOnBoard(move, blackQueen);
-                    nextBlackKing = moveAPieceOnBoard(move, blackKing);
-                    boolean newWKC = wKC, newWQC = wQC, newBKC = bKC, newBQC = bQC;
-                    if (move.split("-").length > 3 && Character.isLetter(move.split("-")[3].charAt(0))){
-                        String castleModification = move.split("-")[3];
-                        if (castleModification.length() == 1){
-                            switch (castleModification){
-                                case "K" -> newWKC = false;
-                                case "Q" -> newWQC = false;
-                                case "k" -> newBKC = false;
-                                case "q" -> newBQC = false;
-                            }
+                for (int i = 0; i < possibleMovesList.length; i++) {
+                    boolean b = true;
+                    String move = "";
+                    while (b){
+                        move = possibleMovesList[i];
+                        nextWhitePawn = moveAPieceOnBoard(move, whitePawn, "P");
+                        nextWhiteBishop = moveAPieceOnBoard(move, whiteBishop, "B");
+                        nextWhiteKnight = moveAPieceOnBoard(move, whiteKnight, "N");
+                        nextWhiteRook = moveAPieceOnBoard(move, whiteRook, "R");
+                        nextWhiteQueen = moveAPieceOnBoard(move, whiteQueen, "Q");
+                        nextWhiteKing = moveAPieceOnBoard(move, whiteKing, "K");
+                        nextBlackPawn = moveAPieceOnBoard(move, blackPawn, "p");
+                        nextBlackBishop = moveAPieceOnBoard(move, blackBishop, "b");
+                        nextBlackKnight = moveAPieceOnBoard(move, blackKnight, "n");
+                        nextBlackRook = moveAPieceOnBoard(move, blackRook, "r");
+                        nextBlackQueen = moveAPieceOnBoard(move, blackQueen, "q");
+                        nextBlackKing = moveAPieceOnBoard(move, blackKing, "k");
+                        if ((nextWhiteKing &
+                                unsafeFor(true,
+                                        nextWhitePawn, nextWhiteBishop, nextWhiteKnight, nextWhiteRook, nextWhiteQueen, nextWhiteKing,
+                                        nextBlackPawn, nextBlackKnight, nextBlackBishop, nextBlackRook, nextBlackQueen, nextBlackKing)) != 0){
+                            i++;
                         }else {
-                            if (Character.isUpperCase(castleModification.charAt(0))){
-                                newWKC = false;
-                                newWQC = false;
-                            }
+                            b = false;
+                        }
+                        if (i >= possibleMovesList.length){
+                            b = false;
                         }
                     }
-                    double evaluationOfThisNode = miniMaxWithBitBoards(
-                            new AiNode(), depth++, true, alpha, beta, 0,
-                            newWKC, newWQC, newBKC, newBQC,
-                            nextWhitePawn,  nextWhiteBishop,  nextWhiteKnight,  nextWhiteRook,  nextWhiteKing,  nextWhiteQueen,
-                            nextBlackPawn,  nextBlackBishop,  nextBlackKnight,  nextBlackRook,  nextBlackKing,  nextBlackQueen
-                    );
-                    possibleMin = Math.min(evaluationOfThisNode, possibleMin);
-                    beta = Math.min(alpha, evaluationOfThisNode);
+
+                    double evaluationOfTheNode = BLACK_GOT_CHECKMATE;
+
+                    if ("".equals(move)){
+                        if ((whiteKing &
+                                unsafeFor(false,
+                                        whitePawn, whiteBishop, whiteKnight, whiteRook, whiteQueen, whiteKing,
+                                        blackPawn, blackKnight, blackBishop, blackRook, blackQueen, blackKing)) == 0){
+                            //DRAW
+                            evaluationOfTheNode = DRAW;
+                        }
+
+                    }else {
+                        AiNode next = new AiNode();
+                        starterPos.getChildren().add(next);
+                        boolean newWKC = wKC, newWQC = wQC, newBKC = bKC, newBQC = bQC;
+                        if (move.split("-").length > 3){
+                            if (Character.isLetter(move.split("-")[3].charAt(0))) {
+                                String castleModification = move.split("-")[3];
+                                if (castleModification.length() == 1){
+                                    switch (castleModification){
+                                        case "K" -> newWKC = false;
+                                        case "Q" -> newWQC = false;
+                                        case "k" -> newBKC = false;
+                                        case "q" -> newBQC = false;
+                                    }
+                                }else {
+                                    if (Character.isUpperCase(castleModification.charAt(0))){
+                                        newWKC = false;
+                                        newWQC = false;
+                                    }else {
+                                        newBKC = false;
+                                        newBQC = false;
+                                    }
+                                }
+                            }else {
+                                emPassantChance = Integer.parseInt(move.split("-")[3]);
+                            }
+                        }
+
+                        evaluationOfTheNode = miniMaxWithBitBoards(
+                                next, depth + 1, true, alpha, beta, emPassantChance,
+                                newWKC, newWQC, newBKC, newBQC,
+                                nextWhitePawn,  nextWhiteBishop,  nextWhiteKnight,  nextWhiteRook, nextWhiteQueen, nextWhiteKing,
+                                nextBlackPawn,  nextBlackBishop,  nextBlackKnight,  nextBlackRook, nextBlackQueen, nextBlackKing
+                        );
+                    }
+                    possibleMin = Math.min(evaluationOfTheNode, possibleMin);
+                    beta = Math.min(beta, evaluationOfTheNode);
                     if (beta <= alpha)
                         break;
                 }
