@@ -1,6 +1,7 @@
 package classes.Ai;
 
 
+import classes.Game.Model.Structure.BitBoard.Zobrist;
 import classes.Game.Model.Structure.IPiece;
 import classes.Game.Model.Structure.Move;
 import lombok.*;
@@ -59,13 +60,22 @@ public class AiNode {
     }
 
     public static void addToHappenedList(String fen){
-//        fen = removeStepCountFromFen(fen);
         if (happenedList.containsKey(fen)){
             int count = happenedList.get(fen);
             count++;
             happenedList.put(fen, count);
         }else {
             happenedList.put(fen, 1);
+        }
+    }
+
+    public static void addToHappenedList(long zKey){
+        if (happenedListZKeys.containsKey(zKey)){
+            int count = happenedListZKeys.get(zKey);
+            count++;
+            happenedListZKeys.put(zKey, count);
+        }else {
+            happenedListZKeys.put(zKey, 1);
         }
     }
 

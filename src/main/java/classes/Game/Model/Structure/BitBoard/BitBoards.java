@@ -119,8 +119,11 @@ public class BitBoards {
 
     //region Bit Boards To Fen
 
-    public static String bitBoardsToFenPieces() {
-        StringBuilder fenPieces = new StringBuilder();
+    public static String bitBoardsToFen(
+            boolean whiteTurn, int emPassant, boolean wKC, boolean wQC, boolean bKC, boolean bQC,
+            long whitePawn, long whiteKnight, long whiteBishop, long whiteRook, long whiteQueen, long whiteKing,
+            long blackPawn, long blackKnight, long blackBishop, long blackRook, long blackQueen, long blackKing) {
+        StringBuilder fen = new StringBuilder();
         StringBuilder row = new StringBuilder();
         int counter = 0;
         for (int i = 0; i < MAX_WIDTH * MAX_HEIGHT; i++) {
@@ -134,12 +137,25 @@ public class BitBoards {
                 row.reverse();
                 if (i + 1 != MAX_WIDTH * MAX_HEIGHT)
                     row.append('/');
-                fenPieces.append(row);
+                fen.append(row);
                 row.setLength(0);
             }
         }
 
-        return fenPieces.toString();
+        fen.append(" ").append(whiteTurn ? "w" : "b");
+        fen.append(" ");
+        fen.append(wKC ? "K" : "-");
+        fen.append(wQC ? "Q" : "-");
+        fen.append(bKC ? "k" : "-");
+        fen.append(bQC ? "q" : "-");
+        fen.append(" ");
+        fen.append(emPassant == -1 ? "-" : emPassant);
+        fen.append(" ");
+        fen.append(stepNumber++);
+        fen.append(" ");
+        fen.append(whiteTurn ? "0" : "1");
+
+        return fen.toString();
     }
 
     private static int getCounterAndAppendToFen(StringBuilder fenPieces, int counter, int i,

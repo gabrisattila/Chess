@@ -497,6 +497,8 @@ public class VARS {
 
         public static HashMap<String, Integer> happenedList = new HashMap<>();
 
+        public static HashMap<Long, Integer> happenedListZKeys = new HashMap<>();
+
         public static boolean thirdSimilarPositionOfTheGame = false;
 
         public static AiNode storeTree = new AiNode();

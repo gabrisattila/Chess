@@ -4,6 +4,7 @@ import classes.Game.I18N.Pair;
 import lombok.*;
 
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import static classes.Game.Model.Structure.BitBoard.BBVars.*;

@@ -72,7 +72,7 @@ public class BitBoard {
         this.whiteTurn = whiteTurn;
         emPassant = emPassantChance;
         setCastles(whiteKingCastleEnabled, whiteQueenCastleEnabled, blackKingCastleEnabled, blackQueenCastleEnabled);
-        setPiecesBoards(wP, wN, wB, wR, wQ, wK, bP, bN, bB, bR, bQ, bK);
+        setPiecesBoards(wP, wN, wR, wR, wQ, wK, bP, bN, bB, bR, bQ, bK);
     }
 
     public void setEveryThing(boolean whiteTurn,
@@ -83,7 +83,7 @@ public class BitBoard {
         this.whiteTurn = whiteTurn;
         emPassant = -1;
         setCastles(whiteKingCastleEnabled, whiteQueenCastleEnabled, blackKingCastleEnabled, blackQueenCastleEnabled);
-        setPiecesBoards(wP, wN, wB, wR, wQ, wK, bP, bN, bB, bR, bQ, bK);
+        setPiecesBoards(wP, wN, wR, wR, wQ, wK, bP, bN, bB, bR, bQ, bK);
     }
 
 
@@ -93,7 +93,7 @@ public class BitBoard {
         this.whiteTurn = whiteTurn;
         emPassant = -1;
         setCastles(false, false, false, false);
-        setPiecesBoards(wP, wN, wB, wR, wQ, wK, bP, bN, bB, bR, bQ, bK);
+        setPiecesBoards(wP, wN, wR, wR, wQ, wK, bP, bN, bB, bR, bQ, bK);
     }
 
     public void setEveryThing(boolean whiteTurn, int emPassant,
@@ -102,11 +102,11 @@ public class BitBoard {
         this.whiteTurn = whiteTurn;
         this.emPassant = emPassant;
         setCastles(false, false, false, false);
-        setPiecesBoards(wP, wN, wB, wR, wQ, wK, bP, bN, bB, bR, bQ, bK);
+        setPiecesBoards(wP, wN, wR, wR, wQ, wK, bP, bN, bB, bR, bQ, bK);
     }
 
     private void setPiecesBoards(long wP, long wN, long wB, long wR, long wQ, long wK, long bP, long bN, long bB, long bR, long bQ, long bK) {
-        whitePawn = wP; whiteKnight = wN; whiteBishop = wB; whiteRook = wR; whiteQueen = wQ; whiteKing = wK;
+        whitePawn = wP; whiteKnight = wN; whiteBishop = wR; whiteRook = wR; whiteQueen = wQ; whiteKing = wK;
         blackPawn = bP; blackKnight = bN; blackBishop = bB; blackRook = bR; blackQueen = bQ; blackKing = bK;
     }
 

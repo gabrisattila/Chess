@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import static classes.Ai.AiNode.*;
-import static classes.Ai.AiNodeBBStyle.putNewToNodeMap;
+import static classes.Ai.AiNodeBBStyle.*;
 import static classes.Ai.AiTree.*;
 import static classes.Ai.FenConverter.*;
 import static classes.GUI.FrameParts.ViewBoard.*;
@@ -146,11 +146,14 @@ public class AI extends Thread {
             System.out.println(transPosNum + " transposition happened.");
             nodeNum = 0;
 
+            Pair<AiNodeBBStyle, String> nodeAndItsFen = sortOutBestChild(tree, bestChildValue);
+            AiNodeBBStyle bestChild = nodeAndItsFen.getFirst();
+            addToHappenedList(bestChild.getZobristKey());
+            FenToBoard(nodeAndItsFen.getSecond(), getBoard());
 //            AiNode bestChild = sortOutBestChild(tree, bestChildValue);
-            AiNode bestChild = sortOutBestChild(tree, bestChildValue);
+//            AiFenToBoard(bestChild.getFen(), getBoard());
+//            addToHappenedList(AiFenToFen(bestChild.getFen()));
 //            getLogger().log(bestChild.getFen().split(" ")[6]);
-            AiFenToBoard(bestChild.getFen(), getBoard());
-            addToHappenedList(AiFenToFen(bestChild.getFen()));
         }
     }
 
@@ -334,6 +337,27 @@ public class AI extends Thread {
         emPassantChance = bestChild.getFen().split(" ")[3];
         castleCaseFenToBoard(bestChild.getFen().split(" ")[2]);
         return bestChild;
+    }
+
+    private Pair<AiNodeBBStyle, String> sortOutBestChild(AiNodeBBStyle tree, double bestChildValue){
+        ArrayList<AiNodeBBStyle> bestChildren = new ArrayList<>();
+        for (AiNodeBBStyle child : tree.getChildren()) {
+            if (child.getFinalValue() == bestChildValue) {
+                bestChildren.add(child);
+            }
+        }
+        AiNodeBBStyle bestChild;
+        if (bestChildren.size() == 1) {
+            bestChild = bestChildren.get(0);
+        } else {
+            Random random = new Random();
+            int randomChosenBestIndex = random.nextInt(0, bestChildren.size());
+            bestChild = bestChildren.get(randomChosenBestIndex);
+        }
+        String fen = aiNodeBBToFen(bestChild);
+        emPassantChance = fen.split(" ")[3];
+        castleCaseFenToBoard(fen.split(" ")[2]);
+        return new Pair<>(bestChild, fen);
     }
 
     public static boolean itWorthToGiveUp(){
