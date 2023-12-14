@@ -1,5 +1,7 @@
 package classes.Game.Model.Structure.BitBoard;
 
+import classes.Ai.AiNodeBBStyle;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -81,7 +83,19 @@ public class BBVars {
 
     public static long OCCUPIED;
 
+    /**
+     * The zobrist key list of the table. Zeroth element stands for bottom-left element on table.
+     * The sequence goes from left to right, down to up. As we usually read longs.
+     */
+    public static ArrayList<HashMap<Character, Long>> ZOBRIST_KEY_FIELD_LIST = new ArrayList<>();
 
+    public static ArrayList<HashMap<Long, Character>> INVERSE_ZOBRIST_FIELD_LIST = new ArrayList<>();
+
+    public static Long[] ZOBRIST_CASTLE_LIST = new Long[4];
+
+    public static Long[] ZOBRIST_WHITE_BLACK_TO_PLAY = new Long[2];
+
+    public static HashMap<Long, AiNodeBBStyle> alreadyWatchedNodes = new HashMap<>();
 
     public static final long[] RowMasks8 = {
             0xFFL,

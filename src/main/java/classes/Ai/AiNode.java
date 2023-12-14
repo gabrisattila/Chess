@@ -32,10 +32,6 @@ public class AiNode {
 
     //region Constructor
 
-    public AiNode(long bitBoard){
-        children = new HashSet<>();
-    }
-
     public AiNode(){
 
         children = new HashSet<>();
@@ -123,6 +119,13 @@ public class AiNode {
         }
         return list;
     }
+
+    //endregion
+
+
+    //region Possibility Collecting on BitBoards
+
+
 
     //endregion
 

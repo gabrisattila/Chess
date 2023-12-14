@@ -431,6 +431,7 @@ public class VARS {
             put("whiteDownKingTakesOwnKnight", "1RB1KBR1/P4P1P/N3P1P1/3PpN2/1pPp4/5nQ1/pp2kpp1/r1bqnbr1 b ---- - 1 1");
             put("blackMustTakeRookButItIsnt", "3R1R1K/1Pq2nPP/4p3/8/1Q3P2/7p/5pp1/4r1k1 w ---- - 1 0");
             put("polgarVsKasparov25", "2r1r2k/1bqnbpp1/pp1p1n1p/4pP2/P3P2B/2N2B2/1PPN2PP/3RRQ1K b ---- - 5 1");
+            put("4mpOn6depth", "8/8/8/8/K1P4r/8/3p4/3k4 b ---- - 1 1");
 
             //endregion
 
@@ -486,7 +487,11 @@ public class VARS {
 
         public static int MAX_HEIGHT = 8;
 
-        public static int MINIMAX_DEPTH = 6;
+        public static int MINIMAX_DEPTH = 4;
+
+        public static int nodeNum = 0;
+
+        public static int transPosNum = 0;
 
         public static Map<String, AiNode> fullTreeOfGame = new HashMap<>();
 

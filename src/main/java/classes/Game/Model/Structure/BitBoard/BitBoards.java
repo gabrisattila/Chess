@@ -185,37 +185,6 @@ public class BitBoards {
 
     //region Moves
 
-    /**
-     * @param bitBoardOfAPiece We know what is the pieceType of the bitBoard
-     * @return all the start indexes of the pieces from the bitBoard
-     */
-    public ArrayList<Integer> getPiecesStartIndexesOnABoard(long bitBoardOfAPiece){
-        ArrayList<Integer> indexesOfPieces = new ArrayList<>();
-        for (int i = 0; i < 64; i++) {
-            if (((1L << i) & bitBoardOfAPiece) == 1){
-                indexesOfPieces.add(i);
-            }
-        }
-        return indexesOfPieces;
-    }
-
-    public static ArrayList<Long> collectPieceBoardsToOneList(){
-        ArrayList<Long> boards = new ArrayList<>();
-        boards.add(whitePawn);
-        boards.add(whiteKnight);
-        boards.add(whiteBishop);
-        boards.add(whiteRook);
-        boards.add(whiteQueen);
-        boards.add(whiteKing);
-        boards.add(blackPawn);
-        boards.add(blackKnight);
-        boards.add(blackBishop);
-        boards.add(blackRook);
-        boards.add(blackQueen);
-        boards.add(blackKing);
-        return boards;
-    }
-
     public static long mergeFullBitBoard(ArrayList<Long> pieceBoards){
         long fullBoard = 0L;
         for (long board : pieceBoards) {

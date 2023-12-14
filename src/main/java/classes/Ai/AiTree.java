@@ -40,6 +40,8 @@ public class AiTree {
         AiNode nextChild = fullTreeOfGame.get(child);
         if (isNull(nextChild)){
             nextChild = new AiNode(child);
+        } else {
+            transPosNum++;
         }
         root.getChildren().add(nextChild);
         fullTreeOfGame.put(child, nextChild);

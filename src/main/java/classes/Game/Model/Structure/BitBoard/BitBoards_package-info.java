@@ -5,7 +5,7 @@ package classes.Game.Model.Structure.BitBoard;
 //The new implementation called BitBoards. We represent the chessboard in a long which contains 64 bits.
 //A separate long belongs to each piece type from both colors. (One board for white pawns, for black ones...)
 //The moves implemented with bitwise operations and a moveDocString belongs to every move.
-//A move doc string looks like this: G19___-
+//A move doc string looks like this: G-1-7-and-stuff_
 //The first character is the piece type (UpperCase if it's white, else black)
 //The second character is the start index, where the piece starts,
 //The third is the end index, where the piece goes

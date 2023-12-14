@@ -1,5 +1,6 @@
 package classes.GUI.FrameParts;
 
+import classes.Game.Model.Structure.BitBoard.Zobrist;
 import classes.Game.Model.Structure.IBoard;
 import lombok.*;
 
@@ -259,7 +260,7 @@ public class ChessButton extends JButton {
             isTest = test;
 
             if (isTest && "".equals(setUpFen)){
-                setUpFen = testFens.get("whiteDownOnlyKingsAndRooks");
+                setUpFen = testFens.get("polgarVsKasparov");
             }
 
             if (!isFirstOpen && "".equals(setUpFen)){
@@ -279,6 +280,7 @@ public class ChessButton extends JButton {
             buttonsEnabled(new ArrayList<>(){{add("All");}});
             labelTexting(!oneAi || !whiteAi);
             initialization();
+            Zobrist.fillZobristTable();
         }
 
         private void saveBoard(IBoard board)  {
