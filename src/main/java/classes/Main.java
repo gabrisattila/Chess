@@ -14,14 +14,10 @@ public class Main {
     public static void main(String[] args) {
 //           exceptionIgnorer();
         new EDT();
-    }
-
-    private static void printBitBoards(long pawn, long rook, long knight, long bishop, long queen, long king) {
-        System.out.println(BitBoards.toString(pawn));
-        System.out.println(BitBoards.toString(rook));
-        System.out.println(BitBoards.toString(knight));
-        System.out.println(BitBoards.toString(bishop));
-        System.out.println(BitBoards.toString(queen));
-        System.out.println(BitBoards.toString(king));
+        for (int i = 63; i >= 0; i--) {
+            System.out.print((i < 10 ? " " : "") + i + " ");
+            if (i % 8 == 0)
+                System.out.println();
+        }
     }
 }

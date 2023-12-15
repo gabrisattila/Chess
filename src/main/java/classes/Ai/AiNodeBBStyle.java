@@ -8,7 +8,7 @@ import java.util.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.Model.Structure.BitBoard.BBVars.*;
-import static classes.Game.Model.Structure.BitBoard.BitBoards.bitBoardsToFen;
+import static classes.Game.Model.Structure.BitBoard.BitBoards.*;
 
 @Getter
 @Setter
@@ -63,12 +63,18 @@ public class AiNodeBBStyle {
 
     @Override
     public boolean equals(Object o){
-        return o instanceof AiNodeBBStyle && zobristKey == ((AiNodeBBStyle) o).zobristKey;
+        return o instanceof AiNodeBBStyle &&
+                ((AiNodeBBStyle) o).wKC  == wKC && ((AiNodeBBStyle) o).wQC  == wQC && ((AiNodeBBStyle) o).bKC  == bKC &&
+                ((AiNodeBBStyle) o).bQC  == bQC && ((AiNodeBBStyle) o).emPassant == emPassant &&
+                ((AiNodeBBStyle) o).wP  == wP && ((AiNodeBBStyle) o).wN  == wN && ((AiNodeBBStyle) o).wB  == wB &&
+                ((AiNodeBBStyle) o).wR  == wR && ((AiNodeBBStyle) o).wQ  == wQ && ((AiNodeBBStyle) o).wK  == wK &&
+                ((AiNodeBBStyle) o).bP  == bP && ((AiNodeBBStyle) o).bN  == bN && ((AiNodeBBStyle) o).bB  == bB &&
+                ((AiNodeBBStyle) o).bR  == bR && ((AiNodeBBStyle) o).bQ  == bQ && ((AiNodeBBStyle) o).bK  == bK;
     }
 
     public static String aiNodeBBToFen(AiNodeBBStyle node){
         return bitBoardsToFen(whiteToPlay, node.emPassant, node.wKC, node.wQC, node.bKC, node.bQC,
-                                node.wP, node.wN, node.wB, node.wQ, node.wR, node.wK,
+                                node.wP, node.wN, node.wB, node.wR, node.wQ, node.wK,
                                 node.bP, node.bN, node.bB, node.bR, node.bQ, node.bK);
     }
 
@@ -81,12 +87,12 @@ public class AiNodeBBStyle {
 
     public static AiNodeBBStyle putNewToNodeMap(AiNodeBBStyle root, String creatorMove,
                                                 boolean forWhite, int emPassant, boolean wKC, boolean wQC, boolean bKC, boolean bQC,
-                                                long whitePawn, long whiteBishop, long whiteKnight, long whiteRook, long whiteQueen, long whiteKing,
-                                                long blackPawn, long blackBishop, long blackKnight, long blackRook, long blackQueen, long blackKing){
+                                                long whitePawn, long whiteKnight, long whiteBishop, long whiteRook, long whiteQueen, long whiteKing,
+                                                long blackPawn, long blackKnight, long blackBishop, long blackRook, long blackQueen, long blackKing){
 
         long zKey = calcZobristKey(forWhite, emPassant,  wKC,  wQC,  bKC,  bQC,
-                whitePawn,  whiteBishop,  whiteKnight,  whiteRook,  whiteQueen,  whiteKing,
-                blackPawn,  blackBishop,  blackKnight,  blackRook,  blackQueen,  blackKing);
+                whitePawn, whiteKnight, whiteBishop,  whiteRook,  whiteQueen,  whiteKing,
+                blackPawn, blackKnight, blackBishop,  blackRook,  blackQueen,  blackKing);
 
         AiNodeBBStyle nextChild = alreadyWatchedNodes.get(zKey);
         if (isNull(nextChild)) {
@@ -96,8 +102,8 @@ public class AiNodeBBStyle {
             transPosNum++;
         }
         setDescriptiveParts(nextChild, emPassant,  wKC,  wQC,  bKC,  bQC,
-                whitePawn,  whiteBishop,  whiteKnight,  whiteRook,  whiteQueen,  whiteKing,
-                blackPawn,  blackBishop,  blackKnight,  blackRook,  blackQueen,  blackKing);
+                whitePawn,  whiteKnight, whiteBishop,  whiteRook,  whiteQueen,  whiteKing,
+                blackPawn,  blackKnight, blackBishop,  blackRook,  blackQueen,  blackKing);
         root.getChildren().add(nextChild);
         return nextChild;
     }

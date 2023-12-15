@@ -126,11 +126,18 @@ public class BitBoards {
         StringBuilder fen = new StringBuilder();
         StringBuilder row = new StringBuilder();
         int counter = 0;
+
+        System.out.println();
+        printBitBoards(true, whitePawn, whiteKnight, whiteBishop, whiteRook, whiteQueen, whiteKing);
+        printBitBoards(false, blackPawn, blackKnight, blackBishop, blackRook, blackQueen, blackKing);
+        
         for (int i = 0; i < MAX_WIDTH * MAX_HEIGHT; i++) {
-            counter = upgradeCounter(i, counter);
+            counter = upgradeCounter(i, counter,
+                    whitePawn, whiteKnight, whiteBishop, whiteRook, whiteQueen, whiteKing,
+                    blackPawn, blackKnight, blackBishop, blackRook, blackQueen, blackKing);
             counter = getCounterAndAppendToFen(row, counter, i, whitePawn, whiteKnight, whiteBishop, whiteRook, whiteQueen, whiteKing, true);
             counter = getCounterAndAppendToFen(row, counter, i, blackPawn, blackKnight, blackBishop, blackRook, blackQueen, blackKing, false);
-            if ((i + 1) % 8 == 0){
+            if ((i + 1) % MAX_WIDTH == 0){
                 if (counter != 0)
                     row.append(counter);
                 counter = 0;
@@ -157,6 +164,20 @@ public class BitBoards {
 
         return fen.toString();
     }
+    
+    private static void printBitBoards(boolean forWhite, long pawn, long knight, long bishop, long rook, long queen, long king) {
+        printBitBoard(forWhite, pawn, 'P');
+        printBitBoard(forWhite, knight, 'N');
+        printBitBoard(forWhite, bishop, 'B');
+        printBitBoard(forWhite, rook, 'R');
+        printBitBoard(forWhite, queen, 'Q');
+        printBitBoard(forWhite, king, 'K');
+    }
+
+    private static void printBitBoard(boolean forWhite, long piece, char type) {
+        System.out.println((forWhite ? "White: " : "Black: ") + type);
+        System.out.println(BitBoards.toString(piece));
+    }
 
     private static int getCounterAndAppendToFen(StringBuilder fenPieces, int counter, int i,
                                                 long pawn, long knight, long bishop, long rook, long queen, long king,
@@ -171,7 +192,7 @@ public class BitBoards {
     }
 
     private static int appendToOnGoingFen(long bitBoardOfAPiece, StringBuilder fenPieces, int counter, int i, char pieceType){
-        if ( ((bitBoardOfAPiece >> i) & 1) == 1 ) {
+        if ((1L << i & bitBoardOfAPiece) != 0) {
             if (counter != 0)
                 fenPieces.append(counter);
             fenPieces.append(pieceType);
@@ -180,12 +201,14 @@ public class BitBoards {
         return counter;
     }
 
-    private static int upgradeCounter(int i, int counter){
+    private static int upgradeCounter(int i, int counter,
+                                      long whitePawn, long whiteKnight, long whiteBishop, long whiteRook, long whiteQueen, long whiteKing,
+                                      long blackPawn, long blackKnight, long blackBishop, long blackRook, long blackQueen, long blackKing){
         if (
                 counterCanBeUpgraded(whitePawn, i) && counterCanBeUpgraded(whiteBishop, i) && counterCanBeUpgraded(whiteKnight, i) &&
-                        counterCanBeUpgraded(whiteRook, i) && counterCanBeUpgraded(whiteQueen, i) && counterCanBeUpgraded(whiteKing, i) &&
-                        counterCanBeUpgraded(blackPawn, i) && counterCanBeUpgraded(blackBishop, i) && counterCanBeUpgraded(blackKnight, i) &&
-                        counterCanBeUpgraded(blackRook, i) && counterCanBeUpgraded(blackQueen, i) && counterCanBeUpgraded(blackKing, i)
+                counterCanBeUpgraded(whiteRook, i) && counterCanBeUpgraded(whiteQueen, i) && counterCanBeUpgraded(whiteKing, i) &&
+                counterCanBeUpgraded(blackPawn, i) && counterCanBeUpgraded(blackBishop, i) && counterCanBeUpgraded(blackKnight, i) &&
+                counterCanBeUpgraded(blackRook, i) && counterCanBeUpgraded(blackQueen, i) && counterCanBeUpgraded(blackKing, i)
         ){
             counter++;
         }
@@ -193,7 +216,7 @@ public class BitBoards {
     }
 
     private static boolean counterCanBeUpgraded(long bitBoardOfAPiece, int i){
-        return  ((bitBoardOfAPiece >> i) & 1) != 1;
+        return  (1L << i & bitBoardOfAPiece) == 0;
     }
 
     //endregion

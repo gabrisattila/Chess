@@ -144,7 +144,6 @@ public class AI extends Thread {
             int elapsedTime = endTime - startTime;
             System.out.println("Under " + ((double) elapsedTime / 1000) + " seconds.");
             System.out.println(transPosNum + " transposition happened.");
-            nodeNum = 0;
 
             Pair<AiNodeBBStyle, String> nodeAndItsFen = sortOutBestChild(tree, bestChildValue);
             AiNodeBBStyle bestChild = nodeAndItsFen.getFirst();
@@ -177,8 +176,8 @@ public class AI extends Thread {
 
             ArrayList<String> legalMoves = possibleMoves(maxNeeded,
              emPassant,  wKC,  wQC,  bKC,  bQC,
-             whitePawn,  whiteBishop,  whiteKnight,  whiteRook,  whiteQueen,  whiteKing,
-             blackPawn,  blackBishop,  blackKnight,  blackRook,  blackQueen,  blackKing);
+             whitePawn, whiteKnight, whiteBishop, whiteRook,  whiteQueen,  whiteKing,
+             blackPawn, blackKnight, blackBishop, blackRook,  blackQueen,  blackKing);
             if (maxNeeded){
                 
                 double possibleMax = -Double.MAX_VALUE;
@@ -197,15 +196,15 @@ public class AI extends Thread {
                 
                 for (String legalMove : legalMoves) {
                     ArrayList<Long> nextBoards = nextBoards(legalMove,
-                            whitePawn, whiteBishop, whiteKnight, whiteRook, whiteQueen, whiteKing,
-                            blackPawn, blackBishop, blackKnight, blackRook, blackQueen, blackKing);
+                            whitePawn, whiteKnight, whiteBishop, whiteRook, whiteQueen, whiteKing,
+                            blackPawn, blackKnight, blackBishop, blackRook, blackQueen, blackKing);
                     ArrayList<Object> emPassantAndCastle = emPassantAndCastleCases(legalMove, wKC, wQC, bKC, bQC);
                     AiNodeBBStyle next = putNewToNodeMap(starterPos, legalMove,
                             true, (Integer) emPassantAndCastle.get(0),
                             (boolean) emPassantAndCastle.get(1), (boolean) emPassantAndCastle.get(2),
                             (boolean) emPassantAndCastle.get(3), (boolean) emPassantAndCastle.get(4),
                             nextBoards.get(0), nextBoards.get(1), nextBoards.get(2), nextBoards.get(3), nextBoards.get(4), nextBoards.get(5),
-                            nextBoards.get(4), nextBoards.get(5), nextBoards.get(6), nextBoards.get(7), nextBoards.get(8), nextBoards.get(9));
+                            nextBoards.get(6), nextBoards.get(7), nextBoards.get(8), nextBoards.get(9), nextBoards.get(10), nextBoards.get(11));
                     nodeNum++;
                     evaluationOfTheNode = miniMaxWithBitBoards(
                             next, depth + 1, false, alpha, beta,
@@ -213,7 +212,7 @@ public class AI extends Thread {
                             (boolean) emPassantAndCastle.get(1), (boolean) emPassantAndCastle.get(2),
                             (boolean) emPassantAndCastle.get(3), (boolean) emPassantAndCastle.get(4),
                             nextBoards.get(0), nextBoards.get(1), nextBoards.get(2), nextBoards.get(3), nextBoards.get(4), nextBoards.get(5),
-                            nextBoards.get(4), nextBoards.get(5), nextBoards.get(6), nextBoards.get(7), nextBoards.get(8), nextBoards.get(9)
+                            nextBoards.get(6), nextBoards.get(7), nextBoards.get(8), nextBoards.get(9), nextBoards.get(10), nextBoards.get(11)
                     );
                     possibleMax = Math.max(evaluationOfTheNode, possibleMax);
                     alpha = Math.max(alpha, evaluationOfTheNode);
@@ -231,7 +230,7 @@ public class AI extends Thread {
                 if (legalMoves.isEmpty()){
                     if ((blackKing &
                             unsafeFor(false,
-                                    whitePawn, whiteBishop, whiteKnight, whiteRook, whiteQueen, whiteKing,
+                                    whitePawn, whiteKnight, whiteBishop, whiteRook, whiteQueen, whiteKing,
                                     blackPawn, blackKnight, blackBishop, blackRook, blackQueen, blackKing)) == 0){
                         //DRAW
                         evaluationOfTheNode = DRAW;
@@ -241,15 +240,15 @@ public class AI extends Thread {
 
                 for (String legalMove : legalMoves) {
                     ArrayList<Long> nextBoards = nextBoards(legalMove,
-                            whitePawn, whiteBishop, whiteKnight, whiteRook, whiteQueen, whiteKing,
-                            blackPawn, blackBishop, blackKnight, blackRook, blackQueen, blackKing);
+                            whitePawn, whiteKnight, whiteBishop, whiteRook, whiteQueen, whiteKing,
+                            blackPawn, blackKnight, blackBishop, blackRook, blackQueen, blackKing);
                     ArrayList<Object> emPassantAndCastle = emPassantAndCastleCases(legalMove, wKC, wQC, bKC, bQC);
                     AiNodeBBStyle next = putNewToNodeMap(starterPos, legalMove,
                             false, (Integer) emPassantAndCastle.get(0),
                             (boolean) emPassantAndCastle.get(1), (boolean) emPassantAndCastle.get(2),
                             (boolean) emPassantAndCastle.get(3), (boolean) emPassantAndCastle.get(4),
                             nextBoards.get(0), nextBoards.get(1), nextBoards.get(2), nextBoards.get(3), nextBoards.get(4), nextBoards.get(5),
-                            nextBoards.get(4), nextBoards.get(5), nextBoards.get(6), nextBoards.get(7), nextBoards.get(8), nextBoards.get(9));
+                            nextBoards.get(6), nextBoards.get(7), nextBoards.get(8), nextBoards.get(9), nextBoards.get(10), nextBoards.get(11));
                     nodeNum++;
                     evaluationOfTheNode = miniMaxWithBitBoards(
                             next, depth + 1, true, alpha, beta,
@@ -257,7 +256,7 @@ public class AI extends Thread {
                             (boolean) emPassantAndCastle.get(1), (boolean) emPassantAndCastle.get(2),
                             (boolean) emPassantAndCastle.get(3), (boolean) emPassantAndCastle.get(4),
                             nextBoards.get(0), nextBoards.get(1), nextBoards.get(2), nextBoards.get(3), nextBoards.get(4), nextBoards.get(5),
-                            nextBoards.get(4), nextBoards.get(5), nextBoards.get(6), nextBoards.get(7), nextBoards.get(8), nextBoards.get(9)
+                            nextBoards.get(6), nextBoards.get(7), nextBoards.get(8), nextBoards.get(9), nextBoards.get(10), nextBoards.get(11)
                     );
                     possibleMin = Math.min(evaluationOfTheNode, possibleMin);
                     alpha = Math.min(alpha, evaluationOfTheNode);
@@ -454,14 +453,14 @@ public class AI extends Thread {
         String neededBoardsForTheMove = decideWhichBoardsWillBeUsed(legalMove);
         switch (neededBoardsForTheMove.charAt(0)){
             case 'P' -> whitePawn = moveAPieceOnBoard(legalMove, whitePawn, "P");
-            case 'B' -> whiteBishop = moveAPieceOnBoard(legalMove, whiteBishop, "B");
             case 'N' -> whiteKnight = moveAPieceOnBoard(legalMove, whiteKnight, "N");
+            case 'B' -> whiteBishop = moveAPieceOnBoard(legalMove, whiteBishop, "B");
             case 'R' -> whiteRook = moveAPieceOnBoard(legalMove, whiteRook, "R");
             case 'Q' -> whiteQueen = moveAPieceOnBoard(legalMove, whiteQueen, "Q");
             case 'K' -> whiteKing = moveAPieceOnBoard(legalMove, whiteKing, "K");
             case 'p' -> blackPawn = moveAPieceOnBoard(legalMove, blackPawn, "p");
-            case 'b' -> blackBishop = moveAPieceOnBoard(legalMove, blackBishop, "b");
             case 'n' -> blackKnight = moveAPieceOnBoard(legalMove, blackKnight, "n");
+            case 'b' -> blackBishop = moveAPieceOnBoard(legalMove, blackBishop, "b");
             case 'r' -> blackRook = moveAPieceOnBoard(legalMove, blackRook, "r");
             case 'q' -> blackQueen = moveAPieceOnBoard(legalMove, blackQueen, "q");
             case 'k' -> blackKing = moveAPieceOnBoard(legalMove, blackKing, "k");
@@ -470,14 +469,14 @@ public class AI extends Thread {
             if (neededBoardsForTheMove.length() == 2){
                 switch (neededBoardsForTheMove.charAt(1)){
                     case 'P' -> whitePawn = moveAPieceOnBoard(legalMove, whitePawn, "P");
-                    case 'B' -> whiteBishop = moveAPieceOnBoard(legalMove, whiteBishop, "B");
                     case 'N' -> whiteKnight = moveAPieceOnBoard(legalMove, whiteKnight, "N");
+                    case 'B' -> whiteBishop = moveAPieceOnBoard(legalMove, whiteBishop, "B");
                     case 'R' -> whiteRook = moveAPieceOnBoard(legalMove, whiteRook, "R");
                     case 'Q' -> whiteQueen = moveAPieceOnBoard(legalMove, whiteQueen, "Q");
                     case 'K' -> whiteKing = moveAPieceOnBoard(legalMove, whiteKing, "K");
                     case 'p' -> blackPawn = moveAPieceOnBoard(legalMove, blackPawn, "p");
-                    case 'b' -> blackBishop = moveAPieceOnBoard(legalMove, blackBishop, "b");
                     case 'n' -> blackKnight = moveAPieceOnBoard(legalMove, blackKnight, "n");
+                    case 'b' -> blackBishop = moveAPieceOnBoard(legalMove, blackBishop, "b");
                     case 'r' -> blackRook = moveAPieceOnBoard(legalMove, blackRook, "r");
                     case 'q' -> blackQueen = moveAPieceOnBoard(legalMove, blackQueen, "q");
                     case 'k' -> blackKing = moveAPieceOnBoard(legalMove, blackKing, "k");
@@ -490,13 +489,13 @@ public class AI extends Thread {
                 }
                 switch (neededBoardsForTheMove.charAt(2)){
                     case 'P' -> whitePawn = moveAPieceOnBoard(legalMove, whitePawn, "P");
-                    case 'B' -> whiteBishop = moveAPieceOnBoard(legalMove, whiteBishop, "B");
                     case 'N' -> whiteKnight = moveAPieceOnBoard(legalMove, whiteKnight, "N");
+                    case 'B' -> whiteBishop = moveAPieceOnBoard(legalMove, whiteBishop, "B");
                     case 'R' -> whiteRook = moveAPieceOnBoard(legalMove, whiteRook, "R");
                     case 'Q' -> whiteQueen = moveAPieceOnBoard(legalMove, whiteQueen, "Q");
                     case 'p' -> blackPawn = moveAPieceOnBoard(legalMove, blackPawn, "p");
-                    case 'b' -> blackBishop = moveAPieceOnBoard(legalMove, blackBishop, "b");
                     case 'n' -> blackKnight = moveAPieceOnBoard(legalMove, blackKnight, "n");
+                    case 'b' -> blackBishop = moveAPieceOnBoard(legalMove, blackBishop, "b");
                     case 'r' -> blackRook = moveAPieceOnBoard(legalMove, blackRook, "r");
                     case 'q' -> blackQueen = moveAPieceOnBoard(legalMove, blackQueen, "q");
                 }
@@ -533,19 +532,24 @@ public class AI extends Thread {
         return neededBoards;
     }
 
-    private static ArrayList<Long> getLongs(ArrayList<Long> nexts, long whitePawn, long whiteKnight, long whiteBishop, long whiteRook, long whiteQueen, long whiteKing, long blackPawn, long blackKnight, long blackBishop, long blackRook, long blackQueen, long blackKing) {
+    private static ArrayList<Long> getLongs(
+            ArrayList<Long> nexts,
+            long whitePawn, long whiteKnight, long whiteBishop, long whiteRook, long whiteQueen, long whiteKing,
+            long blackPawn, long blackKnight, long blackBishop, long blackRook, long blackQueen, long blackKing) {
+
         nexts.add(whitePawn);
-        nexts.add(whiteBishop);
         nexts.add(whiteKnight);
+        nexts.add(whiteBishop);
         nexts.add(whiteRook);
         nexts.add(whiteQueen);
         nexts.add(whiteKing);
         nexts.add(blackPawn);
-        nexts.add(blackBishop);
         nexts.add(blackKnight);
+        nexts.add(blackBishop);
         nexts.add(blackRook);
         nexts.add(blackQueen);
         nexts.add(blackKing);
+
         return nexts;
     }
 

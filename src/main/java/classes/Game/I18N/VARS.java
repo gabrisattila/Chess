@@ -487,7 +487,7 @@ public class VARS {
 
         public static int MAX_HEIGHT = 8;
 
-        public static int MINIMAX_DEPTH = 4;
+        public static int MINIMAX_DEPTH = 5;
 
         public static int nodeNum = 0;
 
