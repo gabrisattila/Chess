@@ -1,7 +1,9 @@
 package classes.Ai;
 
+import classes.Game.I18N.PieceType;
 import classes.Game.Model.Structure.Field;
 import classes.Game.Model.Structure.IPiece;
+import classes.Game.Model.Structure.Piece;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -24,12 +26,12 @@ public class Evaluator {
     }
 
     private static double sumOfBoard(){
-//        double sum = 0;
-//        for (IPiece p : getBoard().getPiecesWithoutHit()) {
-//            sum += ((Piece) p).getVALUE();
-//        }
-//        return sum;
-        return finalValueCalculation(true) + finalValueCalculation(false);
+        double sum = 0;
+        for (IPiece p : getBoard().getPiecesWithoutHit()) {
+            sum += ((Piece) p).getVALUE();
+        }
+        return sum;
+//        return finalValueCalculation(true) + finalValueCalculation(false);
     }
 
     //endregion
@@ -78,6 +80,65 @@ public class Evaluator {
         }else {
             return FIELD_BASE_VALUES_BY_PIECE_TYPE.get(N)[p.getI()][p.getJ()];
         }
+    }
+    
+    public static double getBaseFieldValueFor(int indexOfPiece, char Type){
+        boolean forWhite = Character.isUpperCase(Type);
+        PieceType type = null;
+        int i = indexOfPiece / 8, j = indexOfPiece % 8;
+        type = getPieceType(Type, type);
+        if (type != N){
+            if (whiteDown){
+                return forWhite ? FIELD_BASE_VALUES_BY_PIECE_TYPE.get(type)[i][j] :
+                        mirrorMatrixHorizontally(FIELD_BASE_VALUES_BY_PIECE_TYPE.get(type))[i][j];
+            }else {
+                Double[][] mirroredVertically = mirrorMatrixVertically(FIELD_BASE_VALUES_BY_PIECE_TYPE.get(type));
+                return forWhite ? mirroredVertically[i][j] :
+                        mirrorMatrixHorizontally(mirroredVertically)[i][j];
+            }
+        }else {
+            return FIELD_BASE_VALUES_BY_PIECE_TYPE.get(N)[i][j];
+        }
+    }
+
+    private static PieceType getPieceType(char Type, PieceType type) {
+        switch (Type){
+            case 'P', 'p' -> type = P;
+            case 'N', 'n' -> type = N;
+            case 'B', 'b' -> type = B;
+            case 'R', 'r' -> type = R;
+            case 'Q', 'q' -> type = Q;
+            case 'K', 'k' -> type = K;
+        }
+        return type;
+    }
+
+    public static double getBaseFieldValueFor(long bitBoard, char TYPE){
+        boolean isWhite = Character.isUpperCase(TYPE);
+        PieceType type = null;
+        type = getPieceType(TYPE, type);
+        return getBaseFieldValueFor(bitBoard, isWhite, type);
+    }
+
+    private static double getBaseFieldValueFor(long bitBoard, boolean isWhite, PieceType type){
+        double value = 0;
+        long i = bitBoard & -bitBoard;
+        int j, z;
+        int loc;
+        while (i != 0){
+            loc = 63 - Long.numberOfLeadingZeros(i);
+            j = loc / 8;
+            z = loc % 8;
+            if (type != N){
+                value += isWhite ? FIELD_BASE_VALUES_BY_PIECE_TYPE.get(type)[j][z] :
+                                    mirrorMatrixHorizontally(FIELD_BASE_VALUES_BY_PIECE_TYPE.get(type))[j][z];
+            }else {
+                value += FIELD_BASE_VALUES_BY_PIECE_TYPE.get(N)[j][z];
+            }
+            bitBoard &= ~i;
+            i = bitBoard & -bitBoard;
+        }
+        return value;
     }
 
     public static void addBaseFieldValues(){

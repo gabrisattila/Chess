@@ -14,10 +14,5 @@ public class Main {
     public static void main(String[] args) {
 //           exceptionIgnorer();
         new EDT();
-        for (int i = 63; i >= 0; i--) {
-            System.out.print((i < 10 ? " " : "") + i + " ");
-            if (i % 8 == 0)
-                System.out.println();
-        }
     }
 }

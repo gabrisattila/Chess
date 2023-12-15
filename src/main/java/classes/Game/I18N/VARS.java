@@ -191,7 +191,7 @@ public class VARS {
         public static final Map<PieceType, Double[][]> FIELD_BASE_VALUES_BY_PIECE_TYPE = new HashMap<>(){{
             put(P, PAWN_BASE_VALUE_MATRIX);
             put(N, KNIGHT_BASE_VALUE_MATRIX);
-            put(PieceType.R, BISHOP_BASE_VALUE_MATRIX);
+            put(B, BISHOP_BASE_VALUE_MATRIX);
             put(R, ROOK_BASE_VALUE_MATRIX);
             put(Q, QUEEN_BASE_VALUE_MATRIX);
             put(K, KING_BASE_VALUE_MATRIX);
@@ -376,7 +376,7 @@ public class VARS {
             put("whiteDownOnlyKingsAndRooks", "R3K2R/8/8/8/8/8/8/r3k2r w KQkq - 1 0");
             put("whiteUpOnlyKingsAndRooks", "r2k3r/8/8/8/8/8/8/R2K3R w KQkq - 1 0");
             put("whiteDownEachCanCastleBothSides", "R3K2R/8/8/8/8/8/8/r3k2r w KQkq - 1 0");
-            put("whiteDownBlackCanCastleOneSide", "R3K2R/8/8/8/8/8/8/4k2r b KQk- - 1 1");
+            put("whiteDownBlackCanCastleOneSide", "R3K3/8/8/8/8/8/8/4k2r w -Qk- - 1 0");
             put("whiteDownBlackCanCastleNoSide", "R3KR2/8/8/8/8/8/8/4k2r b -Qk- - 1 1");
             put("whiteDownBlackCanCastleNoSideBecauseItIsInCheck", "R3K3/4R3/8/8/8/8/8/4k2r b -Qk- - 1 1");
 
@@ -487,7 +487,7 @@ public class VARS {
 
         public static int MAX_HEIGHT = 8;
 
-        public static int MINIMAX_DEPTH = 5;
+        public static int MINIMAX_DEPTH = 8;
 
         public static int nodeNum = 0;
 

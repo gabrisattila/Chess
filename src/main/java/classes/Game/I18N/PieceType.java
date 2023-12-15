@@ -1,5 +1,7 @@
 package classes.Game.I18N;
 
+import static classes.Game.I18N.VARS.FINALS.*;
+
 public enum PieceType {
 
     P,
@@ -63,6 +65,28 @@ public enum PieceType {
                 return 'k';
             }
         }
+    }
+
+
+    public double getValueOfPieceType(){
+        switch (this){
+            case P -> {
+                return PAWN_BASE_VALUE;
+            }
+            case N, B -> {
+                return KNIGHT_OR_BISHOP_BASE_VALUE;
+            }
+            case R -> {
+                return ROOK_BASE_VALUE;
+            }
+            case Q -> {
+                return QUEEN_BASE_VALUE;
+            }
+            case K -> {
+                return KING_BASE_VALUE;
+            }
+        }
+        return 0;
     }
 
 }

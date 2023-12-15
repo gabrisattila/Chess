@@ -127,10 +127,10 @@ public class BitBoards {
         StringBuilder row = new StringBuilder();
         int counter = 0;
 
-        System.out.println();
-        printBitBoards(true, whitePawn, whiteKnight, whiteBishop, whiteRook, whiteQueen, whiteKing);
-        printBitBoards(false, blackPawn, blackKnight, blackBishop, blackRook, blackQueen, blackKing);
-        
+//        System.out.println();
+//        printBitBoards(true, whitePawn, whiteKnight, whiteBishop, whiteRook, whiteQueen, whiteKing);
+//        printBitBoards(false, blackPawn, blackKnight, blackBishop, blackRook, blackQueen, blackKing);
+//
         for (int i = 0; i < MAX_WIDTH * MAX_HEIGHT; i++) {
             counter = upgradeCounter(i, counter,
                     whitePawn, whiteKnight, whiteBishop, whiteRook, whiteQueen, whiteKing,
@@ -156,7 +156,9 @@ public class BitBoards {
         fen.append(bKC ? "k" : "-");
         fen.append(bQC ? "q" : "-");
         fen.append(" ");
-        fen.append(emPassant == -1 ? "-" : emPassant);
+        String emPassantString = emPassant == -1 ? "-" : String.valueOf(emPassant / 8);
+        emPassantString += emPassant == -1 ? "" : String.valueOf(emPassant % 8);
+        fen.append(emPassantString);
         fen.append(" ");
         fen.append(stepNumber++);
         fen.append(" ");

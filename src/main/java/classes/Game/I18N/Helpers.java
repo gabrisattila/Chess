@@ -5,7 +5,7 @@ import classes.Game.Model.Structure.*;
 
 import java.util.*;
 
-import static classes.Ai.Evaluator.getBaseFieldValueFor;
+import static classes.Ai.Evaluator.*;
 import static classes.Ai.FenConverter.charToPieceType;
 import static classes.GUI.FrameParts.ViewBoard.getViewBoard;
 import static classes.Game.I18N.VARS.MUTABLE.*;
@@ -108,6 +108,15 @@ public class Helpers {
             System.out.println(pieceOnBoardToString(p) + " " +
                     rangeToString(p.getPossibleRange()));
         }
+    }
+
+    public static void printBitBoardIndexes(){
+        for (int i = 63; i >= 0; i--) {
+            System.out.print((i < 10 ? " " : "") + i + " ");
+            if (i % 8 == 0)
+                System.out.println();
+        }
+        System.out.println();
     }
 
     public static String pieceOnBoardToString(IPiece piece){
