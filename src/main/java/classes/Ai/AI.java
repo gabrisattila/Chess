@@ -397,38 +397,6 @@ public class AI extends Thread {
         return new Pair<>(bestChild, fen);
     }
 
-    public static boolean itWorthToGiveUp(){
-
-        double enemyPiecesValueSum = getBoard().getPieces(!whiteToPlay).stream().mapToDouble(p -> ((Piece) p).getVALUE()).sum();
-        double myPiecesValueSum = getBoard().getPieces(whiteToPlay).stream().mapToDouble(p -> ((Piece) p).getVALUE()).sum();
-
-        return Math.abs(enemyPiecesValueSum + myPiecesValueSum) > ROOK_BASE_VALUE + KNIGHT_OR_BISHOP_BASE_VALUE &&
-                                        getBoard().getPieces(whiteToPlay).stream().allMatch(p -> p.getType() == K || p.getType() == P);
-    }
-
-    public static boolean itWorthToOfferOrRecommendDraw(){
-        if (getBoard().getPieces().size() == 3 && getBoard().hasTwoKings() &&
-                getBoard().getPieces().stream().allMatch(p -> p.getType() == K || p.getType() == P)){
-            IPiece onlyPawn = null;
-            IPiece enemyKing = null;
-            for (IPiece p : getBoard().getPieces()) {
-                if (p.getType() == P){
-                    onlyPawn = p;
-                }
-            }
-            assert onlyPawn != null;
-            enemyKing = getBoard().getKing(!onlyPawn.isWhite());
-            if (onlyPawn.getJ() != 0 || onlyPawn.getJ() != MAX_WIDTH - 1){
-                return false;
-            }
-            int pawnDistance = Math.abs(onlyPawn.getJ() - onlyPawn.getEnemyStartRow());
-            int kingDistance = Math.max(Math.abs(enemyKing.getJ() - onlyPawn.getJ()), Math.abs(enemyKing.getI() - onlyPawn.getEnemyStartRow()));
-            return !(kingDistance < pawnDistance);
-        }
-        return getBoard().hasTwoKings() && getBoard().getPieces().size() == 4 &&
-                getBoard().getPieces().stream().allMatch(p -> p.getType() == K || p.getType() == N);
-    }
-
     /**
      * @param legalMove the move what about we make the modifications in the variables
      * @param wKC       castle bools

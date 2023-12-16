@@ -286,7 +286,7 @@ public class METHODS {
         flashFrame.setSize(400, 200);
         flashFrame.getContentPane().setBackground(BLACK);
 
-        JLabel label = new JLabel(message);
+        JLabel label = new JLabel("<html><div style='text-align: center;'>" + message.replace("\n", "<br>") + "</div></html>");
         label.setForeground(WHITE);
         label.setVerticalAlignment(SwingConstants.CENTER);
         label.setHorizontalAlignment(SwingConstants.CENTER);

@@ -28,10 +28,6 @@ public class ChessButton extends JButton {
 
     private static JDialog pauseDialog;
 
-    private static ChessButton continueButton;
-
-    private static ChessButton exitButton;
-
     //endregion
 
 
@@ -192,8 +188,8 @@ public class ChessButton extends JButton {
             pauseDialog.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
             pauseDialog.setLayout(new FlowLayout());
 
-            continueButton = new ChessButton("Folytatás");
-            exitButton = new ChessButton("Kilépés");
+            ChessButton continueButton = new ChessButton("Folytatás");
+            ChessButton exitButton = new ChessButton("Kilépés");
 
             pause();
 
@@ -297,9 +293,9 @@ public class ChessButton extends JButton {
                 else {
                     writer.write("whiteDown" + "blackAi\n" + fen);
                 }
-                showFlashFrame("<html><div style='text-align: center;'>A mentés megtörtént a<br>" +
-                        "src\\main\\java\\Saves helyre<br>" +
-                        save +".txt</div></html>", 3);
+                showFlashFrame("A mentés megtörtént a\n" +
+                        "src\\main\\java\\Saves helyre" +
+                        save +".txt", 3);
             } catch (IOException e) {
                 e.printStackTrace();
             }
