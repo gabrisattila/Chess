@@ -94,10 +94,11 @@ public class EDT {
         if (theresOnlyOneAi){
             switchWhoComes();
             buttonsEnabled(new ArrayList<>(){{add("All");}});
-            getViewBoard().setFieldColorsToNormal();
             getViewBoard().rangeUpdater();
+            getViewBoard().setFieldColorsToNormal();
         }else {
-            buttonsEnabled(new ArrayList<>(){{add("Mentés"); add("Szünet");}});
+            buttonsEnabled(new ArrayList<>(){{add("Új játék"); add("Mentés"); add("Szünet");}});
+            getViewBoard().setFieldColorsToNormal();
             startAI();
         }
     }

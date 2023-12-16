@@ -151,21 +151,6 @@ public class ViewField extends JButton implements classes.Game.Model.Structure.I
             }
         }
 
-        @Override
-        public void mouseEntered(MouseEvent e) {
-            hoover((ViewField) e.getSource());
-        }
-
-        @Override
-        public void mouseExited(MouseEvent e) {
-            hoover((ViewField) e.getSource());
-        }
-
-        private void hoover(ViewField source) {
-            if (playerTurn)
-                changeFieldColor(source);
-        }
-
         private void PlayerClick(ViewField clicked) {
             if (CLICK_COUNTER == 0 && clicked.isGotPiece() && clicked.piece.isWhite() == whiteToPlay && !clicked.piece.getPossibleRange().isEmpty()){
                 changeColor(clicked);
