@@ -353,7 +353,7 @@ public class AI extends Thread {
         int elapsedTime = endTime - startTime;
         System.out.println("Under " + ((double) elapsedTime / 1000) + " seconds.");
         double nps =((double) nodeNum / ((double) elapsedTime / 1000));
-        System.out.println("That means the effectiveness is: " + nps);
+        System.out.println("That means the effectiveness is: " + nps + " node / sec.");
         System.out.println(transPosNum + " transposition happened.");
         System.out.println();
     }
