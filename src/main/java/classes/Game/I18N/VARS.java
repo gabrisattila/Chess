@@ -403,6 +403,7 @@ public class VARS {
             put("whiteDownOutOfMemoryAfterCheck1", "R1B1KR2/3PPPn1/N1P2NP1/1P4pP/2pB1p1p/4p1qb/p2p4/r1b1k1nr w -Qkq - 1 0");
             put("whiteDownOutOfMemoryAfterCheck2", "2BK1BR1/3Q4/N1n3q1/3ppNpP/2b1n3/R6r/ppk2p1b/6r1 w ---- - 1 0");
             put("problemWithCheck", "R3KB1B/PPPB1PPP/5N2/3P4/1NQ4p/1k4p1/pppp4/rnbq1bnb b ---- - 1 1");
+            put("bitBoardAiStaysInCheck", "RN2KB1R/PPP2PPP/5N2/3PP3/8/7Q/pppppp1p/rnb1qkr1 b ---- - 7 1");
 
             //endregion
 
@@ -414,6 +415,7 @@ public class VARS {
             put("whiteDownCheckMateInOneTwoKingOneRookSomeSteps4x4", "k3/4/4/K2R b ---- - 1 1");
             put("whiteDownCheckMateInOneTwoKingOneQueenSteps5x5", "k4/5/5/5/K3Q b ---- - 1 1");
             put("whiteGotCheckMate", "5R1K/1Pr3qP/1B2p3/6n1/5P2/1Q5p/3R1pp1/4r1k1 w ---- - 1 0");
+            put("blackGotCheckMateWrong", "RNB1K2R/PPP2PPP/8/2BPP3/8/5n1N/pppppQ1p/rnb2kr1 b KQ-- - 10 1");
 
             //endregion
 
@@ -487,7 +489,7 @@ public class VARS {
 
         public static int MAX_HEIGHT = 8;
 
-        public static int MINIMAX_DEPTH = 10;
+        public static int MINIMAX_DEPTH = 8;
 
         public static int nodeNum = 0;
 

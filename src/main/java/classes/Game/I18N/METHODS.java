@@ -10,11 +10,21 @@ import javax.swing.Timer;
 import java.util.stream.Collectors;
 
 import static classes.Ai.FenConverter.*;
+import static classes.GUI.FrameParts.ChessButton.ChessButtonMouseListener.saveBoard;
+import static classes.GUI.FrameParts.ViewBoard.getViewBoard;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.GUI.Frame.Window.*;
 
 public class METHODS {
+
+    public static void saveBoardInsteadOfException(){
+        Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            saveBoard(getViewBoard());
+        });
+    }
 
     public static void exceptionIgnorer(){
         Thread.setDefaultUncaughtExceptionHandler((t, e) -> {

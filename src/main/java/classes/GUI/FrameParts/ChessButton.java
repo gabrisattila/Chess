@@ -178,7 +178,7 @@ public class ChessButton extends JButton {
         }
 
         private void newGameTestClicked() {
-            newGameInitialization(true, true, true, "");
+            newGameInitialization(true, false, true, "");
         }
 
         private void pauseClicked() {
@@ -256,7 +256,7 @@ public class ChessButton extends JButton {
             isTest = test;
 
             if (isTest && "".equals(setUpFen)){
-                setUpFen = testFens.get("blackDownWhitePawnsFrontEmPassant");
+                setUpFen = testFens.get("blackGotCheckMateWrong");
             }
 
             if (!isFirstOpen && "".equals(setUpFen)){
@@ -279,7 +279,7 @@ public class ChessButton extends JButton {
             Zobrist.fillZobristTable();
         }
 
-        private void saveBoard(IBoard board) {
+        public static void saveBoard(IBoard board) {
 
             String fen = BoardToFen(board);
             String save = dateToString(new Date());

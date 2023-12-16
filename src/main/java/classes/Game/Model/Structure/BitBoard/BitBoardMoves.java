@@ -341,7 +341,7 @@ public class BitBoardMoves {
         while (i != 0){
             int startLoc = 63 - Long.numberOfLeadingZeros(i);
 
-            possibility = movingPossibilities(type, startLoc);
+            possibility = movingPossibilities(type, startLoc, false);
             long j = possibility & -possibility;
 
             while (j != 0)
@@ -390,7 +390,7 @@ public class BitBoardMoves {
         while (i != 0){
             int startLoc = 63 - Long.numberOfLeadingZeros(i);
 
-            possibility |= movingPossibilities(type, startLoc);
+            possibility |= movingPossibilities(type, startLoc, true);
 
             used &= ~i;
             i = used & -used;
@@ -399,7 +399,7 @@ public class BitBoardMoves {
         return possibility;
     }
 
-    private static long movingPossibilities(String type, int startLoc){
+    private static long movingPossibilities(String type, int startLoc, boolean lookForUnSafePlaces){
         long possibility = 0L;
         boolean forWhite = Character.isUpperCase(type.charAt(0));
         if ("K".equals(type) || "k".equals(type) || "N".equals(type) || "n".equals(type)) {
@@ -420,7 +420,8 @@ public class BitBoardMoves {
                 default -> possibility |= diagonalAndAntiDiagonalMoves(startLoc) | horizontalAndVerticalMoves(startLoc);
             }
         }
-        possibility &= (forWhite ? HITTABLE_BY_WHITE : HITTABLE_BY_BLACK) | EMPTY;
+        if (!lookForUnSafePlaces)
+            possibility &= (forWhite ? HITTABLE_BY_WHITE : HITTABLE_BY_BLACK) | EMPTY;
         return possibility;
     }
 

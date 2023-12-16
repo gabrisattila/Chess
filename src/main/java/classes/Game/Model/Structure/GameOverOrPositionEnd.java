@@ -64,7 +64,7 @@ public class GameOverOrPositionEnd {
                     (whiteToPlay ? "Feladtad." : "Az ellenfeled feladta a partit.") :
                     ("Világos feladta.");
         }
-
+        buttonsEnabled(new ArrayList<>(){{add("Új játék"); add("Betöltés");}});
         JOptionPane.showMessageDialog(getViewBoard(), message, title, JOptionPane.INFORMATION_MESSAGE);
     }
 
@@ -87,11 +87,11 @@ public class GameOverOrPositionEnd {
             return submissionOrDraw;
         }
 
-        if (submissionOrDraw == DRAW_OFFER && itWorthToOfferOrRecommendDraw()) {
-            finalGameEnd(directViewCase);
-            return DRAW;
-        } else {
-            if (directViewCase){
+        if (submissionOrDraw == DRAW_OFFER) {
+            if (itWorthToOfferOrRecommendDraw()){
+                finalGameEnd(directViewCase);
+                return DRAW;
+            } else if (directViewCase) {
                 showFlashFrame("Döntetlent ajánlottál, \naz ellenfeled nem fogadta el.", 5);
             }
         }

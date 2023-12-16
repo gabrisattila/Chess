@@ -87,6 +87,8 @@ public class AI extends Thread {
     //region Mini Max
 
     private void moveWithMiniMaxAi() {
+        convertOneBoardToAnother(getViewBoard(), getBoard());
+        GameOverDecision(getBoard(), true, Double.MIN_VALUE);
         if (!gameFinished()) {
             MINIMAX("bitBoard");
         }
@@ -456,20 +458,47 @@ public class AI extends Thread {
 
         ArrayList<Long> nexts = new ArrayList<>();
 
-        String neededBoardsForTheMove = decideWhichBoardsWillBeUsed(legalMove);
-        switch (neededBoardsForTheMove.charAt(0)){
-            case 'P' -> whitePawn = moveAPieceOnBoard(legalMove, whitePawn, "P");
-            case 'N' -> whiteKnight = moveAPieceOnBoard(legalMove, whiteKnight, "N");
-            case 'B' -> whiteBishop = moveAPieceOnBoard(legalMove, whiteBishop, "B");
-            case 'R' -> whiteRook = moveAPieceOnBoard(legalMove, whiteRook, "R");
-            case 'Q' -> whiteQueen = moveAPieceOnBoard(legalMove, whiteQueen, "Q");
-            case 'K' -> whiteKing = moveAPieceOnBoard(legalMove, whiteKing, "K");
-            case 'p' -> blackPawn = moveAPieceOnBoard(legalMove, blackPawn, "p");
-            case 'n' -> blackKnight = moveAPieceOnBoard(legalMove, blackKnight, "n");
-            case 'b' -> blackBishop = moveAPieceOnBoard(legalMove, blackBishop, "b");
-            case 'r' -> blackRook = moveAPieceOnBoard(legalMove, blackRook, "r");
-            case 'q' -> blackQueen = moveAPieceOnBoard(legalMove, blackQueen, "q");
-            case 'k' -> blackKing = moveAPieceOnBoard(legalMove, blackKing, "k");
+        if (Character.isUpperCase(legalMove.charAt(0))){
+            whitePawn = moveAPieceOnBoard(legalMove, whitePawn, "P");
+            whiteKnight = moveAPieceOnBoard(legalMove, whiteKnight, "N");
+            whiteBishop = moveAPieceOnBoard(legalMove, whiteBishop, "B");
+            whiteRook = moveAPieceOnBoard(legalMove, whiteRook, "R");
+            whiteQueen = moveAPieceOnBoard(legalMove, whiteQueen, "Q");
+            whiteKing = moveAPieceOnBoard(legalMove, whiteKing, "K");
+            blackPawn = moveAPieceOnBoard(legalMove, blackPawn, "p");
+            blackKnight = moveAPieceOnBoard(legalMove, blackKnight, "n");
+            blackBishop = moveAPieceOnBoard(legalMove, blackBishop, "b");
+            blackRook = moveAPieceOnBoard(legalMove, blackRook, "r");
+            blackQueen = moveAPieceOnBoard(legalMove, blackQueen, "q");
+            blackKing = moveAPieceOnBoard(legalMove, blackKing, "k");
+        } else {
+            blackPawn = moveAPieceOnBoard(legalMove, blackPawn, "p");
+            blackKnight = moveAPieceOnBoard(legalMove, blackKnight, "n");
+            blackBishop = moveAPieceOnBoard(legalMove, blackBishop, "b");
+            blackRook = moveAPieceOnBoard(legalMove, blackRook, "r");
+            blackQueen = moveAPieceOnBoard(legalMove, blackQueen, "q");
+            blackKing = moveAPieceOnBoard(legalMove, blackKing, "k");
+            whitePawn = moveAPieceOnBoard(legalMove, whitePawn, "P");
+            whiteKnight = moveAPieceOnBoard(legalMove, whiteKnight, "N");
+            whiteBishop = moveAPieceOnBoard(legalMove, whiteBishop, "B");
+            whiteRook = moveAPieceOnBoard(legalMove, whiteRook, "R");
+            whiteQueen = moveAPieceOnBoard(legalMove, whiteQueen, "Q");
+            whiteKing = moveAPieceOnBoard(legalMove, whiteKing, "K");
+        }
+        /*
+        switch (legalMove.charAt(0)){
+            case 'P' ->
+            case 'N' ->
+            case 'B' ->
+            case 'R' ->
+            case 'Q' ->
+            case 'K' ->
+            case 'p' ->
+            case 'n' ->
+            case 'b' ->
+            case 'r' ->
+            case 'q' ->
+            case 'k' ->
         }
         if (neededBoardsForTheMove.length() > 1){
             if (neededBoardsForTheMove.length() == 2){
@@ -506,7 +535,7 @@ public class AI extends Thread {
                     case 'q' -> blackQueen = moveAPieceOnBoard(legalMove, blackQueen, "q");
                 }
             }
-        }
+        }*/
 
 
          return getLongs(nexts, Character.isUpperCase(legalMove.charAt(0)),
@@ -542,7 +571,8 @@ public class AI extends Thread {
             ArrayList<Long> nexts, boolean forWhite,
             long whitePawn, long whiteKnight, long whiteBishop, long whiteRook, long whiteQueen, long whiteKing,
             long blackPawn, long blackKnight, long blackBishop, long blackRook, long blackQueen, long blackKing) {
-
+        OCCUPIED = whitePawn | whiteKnight | whiteBishop | whiteRook | whiteQueen | whiteKing |
+                    blackPawn | blackKnight | blackBishop | blackRook | blackQueen | blackKing;
         if ((forWhite && (whiteKing & unsafeFor(true, whitePawn, whiteKnight, whiteBishop, whiteRook, whiteQueen, whiteKing,
                                                 blackPawn, blackKnight, blackBishop, blackRook, blackQueen, blackKing)) == 0) ||
             (!forWhite && (blackKing & unsafeFor(false, whitePawn, whiteKnight, whiteBishop, whiteRook, whiteQueen, whiteKing,
