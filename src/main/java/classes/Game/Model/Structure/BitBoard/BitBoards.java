@@ -11,6 +11,7 @@ import static classes.Ai.FenConverter.*;
 import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
+import static classes.Game.I18N.VARS.MUTABLE.emPassantChance;
 import static classes.Game.Model.Structure.BitBoard.BBVars.*;
 import static classes.Game.Model.Structure.Board.*;
 
@@ -22,13 +23,6 @@ public class BitBoards {
 
     //endregion
 
-    //region Constructor
-
-    public BitBoards(String fen){
-        setUpBitBoard(fen);
-    }
-
-    //endregion
 
     //region Methods
 
@@ -115,6 +109,12 @@ public class BitBoards {
         return bitBoard;
     }
 
+    public static int emPassantToBitBoard(String emPassantChance){
+        int emPassant = "-".equals(emPassantChance) ? -1 : Integer.parseInt(emPassantChance);
+        emPassant = emPassant == -1 ? -1 : (emPassant / 10) * 8 + oppositeInsideEight.get(emPassant % 10);
+        return emPassant;
+    }
+
     //endregion
 
     //region Bit Boards To Fen
@@ -130,7 +130,7 @@ public class BitBoards {
 //        System.out.println();
 //        printBitBoards(true, whitePawn, whiteKnight, whiteBishop, whiteRook, whiteQueen, whiteKing);
 //        printBitBoards(false, blackPawn, blackKnight, blackBishop, blackRook, blackQueen, blackKing);
-//
+
         for (int i = 0; i < MAX_WIDTH * MAX_HEIGHT; i++) {
             counter = upgradeCounter(i, counter,
                     whitePawn, whiteKnight, whiteBishop, whiteRook, whiteQueen, whiteKing,

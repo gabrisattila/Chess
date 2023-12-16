@@ -97,6 +97,17 @@ public class BBVars {
 
     public static HashMap<Long, AiNodeBBStyle> alreadyWatchedNodes = new HashMap<>();
 
+    public static final Map<Integer, Integer> oppositeInsideEight = new HashMap<>(){{
+        put(7, 0);
+        put(0, 7);
+        put(6, 1);
+        put(1, 6);
+        put(5, 2);
+        put(2, 5);
+        put(4, 3);
+        put(3, 4);
+    }};
+
     public static final long[] RowMasks8 = {
             0xFFL,
             0xFF00L,

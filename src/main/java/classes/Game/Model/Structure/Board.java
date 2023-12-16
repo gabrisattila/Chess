@@ -145,8 +145,7 @@ public class Board implements IBoard {
 
     @Override
     public void cleanBoard() {
-        synchronized (pauseFlag){
-            waitOnPause();
+
             for (ArrayList<IField> row : this.fields) {
                 for (IField f : row) {
                     if (!(f instanceof Field)) {
@@ -161,25 +160,21 @@ public class Board implements IBoard {
             pieces.clear();
             whitePieceSet.clean();
             blackPieceSet.clean();
-        }
     }
 
     @Override
     public void rangeUpdater() {
-        synchronized (pauseFlag){
-            waitOnPause();
-            clearRangesAndStuffBeforeUpdate();
-            pseudos();
-            if (hasTwoKings()) {
-                constrainPseudos();
-                inspectCheck(!whiteToPlay);
-                if (isNull(checkers)) {
-                    kingFreeRange(!whiteToPlay);
-                    kingFreeRange(whiteToPlay);
-                } else {
-                    kingFreeRange(!whiteToPlay);
-                    kingRangeInsteadOfCheck(whiteToPlay);
-                }
+        clearRangesAndStuffBeforeUpdate();
+        pseudos();
+        if (hasTwoKings()) {
+            constrainPseudos();
+            inspectCheck(!whiteToPlay);
+            if (isNull(checkers)) {
+                kingFreeRange(!whiteToPlay);
+                kingFreeRange(whiteToPlay);
+            } else {
+                kingFreeRange(!whiteToPlay);
+                kingRangeInsteadOfCheck(whiteToPlay);
             }
         }
     }

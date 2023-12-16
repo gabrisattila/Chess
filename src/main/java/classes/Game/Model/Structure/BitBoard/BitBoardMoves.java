@@ -19,44 +19,47 @@ public class BitBoardMoves {
     public static ArrayList<String> possibleMoves(boolean maxNeeded, int emPassantChance,
                                        boolean whiteKingCastleEnabled, boolean whiteQueenCastleEnabled,
                                        boolean blackKingCastleEnabled, boolean blackQueenCastleEnabled,
-                                       long wG, long wN, long wB, long wR, long wQ, long wK,
+                                       long wP, long wN, long wB, long wR, long wQ, long wK,
                                        long bP, long bN, long bB, long bR, long bQ, long bK) {
 
-        HITTABLE_BY_BLACK = wG | wN | wB | wR | wQ;
+        HITTABLE_BY_BLACK = wP | wN | wB | wR | wQ;
         HITTABLE_BY_WHITE = bP | bN | bB | bR | bQ;
-        OCCUPIED = mergeFullBitBoard(new ArrayList<>(){{add(wG); add(wN); add(wB); add(wR); add(wQ); add(wK);
+        OCCUPIED = mergeFullBitBoard(new ArrayList<>(){{add(wP); add(wN); add(wB); add(wR); add(wQ); add(wK);
             add(bP); add(bN); add(bB); add(bR); add(bQ); add(bK);}});
         EMPTY = ~OCCUPIED;
 
         String moves = pawnMoves(
-                maxNeeded, emPassantChance, wG,  wN,  wB,  wR,  wQ,  wK, bP,  bN,  bB,  bR,  bQ,  bK);
-        moves += knightMoves(maxNeeded, wG,  wN,  wB,  wR,  wQ,  wK, bP,  bN,  bB,  bR,  bQ,  bK);
-        moves += bishopMoves(maxNeeded, wG,  wN,  wB,  wR,  wQ,  wK, bP,  bN,  bB,  bR,  bQ,  bK);
-        moves += rookMoves(maxNeeded, wG,  wN,  wB,  wR,  wQ,  wK, bP,  bN,  bB,  bR,  bQ,  bK);
-        moves += queenMoves(maxNeeded, wG,  wN,  wB,  wR,  wQ,  wK, bP,  bN,  bB,  bR,  bQ,  bK);
+                maxNeeded, emPassantChance, wP,  wN,  wB,  wR,  wQ,  wK, bP,  bN,  bB,  bR,  bQ,  bK);
+        moves += knightMoves(maxNeeded, wP,  wN,  wB,  wR,  wQ,  wK, bP,  bN,  bB,  bR,  bQ,  bK);
+        moves += bishopMoves(maxNeeded, wP,  wN,  wB,  wR,  wQ,  wK, bP,  bN,  bB,  bR,  bQ,  bK);
+        moves += rookMoves(maxNeeded, wP,  wN,  wB,  wR,  wQ,  wK, bP,  bN,  bB,  bR,  bQ,  bK);
+        moves += queenMoves(maxNeeded, wP,  wN,  wB,  wR,  wQ,  wK, bP,  bN,  bB,  bR,  bQ,  bK);
         moves += kingMoves(
                 maxNeeded, whiteKingCastleEnabled, whiteQueenCastleEnabled,
                 blackKingCastleEnabled, blackQueenCastleEnabled,
-                wG, wN, wB, wR, wQ, wK, bP, bN, bB, bR, bQ, bK, OCCUPIED);
+                wP, wN, wB, wR, wQ, wK, bP, bN, bB, bR, bQ, bK, OCCUPIED);
         String[] moveList = moves.split("_");
         TreeMap<Double, Set<String>> finalMoveMap = new TreeMap<>(maxNeeded ?
-                                                                    Comparator.<Double>naturalOrder() :
-                                                                    Comparator.<Double>reverseOrder());
-        String[] moveAndPoint;
-        double point;
-        for (String move : moveList) {
-            moveAndPoint = move.split("/");
-            move = moveAndPoint[0];
-            point = Double.parseDouble(moveAndPoint[1]);
-            putToPossibilityMap(finalMoveMap, point, move);
+                                                                    Comparator.<Double>reverseOrder() :
+                                                                    Comparator.<Double>naturalOrder());
+        if (!moves.isEmpty()){
+            String[] moveAndPoint;
+            double point;
+            for (String move : moveList) {
+                moveAndPoint = move.split("/");
+                move = moveAndPoint[0];
+                point = Double.parseDouble(moveAndPoint[1]);
+                putToPossibilityMap(finalMoveMap, point, move);
+            }
+
+            ArrayList<String> finalMoves = new ArrayList<>();
+            for (double d : finalMoveMap.keySet()) {
+                finalMoves.addAll(finalMoveMap.get(d));
+            }
+
+            return finalMoves;
         }
-        
-        ArrayList<String> finalMoves = new ArrayList<>();
-        for (double d : finalMoveMap.keySet()) {
-            finalMoves.addAll(finalMoveMap.get(d));
-        }
-        
-        return finalMoves;
+        return new ArrayList<>();
     }
 
     public static long moveAPieceOnBoard(String move, long boardToMoveOn, String typeOfBoard){
@@ -258,7 +261,8 @@ public class BitBoardMoves {
         moves.append(moveDocStringExceptPawn(type, wG,  wN,  wB,  wR,  wQ,  wK, bP,  bN,  bB,  bR,  bQ,  bK, unsafe));
         castle( type, moves,
                 wKC,  wQC,  bKC,  bQC,
-                wG,  wN,  wB,  wR,  wQ,  wK, bP,  bN,  bB,  bR,  bQ,  bK, occ);
+                wG,  wN,  wB,  wR,  wQ,  wK, bP,  bN,  bB,  bR,  bQ,  bK,
+                occ, unsafe);
         return moves.toString();
     }
 
@@ -313,7 +317,7 @@ public class BitBoardMoves {
     }
 
     private static String moveDocStringExceptPawn(String type, 
-                                                  long wG, long wN, long wB, long wR, long wQ, long wK,
+                                                  long wP, long wN, long wB, long wR, long wQ, long wK,
                                                   long bP, long bN, long bB, long bR, long bQ, long bK,
                                                   long unsafe){
         StringBuilder moves = new StringBuilder();
@@ -358,13 +362,13 @@ public class BitBoardMoves {
                     moves.append(startLoc);
                     moves.append('-');
                     moves.append(endLoc);
-                    appendRookMoveNote(moves, type, startLoc);
                 }
                 if (!"K".equals(type) && !"k".equals(type) || (1L << endLoc & unsafe) == 0){
-                    captureOtherNote(type, moves, possibility,
-                            forWhite ? wG : bP, forWhite ? wN : bN, forWhite ? wB : bB, forWhite ? wR : bR, forWhite ? wQ : bQ
+                    appendRookMoveNote(moves, type, startLoc);
+                    captureOtherNote(type, moves, endLoc,
+                            forWhite ? bP : wP, forWhite ? bN : wN, forWhite ? bB : wB, forWhite ? bR : wR, forWhite ? bQ : wQ
                     );
-                    appendMergedBoardsFinalVal(moves, wG,  wN,  wB,  wR,  wQ, bP,  bN,  bB,  bR,  bQ);
+                    appendMergedBoardsFinalVal(moves, wP,  wN,  wB,  wR,  wQ, bP,  bN,  bB,  bR,  bQ);
                     moves.append('_');
                 }
                 possibility &= ~j;
@@ -424,10 +428,8 @@ public class BitBoardMoves {
                                  boolean wKC, boolean wQC, boolean bKC, boolean bQC,
                                  long wG, long wN, long wB, long wR, long wQ, long wK,
                                  long bP, long bN, long bB, long bR, long bQ, long bK,
-                                 long occupied){
+                                 long occupied, long unsafe){
         boolean forWhite = Character.isUpperCase(type.charAt(0));
-
-        long unsafe = unsafeFor(forWhite, wG, wN, wB, wR, wQ, wK, bP, bN, bB, bR, bQ, bK);
 
         if (isKingSideCastleEnabled(forWhite, whiteDown, forWhite ? wKC : bKC, forWhite ? wK : bK,
                                     forWhite ? wR : bR, unsafe, occupied)){
@@ -454,19 +456,19 @@ public class BitBoardMoves {
         moves.append("_");
     }
 
-    private static void captureOtherNote(String type, StringBuilder moves, long used, long hitPawn, long hitKnight, long hitBishop, long hitRook, long hitQueen){
+    private static void captureOtherNote(String type, StringBuilder moves, int endLoc, long hitPawn, long hitKnight, long hitBishop, long hitRook, long hitQueen){
         String capture = "-C";
         String capturedType = "";
         boolean capturerIsWhite = Character.isUpperCase(type.charAt(0));
-        if ((used & hitPawn) != 0){
+        if (((1L << endLoc) & hitPawn) != 0){
             capturedType = capturerIsWhite ? "p" : "P";
-        } else if ((used & hitKnight) != 0) {
+        } else if (((1L << endLoc) & hitKnight) != 0) {
             capturedType = capturerIsWhite ? "n" : "N";
-        } else if ((used & hitBishop) != 0) {
+        } else if (((1L << endLoc) & hitBishop) != 0) {
             capturedType = capturerIsWhite ? "b" : "B";
-        } else if ((used & hitRook) != 0) {
+        } else if (((1L << endLoc) & hitRook) != 0) {
             capturedType = capturerIsWhite ? "r" : "R";
-        } else if ((used & hitQueen) != 0) {
+        } else if (((1L << endLoc) & hitQueen) != 0) {
             capturedType = capturerIsWhite ? "q" : "Q";
         } else {
           capture = "";

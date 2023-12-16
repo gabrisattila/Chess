@@ -103,7 +103,7 @@ public class GameOverOrPositionEnd {
                 }
             }
         } else {
-            return board.getPieces().stream().allMatch(p -> p.isWhite() || !p.isWhite());
+            return board.getPieces().stream().allMatch(IPiece::isWhite) || board.getPieces().stream().noneMatch(IPiece::isWhite);
         }
         return false;
     }

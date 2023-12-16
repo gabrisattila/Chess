@@ -487,7 +487,7 @@ public class VARS {
 
         public static int MAX_HEIGHT = 8;
 
-        public static int MINIMAX_DEPTH = 8;
+        public static int MINIMAX_DEPTH = 10;
 
         public static int nodeNum = 0;
 
@@ -610,8 +610,6 @@ public class VARS {
         public static int stepNumber = 1;
 
         public static int evenOrOddStep = 0;
-
-        public static String lastStep = "";
 
         public static int labelCounter = 0;
 

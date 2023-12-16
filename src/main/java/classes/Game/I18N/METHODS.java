@@ -282,7 +282,7 @@ public class METHODS {
     public static void showFlashFrame(String message, int durationInSeconds){
 
         JFrame flashFrame = new JFrame("Mentés");
-        flashFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        flashFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         flashFrame.setSize(400, 200);
         flashFrame.getContentPane().setBackground(BLACK);
 

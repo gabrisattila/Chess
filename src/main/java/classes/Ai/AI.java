@@ -62,45 +62,15 @@ public class AI extends Thread {
         Move();
     }
 
-    public void Move()  {
-//        moveWithSimpleAi();
+    public void Move() {
         moveWithMiniMaxAi();
     }
-
-    public void moveWithSimpleAi() {
-        synchronized (pauseFlag){
-
-            waitOnPause();
-
-            double gameOver = GameOverDecision(getBoard(), false, Double.MIN_VALUE);
-            if (gameFinished(gameOver))
-                return;
-
-            Random random = new Random();
-            Piece stepper;
-            ArrayList<Piece> possibleSteppers = new ArrayList<>();
-            for (IPiece p : getBoard().myPieces()) {
-                if (!p.getPossibleRange().isEmpty()){
-                    possibleSteppers.add((Piece) p);
-                }
-            }
-            stepper = possibleSteppers.get(random.nextInt(0, possibleSteppers.size()));
-
-
-            ArrayList<Location> ableToStepThereIn = new ArrayList<>(stepper.getPossibleRange());
-            int indexOfChosen = random.nextInt(0, ableToStepThereIn.size());
-            Location toStepOn = ableToStepThereIn.get(indexOfChosen);
-            Pair<Integer, Location> kingCheck = kingAliveCheckRandomMove(indexOfChosen, toStepOn, ableToStepThereIn, random);
-            if (kingCheck.getFirst() != indexOfChosen){
-                toStepOn = kingCheck.getSecond();
-            }
-
-            Move move = new Move(stepper, toStepOn, getBoard());
-            move.setMustLogged(true);
-            Step(move);
-        }
-    }
     
+    private boolean gameFinished(){
+        return gameEndFlag.get();
+    }
+
+
     private boolean gameFinished(double gameOver){
         return GAME_OVER_CASES.contains(gameOver);
     }
@@ -117,47 +87,64 @@ public class AI extends Thread {
     //region Mini Max
 
     private void moveWithMiniMaxAi() {
+        if (!gameFinished()) {
+            MINIMAX("bitBoard");
+        }
+    }
 
-        double gameOver = GameOverDecision(getBoard(), true, Double.MIN_VALUE);
-        if (!gameFinished(gameOver)) {
+    private void MINIMAX(String miniMaxType){
+        nodeNum = 0;
+
+        AiNode treeOld;
+        AiNode bestChildOld = new AiNode();
+        if ("bitBoard".equals(miniMaxType)){
+
             setUpBitBoard(BoardToFen(getBoard()));
-            //TODO Itteni emPassant átírni
-            long zKey = Zobrist.getZobristKey(whiteToPlay, -1,
+
+            int emPassant = emPassantToBitBoard(emPassantChance);
+            long zKey = Zobrist.getZobristKey(whiteToPlay, emPassant,
                     whiteSmallCastleEnabled, whiteBigCastleEnabled, blackSmallCastleEnabled, blackBigCastleEnabled,
                     whitePawn, whiteBishop, whiteKnight, whiteRook, whiteQueen, whiteKing,
                     blackPawn, blackBishop, blackKnight, blackRook, blackQueen, blackKing);
-//            AiNode tree = new AiNode(BoardToAiFen(getBoard()));
             AiNodeBBStyle tree = new AiNodeBBStyle(zKey, "");
 
-//            double bestChildValue = negaMax(tree, MINIMAX_DEPTH, -Double.MAX_VALUE, Double.MAX_VALUE);
             int startTime = (int) System.currentTimeMillis();
-            nodeNum = 0;
-//            double bestChildValue = miniMax(tree, 0, whiteToPlay, -Double.MAX_VALUE, Double.MAX_VALUE);
+
             double bestChildValue = miniMaxWithBitBoards(
                     tree, 0, whiteToPlay, -Double.MAX_VALUE, Double.MAX_VALUE,
-                    "-".equals(emPassantChance) ? -1 : Integer.parseInt(emPassantChance),
-                    whiteSmallCastleEnabled, whiteBigCastleEnabled, blackSmallCastleEnabled, blackBigCastleEnabled,
+                    emPassant, whiteSmallCastleEnabled, whiteBigCastleEnabled, blackSmallCastleEnabled, blackBigCastleEnabled,
                     whitePawn, whiteBishop, whiteKnight, whiteRook, whiteQueen, whiteKing,
                     blackPawn, blackBishop, blackKnight, blackRook, blackQueen, blackKing);
-            int endTime = (int) System.currentTimeMillis();
-            System.out.println("Minimax evaluated "+ nodeNum + " nodes.");
-            int elapsedTime = endTime - startTime;
-            System.out.println("Under " + ((double) elapsedTime / 1000) + " seconds.");
-            double nps =((double) nodeNum / ((double) elapsedTime / 1000));
-            System.out.println("That means the effectiveness is: " + nps);
-            System.out.println(transPosNum + " transposition happened.");
+
+            printDataOfMiniMax(startTime);
+
             whiteToPlay = !whiteToPlay;
             Pair<AiNodeBBStyle, String> nodeAndItsFen = sortOutBestChild(tree, bestChildValue);
             AiNodeBBStyle bestChild = nodeAndItsFen.getFirst();
             addToHappenedList(bestChild.getZobristKey());
             FenToBoard(nodeAndItsFen.getSecond(), getBoard());
-//            AiNode bestChild = sortOutBestChild(tree, bestChildValue);
-//            AiFenToBoard(bestChild.getFen(), getBoard());
-//            addToHappenedList(AiFenToFen(bestChild.getFen()));
-//            getLogger().log(bestChild.getFen().split(" ")[6]);
-        }
-    }
+        }else {
+            if ("old".equals(miniMaxType)) {
 
+                int startTime = (int) System.currentTimeMillis();
+                treeOld = new AiNode(BoardToAiFen(getBoard()));
+                double bestChildValue = miniMax(treeOld, 0, whiteToPlay, -Double.MAX_VALUE, Double.MAX_VALUE);
+                printDataOfMiniMax(startTime);
+                bestChildOld = sortOutBestChild(treeOld, bestChildValue);
+
+            } else if ("negaMax".equals(miniMaxType)) {
+
+                int startTime = (int) System.currentTimeMillis();
+                treeOld = new AiNode(BoardToAiFen(getBoard()));
+                double bestChildValue = negaMax(treeOld, MINIMAX_DEPTH, -Double.MAX_VALUE, Double.MAX_VALUE);
+                printDataOfMiniMax(startTime);
+                bestChildOld = sortOutBestChild(treeOld, bestChildValue);
+            }
+            AiFenToBoard(bestChildOld.getFen(), getBoard());
+            addToHappenedList(AiFenToFen(bestChildOld.getFen()));
+        }
+
+    }
 
     private double miniMaxWithBitBoards(
             AiNodeBBStyle starterPos, int depth, boolean maxNeeded, double alpha, double beta,
@@ -354,6 +341,19 @@ public class AI extends Thread {
                 return possibleMin;
             }
         }
+    }
+
+
+    private void printDataOfMiniMax(int startTime){
+        System.out.println();
+        int endTime = (int) System.currentTimeMillis();
+        System.out.println("Minimax evaluated "+ nodeNum + " nodes.");
+        int elapsedTime = endTime - startTime;
+        System.out.println("Under " + ((double) elapsedTime / 1000) + " seconds.");
+        double nps =((double) nodeNum / ((double) elapsedTime / 1000));
+        System.out.println("That means the effectiveness is: " + nps);
+        System.out.println(transPosNum + " transposition happened.");
+        System.out.println();
     }
 
     private AiNode sortOutBestChild(AiNode tree, double bestChildValue){
