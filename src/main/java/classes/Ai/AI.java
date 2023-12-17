@@ -1,8 +1,6 @@
 package classes.Ai;
 
-import classes.Game.I18N.Location;
 import classes.Game.I18N.Pair;
-import classes.Game.Model.Structure.*;
 import classes.Game.Model.Structure.BitBoard.Zobrist;
 import lombok.*;
 
@@ -15,7 +13,6 @@ import static classes.Ai.AiTree.*;
 import static classes.Ai.FenConverter.*;
 import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.METHODS.*;
-import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.Model.Logic.EDT.*;
 import static classes.Game.Model.Structure.BitBoard.BBVars.*;
@@ -24,7 +21,6 @@ import static classes.Game.Model.Structure.BitBoard.BitBoards.*;
 import static classes.Game.Model.Structure.Board.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Game.Model.Structure.GameOverOrPositionEnd.*;
-import static classes.Game.Model.Structure.Move.*;
 
 /**
  * thread descriptor object
@@ -97,15 +93,19 @@ public class AI extends Thread {
             int emPassant = emPassantToBitBoard(emPassantChance);
             long zKey = Zobrist.getZobristKey(whiteToPlay, emPassant,
                     whiteSmallCastleEnabled, whiteBigCastleEnabled, blackSmallCastleEnabled, blackBigCastleEnabled,
-                    whitePawn, whiteBishop, whiteKnight, whiteRook, whiteQueen, whiteKing,
-                    blackPawn, blackBishop, blackKnight, blackRook, blackQueen, blackKing);
+                    whitePawn, whiteKnight, whiteBishop, whiteRook, whiteQueen, whiteKing,
+                    blackPawn, blackKnight, blackBishop, blackRook, blackQueen, blackKing);
             AiNodeBBStyle tree = new AiNodeBBStyle(zKey, "");
+            setDescriptiveParts(tree, emPassant,
+                    whiteSmallCastleEnabled, whiteBigCastleEnabled, blackSmallCastleEnabled, blackBigCastleEnabled,
+                    whitePawn, whiteKnight, whiteBishop, whiteRook, whiteQueen, whiteKing,
+                    blackPawn, blackKnight, blackBishop, blackRook, blackQueen, blackKing);
 
             int startTime = (int) System.currentTimeMillis();
 
             double bestChildValue = miniMaxWithBitBoards(
                     tree, 0, whiteToPlay, -Double.MAX_VALUE, Double.MAX_VALUE,
-                    emPassant, whiteSmallCastleEnabled, whiteBigCastleEnabled, blackSmallCastleEnabled, blackBigCastleEnabled,
+                    whiteSmallCastleEnabled, whiteBigCastleEnabled, blackSmallCastleEnabled, blackBigCastleEnabled,
                     whitePawn, whiteKnight, whiteBishop, whiteRook, whiteQueen, whiteKing,
                     blackPawn, blackKnight, blackBishop, blackRook, blackQueen, blackKing);
 
@@ -141,43 +141,31 @@ public class AI extends Thread {
 
     private double miniMaxWithBitBoards(
             AiNodeBBStyle starterPos, int depth, boolean maxNeeded, double alpha, double beta,
-            int emPassant, boolean wKC, boolean wQC, boolean bKC, boolean bQC,
+            boolean wKC, boolean wQC, boolean bKC, boolean bQC,
             long whitePawn, long whiteKnight, long whiteBishop, long whiteRook, long whiteQueen, long whiteKing,
             long blackPawn, long blackKnight, long blackBishop, long blackRook, long blackQueen, long blackKing
     ){
         synchronized (pauseFlag){
             waitOnPause();
-            if (depth == MINIMAX_DEPTH ||
-                isDraw(whitePawn, whiteKnight, whiteBishop, whiteRook, whiteQueen, whiteKing,
-                        blackPawn, blackKnight, blackBishop, blackRook, blackQueen, blackKing)){
-                double finalValue = getEvaluationOfThisMove(
-                        starterPos.getTheMoveWhatsCreatedIt(),
-                        whitePawn, whiteKnight, whiteBishop, whiteRook, whiteQueen,
-                        blackPawn, blackKnight, blackBishop, blackRook, blackQueen
-                ); 
+            if (depth == MINIMAX_DEPTH || isDraw(starterPos)){
+                double finalValue = evaluationOfAMoveWithFieldValues(starterPos.getTheMoveWhatsCreatedIt(),
+                 whitePawn,  whiteKnight,  whiteBishop,  whiteRook,  whiteQueen,  whiteKing,
+                 blackPawn,  blackKnight,  blackBishop,  blackRook,  blackQueen,  blackKing);
                 starterPos.setFinalValue(finalValue);
                 return finalValue;
             }
 
-            ArrayList<String> legalMoves = possibleMoves(maxNeeded,
-             emPassant,  wKC,  wQC,  bKC,  bQC,
-             whitePawn, whiteKnight, whiteBishop, whiteRook,  whiteQueen,  whiteKing,
-             blackPawn, blackKnight, blackBishop, blackRook,  blackQueen,  blackKing);
+            ArrayList<String> legalMoves = possibleMoves(maxNeeded, starterPos);
 
             if (maxNeeded){
                 
-                double possibleMax = -Double.MAX_VALUE;
-                double evaluationOfTheNode = WHITE_GOT_CHECKMATE;
-                
+                double possibleMax = WHITE_GOT_CHECKMATE;
+
                 if (legalMoves.isEmpty()){
-                    if ((whiteKing &
-                            unsafeFor(true,
-                                    whitePawn, whiteKnight, whiteBishop, whiteRook, whiteQueen, whiteKing,
-                                    blackPawn, blackKnight, blackBishop, blackRook, blackQueen, blackKing)) == 0){
+                    if ((whiteKing & unsafeFor(true, starterPos)) == 0 || isDraw(starterPos)){
                         //DRAW
-                        evaluationOfTheNode = DRAW;
+                        possibleMax = DRAW;
                     }
-                    possibleMax = evaluationOfTheNode;
                 }
                 
                 for (int i = 0; i < legalMoves.size(); i++) {
@@ -194,11 +182,10 @@ public class AI extends Thread {
                             break;
                     }
                     if (nextBoards.isEmpty()){
-                        possibleMax = WHITE_GOT_CHECKMATE;
-                        evaluationOfTheNode = possibleMax;
-                        alpha = evaluationOfTheNode;
-                        if (beta <= alpha)
-                            break;
+                        if ((whiteKing & unsafeFor(true, starterPos)) == 0 || isDraw(starterPos)){
+                            //DRAW
+                            possibleMax = DRAW;
+                        }
                         break;
                     }
 
@@ -212,13 +199,11 @@ public class AI extends Thread {
                             nextBoards.get(6), nextBoards.get(7), nextBoards.get(8), nextBoards.get(9), nextBoards.get(10), nextBoards.get(11));
 
                     nodeNum++;
-                    evaluationOfTheNode = miniMaxWithBitBoards(
+                    double evaluationOfTheNode = miniMaxWithBitBoards(
                             next, depth + 1, false, alpha, beta,
-                            (Integer) emPassantAndCastle.get(0),
-                            (boolean) emPassantAndCastle.get(1), (boolean) emPassantAndCastle.get(2),
-                            (boolean) emPassantAndCastle.get(3), (boolean) emPassantAndCastle.get(4),
-                            nextBoards.get(0), nextBoards.get(1), nextBoards.get(2), nextBoards.get(3), nextBoards.get(4), nextBoards.get(5),
-                            nextBoards.get(6), nextBoards.get(7), nextBoards.get(8), nextBoards.get(9), nextBoards.get(10), nextBoards.get(11)
+                            next.isWKC(), next.isWQC(), next.isBKC(), next.isBQC(),
+                            next.getWP(), next.getWN(), next.getWB(), next.getWR(), next.getWQ(), next.getWK(),
+                            next.getBP(), next.getBN(), next.getBB(), next.getBR(), next.getBQ(), next.getBK()
                     );
 
                     possibleMax = Math.max(evaluationOfTheNode, possibleMax);
@@ -232,18 +217,12 @@ public class AI extends Thread {
                 return possibleMax;
             }else {
 
-                double possibleMin = Double.MAX_VALUE;
-                double evaluationOfTheNode = BLACK_GOT_CHECKMATE;
+                double possibleMin = BLACK_GOT_CHECKMATE;
 
                 if (legalMoves.isEmpty()){
-                    if ((blackKing &
-                            unsafeFor(false,
-                                    whitePawn, whiteKnight, whiteBishop, whiteRook, whiteQueen, whiteKing,
-                                    blackPawn, blackKnight, blackBishop, blackRook, blackQueen, blackKing)) == 0){
-                        //DRAW
-                        evaluationOfTheNode = DRAW;
+                    if ((blackKing & unsafeFor(false, starterPos)) == 0 || isDraw(starterPos)){ //DRAW
+                        possibleMin = DRAW;
                     }
-                    possibleMin = evaluationOfTheNode;
                 }
 
                 for (int i = 0; i < legalMoves.size(); i++) {
@@ -259,14 +238,14 @@ public class AI extends Thread {
                         if (i == legalMoves.size())
                             break;
                     }
+
                     if (nextBoards.isEmpty()){
-                        possibleMin = WHITE_GOT_CHECKMATE;
-                        evaluationOfTheNode = possibleMin;
-                        alpha = evaluationOfTheNode;
-                        if (beta <= alpha)
-                            break;
+                        if ((blackKing & unsafeFor(false, starterPos)) == 0 || isDraw(starterPos)){ //DRAW
+                            possibleMin = DRAW;
+                        }
                         break;
                     }
+
                     ArrayList<Object> emPassantAndCastle = emPassantAndCastleCases(legalMove, wKC, wQC, bKC, bQC);
                     AiNodeBBStyle next = putNewToNodeMap(starterPos, legalMove,
                             false, (Integer) emPassantAndCastle.get(0),
@@ -275,13 +254,11 @@ public class AI extends Thread {
                             nextBoards.get(0), nextBoards.get(1), nextBoards.get(2), nextBoards.get(3), nextBoards.get(4), nextBoards.get(5),
                             nextBoards.get(6), nextBoards.get(7), nextBoards.get(8), nextBoards.get(9), nextBoards.get(10), nextBoards.get(11));
                     nodeNum++;
-                    evaluationOfTheNode = miniMaxWithBitBoards(
+                    double evaluationOfTheNode = miniMaxWithBitBoards(
                             next, depth + 1, true, alpha, beta,
-                            (Integer) emPassantAndCastle.get(0),
-                            (boolean) emPassantAndCastle.get(1), (boolean) emPassantAndCastle.get(2),
-                            (boolean) emPassantAndCastle.get(3), (boolean) emPassantAndCastle.get(4),
-                            nextBoards.get(0), nextBoards.get(1), nextBoards.get(2), nextBoards.get(3), nextBoards.get(4), nextBoards.get(5),
-                            nextBoards.get(6), nextBoards.get(7), nextBoards.get(8), nextBoards.get(9), nextBoards.get(10), nextBoards.get(11)
+                            next.isWKC(), next.isWQC(), next.isBKC(), next.isBQC(),
+                            next.getWP(), next.getWN(), next.getWB(), next.getWR(), next.getWQ(), next.getWK(),
+                            next.getBP(), next.getBN(), next.getBB(), next.getBR(), next.getBQ(), next.getBK()
                     );
                     possibleMin = Math.min(evaluationOfTheNode, possibleMin);
                     beta = Math.min(beta, evaluationOfTheNode);

@@ -1,6 +1,7 @@
 package classes.Game.Model.Structure;
 
 import classes.Ai.AiNode;
+import classes.Ai.AiNodeBBStyle;
 import classes.GUI.FrameParts.ViewBoard;
 import classes.Game.I18N.PieceType;
 import lombok.*;
@@ -144,8 +145,13 @@ public class GameOverOrPositionEnd {
             return nextPlayerEmptyRange || thirdSimilarPositionOfTheGame || allRemainingPieceIsKing || remained2KingAnd1KnightOr1Bishop || remained2KingAnd2Knight;
         }
     }
-    
-    public static boolean isDraw(long whitePawn, long whiteKnight, long whiteBishop, long whiteRook, long whiteQueen, long whiteKing,
+
+    public static boolean isDraw(AiNodeBBStyle node){
+        return isDraw(node.getWP(), node.getWN(), node.getWB(), node.getWR(), node.getWQ(), node.getWK(),
+                        node.getBP(), node.getBN(), node.getBB(), node.getBR(), node.getBQ(), node.getBK());
+    }
+
+    private static boolean isDraw(long whitePawn, long whiteKnight, long whiteBishop, long whiteRook, long whiteQueen, long whiteKing,
                                  long blackPawn, long blackKnight, long blackBishop, long blackRook, long blackQueen, long blackKing){
 
         thirdSimilarPositionOfTheGame = happenedListZKeys.keySet().stream().anyMatch(a -> happenedListZKeys.get(a) == 3);

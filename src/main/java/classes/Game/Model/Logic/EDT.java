@@ -41,6 +41,8 @@ public class EDT {
     //region Constructor
 
     public EDT() {
+        exceptionIgnorer();
+        saveBoardInsteadOfException();
         initialization();
     }
 
