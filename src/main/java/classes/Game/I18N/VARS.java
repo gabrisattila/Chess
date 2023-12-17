@@ -214,15 +214,15 @@ public class VARS {
         }};
 
         //Eredetileg mindegyik fele ennyi
-        public static final double PAWN_BASE_VALUE = 2;
+        public static final double PAWN_BASE_VALUE = 1;
 
-        public static final double KNIGHT_OR_BISHOP_BASE_VALUE = 6;
+        public static final double KNIGHT_OR_BISHOP_BASE_VALUE = 3;
 
-        public static final double ROOK_BASE_VALUE = 10;
+        public static final double ROOK_BASE_VALUE = 5;
 
-        public static final double QUEEN_BASE_VALUE = 18;
+        public static final double QUEEN_BASE_VALUE = 9;
 
-        public static final double KING_BASE_VALUE = 49;
+        public static final double KING_BASE_VALUE = 100;
 
         public static final Set<Location> pawnMatrix = new HashSet<>(){{
             add(new Location(1, -1));
@@ -434,6 +434,8 @@ public class VARS {
             put("blackMustTakeRookButItIsnt", "3R1R1K/1Pq2nPP/4p3/8/1Q3P2/7p/5pp1/4r1k1 w ---- - 1 0");
             put("polgarVsKasparov25", "2r1r2k/1bqnbpp1/pp1p1n1p/4pP2/P3P2B/2N2B2/1PPN2PP/3RRQ1K b ---- - 5 1");
             put("4mpOn6depth", "8/8/8/8/K1P4r/8/3p4/3k4 b ---- - 1 1");
+            put("test1WhiteDown", "8/8/8/5K2/3P2R1/2b5/1p2k3/8 b ---- - 1 1");
+            put("test2WhiteDown", "8/8/8/8/3K4/2P5/1b6/3k4 b ---- - 1 1");
 
             //endregion
 
@@ -489,7 +491,7 @@ public class VARS {
 
         public static int MAX_HEIGHT = 8;
 
-        public static int MINIMAX_DEPTH = 8;
+        public static int MINIMAX_DEPTH = 6;
 
         public static int nodeNum = 0;
 

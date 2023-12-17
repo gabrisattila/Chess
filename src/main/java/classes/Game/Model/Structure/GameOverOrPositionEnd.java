@@ -9,7 +9,6 @@ import javax.swing.*;
 
 import java.util.ArrayList;
 
-import static classes.Ai.AI.*;
 import static classes.Ai.Evaluator.*;
 import static classes.Ai.FenConverter.*;
 import static classes.GUI.Frame.Window.*;
@@ -132,7 +131,7 @@ public class GameOverOrPositionEnd {
                 IPiece possibleKnight = null, possibleBishop = null;
                 int knightCount = 0, bishopCount = 0;
                 for (IPiece p : board.getPieces()) {
-                    if (p.getType() == PieceType.R) {
+                    if (p.getType() == B) {
                         possibleBishop = p;
                         bishopCount++;
                     } else if (p.getType() == N) {
@@ -145,12 +144,45 @@ public class GameOverOrPositionEnd {
             return nextPlayerEmptyRange || thirdSimilarPositionOfTheGame || allRemainingPieceIsKing || remained2KingAnd1KnightOr1Bishop || remained2KingAnd2Knight;
         }
     }
+    
+    public static boolean isDraw(long whitePawn, long whiteKnight, long whiteBishop, long whiteRook, long whiteQueen, long whiteKing,
+                                 long blackPawn, long blackKnight, long blackBishop, long blackRook, long blackQueen, long blackKing){
+
+        thirdSimilarPositionOfTheGame = happenedListZKeys.keySet().stream().anyMatch(a -> happenedListZKeys.get(a) == 3);
+
+        boolean allRemainingPiecesAreKing =
+                whitePawn == 0 && whiteKnight == 0 && whiteBishop == 0 && whiteRook == 0 && whiteQueen == 0 && whiteKing != 0 &&
+                blackPawn == 0 && blackKnight == 0 && blackBishop == 0 && blackRook == 0 && blackQueen == 0 && blackKing != 0;
+        boolean noBigOneRemained =
+                (whitePawn == 0 && whiteRook == 0 && whiteQueen == 0 && whiteKing != 0 &&
+                 blackPawn == 0 && blackRook == 0 && blackQueen == 0 && blackKing != 0);
+        boolean only1WBishop =
+                (Long.bitCount(whiteBishop) == 1 && whiteKnight == 0 && blackBishop == 0 && blackKnight == 0);
+        boolean only1BBishop =
+                (Long.bitCount(blackBishop) == 1 && whiteKnight == 0 && whiteBishop == 0 && blackKnight == 0);
+        boolean only1WKnight =
+                (Long.bitCount(whiteKnight) == 1 && whiteBishop == 0 && blackBishop == 0 && blackKnight == 0);
+        boolean only1BKnight =
+                (Long.bitCount(blackKnight) == 1 && whiteBishop == 0 && blackBishop == 0 && whiteKnight == 0);
+        boolean only1WBishop1BKnight =
+                (Long.bitCount(whiteBishop) == 1 && (Long.bitCount(blackKnight) == 1) && blackBishop == 0 && whiteKnight == 0);
+        boolean only1BBishop1WKnight =
+                (Long.bitCount(blackBishop) == 1 && (Long.bitCount(whiteKnight) == 1) && blackBishop == 0 && whiteKnight == 0);
+        boolean only2KnightFromTheSameColor =
+                (Long.bitCount(whiteKnight) == 2 || Long.bitCount(blackKnight) == 2) && blackBishop == 0 && whiteBishop == 0;
+
+        return thirdSimilarPositionOfTheGame || allRemainingPiecesAreKing ||
+                (noBigOneRemained &&
+                        (only1WBishop || only1BBishop || only1WKnight || only1BKnight ||
+                         only1WBishop1BKnight || only1BBishop1WKnight || only2KnightFromTheSameColor));
+
+
+    }
 
     private static boolean isSubmission(double submissionOrDraw) {
         return submissionOrDraw == WHITE_SUBMITTED || submissionOrDraw == BLACK_SUBMITTED;
     }
-
-
+    
     public static boolean itWorthToGiveUp(){
 
         double enemyPiecesValueSum = getBoard().getPieces(!whiteToPlay).stream().mapToDouble(p -> ((Piece) p).getVALUE()).sum();

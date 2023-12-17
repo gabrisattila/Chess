@@ -13,9 +13,6 @@ import static classes.Game.Model.Structure.BitBoard.BitBoards.*;
 
 public class BitBoardMoves {
 
-
-    //region Methods With BitBoards
-
     public static ArrayList<String> possibleMoves(boolean maxNeeded, int emPassantChance,
                                        boolean whiteKingCastleEnabled, boolean whiteQueenCastleEnabled,
                                        boolean blackKingCastleEnabled, boolean blackQueenCastleEnabled,
@@ -322,20 +319,8 @@ public class BitBoardMoves {
                                                   long unsafe){
         StringBuilder moves = new StringBuilder();
         boolean forWhite = Character.isUpperCase(type.charAt(0));
-        long used = 0;
-        switch (type.charAt(0)){
-            case 'N' -> used = wN;
-            case 'B' -> used = wB;
-            case 'R' -> used = wR;
-            case 'Q' -> used = wQ;
-            case 'K' -> used = wK;
-            case 'n' -> used = bN;
-            case 'b' -> used = bB;
-            case 'r' -> used = bR;
-            case 'q' -> used = bQ;
-            case 'k' -> used = bK;
-        }
-
+        long used = getBitBoardFromType(type, wN,  wB,  wR,  wQ,  wK, bN,  bB,  bR,  bQ,  bK);
+        
         long i = used & -used;
         long possibility;
         while (i != 0){
@@ -368,7 +353,7 @@ public class BitBoardMoves {
                     captureOtherNote(type, moves, endLoc,
                             forWhite ? bP : wP, forWhite ? bN : wN, forWhite ? bB : wB, forWhite ? bR : wR, forWhite ? bQ : wQ
                     );
-                    appendMergedBoardsFinalVal(moves, wP,  wN,  wB,  wR,  wQ, bP,  bN,  bB,  bR,  bQ);
+                    appendMergedBoardsFinalVal(moves, wN,  wB,  wR,  wQ,  wK, bN,  bB,  bR,  bQ,  bK);
                     moves.append('_');
                 }
                 possibility &= ~j;
@@ -379,6 +364,44 @@ public class BitBoardMoves {
         }
 
         return moves.toString();
+    }
+    
+    private static long getBitBoardFromType(String type,
+                                            long wN, long wB, long wR, long wQ, long wK,
+                                            long bN, long bB, long bR, long bQ, long bK){
+        switch (type.charAt(0)){
+            case 'N' -> {
+                return wN;
+            }
+            case 'B' -> {
+                return wB;
+            }
+            case 'R' -> {
+                return wR;
+            }
+            case 'Q' -> {
+                return wQ;
+            }
+            case 'K' -> {
+                return wK;
+            }
+            case 'n' -> {
+                return bN;
+            }
+            case 'b' -> {
+                return bB;
+            }
+            case 'r' -> {
+                return bR;
+            }
+            case 'q' -> {
+                return bQ;
+            }
+            case 'k' -> {
+                return bK;
+            }
+        }
+        return 0;
     }
     
     private static long movePossibilities(String type, long w, long b){
@@ -434,17 +457,17 @@ public class BitBoardMoves {
 
         if (isKingSideCastleEnabled(forWhite, whiteDown, forWhite ? wKC : bKC, forWhite ? wK : bK,
                                     forWhite ? wR : bR, unsafe, occupied)){
-            castleDoc(type, castlePlaces, whiteDown, true, wG, wN, wB, wR, wQ, wK, bP, bN, bB, bR, bQ, bK);
+            castleDoc(type, castlePlaces, whiteDown, true, wG, wN, wB, wR, wQ, bP, bN, bB, bR, bQ);
         }
         if (isQueenSideCastleEnabled(forWhite, whiteDown, forWhite ? wQC : bQC, forWhite ? wK : bK,
                                      forWhite ? wR : bR, unsafe, occupied)){
-            castleDoc(type, castlePlaces, whiteDown, false, wG, wN, wB, wR, wQ, wK, bP, bN, bB, bR, bQ, bK);
+            castleDoc(type, castlePlaces, whiteDown, false, wG, wN, wB, wR, wQ, bP, bN, bB, bR, bQ);
         }
     }
 
     private static void castleDoc(String type, StringBuilder moves, boolean whiteDown, boolean kingSide,
-                                 long wG, long wN, long wB, long wR, long wQ, long wK,
-                                  long bP, long bN, long bB, long bR, long bQ, long bK){
+                                 long wG, long wN, long wB, long wR, long wQ,
+                                  long bP, long bN, long bB, long bR, long bQ){
         boolean forWhite = Character.isUpperCase(type.charAt(0));
         int[] castleIndexes = indexesInCastle(whiteDown, forWhite, kingSide);
         moves.append(type);
@@ -499,7 +522,9 @@ public class BitBoardMoves {
         moves.append("/");
         moves.append(getEvaluationOfThisMove(moves, wP,  wN,  wB,  wR,  wQ, bP,  bN,  bB,  bR,  bQ));
     }
-    
+
+
+
     private static boolean isKingSideCastleEnabled(boolean forWhite, boolean whiteDown, 
                                                    boolean smallCastleEnabled, long kingBoard, long rookBoard, long unsafe, long occupied){
         int smallCastlePoint, smallCastleRoad, rookOrigin, kingOrigin;
@@ -612,7 +637,7 @@ public class BitBoardMoves {
 
     public static double getEvaluationOfThisMove(String moves, long wP, long wN, long wB, long wR, long wQ,
                                                  long bP, long bN, long bB, long bR, long bQ){
-        return decideIsItCapture(
+        return decideIsItCaptureAndGetValue(
                 wP, wN, wB, wR, wQ,
                 bP, bN, bB, bR, bQ,
                 moves.isEmpty(),
@@ -621,14 +646,14 @@ public class BitBoardMoves {
 
     public static double getEvaluationOfThisMove(StringBuilder moves, long wP, long wN, long wB, long wR, long wQ,
                                                  long bP, long bN, long bB, long bR, long bQ){
-        return decideIsItCapture(
+        return decideIsItCaptureAndGetValue(
                 wP, wN, wB, wR, wQ,
                 bP, bN, bB, bR, bQ,
                 moves.isEmpty(),
                 moves.charAt(moves.length() - 3), moves.charAt(moves.length() - 2));
     }
 
-    private static double decideIsItCapture(long wP, long wN, long wB, long wR, long wQ, long bP, long bN, long bB, long bR, long bQ, boolean empty, char CifItsCapture, char captureType) {
+    private static double decideIsItCaptureAndGetValue(long wP, long wN, long wB, long wR, long wQ, long bP, long bN, long bB, long bR, long bQ, boolean empty, char CifItsCapture, char captureType) {
         if (!empty){
             return evaluationOfFullBitBoard(wP, wN, wB, wR, wQ,
                     bP, bN, bB, bR, bQ,
@@ -653,7 +678,7 @@ public class BitBoardMoves {
                         (Long.bitCount(wR) /*+ getBaseFieldValueFor(wR, 'R')*/ - Long.bitCount(bR) /* - getBaseFieldValueFor(bR, 'r')*/) +
                 QUEEN_BASE_VALUE *
                         (Long.bitCount(wQ) /* + getBaseFieldValueFor(wQ, 'Q') */ - Long.bitCount(bQ) /* - getBaseFieldValueFor(bQ, 'q')*/) +
-                CifItsCapture == 'C' ? getHitValue(capturedType) : 0;
+                (CifItsCapture == 'C' ? getHitValue(capturedType) : 0);
     }
 
     private static double getHitValue(char type){
@@ -661,8 +686,5 @@ public class BitBoardMoves {
         PieceType pType = charToPieceType(type);
         return white ? - pType.getValueOfPieceType() : pType.getValueOfPieceType();
     }
-
-
-    //endregion
 
 }
