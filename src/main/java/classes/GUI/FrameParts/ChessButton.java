@@ -20,7 +20,7 @@ import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Game.Model.Logic.EDT.*;
 import static classes.Game.I18N.METHODS.*;
-import static classes.Game.Model.Structure.GameOverOrPositionEnd.GameOverDecision;
+import static classes.Game.Model.Structure.GameOverOrPositionEnd.*;
 
 public class ChessButton extends JButton {
 
@@ -230,11 +230,11 @@ public class ChessButton extends JButton {
         }
 
         private void submissionClicked() {
-            GameOverDecision(getViewBoard(), true, whiteToPlay ? WHITE_SUBMITTED : BLACK_SUBMITTED);
+            GameOverDecision(getViewBoard(), whiteToPlay ? WHITE_SUBMITTED : BLACK_SUBMITTED);
         }
 
         private void drawClicked() {
-            GameOverDecision(getViewBoard(), true, DRAW_OFFER);
+            GameOverDecision(getViewBoard(), DRAW_OFFER);
         }
 
         private void continueClicked(){

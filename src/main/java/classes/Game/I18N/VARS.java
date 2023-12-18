@@ -624,8 +624,6 @@ public class VARS {
 
         public static boolean canBeLogger;
 
-        public static double subOrDrawOffer = Double.MIN_VALUE + 1;
-
         public static final AtomicBoolean pauseFlag = new AtomicBoolean(false);
 
         public static AtomicBoolean gameEndFlag = new AtomicBoolean(false);

@@ -82,7 +82,7 @@ public class AI extends Thread {
 
     private void moveWithMiniMaxAi() {
         convertOneBoardToAnother(getViewBoard(), getBoard());
-        GameOverDecision(getBoard(), true, Double.MIN_VALUE);
+        GameOverDecision(getBoard(), Double.MIN_VALUE);
         if (!gameFinished()) {
             MINIMAX();
         }

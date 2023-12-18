@@ -6,10 +6,10 @@ import lombok.*;
 
 import javax.swing.*;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 import static classes.Ai.Evaluator.*;
-import static classes.Ai.FenConverter.*;
 import static classes.GUI.Frame.Window.*;
 import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.METHODS.*;
@@ -23,7 +23,7 @@ import static classes.Game.Model.Structure.IBoard.convertOneBoardToAnother;
 @Setter
 public class GameOverOrPositionEnd {
 
-    public static double GameOverDecision(Object game, boolean directViewCase, double submissionOrDrawComeFromPlayer) {
+    public static void GameOverDecision(Object game, double submissionOrDrawComeFromPlayer) {
 
         double gameOver;
 
@@ -31,12 +31,11 @@ public class GameOverOrPositionEnd {
             convertOneBoardToAnother(getViewBoard(), getBoard());
         }
 
-        gameOver = gameEnd(getBoard(), directViewCase, submissionOrDrawComeFromPlayer);
+        gameOver = gameEnd(getBoard(), submissionOrDrawComeFromPlayer);
 
-        if (directViewCase && GAME_OVER_CASES.contains(gameOver)){
+        if (GAME_OVER_CASES.contains(gameOver)){
             gameEndDialog(gameOver);
         }
-        return gameOver;
     }
 
     //region Dialogs
@@ -65,31 +64,55 @@ public class GameOverOrPositionEnd {
         JOptionPane.showMessageDialog(getViewBoard(), message, title, JOptionPane.INFORMATION_MESSAGE);
     }
 
+    public static void showFlashFrame(String message, int durationInSeconds){
+
+        JFrame flashFrame = new JFrame("Mentés");
+        flashFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        flashFrame.setSize(400, 200);
+        flashFrame.getContentPane().setBackground(BLACK);
+
+        JLabel label = new JLabel("<html><div style='text-align: center;'>" + message.replace("\n", "<br>") + "</div></html>");
+        label.setForeground(WHITE);
+        label.setVerticalAlignment(SwingConstants.CENTER);
+        label.setHorizontalAlignment(SwingConstants.CENTER);
+        label.setFont(new Font("Source Code Pro", Font.BOLD, 20));
+
+        flashFrame.add(label);
+        flashFrame.setLocationRelativeTo(null);
+
+        Timer timer = new Timer(durationInSeconds * 1000, e -> flashFrame.dispose());
+
+        timer.setRepeats(false);
+
+        flashFrame.setVisible(true);
+        timer.start();
+
+    }
+
     //endregion
 
     //region Game End Calc
 
-    public static double gameEnd(Board board, boolean directViewCase, double submissionOrDraw) {
+    public static double gameEnd(Board board, double submissionOrDraw) {
 
         board.rangeUpdater();
 
         if (isCheckMate(board)){
-            finalGameEnd(directViewCase);
+            finalGameEnd();
             return whiteToPlay ? WHITE_GOT_CHECKMATE : BLACK_GOT_CHECKMATE;
         } else if (isDraw(submissionOrDraw, board)) {
-            finalGameEnd(directViewCase);
+            finalGameEnd();
             return DRAW;
         } else if (isSubmission(submissionOrDraw) || itWorthToGiveUp()) {
-            finalGameEnd(directViewCase);
+            finalGameEnd();
             return submissionOrDraw;
         }
 
         if (submissionOrDraw == DRAW_OFFER) {
             if (itWorthToOfferOrRecommendDraw()){
-                finalGameEnd(directViewCase);
-                return DRAW;
-            } else if (directViewCase) {
                 showFlashFrame("Döntetlent ajánlottál, \naz ellenfeled nem fogadta el.", 5);
+                finalGameEnd();
+                return DRAW;
             }
         }
 
@@ -218,12 +241,10 @@ public class GameOverOrPositionEnd {
     }
 
 
-    private static void finalGameEnd(boolean directViewCase){
-        if (directViewCase) {
-            gameEndFlag.set(true);
-            buttonsEnabled(new ArrayList<>(){{add("None");}});
-            getViewBoard().clearPiecesRanges();
-        }
+    private static void finalGameEnd(){
+        gameEndFlag.set(true);
+        buttonsEnabled(new ArrayList<>(){{add("None");}});
+        getViewBoard().clearPiecesRanges();
     }
 
     //endregion

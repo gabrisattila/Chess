@@ -108,7 +108,7 @@ public class ViewBoard extends Component implements IBoard {
     @Override
     public void rangeUpdater() {
 
-        GameOverDecision(this, true, subOrDrawOffer);
+        GameOverDecision(this, Double.MIN_VALUE);
 
         if (!gameEndFlag.get()) {
             for (int i = 0; i < MAX_HEIGHT; i++) {
