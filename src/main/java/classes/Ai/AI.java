@@ -293,6 +293,7 @@ public class AI extends Thread {
         String fen = aiNodeToFen(bestChild);
         emPassantChance = fen.split(" ")[3];
         castleCaseFenToBoard(fen.split(" ")[2]);
+        appendToHappenedList(fen);
         return new Pair<>(bestChild, fen);
     }
 

@@ -7,7 +7,6 @@ import java.security.SecureRandom;
 import java.util.HashMap;
 
 import static classes.Ai.BitBoards.BBVars.*;
-import static classes.Ai.BitBoards.BitBoard.*;
 
 @Getter
 @Setter
@@ -56,22 +55,6 @@ public class Zobrist {
         inverseFieldList.put(random, 'E');
 
         return new Pair<>(fieldList, inverseFieldList);
-    }
-
-    private static long getZobristKey(){
-        return getZobristKey(getBitBoard());
-    }
-
-    public static long getZobristKey(BitBoard bitBoard){
-        return getZobristKey(
-                bitBoard.isWhiteTurn(), bitBoard.getEmPassant(),
-                bitBoard.isWhiteKingCastle(), bitBoard.isWhiteQueenCastle(),
-                bitBoard.isBlackKingCastle(), bitBoard.isBlackQueenCastle(),
-                bitBoard.getWhitePawn(), bitBoard.getWhiteKnight(), bitBoard.getWhiteBishop(),
-                bitBoard.getWhiteRook(), bitBoard.getWhiteQueen(), bitBoard.getWhiteKing(),
-                bitBoard.getBlackPawn(), bitBoard.getBlackKnight(), bitBoard.getBlackBishop(),
-                bitBoard.getBlackRook(), bitBoard.getBlackQueen(), bitBoard.getBlackKing()
-        );
     }
 
     public static long getZobristKey(boolean forWhite, int emPassant,

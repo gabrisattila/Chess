@@ -108,6 +108,17 @@ public class AiNode {
         alreadyWatchedNodes.put(zKey, node);
     }
 
+
+
+    public static void appendToHappenedList(String fen) {
+        if (happenedList.containsKey(fen)) {
+            int i = happenedList.get(fen);
+            happenedList.put(fen, i);
+        }else {
+            happenedList.put(fen, 1);
+        }
+    }
+
     //endregion
     
 }

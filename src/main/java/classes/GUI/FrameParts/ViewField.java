@@ -181,7 +181,7 @@ public class ViewField extends JButton implements classes.Game.Model.Structure.I
             Move move = new Move(pieceToChange, clicked.getLoc(), getViewBoard());
             move.setMustLogged(true);
             changeFieldColor(clicked);
-            addToHappenedList(BoardToFen(getViewBoard()));
+            appendToHappenedList(BoardToFen(getViewBoard()));
             Step(move);
 
             if (notNull(hit))
