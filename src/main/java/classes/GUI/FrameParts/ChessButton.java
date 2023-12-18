@@ -256,7 +256,7 @@ public class ChessButton extends JButton {
             isTest = test;
 
             if (isTest && "".equals(setUpFen)){
-                setUpFen = testFens.get("test2WhiteDown");
+                setUpFen = testFens.get("test1WhiteDown");
             }
 
             if (!isFirstOpen && "".equals(setUpFen)){

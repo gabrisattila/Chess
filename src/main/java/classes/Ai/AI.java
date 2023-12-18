@@ -166,18 +166,16 @@ public class AI extends Thread {
 
             if (maxNeeded){
                 
-                double possibleMax = -Double.MAX_VALUE;
-                double evaluationOfTheNode = WHITE_GOT_CHECKMATE;
-                
+                double possibleMax = WHITE_GOT_CHECKMATE;
+
                 if (legalMoves.isEmpty()){
                     if ((whiteKing &
                             unsafeFor(true,
                                     whitePawn, whiteKnight, whiteBishop, whiteRook, whiteQueen, whiteKing,
                                     blackPawn, blackKnight, blackBishop, blackRook, blackQueen, blackKing)) == 0){
                         //DRAW
-                        evaluationOfTheNode = DRAW;
+                        possibleMax = DRAW;
                     }
-                    possibleMax = evaluationOfTheNode;
                 }
                 
                 for (int i = 0; i < legalMoves.size(); i++) {
@@ -194,11 +192,6 @@ public class AI extends Thread {
                             break;
                     }
                     if (nextBoards.isEmpty()){
-                        possibleMax = WHITE_GOT_CHECKMATE;
-                        evaluationOfTheNode = possibleMax;
-                        alpha = evaluationOfTheNode;
-                        if (beta <= alpha)
-                            break;
                         break;
                     }
 
@@ -212,7 +205,7 @@ public class AI extends Thread {
                             nextBoards.get(6), nextBoards.get(7), nextBoards.get(8), nextBoards.get(9), nextBoards.get(10), nextBoards.get(11));
 
                     nodeNum++;
-                    evaluationOfTheNode = miniMaxWithBitBoards(
+                    double evaluationOfTheNode = miniMaxWithBitBoards(
                             next, depth + 1, false, alpha, beta,
                             (Integer) emPassantAndCastle.get(0),
                             (boolean) emPassantAndCastle.get(1), (boolean) emPassantAndCastle.get(2),
@@ -221,8 +214,8 @@ public class AI extends Thread {
                             nextBoards.get(6), nextBoards.get(7), nextBoards.get(8), nextBoards.get(9), nextBoards.get(10), nextBoards.get(11)
                     );
 
-                    possibleMax = Math.max(evaluationOfTheNode, possibleMax);
 
+                    possibleMax = Math.max(possibleMax, evaluationOfTheNode);
                     alpha = Math.max(alpha, evaluationOfTheNode);
                     if (beta <= alpha)
                         break;
@@ -232,8 +225,7 @@ public class AI extends Thread {
                 return possibleMax;
             }else {
 
-                double possibleMin = Double.MAX_VALUE;
-                double evaluationOfTheNode = BLACK_GOT_CHECKMATE;
+                double possibleMin = BLACK_GOT_CHECKMATE;
 
                 if (legalMoves.isEmpty()){
                     if ((blackKing &
@@ -241,9 +233,8 @@ public class AI extends Thread {
                                     whitePawn, whiteKnight, whiteBishop, whiteRook, whiteQueen, whiteKing,
                                     blackPawn, blackKnight, blackBishop, blackRook, blackQueen, blackKing)) == 0){
                         //DRAW
-                        evaluationOfTheNode = DRAW;
+                        possibleMin = DRAW;
                     }
-                    possibleMin = evaluationOfTheNode;
                 }
 
                 for (int i = 0; i < legalMoves.size(); i++) {
@@ -260,11 +251,6 @@ public class AI extends Thread {
                             break;
                     }
                     if (nextBoards.isEmpty()){
-                        possibleMin = WHITE_GOT_CHECKMATE;
-                        evaluationOfTheNode = possibleMin;
-                        alpha = evaluationOfTheNode;
-                        if (beta <= alpha)
-                            break;
                         break;
                     }
                     ArrayList<Object> emPassantAndCastle = emPassantAndCastleCases(legalMove, wKC, wQC, bKC, bQC);
@@ -275,7 +261,7 @@ public class AI extends Thread {
                             nextBoards.get(0), nextBoards.get(1), nextBoards.get(2), nextBoards.get(3), nextBoards.get(4), nextBoards.get(5),
                             nextBoards.get(6), nextBoards.get(7), nextBoards.get(8), nextBoards.get(9), nextBoards.get(10), nextBoards.get(11));
                     nodeNum++;
-                    evaluationOfTheNode = miniMaxWithBitBoards(
+                    double evaluationOfTheNode = miniMaxWithBitBoards(
                             next, depth + 1, true, alpha, beta,
                             (Integer) emPassantAndCastle.get(0),
                             (boolean) emPassantAndCastle.get(1), (boolean) emPassantAndCastle.get(2),
@@ -283,7 +269,8 @@ public class AI extends Thread {
                             nextBoards.get(0), nextBoards.get(1), nextBoards.get(2), nextBoards.get(3), nextBoards.get(4), nextBoards.get(5),
                             nextBoards.get(6), nextBoards.get(7), nextBoards.get(8), nextBoards.get(9), nextBoards.get(10), nextBoards.get(11)
                     );
-                    possibleMin = Math.min(evaluationOfTheNode, possibleMin);
+
+                    possibleMin = Math.min(possibleMin, evaluationOfTheNode);
                     beta = Math.min(beta, evaluationOfTheNode);
                     if (beta <= alpha)
                         break;

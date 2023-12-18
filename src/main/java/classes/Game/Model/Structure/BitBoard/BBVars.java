@@ -89,6 +89,8 @@ public class BBVars {
      */
     public static ArrayList<HashMap<Character, Long>> ZOBRIST_KEY_FIELD_LIST = new ArrayList<>();
 
+    public static ArrayList<Long> ZOBRIST_KEYS = new ArrayList<>();
+
     public static ArrayList<HashMap<Long, Character>> INVERSE_ZOBRIST_FIELD_LIST = new ArrayList<>();
 
     public static Long[] ZOBRIST_CASTLE_LIST = new Long[4];

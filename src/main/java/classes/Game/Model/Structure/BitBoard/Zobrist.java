@@ -16,7 +16,11 @@ public class Zobrist {
 
     public static long random64() {
         SecureRandom random = new SecureRandom();
-        return random.nextLong();
+        long rand = random.nextLong();
+        while(ZOBRIST_KEYS.contains(rand)) {
+            rand = random.nextLong();
+        }
+        return rand;
     }
 
     public static void fillZobristTable(){
@@ -35,14 +39,18 @@ public class Zobrist {
     }
 
     private static Pair<HashMap<Character, Long>, HashMap<Long, Character>> fillAFieldWithZKeys(){
+
         HashMap<Character, Long> fieldList = new HashMap<>();
         HashMap<Long, Character> inverseFieldList = new HashMap<>();
-        long random;
+
+        long random = 0;
+
         for (char c : englishPieceLetters) {
-            random = random64();
+            random64();
             fieldList.put(c, random);
             inverseFieldList.put(random, c);
         }
+
         //For emPassant
         random = random64();
         fieldList.put('E', random);

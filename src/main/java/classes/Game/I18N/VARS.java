@@ -222,7 +222,7 @@ public class VARS {
 
         public static final double QUEEN_BASE_VALUE = 9;
 
-        public static final double KING_BASE_VALUE = 100;
+        public static final double KING_BASE_VALUE = 200;
 
         public static final Set<Location> pawnMatrix = new HashSet<>(){{
             add(new Location(1, -1));
@@ -491,7 +491,7 @@ public class VARS {
 
         public static int MAX_HEIGHT = 8;
 
-        public static int MINIMAX_DEPTH = 6;
+        public static int MINIMAX_DEPTH = 10;
 
         public static int nodeNum = 0;
 
