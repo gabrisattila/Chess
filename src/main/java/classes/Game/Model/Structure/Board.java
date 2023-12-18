@@ -115,24 +115,8 @@ public class Board implements IBoard {
         return ps;
     }
 
-    public Set<IPiece> myPieces(){
-        return getPieces(whiteToPlay);
-    }
-
-    public Set<IPiece> enemyPieces(){
-        return getPieces(!whiteToPlay);
-    }
-
     public Piece getKing(boolean whiteNeeded){
         return whiteNeeded ? whiteKing : blackKing;
-    }
-
-    public IPiece getMyKing() {
-        return getKing(whiteToPlay);
-    }
-
-    private IPiece getEnemyKing() {
-        return getKing(!whiteToPlay);
     }
 
     public Location getKingsPlace(boolean forWhite){
@@ -298,9 +282,7 @@ public class Board implements IBoard {
     }
 
     private boolean tisztAttackRangeContainsOneOfMyPiece(IPiece enemyTiszt){
-        return enemyTiszt.getPossibleRange().stream().anyMatch(l -> {
-            return notNull(getPiece(l)) && getPiece(l).isWhite() != enemyTiszt.isWhite() && getPiece(l).getType() != K;
-        });
+        return enemyTiszt.getPossibleRange().stream().anyMatch(l -> notNull(getPiece(l)) && getPiece(l).isWhite() != enemyTiszt.isWhite() && getPiece(l).getType() != K);
     }
 
     //endregion
@@ -620,16 +602,6 @@ public class Board implements IBoard {
     private Set<IPiece> getTisztek(boolean my) {
         return pieces.isEmpty() ? new HashSet<>() :
                 pieces.stream().filter(p -> p.isWhite() == my && p.getType() != P && p.getType() != K).collect(Collectors.toSet());
-    }
-
-    public boolean allPiecesAreTheSameColor(){
-        boolean b = pieces.get(0).isWhite();
-        for (IPiece p : getPieces()) {
-            if (p.isWhite() != b){
-                return false;
-            }
-        }
-        return true;
     }
 
     //endregion

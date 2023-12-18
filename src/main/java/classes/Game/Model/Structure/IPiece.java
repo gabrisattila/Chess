@@ -1,6 +1,5 @@
 package classes.Game.Model.Structure;
 
-import classes.Game.I18N.ChessGameException;
 import classes.Game.I18N.Location;
 import classes.Game.I18N.PieceAttributes;
 import classes.Game.I18N.PieceType;
@@ -41,11 +40,4 @@ public interface IPiece {
 
      void updateRange() ;
 
-     default boolean EQUALS(IPiece ownPiece) {
-          return isWhite() == ownPiece.isWhite() && getAttributes().equals(ownPiece.getAttributes());
-     }
-
-     default String toSString(){
-          return (isWhite() ? "W " : "B ") + getType().toString() + " on [" + getI() + ", " + getJ() + "] ";
-     }
 }

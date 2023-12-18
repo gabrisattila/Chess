@@ -4,6 +4,7 @@ package classes.Game.I18N;
 import lombok.*;
 
 import static classes.Game.I18N.METHODS.*;
+import static classes.Game.I18N.PieceType.getPieceType;
 import static classes.Game.I18N.VARS.FINALS.*;
 
 @Getter
@@ -93,6 +94,50 @@ public class PieceAttributes {
     public void setOwnStartRow(int x){
         enemyAndOwnStartRow.setSecond(x);
     }
+
+
+    public static PieceAttributes charToPieceAttributes(char c){
+        PieceType type;
+        String color = Character.isUpperCase(c) ? "WHITE" : "BLACK";
+        type = getPieceType(c);
+        return new PieceAttributes(type, color);
+    }
+
+    public static char pieceAttributesToChar(PieceAttributes piece){
+        char pieceChar;
+        pieceChar = switch (piece.getType()){
+            case P -> 'P';
+            case N -> 'N';
+            case B -> 'B';
+            case R -> 'R';
+            case Q -> 'Q';
+            case K -> 'K';
+        };
+        if (!piece.isWhite())
+            pieceChar = Character.toLowerCase(pieceChar);
+        return pieceChar;
+    }
+
+    public static String createSourceStringFromGotAttributes(PieceAttributes attributes){
+        StringBuilder sb = new StringBuilder();
+        sb.append("src\\main\\resources\\Figura_Images\\");
+
+        sb.append(attributes.isWhite() ? "w_" : "b_");
+        String type;
+        switch (attributes.getType()){
+            case P -> type = "pawn";
+            case N -> type = "night";
+            case B -> type = "bishop";
+            case R -> type = "rook";
+            case Q -> type = "queen";
+            default -> type = "king";
+        }
+        sb.append(type);
+        sb.append(".png");
+
+        return sb.toString();
+    }
+
 
     //endregion
 

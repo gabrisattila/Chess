@@ -7,6 +7,7 @@ import lombok.*;
 import javax.swing.*;
 import java.util.stream.Collectors;
 
+import static classes.Ai.AI.*;
 import static classes.GUI.FrameParts.Logger.*;
 import static classes.Game.I18N.Location.*;
 import static classes.Game.I18N.METHODS.*;
@@ -71,26 +72,6 @@ public class Move {
     }
 
     public Move(IPiece what, Location to, IBoard boardToMoveOn){
-        this.what = what;
-        from = what.getLocation();
-        this.to = to;
-        this.boardToMoveOn = boardToMoveOn;
-        parameterizeToDefault();
-    }
-
-    public void parameterize(IBoard boardToMoveOn){
-        this.boardToMoveOn = boardToMoveOn;
-        parameterizeToDefault();
-    }
-
-    public void parameterize(IPiece what, Location to){
-        this.what = what;
-        from = what.getLocation();
-        this.to = to;
-        parameterizeToDefault();
-    }
-
-    public void parameterize(IPiece what, Location to, IBoard boardToMoveOn){
         this.what = what;
         from = what.getLocation();
         this.to = to;

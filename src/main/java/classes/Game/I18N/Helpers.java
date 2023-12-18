@@ -6,8 +6,8 @@ import classes.Game.Model.Structure.*;
 
 import java.util.*;
 
-import static classes.Ai.FenConverter.charToPieceType;
 import static classes.GUI.FrameParts.ViewBoard.getViewBoard;
+import static classes.Game.I18N.PieceType.getPieceType;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Game.Model.Structure.Board.getBoard;
 
@@ -63,7 +63,7 @@ public class Helpers {
                 }
                 if (whatNeeded.contains("base")){
                     int z = whatNeeded.indexOf("base");
-                    PieceType pieceType = charToPieceType(whatNeeded.get(z + 1).charAt(0));
+                    PieceType pieceType = getPieceType(whatNeeded.get(z + 1).charAt(0));
                     String white = 'w' == whatNeeded.get(z + 1).charAt(1) ? "WHITE" : "BLACK";
                     Piece p = new Piece(new PieceAttributes(pieceType, white), new Location(i, j));
                     fieldInString.append(Evaluator.getBaseFieldValue(p));

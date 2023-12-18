@@ -4,19 +4,13 @@ import classes.Game.Model.Structure.*;
 
 import java.util.ArrayList;
 
+import static classes.Game.I18N.VARS.MUTABLE.blackPieceSet;
+import static classes.Game.I18N.VARS.MUTABLE.whitePieceSet;
+
 public class PieceSet extends ArrayList<IPiece> {
 
     public PieceSet(){
         super();
-    }
-
-    public PieceSet(Piece piece){
-        super();
-        add(piece);
-    }
-
-    public PieceSet(PieceSet pieceSet){
-        super(pieceSet);
     }
 
     public Piece getFirstEmpty(){
@@ -30,5 +24,16 @@ public class PieceSet extends ArrayList<IPiece> {
             p.setEmpty();
         }
     }
+
+
+
+    public static Piece firstEmptyWhite(){
+        return whitePieceSet.getFirstEmpty();
+    }
+
+    public static Piece firstEmptyBlack(){
+        return blackPieceSet.getFirstEmpty();
+    }
+
 
 }

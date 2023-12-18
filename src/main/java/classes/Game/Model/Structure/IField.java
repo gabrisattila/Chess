@@ -1,6 +1,5 @@
 package classes.Game.Model.Structure;
 
-import classes.Game.I18N.ChessGameException;
 import classes.Game.I18N.Location;
 import classes.Game.I18N.PieceAttributes;
 
@@ -22,7 +21,4 @@ public interface IField {
 
      void clean() ;
 
-     default String toSString(){
-          return " [" + getI() + ", " + getJ() + "] ";
-     }
 }

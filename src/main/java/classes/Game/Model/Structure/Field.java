@@ -1,19 +1,13 @@
 package classes.Game.Model.Structure;
 
 
-import classes.Game.I18N.ChessGameException;
 import classes.Game.I18N.Location;
 import classes.Game.I18N.PieceAttributes;
-import classes.Game.I18N.PieceType;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.Map;
-
-import static classes.Ai.Evaluator.*;
 import static classes.Game.I18N.ChessGameException.*;
 import static classes.Game.I18N.METHODS.*;
-import static classes.Game.I18N.VARS.MUTABLE.*;
+import static classes.Game.I18N.PieceSet.*;
 
 @Getter
 @Setter
@@ -44,16 +38,6 @@ public class Field implements IField {
 
     //region Constructor
 
-    public Field()  {
-        setPiece((Piece) null);
-    }
-
-    public Field(Location Location) {
-        this.Location = Location;
-        setPiece((Piece) null);
-        setValuesToZero();
-    }
-
     public Field(int i, int j) {
         Location = new Location(i, j);
         setPiece((Piece) null);
@@ -64,13 +48,6 @@ public class Field implements IField {
         this.Location = Location;
         fieldColor = color;
         setPiece((Piece) null);
-        setValuesToZero();
-    }
-
-    public Field(Location Location, String color, Piece piece) {
-        this.Location = Location;
-        fieldColor = color;
-        setPiece(piece);
         setValuesToZero();
     }
 
@@ -143,10 +120,6 @@ public class Field implements IField {
         blackWatcherCount = 0;
     }
 
-    public void setKingBoostToZero(){
-        kingBoost = 0;
-    }
-
     public void increaseWatcherCount(boolean forWhite){
         if (forWhite)
             whiteWatcherCount++;
@@ -154,7 +127,7 @@ public class Field implements IField {
             blackWatcherCount--;
     }
 
-    public void setFinalValue(boolean forWhite){
+    public void setFinalValue(){
         if (isGotPiece()){
 //            finalValue = (Math.abs(getPiece().getVALUE())) + getBaseFieldValueFor(piece);
 //            finalValue = forWhite ? finalValue : -finalValue;

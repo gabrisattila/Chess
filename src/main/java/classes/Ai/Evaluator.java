@@ -43,7 +43,7 @@ public class Evaluator {
 
         getBoard().getFields().stream()
                 .flatMap(ArrayList::stream)
-                .forEach(f -> ((Field) f).setFinalValue(forWhite));
+                .forEach(f -> ((Field) f).setFinalValue());
 
         return getBoard().getFields().stream()
         .flatMap(ArrayList::stream)

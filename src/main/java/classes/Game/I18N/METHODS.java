@@ -15,25 +15,9 @@ import static classes.GUI.FrameParts.ViewBoard.getViewBoard;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.GUI.Frame.Window.*;
+import static java.util.Objects.requireNonNull;
 
 public class METHODS {
-
-    public static void saveBoardInsteadOfException(){
-        Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-            saveBoard(getViewBoard());
-        });
-    }
-
-    public static void exceptionIgnorer(){
-        Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
-            if (gameEndFlag.get()){
-                System.err.println("Unhandled exception caught: " + e.getMessage());
-                e.printStackTrace();
-            }
-        });
-    }
 
     public static Double[][] mirrorMatrixHorizontally(Double[][] matrix){
         int rows = matrix.length;
@@ -60,15 +44,6 @@ public class METHODS {
         return mirroredMatrix;
     }
 
-    public static void waitOnPause(){
-        while(pauseFlag.get()) {
-            try {
-                pauseFlag.wait();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
 
     public static void changeEvenOrOddStep(){
         if (evenOrOddStep == 0)
@@ -82,39 +57,6 @@ public class METHODS {
         playerTurn = !playerTurn;
     }
 
-    public static void putTakenPieceToItsPlace(String fenOfCurrentState, String fenOfPreviousState) {
-
-        ArrayList<Character> prev = (ArrayList<Character>) fenOfPreviousState
-                .chars()
-                .filter(Character::isLetter)
-                .mapToObj(c -> (char) c)
-                .collect(Collectors.toList());
-        ArrayList<Character> current = (ArrayList<Character>) fenOfCurrentState
-                .chars()
-                .filter(Character::isLetter)
-                .mapToObj(c -> (char) c)
-                .collect(Collectors.toList());
-
-        if (current.size() != prev.size()){
-
-            Collections.sort(prev);
-            Collections.sort(current);
-            char thePiece = '0';
-            for (int i = 0; i < prev.size(); i++) {
-                if (i == prev.size() - 1){
-                    thePiece = prev.get(i);
-                    break;
-                }
-                if (prev.get(i) != current.get(i)){
-                    thePiece = prev.get(i);
-                    break;
-                }
-            }
-            PieceAttributes piece = charToPieceAttributes(thePiece);
-            ViewPiece hit = new ViewPiece(createSourceStringFromGotAttributes(piece), piece);
-            putTakenPieceToItsPlace(hit);
-        }
-    }
 
     public static String dateToString(Date date){
 
@@ -130,13 +72,6 @@ public class METHODS {
                 hourMinSec.replace(':', '-');
     }
 
-    public static void putTakenPieceToItsPlace(ViewPiece hit)  {
-        Objects.requireNonNull(getNextFreePlaceForTakenPiece(hit.isWhite())).setPiece(hit);
-    }
-
-    public static void convertOneBoardToAnother(IBoard what, IBoard to){
-        FenToBoard(BoardToFen(what), to);
-    }
 
     public static <T> Collection<T> union(Collection<T> set1, Collection<T> set2) {
         Set<T> set = new HashSet<>();
@@ -152,7 +87,7 @@ public class METHODS {
 
         for (T t : c1) {
             if (c1.toArray()[0] instanceof Location){
-                if (c2.stream().anyMatch(l -> ((Location) l).equals((Location) t))){
+                if (c2.stream().anyMatch(l -> l.equals(t))){
                     list.add(t);
                 }
             }else if(c2.contains(t)) {
@@ -172,31 +107,15 @@ public class METHODS {
         return C1MinusC2;
     }
 
-    public static <T> Collection<T> minus(Collection<T> c, T t){
-        return c.stream().filter(c1 -> !c1.equals(t)).collect(Collectors.toSet());
-    }
-
     public static boolean locationCollectionContains(Set<Location> set, Location element){
         return set.stream().anyMatch(p -> p.equals(element));
     }
 
     public static <T> boolean collectionNotContains(Collection<T> collection, T element){
         if (element instanceof Location){
-            return collection.stream().noneMatch(l -> ((Location) l).equals((Location) element));
+            return collection.stream().noneMatch(l -> l.equals(element));
         }
         return !collection.contains(element);
-    }
-
-    public static <T> boolean collectionContains(Collection<T> collection, T element){
-        return collection.contains(element);
-    }
-
-    public static boolean notContainsLocation(Location Location){
-        return !containsLocation(Location.getI(), Location.getJ());
-    }
-
-    public static boolean notContainsLocation(int i, int j){
-        return !containsLocation(MAX_WIDTH, MAX_HEIGHT, i, j);
     }
 
     public static boolean containsLocation(Location Location){
@@ -211,6 +130,12 @@ public class METHODS {
         return x >= 0 && x < maxWidth && y >= 0 && y < maxHeight;
     }
 
+    public static Set<Location> locationSetTimesN(Set<Location> list, int n){
+        return list.stream().map(t -> t.times(n)).collect(Collectors.toSet());
+    }
+
+
+
     public static boolean isNull(Object o){
         return o == null;
     }
@@ -219,27 +144,7 @@ public class METHODS {
         return o != null;
     }
 
-    public static <T> T tableIf(T o2, T o3, int i, int j){
-        T o1;
-        if(i % 2 == 0){
-            if (j % 2 == 0){
-                o1 = o3;
-            }else {
-                o1 = o2;
-            }
-        }else {
-            if (j % 2 == 0){
-                o1 = o2;
-            }else {
-                o1 = o3;
-            }
-        }
-        return o1;
-    }
 
-    public static Set<Location> locationSetTimesN(Set<Location> list, int n){
-        return list.stream().map(t -> t.times(n)).collect(Collectors.toSet());
-    }
 
     public static int countOccurrences(String text, char targetChar) {
         int count = 0;
@@ -277,17 +182,6 @@ public class METHODS {
         return stringBuilder.toString();
     }
 
-    public static Piece firstEmptyWhite(){
-        return whitePieceSet.getFirstEmpty();
-    }
-
-    public static Piece firstEmptyBlack(){
-        return blackPieceSet.getFirstEmpty();
-    }
-
-    public static ArrayList<Location> getCastleMatrixFor(boolean isWhite){
-        return castleMatrix(isWhite, (theresOnlyOneAi || !whiteAiNeeded));
-    }
 
     public static void showFlashFrame(String message, int durationInSeconds){
 
@@ -312,17 +206,6 @@ public class METHODS {
         flashFrame.setVisible(true);
         timer.start();
 
-    }
-
-    private static ArrayList<Location> castleMatrix(boolean isWhite, boolean whiteDown){
-        int i = isWhite ? 0 : MAX_HEIGHT - 1;
-        Pair<Integer, Integer> js = new Pair<>();
-        js.setFirst(whiteDown ? 2 : 1);
-        js.setSecond(whiteDown ? 5 : 6);
-        return new ArrayList<>() {{
-            add(new Location(i, js.getFirst()));
-            add(new Location(i, js.getSecond()));
-        }};
     }
 
 }

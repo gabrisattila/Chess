@@ -9,7 +9,6 @@ import lombok.Setter;
 
 import java.util.*;
 
-import static classes.Game.I18N.ChessGameException.throwBadTypeErrorIfNeeded;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
@@ -47,28 +46,9 @@ public class Piece implements IPiece {
         bounderPiece = null;
     }
 
-    public Piece(PieceAttributes attributes){
-        this.attributes = attributes;
-        possibleRange = new HashSet<>();
-        watchedRange = new HashSet<>();
-        bounderPiece = null;
-    }
-
     public Piece(PieceAttributes attributes, Location location){
         this.attributes = attributes;
         Location = location;
-        possibleRange = new HashSet<>();
-        watchedRange = new HashSet<>();
-        bounderPiece = null;
-    }
-
-    public Piece(PieceAttributes attributes, Location Location, IBoard board)  {
-        this.attributes = attributes;
-        this.Location = Location;
-        throwBadTypeErrorIfNeeded(new Object[]{
-                board, Board.getBoard(), "Ezért nem hozható létre a Piece objektum."
-        });
-        this.board = (Board) board;
         possibleRange = new HashSet<>();
         watchedRange = new HashSet<>();
         bounderPiece = null;
@@ -143,10 +123,6 @@ public class Piece implements IPiece {
 
     public Location getEmPassantLocation(){
         return notNull(attributes.getEmPassantLoc()) ? attributes.getEmPassantLoc() : null;
-    }
-
-    public void setType(PieceType type){
-        attributes.setType(type);
     }
 
     @Override
@@ -240,9 +216,9 @@ public class Piece implements IPiece {
                 if (Math.abs(l.getI() - getI()) == 2){
                     if (posOrWatch && getI() == getOwnStartRow()){
                         if (getOwnStartRow() == 1){
-                            return !isTherePiece(2, getJ());
+                            return theresNoPiece(2, getJ());
                         }else {
-                            return !isTherePiece(5, getJ());
+                            return theresNoPiece(5, getJ());
                         }
                     }
                 }
@@ -272,7 +248,7 @@ public class Piece implements IPiece {
         Set<Location> wRange = new HashSet<>();
         while(b && containsLocation(i, j)){
             if (!(i == Location.getI() && j == Location.getJ())){
-                if (!isTherePiece(i, j)){
+                if (theresNoPiece(i, j)){
                     pRange.add(new Location(i, j));
                 }else {
                     if (enemyColor(i, j)){
@@ -310,12 +286,8 @@ public class Piece implements IPiece {
         return board.getField(l).isGotPiece();
     }
 
-    public boolean isTherePiece(int i, int j){
-        return board.getField(i, j).isGotPiece();
-    }
-
-    private Location matrixPlusOriginLoc(Location l){
-        return new Location(Location.getI() + l.getI(), Location.getJ() + l.getJ());
+    public boolean theresNoPiece(int i, int j){
+        return !board.getField(i, j).isGotPiece();
     }
 
     //endregion

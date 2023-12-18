@@ -33,6 +33,24 @@ public interface IBoard {
         }
     }
 
+    default <T> T tableIf(T o2, T o3, int i, int j){
+        T o1;
+        if(i % 2 == 0){
+            if (j % 2 == 0){
+                o1 = o3;
+            }else {
+                o1 = o2;
+            }
+        }else {
+            if (j % 2 == 0){
+                o1 = o2;
+            }else {
+                o1 = o3;
+            }
+        }
+        return o1;
+    }
+
     default void pieceSetUp(String FEN){
         String[] fenParts = FEN.split(" ");
         String fenPieces = fenParts[0];
@@ -56,6 +74,10 @@ public interface IBoard {
         FenToBoard(FEN, this);
     }
 
+    static void convertOneBoardToAnother(IBoard what, IBoard to){
+        FenToBoard(BoardToFen(what), to);
+    }
+
     void cleanBoard() ;
 
     ArrayList<ArrayList<IField>> getFields();
@@ -76,11 +98,4 @@ public interface IBoard {
 
     void rangeUpdater() ;
 
-    default Location getKingsOriginPlace(boolean forWhite){
-        if (whiteDown){
-            return new Location(4, forWhite ? 0 : 7);
-        }else {
-            return new Location(3, forWhite ? 7 : 0);
-        }
-    }
 }

@@ -1,7 +1,6 @@
 package classes.Game.Model.Structure;
 
 import classes.Ai.AiNode;
-import classes.Ai.AiNodeBBStyle;
 import classes.GUI.FrameParts.ViewBoard;
 import classes.Game.I18N.PieceType;
 import lombok.*;
@@ -19,6 +18,7 @@ import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Game.Model.Structure.Board.*;
+import static classes.Game.Model.Structure.IBoard.convertOneBoardToAnother;
 
 @Getter
 @Setter
@@ -200,7 +200,7 @@ public class GameOverOrPositionEnd {
         if (getBoard().getPieces().size() == 3 && getBoard().hasTwoKings() &&
                 getBoard().getPieces().stream().allMatch(p -> p.getType() == K || p.getType() == P)){
             IPiece onlyPawn = null;
-            IPiece enemyKing = null;
+            IPiece enemyKing;
             for (IPiece p : getBoard().getPieces()) {
                 if (p.getType() == P){
                     onlyPawn = p;

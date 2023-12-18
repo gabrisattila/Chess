@@ -1,6 +1,7 @@
 package classes.Game.Model.Logic;
 
 import classes.Ai.AI;
+import classes.Game.Model.Structure.IBoard;
 import lombok.*;
 
 import javax.swing.*;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 
 import static classes.Ai.FenConverter.*;
 import static classes.GUI.Frame.Window.*;
+import static classes.GUI.FrameParts.ChessButton.ChessButtonMouseListener.saveBoard;
 import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
@@ -64,6 +66,7 @@ public class EDT {
         }
     }
 
+
     private static void initializeAis(){
         if (theresOnlyOneAi){
             if ((whiteToPlay && whiteAiNeeded) || (!whiteToPlay && !whiteAiNeeded)){
@@ -106,6 +109,7 @@ public class EDT {
         }
     }
 
+
     private static void setUpViewBoard(String fen)  {
 
         putTakenPieceToItsPlace(fen.split(" ")[0], BoardToFen(getViewBoard()).split(" ")[0]);
@@ -114,6 +118,23 @@ public class EDT {
 
     }
 
+
+    public static void saveBoardInsteadOfException(){
+        Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            saveBoard(getViewBoard());
+        });
+    }
+
+    public static void exceptionIgnorer(){
+        Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
+            if (gameEndFlag.get()){
+                System.err.println("Unhandled exception caught: " + e.getMessage());
+                e.printStackTrace();
+            }
+        });
+    }
 
     //endregion
 

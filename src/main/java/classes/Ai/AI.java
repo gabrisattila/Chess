@@ -2,6 +2,7 @@ package classes.Ai;
 
 import classes.Game.I18N.Pair;
 import classes.Ai.BitBoard.Zobrist;
+import classes.Game.Model.Structure.IBoard;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -12,7 +13,6 @@ import static classes.Ai.AiNodeBBStyle.*;
 import static classes.Ai.AiTree.*;
 import static classes.Ai.FenConverter.*;
 import static classes.GUI.FrameParts.ViewBoard.*;
-import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.Model.Logic.EDT.*;
 import static classes.Ai.BitBoard.BBVars.*;
@@ -22,6 +22,8 @@ import static classes.Game.Model.Structure.Board.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Game.Model.Structure.GameOverOrPositionEnd.*;
 import static classes.GUI.FrameParts.Logger.*;
+import static classes.Game.Model.Structure.IBoard.convertOneBoardToAnother;
+
 
 /**
  * thread descriptor object
@@ -70,6 +72,16 @@ public class AI extends Thread {
 
     private boolean gameFinished(double gameOver){
         return GAME_OVER_CASES.contains(gameOver);
+    }
+
+    public static void waitOnPause(){
+        while(pauseFlag.get()) {
+            try {
+                pauseFlag.wait();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
 

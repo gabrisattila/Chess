@@ -3,7 +3,6 @@ package classes.GUI.FrameParts;
 import classes.Game.I18N.Location;
 import classes.Game.I18N.PieceAttributes;
 import classes.Game.I18N.PieceType;
-import classes.Game.Model.Structure.IBoard;
 import classes.Game.Model.Structure.IPiece;
 import lombok.*;
 
@@ -12,7 +11,7 @@ import javax.swing.*;
 import java.util.HashSet;
 import java.util.Set;
 
-import static classes.Ai.FenConverter.charToPieceType;
+import static classes.Game.I18N.PieceType.getPieceType;
 import static classes.Game.I18N.VARS.FINALS.*;
 
 @Getter
@@ -38,8 +37,6 @@ public class ViewPiece extends ImageIcon implements IPiece{
 
     //region Constructor
 
-    public ViewPiece(){}
-
     public ViewPiece(String source){
         super(source);
 
@@ -52,7 +49,7 @@ public class ViewPiece extends ImageIcon implements IPiece{
             attributes.setColor("WHITE");
         else
             attributes.setColor("BLACK");
-        attributes.setType(charToPieceType(type));
+        attributes.setType(getPieceType(type));
 
         possibleRange = new HashSet<>();
         watchedRange = new HashSet<>();

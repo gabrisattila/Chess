@@ -5,10 +5,8 @@ import lombok.*;
 
 import java.util.Arrays;
 
-import static classes.Game.I18N.METHODS.countOccurrences;
-import static classes.Game.I18N.METHODS.isNull;
-import static classes.Game.I18N.VARS.MUTABLE.MAX_HEIGHT;
-import static classes.Game.I18N.VARS.MUTABLE.MAX_WIDTH;
+import static classes.Game.I18N.METHODS.*;
+import static classes.Game.I18N.VARS.MUTABLE.*;
 
 @Getter
 @Setter
@@ -22,11 +20,6 @@ public class ChessGameException extends RuntimeException {
 
 
     //region Constructor
-
-    public ChessGameException(Object o, String msg) {
-        this.msg = msg;
-        System.out.println(o + msg);
-    }
 
     public ChessGameException(String msg) {
         this.msg = msg;

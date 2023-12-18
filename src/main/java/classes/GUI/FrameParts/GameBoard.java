@@ -1,9 +1,7 @@
 package classes.GUI.FrameParts;
 
-import classes.Game.I18N.ChessGameException;
 import classes.Game.I18N.Location;
 import classes.Game.Model.Structure.IField;
-import classes.Game.Model.Structure.IPiece;
 import lombok.*;
 
 import javax.swing.*;
@@ -15,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import static classes.GUI.FrameParts.SideLabel.*;
-import static classes.Game.I18N.Helpers.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.GUI.FrameParts.ViewBoard.*;
@@ -52,14 +49,6 @@ public class GameBoard extends JLayeredPane {
 
 
     //region Methods
-
-    public void clear()  {
-        for (var fields : parentBoard.getFields()) {
-            for (IField f : fields) {
-                f.clean();
-            }
-        }
-    }
 
     public static void clearLeftIcons()  {
 

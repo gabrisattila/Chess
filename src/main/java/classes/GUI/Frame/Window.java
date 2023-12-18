@@ -1,10 +1,8 @@
 package classes.GUI.Frame;
 
-import classes.GUI.FrameParts.ChessButton;
-import classes.GUI.FrameParts.GameBoard;
-import classes.GUI.FrameParts.Logger;
-import classes.GUI.FrameParts.ViewField;
+import classes.GUI.FrameParts.*;
 import classes.Game.I18N.Pair;
+import classes.Game.I18N.PieceAttributes;
 import classes.Game.Model.Structure.IField;
 import lombok.*;
 
@@ -12,12 +10,15 @@ import javax.swing.*;
 
 import java.awt.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
+import static classes.Game.I18N.PieceAttributes.*;
 import static classes.GUI.FrameParts.GameBoard.cleanFieldFromLeftIcon;
 import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
+import static java.util.Objects.requireNonNull;
 
 @Getter
 @Setter
@@ -212,6 +213,44 @@ public class Window extends JFrame {
 
 
     //region TakenPiecePlaces
+
+    public static void putTakenPieceToItsPlace(String fenOfCurrentState, String fenOfPreviousState) {
+
+        ArrayList<Character> prev = (ArrayList<Character>) fenOfPreviousState
+                .chars()
+                .filter(Character::isLetter)
+                .mapToObj(c -> (char) c)
+                .collect(Collectors.toList());
+        ArrayList<Character> current = (ArrayList<Character>) fenOfCurrentState
+                .chars()
+                .filter(Character::isLetter)
+                .mapToObj(c -> (char) c)
+                .collect(Collectors.toList());
+
+        if (current.size() != prev.size()){
+
+            Collections.sort(prev);
+            Collections.sort(current);
+            char thePiece = '0';
+            for (int i = 0; i < prev.size(); i++) {
+                if (i == prev.size() - 1){
+                    thePiece = prev.get(i);
+                    break;
+                }
+                if (prev.get(i) != current.get(i)){
+                    thePiece = prev.get(i);
+                    break;
+                }
+            }
+            PieceAttributes piece = charToPieceAttributes(thePiece);
+            ViewPiece hit = new ViewPiece(createSourceStringFromGotAttributes(piece), piece);
+            putTakenPieceToItsPlace(hit);
+        }
+    }
+
+    public static void putTakenPieceToItsPlace(ViewPiece hit)  {
+        requireNonNull(getNextFreePlaceForTakenPiece(hit.isWhite())).setPiece(hit);
+    }
 
     public static ViewField getNextFreePlaceForTakenPiece(boolean forWhite){
         for(ViewField f : (forWhite ? getWhiteTakenPiecesPlace() : getBlackTakenPiecesPlace())){

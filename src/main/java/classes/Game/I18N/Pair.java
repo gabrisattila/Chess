@@ -25,11 +25,6 @@ public class Pair<T, U> {
         this.Second = Second;
     }
 
-    public Pair(Pair<T, U> toCopy) {
-        this.First = toCopy.First;
-        this.Second = toCopy.Second;
-    }
-
     //endregion
 
 }

@@ -57,10 +57,6 @@ public class Location {
         return new Location(n * i, n * j);
     }
 
-    public Location times(Location Location){
-        return new Location(i * Location.getI(), j * Location.getJ());
-    }
-
     public String toString(){
         return "[" + i + ", " + j + "] ";
     }

@@ -11,10 +11,10 @@ import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.Set;
 
 import static classes.Ai.AiNode.*;
 import static classes.Ai.FenConverter.*;
+import static classes.GUI.Frame.Window.putTakenPieceToItsPlace;
 import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
@@ -199,23 +199,12 @@ public class ViewField extends JButton implements classes.Game.Model.Structure.I
             }
         }
 
-        private void changeFieldColorsOfARange(Set<ViewField> fields){
-            for (ViewField f : fields) {
-                changeFieldColor(f);
-            }
-        }
-
         private void changeFieldColor(ViewField field){
             if (WHITE_STRING.equals(field.fieldColor)){
                 field.setBackground(field.getBackground() == WHITE ? DARK_WHITE : WHITE);
             }else {
                 field.setBackground(field.getBackground() == BLACK ? DARK_BLACK : BLACK);
             }
-        }
-
-        private boolean helperIfBasedOnColor(ViewPiece piece){
-            return (piece.isWhite() && whiteToPlay) ||
-                    (!piece.isWhite() && !whiteToPlay);
         }
 
     }
