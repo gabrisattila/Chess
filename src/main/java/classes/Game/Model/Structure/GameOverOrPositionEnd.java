@@ -176,11 +176,14 @@ public class GameOverOrPositionEnd {
                 (Long.bitCount(blackBishop) == 1 && (Long.bitCount(whiteKnight) == 1) && blackBishop == 0 && whiteKnight == 0);
         boolean only2KnightFromTheSameColor =
                 (Long.bitCount(whiteKnight) == 2 || Long.bitCount(blackKnight) == 2) && blackBishop == 0 && whiteBishop == 0;
+        boolean twoBishopAgainstOne =
+                (Long.bitCount(whiteBishop) == 2 && Long.bitCount(blackBishop) == 1 && blackKnight == 0 && whiteKnight == 0)  ||
+                (Long.bitCount(whiteBishop) == 1 && Long.bitCount(blackBishop) == 2 && blackKnight == 0 && whiteKnight == 0);
 
         return thirdSimilarPositionOfTheGame || allRemainingPiecesAreKing ||
                 (noBigOneRemained &&
                         (only1WBishop || only1BBishop || only1WKnight || only1BKnight ||
-                         only1WBishop1BKnight || only1BBishop1WKnight || only2KnightFromTheSameColor));
+                         only1WBishop1BKnight || only1BBishop1WKnight || only2KnightFromTheSameColor || twoBishopAgainstOne));
 
 
     }
