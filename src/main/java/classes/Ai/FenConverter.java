@@ -215,23 +215,6 @@ public class FenConverter {
         return BoardToFen(board, false);
     }
 
-    public static boolean FenEquals(String fen1, String fen2){
-        return removeStepCountFromFen(fen1).equals(removeStepCountFromFen(fen2));
-    }
-
-    public static String removeStepCountFromFen(String fen){
-        String[] fenParts = fen.split(" ");
-        return fenParts[0] +
-                ' ' +
-                fenParts[1] +
-                ' ' +
-                fenParts[2] +
-                ' ' +
-                fenParts[3] +
-                ' ' +
-                fenParts[5];
-    }
-
     public static PieceAttributes charToPieceAttributes(char c){
         PieceType type;
         String color = Character.isUpperCase(c) ? "WHITE" : "BLACK";

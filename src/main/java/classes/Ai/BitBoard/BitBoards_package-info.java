@@ -1,4 +1,4 @@
-package classes.Game.Model.Structure.BitBoard;
+package classes.Ai.BitBoard;
 
 //This package contains a fully new and very efficient implementation of making moves
 // and create boards in the head of the AI.

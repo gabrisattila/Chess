@@ -1,19 +1,13 @@
-package classes.Game.Model.Structure.BitBoard;
+package classes.Ai.BitBoard;
 
-import classes.Game.I18N.PieceType;
 import lombok.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import static classes.Ai.FenConverter.*;
-import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
-import static classes.Game.I18N.VARS.MUTABLE.emPassantChance;
-import static classes.Game.Model.Structure.BitBoard.BBVars.*;
-import static classes.Game.Model.Structure.Board.*;
+import static classes.Ai.BitBoard.BBVars.*;
 
 @Getter
 @Setter

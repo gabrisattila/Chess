@@ -1,14 +1,13 @@
-package classes.Game.Model.Structure.BitBoard;
+package classes.Ai.BitBoard;
 
 import classes.Game.I18N.Pair;
 import lombok.*;
 
 import java.security.SecureRandom;
-import java.util.ArrayList;
 import java.util.HashMap;
 
-import static classes.Game.Model.Structure.BitBoard.BBVars.*;
-import static classes.Game.Model.Structure.BitBoard.BitBoard.*;
+import static classes.Ai.BitBoard.BBVars.*;
+import static classes.Ai.BitBoard.BitBoard.*;
 
 @Getter
 @Setter

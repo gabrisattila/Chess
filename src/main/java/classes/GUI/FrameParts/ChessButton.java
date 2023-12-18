@@ -1,6 +1,6 @@
 package classes.GUI.FrameParts;
 
-import classes.Game.Model.Structure.BitBoard.Zobrist;
+import classes.Ai.BitBoard.Zobrist;
 import classes.Game.Model.Structure.IBoard;
 import lombok.*;
 

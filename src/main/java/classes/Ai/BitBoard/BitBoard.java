@@ -1,8 +1,7 @@
-package classes.Game.Model.Structure.BitBoard;
+package classes.Ai.BitBoard;
 
 import lombok.*;
 
-import java.lang.reflect.Method;
 import static classes.Game.I18N.METHODS.*;
 
 @Getter

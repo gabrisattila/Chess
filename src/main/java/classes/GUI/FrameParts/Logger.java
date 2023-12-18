@@ -7,12 +7,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 import static classes.GUI.Frame.Window.*;
-import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 
@@ -30,7 +26,7 @@ public class Logger extends JTextArea {
         initializeLogFile();
     }
 
-    private void initializeLogFile() {
+    public static void initializeLogFile() {
 
         File logger = new File(LOG_FILE_PATH);
         try {
@@ -48,22 +44,22 @@ public class Logger extends JTextArea {
         }
     }
 
-    public static String logStep(Move move)  {
+    public static void logStep(Move move)  {
         if (canBeLogger){
             String step = " ";
 
             if (whiteToPlay){
                 step += stepNumber + ". ";
             }else {
-                step += " - ";
+                step += stepNumber < 10 ? "    " : "     ";
                 stepNumber++;
             }
 
             if (!move.isItIsCastle()){
-                step += move.getWhat().getType().toString().charAt(0);
-                if (notNull(move.getPlusPiece())) {
-                    step += 'x';
-                }
+                step += englishToHungarianPieceLetters.get(move.getWhat().getType().toString(move.getWhat().isWhite()).charAt(0));
+                step += " ";
+                step += move.getFrom().toLoggerString();
+                step += " - ";
                 step += move.getTo().toLoggerString();
             }else {
                 if (Math.abs(move.getPlusPiece().getSecond().getFirst().getJ() - move.getPlusPiece().getSecond().getSecond().getJ()) > 2){
@@ -77,10 +73,72 @@ public class Logger extends JTextArea {
 
             if (move.isMustLogged())
                 getLogger().log(step);
-            return step;
         }
-        return "";
     }
+
+    public static void logAiStep(String move){
+        getLogger().log(move);
+    }
+
+    public static String detectChessMove(String fen1, String fen2) {
+        char[][] board1 = simpleFenParserToCharArray(fen1);
+        char[][] board2 = simpleFenParserToCharArray(fen2);
+        int fromRow = -1, fromCol = -1, toRow = -1, toCol = -1;
+        char stepper = 0;
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (board1[i][j] != board2[i][j]) {
+                    if (fromRow == -1) {
+                        fromRow = i;
+                        fromCol = j;
+                        stepper = board1[i][j];
+                    } else {
+                        toRow = i;
+                        toCol = j;
+                    }
+                }
+            }
+        }
+        return convertToChessNotation(fromRow, fromCol, stepper, true) +
+                " - " +
+                convertToChessNotation(toRow, toCol, (char) 0, false) +
+                "\n";
+    }
+
+    private static char[][] simpleFenParserToCharArray(String fen) {
+        char[][] board = new char[8][8];
+        String[] parts = fen.split(" ");
+        String[] rows = parts[0].split("/");
+        for (int i = 0; i < 8; i++) {
+            String row = rows[i];
+            int col = 0;
+            for (int j = 0; j < row.length(); j++) {
+                char c = row.charAt(j);
+                if (Character.isDigit(c)) {
+                    int numEmpty = Character.getNumericValue(c);
+                    for (int k = 0; k < numEmpty; k++) {
+                        board[i][col++] = ' ';
+                    }
+                } else {
+                    board[i][col++] = c;
+                }
+            }
+        }
+        return board;
+    }
+
+    private static String convertToChessNotation(int row, int col, char pieceHere, boolean firstLoc) {
+        char file = (char) ('a' + col);
+        char rank = (char) ('8' - row);
+        String step = firstLoc ? " " : "";
+        step += firstLoc ? (!whiteToPlay ? (stepNumber + ". ") : (stepNumber < 10 ? "    " : "     ")) : "";
+        step += pieceHere == 0 ? "" : englishToHungarianPieceLetters.get(pieceHere);
+        step += firstLoc ? " " : "";
+        step += file;
+        step += rank;
+        return step;
+    }
+
 
     public void log(String message) {
 

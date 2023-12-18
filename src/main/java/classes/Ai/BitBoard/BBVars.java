@@ -1,4 +1,4 @@
-package classes.Game.Model.Structure.BitBoard;
+package classes.Ai.BitBoard;
 
 import classes.Ai.AiNodeBBStyle;
 

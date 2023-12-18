@@ -146,12 +146,7 @@ public class GameOverOrPositionEnd {
         }
     }
 
-    public static boolean isDraw(AiNodeBBStyle node){
-        return isDraw(node.getWP(), node.getWN(), node.getWB(), node.getWR(), node.getWQ(), node.getWK(),
-                        node.getBP(), node.getBN(), node.getBB(), node.getBR(), node.getBQ(), node.getBK());
-    }
-
-    private static boolean isDraw(long whitePawn, long whiteKnight, long whiteBishop, long whiteRook, long whiteQueen, long whiteKing,
+    public static boolean isDraw(long whitePawn, long whiteKnight, long whiteBishop, long whiteRook, long whiteQueen, long whiteKing,
                                  long blackPawn, long blackKnight, long blackBishop, long blackRook, long blackQueen, long blackKing){
 
         thirdSimilarPositionOfTheGame = happenedListZKeys.keySet().stream().anyMatch(a -> happenedListZKeys.get(a) == 3);

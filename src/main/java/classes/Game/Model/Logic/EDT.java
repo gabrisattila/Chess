@@ -14,6 +14,7 @@ import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
+import static classes.GUI.FrameParts.Logger.*;
 import static java.lang.Thread.sleep;
 
 /**
@@ -57,7 +58,7 @@ public class EDT {
             getWindow();
         } else {
             initializeAis();
-
+            initializeLogFile();
             if (theresOnlyOneAi)
                 getViewBoard().rangeUpdater();
         }

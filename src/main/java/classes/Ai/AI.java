@@ -1,7 +1,7 @@
 package classes.Ai;
 
 import classes.Game.I18N.Pair;
-import classes.Game.Model.Structure.BitBoard.Zobrist;
+import classes.Ai.BitBoard.Zobrist;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -15,12 +15,13 @@ import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.Model.Logic.EDT.*;
-import static classes.Game.Model.Structure.BitBoard.BBVars.*;
-import static classes.Game.Model.Structure.BitBoard.BitBoardMoves.*;
-import static classes.Game.Model.Structure.BitBoard.BitBoards.*;
+import static classes.Ai.BitBoard.BBVars.*;
+import static classes.Ai.BitBoard.BitBoardMoves.*;
+import static classes.Ai.BitBoard.BitBoards.*;
 import static classes.Game.Model.Structure.Board.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Game.Model.Structure.GameOverOrPositionEnd.*;
+import static classes.GUI.FrameParts.Logger.*;
 
 /**
  * thread descriptor object
@@ -56,6 +57,7 @@ public class AI extends Thread {
     public void aiMove() throws InterruptedException {
         convertOneBoardToAnother(getViewBoard(), getBoard());
         Move();
+        logAiStep(detectChessMove(BoardToFen(getViewBoard()), BoardToFen(getBoard())));
     }
 
     public void Move() {
@@ -146,10 +148,10 @@ public class AI extends Thread {
             if (depth == MINIMAX_DEPTH ||
                 isDraw(whitePawn, whiteKnight, whiteBishop, whiteRook, whiteQueen, whiteKing,
                         blackPawn, blackKnight, blackBishop, blackRook, blackQueen, blackKing)){
-                double finalValue = getEvaluationOfThisMove(
+                double finalValue = evaluationOfAMoveWithOutFieldValues(
                         starterPos.getTheMoveWhatsCreatedIt(),
-                        whitePawn, whiteKnight, whiteBishop, whiteRook, whiteQueen,
-                        blackPawn, blackKnight, blackBishop, blackRook, blackQueen
+                        whitePawn, whiteKnight, whiteBishop, whiteRook, whiteQueen, whiteKing,
+                        blackPawn, blackKnight, blackBishop, blackRook, blackQueen, blackKing
                 ); 
                 starterPos.setFinalValue(finalValue);
                 return finalValue;
@@ -472,30 +474,6 @@ public class AI extends Thread {
          return getLongs(nexts, Character.isUpperCase(legalMove.charAt(0)),
                 whitePawn, whiteKnight, whiteBishop, whiteRook, whiteQueen, whiteKing,
                 blackPawn, blackKnight, blackBishop, blackRook, blackQueen, blackKing);
-    }
-
-    private static String decideWhichBoardsWillBeUsed(String move){
-        String[] moveParts = move.split("-");
-        String neededBoards = moveParts[0];
-
-        if (moveParts.length == 4){
-            if (moveParts[3].charAt(0) == 'C' || moveParts[3].charAt(0) == 'P' || moveParts[3].charAt(0) == 'p'){
-                neededBoards += moveParts[3].charAt(1);
-            } else if ("K".equals(moveParts[0]) || "k".equals(moveParts[0])) {
-                if (Math.abs(Integer.parseInt(moveParts[1]) - Integer.parseInt(moveParts[2])) == 2){
-                    neededBoards += "K".equals(moveParts[0]) ? "R" : "r";
-                }
-            } else if (!Character.isDigit(moveParts[3].charAt(0))) {
-                neededBoards += moveParts[3];
-            }
-        } else if (moveParts.length == 5) {
-            if (moveParts[3].charAt(0) == 'P' || moveParts[3].charAt(0) == 'p'){
-                neededBoards += moveParts[3].charAt(1);
-            }
-            neededBoards += moveParts[4].charAt(1);
-        }
-
-        return neededBoards;
     }
 
     private static ArrayList<Long> getLongs(

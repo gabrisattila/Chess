@@ -15,7 +15,7 @@ import static classes.Game.I18N.VARS.MUTABLE.*;
 
 public class VARS {
 
-    public static class FINALS{
+    public static class FINALS {
 
         public static final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
@@ -25,7 +25,7 @@ public class VARS {
 
         public static final double SCREEN_HEIGHT = screenSize.getHeight();
 
-        public static final double SCREEN_WIDTH = screenSize.getWidth();;
+        public static final double SCREEN_WIDTH = screenSize.getWidth();
 
         public static final double BOARD_HEIGHT = FIELD_HEIGHT * MAX_HEIGHT;
 
@@ -58,13 +58,9 @@ public class VARS {
 
         public static final double WHITE_TAKEN_PIECES_FIRST_ROW_START_X = BOARD_PLACE_START_X - 150;
 
-        public static final double WHITE_TAKEN_PIECES_FIRST_ROW_START_Y = BOARD_PLACE_START_Y;
-
         public static final double WHITE_TAKEN_PIECES_SECOND_ROW_START_X = BOARD_PLACE_START_X - 75;
 
         public static final double BLACK_TAKEN_PIECES_FIRST_ROW_START_X = BOARD_PLACE_END_X;
-
-        public static final double BLACK_TAKEN_PIECES_SECOND_ROW_START_Y = BOARD_START_Y;
 
         public static final double BLACK_TAKEN_PIECES_SECOND_ROW_START_X = BOARD_PLACE_END_X + 75;
 
@@ -116,10 +112,6 @@ public class VARS {
         public static final double THIRD_BASE_FIELD_VALUE = 2.3;
 
         public static final double FOURTH_BASE_FIELD_VALUE = 1.5;
-
-        public static final double WHITE_GOT_CHECKMATE = -10000;
-
-        public static final double BLACK_GOT_CHECKMATE = 10000;
 
         public static final Double[][] PAWN_BASE_VALUE_MATRIX_WP = new Double[][] {
                 {1.65, 1.65, 1.65, 1.65, 1.65, 1.65, 1.65, 1.65},
@@ -296,6 +288,10 @@ public class VARS {
             put(K, KING_BASE_VALUE_MATRIX_WD_WP);
         }};
 
+        public static final double WHITE_GOT_CHECKMATE = -10000;
+
+        public static final double BLACK_GOT_CHECKMATE = 10000;
+
         public static final double DRAW = 0.005;
 
         public static final double DRAW_OFFER = 0.001;
@@ -312,7 +308,6 @@ public class VARS {
             add(BLACK_SUBMITTED);
         }};
 
-        //Eredetileg mindegyik fele ennyi
         public static final double PAWN_BASE_VALUE = 1;
 
         public static final double KNIGHT_OR_BISHOP_BASE_VALUE = 3;
@@ -375,26 +370,6 @@ public class VARS {
             put(K, qkMatrix);
         }};
 
-        public static final ArrayList<String> castleMoveSigns = new ArrayList<>(){{
-            add("Y"); add("y"); 
-            add("K"); add("Q"); 
-            add("k"); add("q");
-        }};
-        
-        public final static ArrayList<Character> whiteBlackLetters = new ArrayList<>(){{
-            add('W');
-            add('B');
-        }};
-
-        public static final ArrayList<Character> pieceLetters = new ArrayList<>(){{
-            add('P');
-            add('N');
-            add('B');
-            add('R');
-            add('Q');
-            add('K');
-        }};
-
         public static final ArrayList<Character> abc = new ArrayList<>(){{
             add('A');
             add('B');
@@ -417,15 +392,17 @@ public class VARS {
             add('8');
         }};
 
-        public static final ArrayList<String> indexNums = new ArrayList<>(){{
-            add("0");
-            add("1");
-            add("2");
-            add("3");
-            add("4");
-            add("5");
-            add("6");
-            add("7");
+        public static final Map<Character, Character> englishToHungarianPieceLetters = new HashMap<>(){{
+            put('P', 'G');
+            put('p', 'g');
+            put('N', 'H');
+            put('n', 'h');
+            put('B', 'F');
+            put('b', 'f');
+            put('R', 'B');
+            put('r', 'b');
+            put('Q', 'V');
+            put('q', 'v');
         }};
 
         public static Map<String, String> usualFens = new HashMap<>(){{
@@ -604,78 +581,12 @@ public class VARS {
 
         public static boolean thirdSimilarPositionOfTheGame = false;
 
-        public static AiNode storeTree = new AiNode();
-
-        public static HashSet<String> alreadyEvaluatedFens = new HashSet<>();
-
         public static PieceSet whitePieceSet = new PieceSet(){{
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
+            add(new Piece()); add(new Piece()); add(new Piece()); add(new Piece()); add(new Piece()); add(new Piece()); add(new Piece()); add(new Piece()); add(new Piece()); add(new Piece()); add(new Piece()); add(new Piece()); add(new Piece()); add(new Piece()); add(new Piece()); add(new Piece()); add(new Piece()); add(new Piece()); add(new Piece()); add(new Piece()); add(new Piece()); add(new Piece()); add(new Piece()); add(new Piece()); add(new Piece()); add(new Piece()); add(new Piece()); add(new Piece()); add(new Piece()); add(new Piece()); add(new Piece()); add(new Piece());
         }};
 
         public static PieceSet blackPieceSet = new PieceSet(){{
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
-            add(new Piece());
+            add(new Piece());add(new Piece());add(new Piece());add(new Piece());add(new Piece());add(new Piece());add(new Piece());add(new Piece());add(new Piece());add(new Piece());add(new Piece());add(new Piece());add(new Piece());add(new Piece());add(new Piece());add(new Piece());add(new Piece());add(new Piece());add(new Piece());add(new Piece());add(new Piece());add(new Piece());add(new Piece());add(new Piece());add(new Piece());add(new Piece());add(new Piece());add(new Piece());add(new Piece());add(new Piece());add(new Piece());add(new Piece());
         }};
 
         public static int CLICK_COUNTER = 0;

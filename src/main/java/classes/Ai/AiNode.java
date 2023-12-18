@@ -1,17 +1,14 @@
 package classes.Ai;
 
 
-import classes.Game.Model.Structure.BitBoard.Zobrist;
 import classes.Game.Model.Structure.IPiece;
 import classes.Game.Model.Structure.Move;
 import lombok.*;
 
 import java.util.*;
 
-import static classes.Ai.AiTree.*;
 import static classes.Ai.Evaluator.*;
 import static classes.Ai.FenConverter.*;
-import static classes.GUI.FrameParts.Logger.logStep;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Game.Model.Structure.Board.*;
 import static classes.Game.Model.Structure.Move.*;

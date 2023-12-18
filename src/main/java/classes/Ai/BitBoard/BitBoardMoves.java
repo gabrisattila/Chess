@@ -1,4 +1,4 @@
-package classes.Game.Model.Structure.BitBoard;
+package classes.Ai.BitBoard;
 
 import classes.Ai.AiNodeBBStyle;
 
@@ -8,8 +8,8 @@ import static classes.Ai.Evaluator.*;
 import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
-import static classes.Game.Model.Structure.BitBoard.BBVars.*;
-import static classes.Game.Model.Structure.BitBoard.BitBoards.*;
+import static classes.Ai.BitBoard.BBVars.*;
+import static classes.Ai.BitBoard.BitBoards.*;
 import static java.util.Objects.requireNonNull;
 
 public class BitBoardMoves {
@@ -803,7 +803,7 @@ public class BitBoardMoves {
                 bP, bN, bB, bR, bQ, bK);
     }
 
-    private static double evaluationOfAMoveWithOutFieldValues(String moves,
+    public static double evaluationOfAMoveWithOutFieldValues(String moves,
                                                               long wP, long wN, long wB, long wR, long wQ, long wK,
                                                               long bP, long bN, long bB, long bR, long bQ, long bK){
         if (moves.isEmpty()){
