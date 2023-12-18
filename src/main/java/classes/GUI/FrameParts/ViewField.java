@@ -171,6 +171,7 @@ public class ViewField extends JButton implements classes.Game.Model.Structure.I
                 CLICK_COUNTER--;
             }
         }
+
         private void moveToClicked(ViewField clicked) {
 
             ViewPiece hit = null;

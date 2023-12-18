@@ -1,4 +1,4 @@
-package classes.Ai.BitBoard;
+package classes.Ai.BitBoards;
 
 import classes.Game.I18N.Pair;
 import lombok.*;
@@ -6,8 +6,8 @@ import lombok.*;
 import java.security.SecureRandom;
 import java.util.HashMap;
 
-import static classes.Ai.BitBoard.BBVars.*;
-import static classes.Ai.BitBoard.BitBoard.*;
+import static classes.Ai.BitBoards.BBVars.*;
+import static classes.Ai.BitBoards.BitBoard.*;
 
 @Getter
 @Setter

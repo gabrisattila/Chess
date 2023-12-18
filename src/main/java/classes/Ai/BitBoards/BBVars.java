@@ -1,6 +1,6 @@
-package classes.Ai.BitBoard;
+package classes.Ai.BitBoards;
 
-import classes.Ai.AiNodeBBStyle;
+import classes.Ai.AiNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -63,10 +63,6 @@ public class BBVars {
 
     public static final Integer[] corners = new Integer[]{0, 7, 56, 63};
 
-    public static final long CENTRE = 103481868288L;
-
-    public static final long EXTENDED_CENTRE = 66229406269440L;
-
     public static final long KING_SIDE = whiteDown ? 1085102592571150095L : ~1085102592571150095L;
 
     public static final long QUEEN_SIDE = whiteDown ? ~1085102592571150095L : 1085102592571150095L;
@@ -74,10 +70,6 @@ public class BBVars {
     public static long KING_SPAN = 460039L;
 
     public static long KNIGHT_SPAN = 43234889994L;
-
-    public static final long KING_B7 = 460039L;
-
-    public static final long KNIGHT_C6 = 43234889994L;
 
     public static long HITTABLE_BY_WHITE;
 
@@ -101,7 +93,7 @@ public class BBVars {
 
     public static Long[] ZOBRIST_WHITE_BLACK_TO_PLAY = new Long[2];
 
-    public static HashMap<Long, AiNodeBBStyle> alreadyWatchedNodes = new HashMap<>();
+    public static HashMap<Long, AiNode> alreadyWatchedNodes = new HashMap<>();
 
     public static final Map<Integer, Integer> oppositeInsideEight = new HashMap<>(){{
         put(7, 0);
@@ -153,21 +145,10 @@ public class BBVars {
 
 
     //endregion
-    
-
-    public static final Map<String, String> bbUsualFens = new HashMap<>(){{
-        put("bbWhiteDownStarter", "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 1 0");
-        put("bbBlackDownStarter", "RNBKQBNR/PPPPPPPP/8/8/8/8/pppppppp/rnbkqbnr w KQkq - 1 0");
-    }};
 
     public static final ArrayList<Character> englishPieceLetters = new ArrayList<>(){{
         add('p'); add('n'); add('b'); add('r'); add('q'); add('k');
         add('P'); add('N'); add('B'); add('R'); add('Q'); add('K');
-    }};
-
-    public static final ArrayList<Character> hunPieceLetters = new ArrayList<>(){{
-        add('p'); add('n'); add('b'); add('b'); add('v'); add('k');
-        add('P'); add('N'); add('B'); add('B'); add('v'); add('K');
     }};
 
 }

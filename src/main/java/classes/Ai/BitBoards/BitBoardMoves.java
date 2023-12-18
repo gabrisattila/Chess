@@ -1,6 +1,6 @@
-package classes.Ai.BitBoard;
+package classes.Ai.BitBoards;
 
-import classes.Ai.AiNodeBBStyle;
+import classes.Ai.AiNode;
 
 import java.util.*;
 
@@ -8,13 +8,13 @@ import static classes.Ai.Evaluator.*;
 import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
-import static classes.Ai.BitBoard.BBVars.*;
-import static classes.Ai.BitBoard.BitBoards.*;
+import static classes.Ai.BitBoards.BBVars.*;
+import static classes.Ai.BitBoards.BitBoards.*;
 import static java.util.Objects.requireNonNull;
 
 public class BitBoardMoves {
 
-    public static ArrayList<String> possibleMoves(boolean forWhite, AiNodeBBStyle node){
+    public static ArrayList<String> possibleMoves(boolean forWhite, AiNode node){
         return possibleMoves(forWhite,
                 node.getEmPassant(), node.isWKC(), node.isWQC(), node.isBKC(), node.isBQC(),
                 node.getWP(), node.getWN(), node.getWB(), node.getWR(), node.getWQ(), node.getWK(),
@@ -130,7 +130,7 @@ public class BitBoardMoves {
         return boardToMoveOn;
     }
 
-    public static long unsafeFor(boolean forWhite, AiNodeBBStyle node){
+    public static long unsafeFor(boolean forWhite, AiNode node){
         return unsafeFor(forWhite,
                 node.getWP(), node.getWN(), node.getWB(), node.getWR(), node.getWQ(), node.getWK(),
                 node.getBB(), node.getBN(), node.getBB(), node.getBR(), node.getBQ(), node.getBK());
@@ -664,7 +664,7 @@ public class BitBoardMoves {
                 bP, bN, bB, bR, bQ, bK);
     }
 
-    public static double evaluationOfAMoveWithFieldValues(AiNodeBBStyle node){
+    public static double evaluationOfAMoveWithFieldValues(AiNode node){
         return evaluationOfAMoveWithFieldValues(node.getTheMoveWhatsCreatedIt(),
                 node.getWP(), node.getWN(), node.getWB(), node.getWR(), node.getWQ(), node.getWK(),
                 node.getBB(), node.getBN(), node.getBB(), node.getBR(), node.getBQ(), node.getBK());

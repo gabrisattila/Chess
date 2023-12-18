@@ -1,17 +1,14 @@
 package classes.Ai;
 
-
-import classes.Game.Model.Structure.IPiece;
-import classes.Game.Model.Structure.Move;
+import classes.Ai.BitBoards.Zobrist;
 import lombok.*;
 
 import java.util.*;
 
-import static classes.Ai.Evaluator.*;
-import static classes.Ai.FenConverter.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
-import static classes.Game.Model.Structure.Board.*;
-import static classes.Game.Model.Structure.Move.*;
+import static classes.Game.I18N.METHODS.*;
+import static classes.Ai.BitBoards.BBVars.*;
+import static classes.Ai.BitBoards.BitBoards.*;
 
 @Getter
 @Setter
@@ -19,11 +16,19 @@ public class AiNode {
 
     //region Fields
 
-    private String fen;
+    private long zobristKey;
+
+    private String theMoveWhatsCreatedIt;
 
     private double finalValue;
 
     private Set<AiNode> children;
+
+    private boolean wKC, wQC, bKC, bQC;
+
+    private int emPassant;
+
+    private long wP,  wN,  wB,  wR, wQ, wK, bP,  bN,  bB,  bR,  bQ, bK;
 
     //endregion
 
@@ -31,14 +36,26 @@ public class AiNode {
     //region Constructor
 
     public AiNode(){
-
         children = new HashSet<>();
-
     }
 
-    public AiNode(String fen){
-        this.fen = fen;
+    public AiNode(long zKey, String creatorMove){
+        zobristKey = zKey;
+        theMoveWhatsCreatedIt = creatorMove;
         children = new HashSet<>();
+    }
+
+    public static void setDescriptiveParts(AiNode node, int emPassant,
+                                           boolean wKC, boolean wQC, boolean bKC, boolean bQC,
+                                           long wP, long wN, long wB, long wR, long wQ, long wK,
+                                           long bP, long bN, long bB, long bR, long bQ, long bK){
+
+        node.wKC = wKC; node.wQC = wQC; node.bKC = bKC; node.bQC = bQC;
+
+        node.emPassant = emPassant;
+
+        node.wP = wP; node.wN = wN; node.wB = wB; node.wR = wR; node.wQ = wQ; node.wK = wK;
+        node.bP = bP; node.bN = bN; node.bB = bB; node.bR = bR; node.bQ = bQ; node.bK = bK;
     }
 
     //endregion
@@ -46,96 +63,51 @@ public class AiNode {
 
     //region Methods
 
-    //region Tree Methods
-
     @Override
-    public boolean equals(Object node){
-        if (!(node instanceof AiNode))
-            return false;
-
-        return getFen().equals( ((AiNode) node).getFen() );
+    public boolean equals(Object o){
+        return o instanceof AiNode && zobristKey == ((AiNode) o).zobristKey;
     }
 
-    public static void addToHappenedList(String fen){
-        if (happenedList.containsKey(fen)){
-            int count = happenedList.get(fen);
-            count++;
-            happenedList.put(fen, count);
-        }else {
-            happenedList.put(fen, 1);
-        }
+    public static String aiNodeToFen(AiNode node){
+        return bitBoardsToFen(whiteToPlay, node.emPassant, node.wKC, node.wQC, node.bKC, node.bQC,
+                                node.wP, node.wN, node.wB, node.wR, node.wQ, node.wK,
+                                node.bP, node.bN, node.bB, node.bR, node.bQ, node.bK);
     }
 
-    public static void addToHappenedList(long zKey){
-        if (happenedListZKeys.containsKey(zKey)){
-            int count = happenedListZKeys.get(zKey);
-            count++;
-            happenedListZKeys.put(zKey, count);
-        }else {
-            happenedListZKeys.put(zKey, 1);
+    public static long calcZobristKey(boolean forWhite, int emPassant,
+                                      boolean wKC, boolean wQC, boolean bKC, boolean bQC,
+                                      long wP, long wN, long wB, long wR, long wQ, long wK,
+                                      long bP, long bN, long bB, long bR, long bQ, long bK){
+        return Zobrist.getZobristKey(forWhite, emPassant, wKC, wQC, bKC, bQC, wP, wN, wB, wR, wQ, wK, bP, bN, bB, bR, bQ, bK);
+    }
+
+    public static AiNode putNewToNodeMap(AiNode root, String creatorMove,
+                                         boolean forWhite, int emPassant, boolean wKC, boolean wQC, boolean bKC, boolean bQC,
+                                         long whitePawn, long whiteKnight, long whiteBishop, long whiteRook, long whiteQueen, long whiteKing,
+                                         long blackPawn, long blackKnight, long blackBishop, long blackRook, long blackQueen, long blackKing){
+
+        long zKey = calcZobristKey(forWhite, emPassant,  wKC,  wQC,  bKC,  bQC,
+                whitePawn, whiteKnight, whiteBishop,  whiteRook,  whiteQueen,  whiteKing,
+                blackPawn, blackKnight, blackBishop,  blackRook,  blackQueen,  blackKing);
+
+        AiNode nextChild = alreadyWatchedNodes.get(zKey);
+        if (isNull(nextChild)) {
+            nextChild = new AiNode(zKey, creatorMove);
+            putToAlreadyWatchedZKeys(zKey, nextChild);
+        } else {
+            transPosNum++;
         }
+        setDescriptiveParts(nextChild, emPassant,  wKC,  wQC,  bKC,  bQC,
+                whitePawn,  whiteKnight, whiteBishop,  whiteRook,  whiteQueen,  whiteKing,
+                blackPawn,  blackKnight, blackBishop,  blackRook,  blackQueen,  blackKing);
+        root.getChildren().add(nextChild);
+        return nextChild;
+    }
+
+    public static void putToAlreadyWatchedZKeys(long zKey, AiNode node){
+        alreadyWatchedNodes.put(zKey, node);
     }
 
     //endregion
-
-    //region Possibility Collecting
-
-    public ArrayList<String> collectPossibilities(boolean forWhite) {
-        Map<Double, Set<String>> possibilities = new TreeMap<>(forWhite ? Comparator.<Double>reverseOrder() : Comparator.<Double>naturalOrder());
-
-        HashMap<IPiece, Set<Move>> legalMoves = collectLegalMoves(forWhite);
-        doAllLegalMoves(legalMoves, possibilities);
-
-        return turnPossibilityMapToOneSet(possibilities);
-    }
-
-    private HashMap<IPiece, Set<Move>> collectLegalMoves(boolean forWhite)  {
-        HashMap<IPiece, Set<Move>> legals;
-        getBoard().addLegalMovesToPieces(forWhite);
-        legals = getBoard().getAllLegalMoves(forWhite);
-        return legals;
-    }
-
-    private void doAllLegalMoves(HashMap<IPiece, Set<Move>> legalMoves, Map<Double, Set<String>> possibilities) {
-        for (IPiece p : legalMoves.keySet()) {
-            for (Move m : legalMoves.get(p)) {
-                Step(m);
-//                lastStep = logStep(m);
-                String newPosFen = BoardToAiFen(getBoard());
-                putToPossibilityMap(possibilities, evaluate(), newPosFen);
-                AiFenToBoard(fen, getBoard());
-                getBoard().rangeUpdater();
-            }
-        }
-    }
-
-    private void putToPossibilityMap(Map<Double, Set<String>> possibilities, double score, String fen){
-        if (possibilities.containsKey(score)){
-            possibilities.get(score).add(fen);
-        }else {
-            HashSet<String> set = new HashSet<>();
-            set.add(fen);
-            possibilities.put(score, set);
-        }
-    }
-
-    private ArrayList<String> turnPossibilityMapToOneSet(Map<Double, Set<String>> possibilities){
-        ArrayList<String> list = new ArrayList<>();
-        for (double k : possibilities.keySet()) {
-            list.addAll(possibilities.get(k));
-        }
-        return list;
-    }
-
-    //endregion
-
-
-    //region Possibility Collecting on BitBoards
-
-
-
-    //endregion
-
-    //endregion
-
+    
 }

@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
-import static classes.Ai.BitBoard.BBVars.oppositeInsideEight;
+import static classes.Ai.BitBoards.BBVars.oppositeInsideEight;
 import static classes.Game.Model.Structure.Board.*;
 import static classes.Game.I18N.METHODS.*;
 

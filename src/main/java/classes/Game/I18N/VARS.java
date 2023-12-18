@@ -1,6 +1,5 @@
 package classes.Game.I18N;
 
-import classes.Ai.AiNode;
 import classes.GUI.FrameParts.*;
 import classes.Game.Model.Structure.*;
 
@@ -573,11 +572,7 @@ public class VARS {
 
         public static int transPosNum = 0;
 
-        public static Map<String, AiNode> fullTreeOfGame = new HashMap<>();
-
         public static HashMap<String, Integer> happenedList = new HashMap<>();
-
-        public static HashMap<Long, Integer> happenedListZKeys = new HashMap<>();
 
         public static boolean thirdSimilarPositionOfTheGame = false;
 

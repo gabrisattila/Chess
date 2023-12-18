@@ -1,23 +1,20 @@
 package classes.Ai;
 
 import classes.Game.I18N.Pair;
-import classes.Ai.BitBoard.Zobrist;
-import classes.Game.Model.Structure.IBoard;
+import classes.Ai.BitBoards.Zobrist;
 import lombok.*;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 import static classes.Ai.AiNode.*;
-import static classes.Ai.AiNodeBBStyle.*;
-import static classes.Ai.AiTree.*;
 import static classes.Ai.FenConverter.*;
 import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.Model.Logic.EDT.*;
-import static classes.Ai.BitBoard.BBVars.*;
-import static classes.Ai.BitBoard.BitBoardMoves.*;
-import static classes.Ai.BitBoard.BitBoards.*;
+import static classes.Ai.BitBoards.BBVars.*;
+import static classes.Ai.BitBoards.BitBoardMoves.*;
+import static classes.Ai.BitBoards.BitBoards.*;
 import static classes.Game.Model.Structure.Board.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Game.Model.Structure.GameOverOrPositionEnd.*;
@@ -70,10 +67,6 @@ public class AI extends Thread {
         return gameEndFlag.get();
     }
 
-    private boolean gameFinished(double gameOver){
-        return GAME_OVER_CASES.contains(gameOver);
-    }
-
     public static void waitOnPause(){
         while(pauseFlag.get()) {
             try {
@@ -91,66 +84,42 @@ public class AI extends Thread {
         convertOneBoardToAnother(getViewBoard(), getBoard());
         GameOverDecision(getBoard(), true, Double.MIN_VALUE);
         if (!gameFinished()) {
-            MINIMAX("bitBoard");
+            MINIMAX();
         }
     }
 
-    private void MINIMAX(String miniMaxType){
+    private void MINIMAX(){
         nodeNum = 0;
 
-        AiNode treeOld;
-        AiNode bestChildOld = new AiNode();
-        if ("bitBoard".equals(miniMaxType)){
+        setUpBitBoard(BoardToFen(getBoard()));
 
-            setUpBitBoard(BoardToFen(getBoard()));
+        int emPassant = emPassantToBitBoardEmPassant(emPassantChance);
+        long zKey = Zobrist.getZobristKey(whiteToPlay, emPassant,
+                whiteSmallCastleEnabled, whiteBigCastleEnabled, blackSmallCastleEnabled, blackBigCastleEnabled,
+                whitePawn, whiteKnight, whiteBishop, whiteRook, whiteQueen, whiteKing,
+                blackPawn, blackKnight, blackBishop, blackRook, blackQueen, blackKing);
+        AiNode tree = new AiNode(zKey, "");
 
-            int emPassant = emPassantToBitBoard(emPassantChance);
-            long zKey = Zobrist.getZobristKey(whiteToPlay, emPassant,
-                    whiteSmallCastleEnabled, whiteBigCastleEnabled, blackSmallCastleEnabled, blackBigCastleEnabled,
-                    whitePawn, whiteKnight, whiteBishop, whiteRook, whiteQueen, whiteKing,
-                    blackPawn, blackKnight, blackBishop, blackRook, blackQueen, blackKing);
-            AiNodeBBStyle tree = new AiNodeBBStyle(zKey, "");
+        int startTime = (int) System.currentTimeMillis();
 
-            int startTime = (int) System.currentTimeMillis();
+        double bestChildValue = miniMax(
+                tree, 0, whiteToPlay, -Double.MAX_VALUE, Double.MAX_VALUE,
+                emPassant, whiteSmallCastleEnabled, whiteBigCastleEnabled, blackSmallCastleEnabled, blackBigCastleEnabled,
+                whitePawn, whiteKnight, whiteBishop, whiteRook, whiteQueen, whiteKing,
+                blackPawn, blackKnight, blackBishop, blackRook, blackQueen, blackKing);
 
-            double bestChildValue = miniMaxWithBitBoards(
-                    tree, 0, whiteToPlay, -Double.MAX_VALUE, Double.MAX_VALUE,
-                    emPassant, whiteSmallCastleEnabled, whiteBigCastleEnabled, blackSmallCastleEnabled, blackBigCastleEnabled,
-                    whitePawn, whiteKnight, whiteBishop, whiteRook, whiteQueen, whiteKing,
-                    blackPawn, blackKnight, blackBishop, blackRook, blackQueen, blackKing);
+        printDataOfMiniMax(startTime);
 
-            printDataOfMiniMax(startTime);
-
-            whiteToPlay = !whiteToPlay;
-            Pair<AiNodeBBStyle, String> nodeAndItsFen = sortOutBestChild(tree, bestChildValue);
-            AiNodeBBStyle bestChild = nodeAndItsFen.getFirst();
-            addToHappenedList(bestChild.getZobristKey());
-            FenToBoard(nodeAndItsFen.getSecond(), getBoard());
-        }else {
-            if ("old".equals(miniMaxType)) {
-
-                int startTime = (int) System.currentTimeMillis();
-                treeOld = new AiNode(BoardToAiFen(getBoard()));
-                double bestChildValue = miniMax(treeOld, 0, whiteToPlay, -Double.MAX_VALUE, Double.MAX_VALUE);
-                printDataOfMiniMax(startTime);
-                bestChildOld = sortOutBestChild(treeOld, bestChildValue);
-
-            } else if ("negaMax".equals(miniMaxType)) {
-
-                int startTime = (int) System.currentTimeMillis();
-                treeOld = new AiNode(BoardToAiFen(getBoard()));
-                double bestChildValue = negaMax(treeOld, MINIMAX_DEPTH, -Double.MAX_VALUE, Double.MAX_VALUE);
-                printDataOfMiniMax(startTime);
-                bestChildOld = sortOutBestChild(treeOld, bestChildValue);
-            }
-            AiFenToBoard(bestChildOld.getFen(), getBoard());
-            addToHappenedList(AiFenToFen(bestChildOld.getFen()));
-        }
+        whiteToPlay = !whiteToPlay;
+        Pair<AiNode, String> nodeAndItsFen = sortOutBestChild(tree, bestChildValue);
+        AiNode bestChild = nodeAndItsFen.getFirst();
+        putToAlreadyWatchedZKeys(bestChild.getZobristKey(), bestChild);
+        FenToBoard(nodeAndItsFen.getSecond(), getBoard());
 
     }
 
-    private double miniMaxWithBitBoards(
-            AiNodeBBStyle starterPos, int depth, boolean maxNeeded, double alpha, double beta,
+    private double miniMax(
+            AiNode starterPos, int depth, boolean maxNeeded, double alpha, double beta,
             int emPassant, boolean wKC, boolean wQC, boolean bKC, boolean bQC,
             long whitePawn, long whiteKnight, long whiteBishop, long whiteRook, long whiteQueen, long whiteKing,
             long blackPawn, long blackKnight, long blackBishop, long blackRook, long blackQueen, long blackKing
@@ -209,7 +178,7 @@ public class AI extends Thread {
 
                     ArrayList<Object> emPassantAndCastle = emPassantAndCastleCases(legalMove, wKC, wQC, bKC, bQC);
 
-                    AiNodeBBStyle next = putNewToNodeMap(starterPos, legalMove,
+                    AiNode next = putNewToNodeMap(starterPos, legalMove,
                             true, (Integer) emPassantAndCastle.get(0),
                             (boolean) emPassantAndCastle.get(1), (boolean) emPassantAndCastle.get(2),
                             (boolean) emPassantAndCastle.get(3), (boolean) emPassantAndCastle.get(4),
@@ -217,7 +186,7 @@ public class AI extends Thread {
                             nextBoards.get(6), nextBoards.get(7), nextBoards.get(8), nextBoards.get(9), nextBoards.get(10), nextBoards.get(11));
 
                     nodeNum++;
-                    evaluationOfTheNode = miniMaxWithBitBoards(
+                    evaluationOfTheNode = miniMax(
                             next, depth + 1, false, alpha, beta,
                             (Integer) emPassantAndCastle.get(0),
                             (boolean) emPassantAndCastle.get(1), (boolean) emPassantAndCastle.get(2),
@@ -267,14 +236,14 @@ public class AI extends Thread {
                     }
 
                     ArrayList<Object> emPassantAndCastle = emPassantAndCastleCases(legalMove, wKC, wQC, bKC, bQC);
-                    AiNodeBBStyle next = putNewToNodeMap(starterPos, legalMove,
+                    AiNode next = putNewToNodeMap(starterPos, legalMove,
                             false, (Integer) emPassantAndCastle.get(0),
                             (boolean) emPassantAndCastle.get(1), (boolean) emPassantAndCastle.get(2),
                             (boolean) emPassantAndCastle.get(3), (boolean) emPassantAndCastle.get(4),
                             nextBoards.get(0), nextBoards.get(1), nextBoards.get(2), nextBoards.get(3), nextBoards.get(4), nextBoards.get(5),
                             nextBoards.get(6), nextBoards.get(7), nextBoards.get(8), nextBoards.get(9), nextBoards.get(10), nextBoards.get(11));
                     nodeNum++;
-                    double evaluationOfTheNode = miniMaxWithBitBoards(
+                    double evaluationOfTheNode = miniMax(
                             next, depth + 1, true, alpha, beta,
                             (Integer) emPassantAndCastle.get(0),
                             (boolean) emPassantAndCastle.get(1), (boolean) emPassantAndCastle.get(2),
@@ -285,55 +254,6 @@ public class AI extends Thread {
 
                     possibleMin = Math.min(possibleMin, evaluationOfTheNode);
                     beta = Math.min(beta, evaluationOfTheNode);
-                    if (beta <= alpha)
-                        break;
-                }
-                starterPos.setFinalValue(possibleMin);
-                return possibleMin;
-            }
-        }
-    }
-
-    private double miniMax(AiNode starterPos, int depth, boolean maxNeeded, double alpha, double beta) {
-
-        synchronized (pauseFlag){
-
-            waitOnPause();
-
-            double gameOver = GameOverDecision(starterPos, false, Double.MIN_VALUE);
-
-            if (depth == MINIMAX_DEPTH || gameFinished(gameOver)) {
-                starterPos.setFinalValue(gameOver);
-                return gameOver;
-            }
-
-            ArrayList<String> possibilities = starterPos.collectPossibilities(maxNeeded);
-            AiNode nextChild;
-            if (maxNeeded) {
-                double possibleMax = -Double.MAX_VALUE;
-                for (String child : possibilities) {
-
-                    nextChild = calcNextAndAddToTree(starterPos, child);
-
-                    nodeNum++;
-                    double evaluatedMiniMax = miniMax(nextChild, depth + 1, false, alpha, beta);
-                    possibleMax = Math.max(possibleMax, evaluatedMiniMax);
-                    alpha = Math.max(alpha, evaluatedMiniMax);
-                    if (beta <= alpha)
-                        break;
-                }
-                starterPos.setFinalValue(possibleMax);
-                return possibleMax;
-            } else {
-                double possibleMin = Double.MAX_VALUE;
-                for (String child : possibilities) {
-
-                    nextChild = calcNextAndAddToTree(starterPos, child);
-
-                    nodeNum++;
-                    double evaluatedMiniMax = miniMax(nextChild, depth + 1, true, alpha, beta);
-                    possibleMin = Math.min(possibleMin, evaluatedMiniMax);
-                    beta = Math.min(beta, evaluatedMiniMax);
                     if (beta <= alpha)
                         break;
                 }
@@ -355,7 +275,7 @@ public class AI extends Thread {
         System.out.println();
     }
 
-    private AiNode sortOutBestChild(AiNode tree, double bestChildValue){
+    private Pair<AiNode, String> sortOutBestChild(AiNode tree, double bestChildValue){
         ArrayList<AiNode> bestChildren = new ArrayList<>();
         for (AiNode child : tree.getChildren()) {
             if (child.getFinalValue() == bestChildValue) {
@@ -370,27 +290,7 @@ public class AI extends Thread {
             int randomChosenBestIndex = random.nextInt(0, bestChildren.size());
             bestChild = bestChildren.get(randomChosenBestIndex);
         }
-        emPassantChance = bestChild.getFen().split(" ")[3];
-        castleCaseFenToBoard(bestChild.getFen().split(" ")[2]);
-        return bestChild;
-    }
-
-    private Pair<AiNodeBBStyle, String> sortOutBestChild(AiNodeBBStyle tree, double bestChildValue){
-        ArrayList<AiNodeBBStyle> bestChildren = new ArrayList<>();
-        for (AiNodeBBStyle child : tree.getChildren()) {
-            if (child.getFinalValue() == bestChildValue) {
-                bestChildren.add(child);
-            }
-        }
-        AiNodeBBStyle bestChild;
-        if (bestChildren.size() == 1) {
-            bestChild = bestChildren.get(0);
-        } else {
-            Random random = new Random();
-            int randomChosenBestIndex = random.nextInt(0, bestChildren.size());
-            bestChild = bestChildren.get(randomChosenBestIndex);
-        }
-        String fen = aiNodeBBToFen(bestChild);
+        String fen = aiNodeToFen(bestChild);
         emPassantChance = fen.split(" ")[3];
         castleCaseFenToBoard(fen.split(" ")[2]);
         return new Pair<>(bestChild, fen);
@@ -515,43 +415,6 @@ public class AI extends Thread {
         }
 
         return nexts;
-    }
-
-    //NegaMax
-    private double negaMax(AiNode starterPos, int depth, double alpha, double beta) {
-
-        synchronized (pauseFlag){
-
-            waitOnPause();
-
-            double gameEnd = GameOverDecision(starterPos, false, Double.MIN_VALUE);
-            if (depth == 0 || gameFinished(gameEnd)){
-                starterPos.setFinalValue(gameEnd);
-                return gameEnd;
-            }
-
-            ArrayList<String> possibilities = starterPos.collectPossibilities(false);
-
-            AiNode nextChild;
-            for (String child : possibilities) {
-
-                nextChild = calcNextAndAddToTree(starterPos, child);
-                starterPos.getChildren().add(nextChild);
-
-                double evaluation = -negaMax(nextChild, depth - 1, -beta, -alpha);
-
-                if (evaluation >= beta){
-                    break;
-                }
-
-                alpha = Math.max(alpha, evaluation);
-
-            }
-
-            starterPos.setFinalValue(alpha);
-            return alpha;
-        }
-
     }
 
     //endregion

@@ -1,6 +1,5 @@
 package classes.Game.Model.Structure;
 
-import classes.Ai.AiNode;
 import classes.GUI.FrameParts.ViewBoard;
 import classes.Game.I18N.PieceType;
 import lombok.*;
@@ -30,8 +29,6 @@ public class GameOverOrPositionEnd {
 
         if (game instanceof ViewBoard) {
             convertOneBoardToAnother(getViewBoard(), getBoard());
-        } else if (game instanceof AiNode) {
-            AiFenToBoard(((AiNode) game).getFen(), getBoard());
         }
 
         gameOver = gameEnd(getBoard(), directViewCase, submissionOrDrawComeFromPlayer);
@@ -118,8 +115,9 @@ public class GameOverOrPositionEnd {
         if (submissionOrDraw == DRAW){
             return true;
         } else {
-            thirdSimilarPositionOfTheGame = happenedList.keySet().stream().anyMatch(a -> happenedList.get(a) == 3) ||
-                                            happenedListZKeys.keySet().stream().anyMatch(a -> happenedListZKeys.get(a) == 3);
+
+            thirdSimilarPositionOfTheGame = happenedList.keySet().stream().anyMatch(a -> happenedList.get(a) == 3);
+
             boolean nextPlayerEmptyRange = isNull(board.getCheckers()) &&
                                             board.getPieces(whiteToPlay).stream().allMatch(p -> p.getPossibleRange().isEmpty());
             boolean allRemainingPieceIsKing = board.getPieces().size() == 2 &&
@@ -149,7 +147,7 @@ public class GameOverOrPositionEnd {
     public static boolean isDraw(long whitePawn, long whiteKnight, long whiteBishop, long whiteRook, long whiteQueen, long whiteKing,
                                  long blackPawn, long blackKnight, long blackBishop, long blackRook, long blackQueen, long blackKing){
 
-        thirdSimilarPositionOfTheGame = happenedListZKeys.keySet().stream().anyMatch(a -> happenedListZKeys.get(a) == 3);
+        thirdSimilarPositionOfTheGame = happenedList.keySet().stream().anyMatch(a -> happenedList.get(a) == 3);
 
         boolean allRemainingPiecesAreKing =
                 whitePawn == 0 && whiteKnight == 0 && whiteBishop == 0 && whiteRook == 0 && whiteQueen == 0 && whiteKing != 0 &&

@@ -19,7 +19,7 @@ public class FenConverter {
 
     /**
      * @param fen original fen
-     * @return the same cols and rows, but in reverse order in the pieces part. Just like we use it for a BitBoard
+     * @return the same cols and rows, but in reverse order in the pieces part. Just like we use it for a BitBoards
      */
     public static String FenToBitBoardFen(String fen){
         String[] originFenParts = fen.split(" ");
@@ -38,7 +38,7 @@ public class FenConverter {
         return bbFenPieces.toString();
     }
 
-    private static void FenToBoard(String fen, IBoard board, boolean isAiFen) {
+    public static void FenToBoard(String fen, IBoard board) {
 
         String[] separatedFen = fen.split(" ");
 
@@ -105,11 +105,11 @@ public class FenConverter {
 
         castleCaseFenToBoard(separatedFen[2]);
 
-        evenOrOddStep = '1' == separatedFen[isAiFen ? 4 : 5].charAt(0) ? 1 : 0;
+        evenOrOddStep = '1' == separatedFen[5].charAt(0) ? 1 : 0;
 
     }
 
-    private static String BoardToFen(IBoard board, boolean isAiFen) {
+    public static String BoardToFen(IBoard board) {
         int counterForRows = 0;
         StringBuilder fenToReturn = new StringBuilder();
         for (int i = 0; i < MAX_HEIGHT; i++) {
@@ -170,10 +170,8 @@ public class FenConverter {
             fenToReturn.append(emPassantChance.charAt(1));
         }
 
-        if (!isAiFen) {
-            fenToReturn.append(' ');
-            fenToReturn.append(stepNumber);
-        }
+        fenToReturn.append(' ');
+        fenToReturn.append(stepNumber);
 
         fenToReturn.append(' ');
 
@@ -182,38 +180,6 @@ public class FenConverter {
         fenToReturn.append(evenOrOddStep);
 
         return fenToReturn.toString();
-    }
-
-    public static String AiFenToFen(String fen){
-        String[] fenParts = fen.split(" ");
-        stepNumber++;
-        return fenParts[0] +
-                ' ' +
-                fenParts[1] +
-                ' ' +
-                fenParts[2] +
-                ' ' +
-                fenParts[3] +
-                ' ' +
-                stepNumber +
-                ' ' +
-                fenParts[4];
-    }
-
-    public static void AiFenToBoard(String fen, IBoard board){
-        FenToBoard(fen, board, true);
-    }
-
-    public static String BoardToAiFen(IBoard board){
-        return BoardToFen(board, true);
-    }
-
-    public static void FenToBoard(String fen, IBoard board){
-        FenToBoard(fen, board, false);
-    }
-
-    public static String BoardToFen(IBoard board){
-        return BoardToFen(board, false);
     }
 
     private static void emPassantFenToBoard(String emPassant, PieceAttributes piece, int sor, int oszlop){

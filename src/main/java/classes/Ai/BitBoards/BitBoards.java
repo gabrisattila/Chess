@@ -1,4 +1,4 @@
-package classes.Ai.BitBoard;
+package classes.Ai.BitBoards;
 
 import lombok.*;
 
@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import static classes.Ai.FenConverter.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
-import static classes.Ai.BitBoard.BBVars.*;
+import static classes.Ai.BitBoards.BBVars.*;
 
 @Getter
 @Setter
@@ -30,7 +30,6 @@ public class BitBoards {
     }
 
     public static void setUpBitBoard(String fen){
-//        FenToBoard(fen, getBoard());
         String bbFen = FenToBitBoardFen(fen);
         String pieces = bbFen.split(" ")[0];
         for (char c : englishPieceLetters) {
@@ -53,8 +52,8 @@ public class BitBoards {
 
     /**
      * @param Fen always should be the first part of a BitBoardFen String
-     * @param piece the type of BitBoard we want to create
-     * @return the BitBoard
+     * @param piece the type of BitBoards we want to create
+     * @return the BitBoards
      */
     public static long FenPiecesToBitBoard(String Fen, char piece){
         long bitBoard = 0;
@@ -103,7 +102,7 @@ public class BitBoards {
         return bitBoard;
     }
 
-    public static int emPassantToBitBoard(String emPassantChance){
+    public static int emPassantToBitBoardEmPassant(String emPassantChance){
         int emPassant = "-".equals(emPassantChance) ? -1 : Integer.parseInt(emPassantChance);
         emPassant = emPassant == -1 ? -1 : (emPassant / 10) * 8 + oppositeInsideEight.get(emPassant % 10);
         return emPassant;
