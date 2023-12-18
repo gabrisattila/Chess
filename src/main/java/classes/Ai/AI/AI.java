@@ -1,4 +1,4 @@
-package classes.Ai;
+package classes.Ai.AI;
 
 import classes.Game.I18N.Pair;
 import classes.Ai.BitBoards.Zobrist;
@@ -7,7 +7,7 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.Random;
 
-import static classes.Ai.AiNode.*;
+import static classes.Ai.AI.AiNode.*;
 import static classes.Ai.FenConverter.*;
 import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.VARS.FINALS.*;

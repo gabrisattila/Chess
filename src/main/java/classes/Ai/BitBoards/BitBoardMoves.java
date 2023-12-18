@@ -1,10 +1,10 @@
 package classes.Ai.BitBoards;
 
-import classes.Ai.AiNode;
+import classes.Ai.AI.AiNode;
 
 import java.util.*;
 
-import static classes.Ai.Evaluator.*;
+import static classes.Ai.Evaluation.Evaluator.*;
 import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;

@@ -12,7 +12,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
-import static classes.Ai.AiNode.*;
+import static classes.Ai.AI.AiNode.*;
 import static classes.Ai.FenConverter.*;
 import static classes.GUI.Frame.Window.putTakenPieceToItsPlace;
 import static classes.GUI.FrameParts.ViewBoard.*;

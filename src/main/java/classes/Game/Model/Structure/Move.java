@@ -7,7 +7,7 @@ import lombok.*;
 import javax.swing.*;
 import java.util.stream.Collectors;
 
-import static classes.Ai.AI.*;
+import static classes.Ai.AI.AI.*;
 import static classes.GUI.FrameParts.Logger.*;
 import static classes.Game.I18N.Location.*;
 import static classes.Game.I18N.METHODS.*;

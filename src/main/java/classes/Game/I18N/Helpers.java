@@ -1,6 +1,6 @@
 package classes.Game.I18N;
 
-import classes.Ai.Evaluator;
+import classes.Ai.Evaluation.Old_Evaluator;
 import classes.GUI.FrameParts.ViewField;
 import classes.Game.Model.Structure.*;
 
@@ -66,7 +66,7 @@ public class Helpers {
                     PieceType pieceType = getPieceType(whatNeeded.get(z + 1).charAt(0));
                     String white = 'w' == whatNeeded.get(z + 1).charAt(1) ? "WHITE" : "BLACK";
                     Piece p = new Piece(new PieceAttributes(pieceType, white), new Location(i, j));
-                    fieldInString.append(Evaluator.getBaseFieldValue(p));
+                    fieldInString.append(Old_Evaluator.getBaseFieldValue(p));
                 }
                 if (whatNeeded.contains("watchW")){
                     fieldInString.append(((Field) getBoard().getField(field.getI(), field.getJ())).getWhiteWatcherCount());

@@ -8,7 +8,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static classes.Ai.Evaluator.*;
 import static classes.Game.I18N.ChessGameException.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.PieceType.*;
@@ -59,7 +58,6 @@ public class Board implements IBoard {
     public static Board getBoard() {
         if(board == null){
             board = new Board(MAX_WIDTH, MAX_HEIGHT);
-            addBaseFieldValues();
             return board;
         }
         return board;

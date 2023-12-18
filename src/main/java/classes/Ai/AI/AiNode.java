@@ -1,4 +1,4 @@
-package classes.Ai;
+package classes.Ai.AI;
 
 import classes.Ai.BitBoards.Zobrist;
 import lombok.*;

@@ -1,6 +1,6 @@
 package classes.Ai.BitBoards;
 
-import classes.Ai.AiNode;
+import classes.Ai.AI.AiNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;

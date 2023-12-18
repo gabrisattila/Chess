@@ -1,5 +1,6 @@
 package classes.Game.I18N;
 
+import classes.Ai.Evaluation.GameState;
 import classes.GUI.FrameParts.*;
 import classes.Game.Model.Structure.*;
 
@@ -8,6 +9,7 @@ import java.awt.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static classes.Ai.Evaluation.GameState.*;
 import static classes.Game.I18N.METHODS.dateToString;
 import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
@@ -567,6 +569,8 @@ public class VARS {
         public static int MAX_HEIGHT = 8;
 
         public static int MINIMAX_DEPTH = 6;
+
+        public static GameState currentGameState = MIDDLE_GAME;
 
         public static int nodeNum = 0;
 

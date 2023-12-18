@@ -1,7 +1,6 @@
 package classes.Game.Model.Logic;
 
-import classes.Ai.AI;
-import classes.Game.Model.Structure.IBoard;
+import classes.Ai.AI.AI;
 import lombok.*;
 
 import javax.swing.*;
@@ -14,7 +13,6 @@ import static classes.GUI.Frame.Window.*;
 import static classes.GUI.FrameParts.ChessButton.ChessButtonMouseListener.saveBoard;
 import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.METHODS.*;
-import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.GUI.FrameParts.Logger.*;
 import static java.lang.Thread.sleep;

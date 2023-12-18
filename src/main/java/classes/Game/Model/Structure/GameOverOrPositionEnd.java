@@ -9,7 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-import static classes.Ai.Evaluator.*;
+import static classes.Ai.Evaluation.Old_Evaluator.*;
 import static classes.GUI.Frame.Window.*;
 import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.METHODS.*;
