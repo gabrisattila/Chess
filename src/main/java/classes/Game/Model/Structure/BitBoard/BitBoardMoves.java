@@ -1,17 +1,25 @@
 package classes.Game.Model.Structure.BitBoard;
 
-import classes.Game.I18N.PieceType;
+import classes.Ai.AiNodeBBStyle;
 
 import java.util.*;
 
-import static classes.Ai.FenConverter.charToPieceType;
+import static classes.Ai.Evaluator.*;
 import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Game.Model.Structure.BitBoard.BBVars.*;
 import static classes.Game.Model.Structure.BitBoard.BitBoards.*;
+import static java.util.Objects.requireNonNull;
 
 public class BitBoardMoves {
+
+    public static ArrayList<String> possibleMoves(boolean forWhite, AiNodeBBStyle node){
+        return possibleMoves(forWhite,
+                node.getEmPassant(), node.isWKC(), node.isWQC(), node.isBKC(), node.isBQC(),
+                node.getWP(), node.getWN(), node.getWB(), node.getWR(), node.getWQ(), node.getWK(),
+                node.getBP(), node.getBN(), node.getBB(), node.getBR(), node.getBQ(), node.getBK());
+    }
 
     public static ArrayList<String> possibleMoves(boolean maxNeeded, int emPassantChance,
                                        boolean whiteKingCastleEnabled, boolean whiteQueenCastleEnabled,
@@ -24,7 +32,6 @@ public class BitBoardMoves {
         OCCUPIED = mergeFullBitBoard(new ArrayList<>(){{add(wP); add(wN); add(wB); add(wR); add(wQ); add(wK);
             add(bP); add(bN); add(bB); add(bR); add(bQ); add(bK);}});
         EMPTY = ~OCCUPIED;
-
         String moves = pawnMoves(
                 maxNeeded, emPassantChance, wP,  wN,  wB,  wR,  wQ,  wK, bP,  bN,  bB,  bR,  bQ,  bK);
         moves += knightMoves(maxNeeded, wP,  wN,  wB,  wR,  wQ,  wK, bP,  bN,  bB,  bR,  bQ,  bK);
@@ -123,6 +130,12 @@ public class BitBoardMoves {
         return boardToMoveOn;
     }
 
+    public static long unsafeFor(boolean forWhite, AiNodeBBStyle node){
+        return unsafeFor(forWhite,
+                node.getWP(), node.getWN(), node.getWB(), node.getWR(), node.getWQ(), node.getWK(),
+                node.getBB(), node.getBN(), node.getBB(), node.getBR(), node.getBQ(), node.getBK());
+    }
+
     public static long unsafeFor(boolean forWhite,
                                  long wG, long wN, long wB, long wR, long wQ, long wK,
                                  long bP, long bN, long bB, long bR, long bQ, long bK){
@@ -173,7 +186,7 @@ public class BitBoardMoves {
             moveDocStringPawn(true, moves, pawnMoves, plusToGetOrigin, bP,  wN,  wB,  wR,  wQ,  wK, bN,  bB,  bR,  bQ,  bK);
 
 //          Előre sima 2
-            shouldBeInThatPart = EMPTY & ROW_4;
+            shouldBeInThatPart = EMPTY & ROW_4 & ROW_3;
             pawnMoves = (whiteDown ? used << 16 : used >> 16) & shouldBeInThatPart;
             plusToGetOrigin = whiteDown ? -16 : 16;
             moveDocStringPawn(true, moves, pawnMoves, plusToGetOrigin, bP,  wN,  wB,  wR,  wQ,  wK, bN,  bB,  bR,  bQ,  bK);
@@ -200,7 +213,7 @@ public class BitBoardMoves {
             moveDocStringPawn(false, moves, pawnMoves, plusToGetOrigin, wG,  wN,  wB,  wR,  wQ,  wK, bN,  bB,  bR,  bQ,  bK);
 
             //Előre sima 2
-            shouldBeInThatPart = EMPTY & ROW_5;
+            shouldBeInThatPart = EMPTY & ROW_5 & ROW_6;
             pawnMoves = (whiteDown ? used >> 16 : used << 16) & shouldBeInThatPart;
             plusToGetOrigin = whiteDown ? 16 : -16;
             moveDocStringPawn(false, moves, pawnMoves, plusToGetOrigin, wG,  wN,  wB,  wR,  wQ,  wK, bN,  bB,  bR,  bQ,  bK);
@@ -306,7 +319,7 @@ public class BitBoardMoves {
             appendPawnPromotion(type, moves, index + difference);
             appendEmPassantAutIfThereWas(type, moves, index + difference, index, enemyPawn);
             appendPawnCapture(type, moves, difference);
-            appendMergedBoardsFinalVal(moves, used,  wN,  wB,  wR,  wQ, enemyPawn,  bN,  bB,  bR,  bQ);
+            appendMergedBoardsFinalVal(moves, used,  wN,  wB,  wR,  wQ, wK, enemyPawn,  bN,  bB,  bR,  bQ, bK);
             moves.append('_');
             used &= ~possibility;
             possibility = used & -used;
@@ -319,7 +332,7 @@ public class BitBoardMoves {
                                                   long unsafe){
         StringBuilder moves = new StringBuilder();
         boolean forWhite = Character.isUpperCase(type.charAt(0));
-        long used = getBitBoardFromType(type, wN,  wB,  wR,  wQ,  wK, bN,  bB,  bR,  bQ,  bK);
+        long used = getBitBoardFromType(type, wP, wN, wB, wR, wQ, wK, bP, bN, bB, bR, bQ, bK);
         
         long i = used & -used;
         long possibility;
@@ -353,7 +366,7 @@ public class BitBoardMoves {
                     captureOtherNote(type, moves, endLoc,
                             forWhite ? bP : wP, forWhite ? bN : wN, forWhite ? bB : wB, forWhite ? bR : wR, forWhite ? bQ : wQ
                     );
-                    appendMergedBoardsFinalVal(moves, wN,  wB,  wR,  wQ,  wK, bN,  bB,  bR,  bQ,  bK);
+                    appendMergedBoardsFinalVal(moves, 0, wN, wB, wR, wQ, wK, 0, bN, bB, bR, bQ, bK);
                     moves.append('_');
                 }
                 possibility &= ~j;
@@ -367,9 +380,12 @@ public class BitBoardMoves {
     }
     
     private static long getBitBoardFromType(String type,
-                                            long wN, long wB, long wR, long wQ, long wK,
-                                            long bN, long bB, long bR, long bQ, long bK){
+                                            long wP, long wN, long wB, long wR, long wQ, long wK,
+                                            long bP, long bN, long bB, long bR, long bQ, long bK){
         switch (type.charAt(0)){
+            case 'P' -> {
+                return wP;
+            }
             case 'N' -> {
                 return wN;
             }
@@ -384,6 +400,9 @@ public class BitBoardMoves {
             }
             case 'K' -> {
                 return wK;
+            }
+            case 'p' -> {
+                return bP;
             }
             case 'n' -> {
                 return bN;
@@ -453,21 +472,22 @@ public class BitBoardMoves {
                                  long wG, long wN, long wB, long wR, long wQ, long wK,
                                  long bP, long bN, long bB, long bR, long bQ, long bK,
                                  long occupied, long unsafe){
+
         boolean forWhite = Character.isUpperCase(type.charAt(0));
 
         if (isKingSideCastleEnabled(forWhite, whiteDown, forWhite ? wKC : bKC, forWhite ? wK : bK,
                                     forWhite ? wR : bR, unsafe, occupied)){
-            castleDoc(type, castlePlaces, whiteDown, true, wG, wN, wB, wR, wQ, bP, bN, bB, bR, bQ);
+            castleDoc(type, castlePlaces, whiteDown, true, wG, wN, wB, wR, wQ, wK, bP, bN, bB, bR, bQ, bK);
         }
         if (isQueenSideCastleEnabled(forWhite, whiteDown, forWhite ? wQC : bQC, forWhite ? wK : bK,
                                      forWhite ? wR : bR, unsafe, occupied)){
-            castleDoc(type, castlePlaces, whiteDown, false, wG, wN, wB, wR, wQ, bP, bN, bB, bR, bQ);
+            castleDoc(type, castlePlaces, whiteDown, false, wG, wN, wB, wR, wQ, wK, bP, bN, bB, bR, bQ, bK);
         }
     }
 
     private static void castleDoc(String type, StringBuilder moves, boolean whiteDown, boolean kingSide,
-                                 long wG, long wN, long wB, long wR, long wQ,
-                                  long bP, long bN, long bB, long bR, long bQ){
+                                 long wG, long wN, long wB, long wR, long wQ, long wK,
+                                  long bP, long bN, long bB, long bR, long bQ, long bK){
         boolean forWhite = Character.isUpperCase(type.charAt(0));
         int[] castleIndexes = indexesInCastle(whiteDown, forWhite, kingSide);
         moves.append(type);
@@ -476,7 +496,7 @@ public class BitBoardMoves {
         moves.append("-");
         moves.append(castleIndexes[0]);
         appendKingMoveNote(type, moves);
-        appendMergedBoardsFinalVal(moves, wG, wN, wB, wR, wQ, bP, bN, bB, bR, bQ);
+        appendMergedBoardsFinalVal(moves, wG, wN, wB, wR, wQ, wK, bP, bN, bB, bR, bQ, bK);
         moves.append("_");
     }
 
@@ -517,13 +537,12 @@ public class BitBoardMoves {
     }
     
     private static void appendMergedBoardsFinalVal(StringBuilder moves,
-                                                   long wP, long wN, long wB, long wR, long wQ,
-                                                   long bP, long bN, long bB, long bR, long bQ) {
+                                                   long wP, long wN, long wB, long wR, long wQ, long wK,
+                                                   long bP, long bN, long bB, long bR, long bQ, long bK) {
         moves.append("/");
-        moves.append(getEvaluationOfThisMove(moves, wP,  wN,  wB,  wR,  wQ, bP,  bN,  bB,  bR,  bQ));
+        moves.append(evaluationOfAMoveWithOutFieldValues(moves, wP, wN, wB, wR, wQ, wK, bP, bN, bB, bR, bQ, bK));
+//        moves.append(evaluationOfAMoveWithFieldValues(moves, wP, wN, wB, wR, wQ, wK, bP, bN, bB, bR, bQ, bK));
     }
-
-
 
     private static boolean isKingSideCastleEnabled(boolean forWhite, boolean whiteDown, 
                                                    boolean smallCastleEnabled, long kingBoard, long rookBoard, long unsafe, long occupied){
@@ -635,56 +654,232 @@ public class BitBoardMoves {
         }
     }
 
-    public static double getEvaluationOfThisMove(String moves, long wP, long wN, long wB, long wR, long wQ,
-                                                 long bP, long bN, long bB, long bR, long bQ){
-        return decideIsItCaptureAndGetValue(
-                wP, wN, wB, wR, wQ,
-                bP, bN, bB, bR, bQ,
-                moves.isEmpty(),
-                moves.charAt(moves.length() - 3), moves.charAt(moves.length() - 2));
+    public static double evaluationOfAMoveWithFieldValues(StringBuilder moves,
+                                                          long wP, long wN, long wB, long wR, long wQ, long wK,
+                                                          long bP, long bN, long bB, long bR, long bQ, long bK){
+
+        return evaluationOfAMoveWithFieldValues(
+                moves.toString(),
+                wP, wN, wB, wR, wQ, wK,
+                bP, bN, bB, bR, bQ, bK);
     }
 
-    public static double getEvaluationOfThisMove(StringBuilder moves, long wP, long wN, long wB, long wR, long wQ,
-                                                 long bP, long bN, long bB, long bR, long bQ){
-        return decideIsItCaptureAndGetValue(
-                wP, wN, wB, wR, wQ,
-                bP, bN, bB, bR, bQ,
-                moves.isEmpty(),
-                moves.charAt(moves.length() - 3), moves.charAt(moves.length() - 2));
+    public static double evaluationOfAMoveWithFieldValues(AiNodeBBStyle node){
+        return evaluationOfAMoveWithFieldValues(node.getTheMoveWhatsCreatedIt(),
+                node.getWP(), node.getWN(), node.getWB(), node.getWR(), node.getWQ(), node.getWK(),
+                node.getBB(), node.getBN(), node.getBB(), node.getBR(), node.getBQ(), node.getBK());
     }
 
-    private static double decideIsItCaptureAndGetValue(long wP, long wN, long wB, long wR, long wQ, long bP, long bN, long bB, long bR, long bQ, boolean empty, char CifItsCapture, char captureType) {
-        if (!empty){
-            return evaluationOfFullBitBoard(wP, wN, wB, wR, wQ,
-                    bP, bN, bB, bR, bQ,
-                    CifItsCapture, captureType);
+    public static double evaluationOfAMoveWithFieldValues(String moves,
+                                                          long wP, long wN, long wB, long wR, long wQ, long wK,
+                                                          long bP, long bN, long bB, long bR, long bQ, long bK){
+        if (moves.isEmpty()){
+            return
+                    evaluationOfFullBitBoard(
+                            moves,
+                            wP, wN, wB, wR, wQ, wK,
+                            bP, bN, bB, bR, bQ, bK,
+                            'N', 'Z');
+
         }else {
-            //Don't add anything
-            return evaluationOfFullBitBoard(wP, wN, wB, wR, wQ,
-                    bP, bN, bB, bR, bQ,
-                    'N', 'Z');
+            return
+                    evaluationOfFullBitBoard(
+                            moves,
+                            wP, wN, wB, wR, wQ, wK,
+                            bP, bN, bB, bR, bQ, bK,
+                            moves.charAt(moves.length() - 3), moves.charAt(moves.length() - 2));
         }
     }
 
-    private static double evaluationOfFullBitBoard(long wP, long wN, long wB, long wR, long wQ,
-                                                   long bP, long bN, long bB, long bR, long bQ,
+
+    private static double evaluationOfFullBitBoard(String moves,
+                                                   long wP, long wN, long wB, long wR, long wQ, long wK,
+                                                   long bP, long bN, long bB, long bR, long bQ, long bK,
                                                    char CifItsCapture, char capturedType) {
-        return  PAWN_BASE_VALUE *
-                        (Long.bitCount(wP) /* + getBaseFieldValueFor(wP, 'P') */ - Long.bitCount(bP)/* - getBaseFieldValueFor(bP, 'p')*/) +
-                KNIGHT_OR_BISHOP_BASE_VALUE *
-                        (Long.bitCount(wN) /* + getBaseFieldValueFor(wN, 'N') */  - Long.bitCount(bN)/* - getBaseFieldValueFor(bN, 'n')*/ +
-                        Long.bitCount(wB) /* + getBaseFieldValueFor(wB, 'B') */ - Long.bitCount(bB)/* - getBaseFieldValueFor(bB, 'b')*/) +
-                ROOK_BASE_VALUE *
-                        (Long.bitCount(wR) /*+ getBaseFieldValueFor(wR, 'R')*/ - Long.bitCount(bR) /* - getBaseFieldValueFor(bR, 'r')*/) +
-                QUEEN_BASE_VALUE *
-                        (Long.bitCount(wQ) /* + getBaseFieldValueFor(wQ, 'Q') */ - Long.bitCount(bQ) /* - getBaseFieldValueFor(bQ, 'q')*/) +
-                (CifItsCapture == 'C' ? getHitValue(capturedType) : 0);
+
+        double basicEval = evaluationWithFieldValuesOnBitBoards(
+                wP, wN, wB, wR, wQ, wK,
+                bP, bN, bB, bR, bQ, bK);
+
+        String[] s = moves.split("_");
+        String move = s[s.length - 1];
+        String[] moveParts = move.split("-");
+        String type = moveParts[0];
+        int startIndex = Integer.parseInt(moveParts[1]);
+        if (moveParts[2].charAt(moveParts[2].length() - 1) == '/')
+            moveParts[2] = moveParts[2].substring(0, moveParts[2].length() - 1);
+        int endIndex = Integer.parseInt(moveParts[2]);
+
+        boolean forWhite = Character.isUpperCase(type.charAt(0));
+
+        if (("P".equals(type) && (1L << endIndex & ROW_8) != 0) ||
+                ("p".equals(type) && (1L << endIndex & ROW_1) != 0)){ // Pawn Promotion
+            if ('C' == CifItsCapture){
+                basicEval -= getBaseFieldValue(endIndex, capturedType);
+            }
+            basicEval -= getBaseFieldValue(startIndex, type);
+            basicEval += getBaseFieldValue(endIndex, "P".equals(type) ? 'Q' : 'q');
+        } else if ('C' == CifItsCapture){ // Simple capture with any piece
+            basicEval -= getBaseFieldValue(startIndex, type);
+            basicEval -= getBaseFieldValue(endIndex, capturedType);
+            basicEval -= forWhite ?
+                    -requireNonNull(getPieceType(capturedType)).getValueOfPieceType() :
+                    requireNonNull(getPieceType(capturedType)).getValueOfPieceType();
+            basicEval += getBaseFieldValue(endIndex, type.charAt(0));
+        } else if (("P".equals(type) || "p".equals(type)) &&
+                (Math.abs(startIndex - endIndex) == 7 || Math.abs(startIndex - endIndex) == 9)) { // EmPassant capture
+            if ("P".equals(type) && (1L << endIndex & bP) == 0){ // with white
+                basicEval -= Math.abs(startIndex - endIndex) == 7 ? 
+                        getBaseFieldValue(startIndex - 1, 'p') :
+                        getBaseFieldValue(startIndex + 1, 'p');
+                basicEval -= requireNonNull(getPieceType('p')).getValueOfPieceType();
+            }
+            if ("p".equals(type) && (1L << endIndex & wP) == 0){
+                basicEval -= Math.abs(startIndex - endIndex) == 7 ?
+                        getBaseFieldValue(startIndex + 1, 'P') :
+                        getBaseFieldValue(startIndex - 1, 'P');
+                basicEval -= requireNonNull(getPieceType('P')).getValueOfPieceType();
+            }
+        } else if (("K".equals(type) || "k".equals(type)) && Math.abs(startIndex - endIndex) == 2) { // Castle
+            basicEval -= getBaseFieldValue(startIndex, type);
+            basicEval += getBaseFieldValue(endIndex, type);
+
+            int[] kingCastleIndexes = indexesInCastle(whiteDown, "K".equals(type), true);
+            int[] queenCastleIndexes = indexesInCastle(whiteDown, "K".equals(type), false);
+
+            basicEval -= endIndex == kingCastleIndexes[0] ?
+                    getBaseFieldValue(kingCastleIndexes[2], forWhite ? 'R' : 'r') :
+                    getBaseFieldValue(queenCastleIndexes[2], forWhite ? 'R' : 'r');
+            basicEval += endIndex == kingCastleIndexes[0] ?
+                    getBaseFieldValue(kingCastleIndexes[1], forWhite ? 'R' : 'r') :
+                    getBaseFieldValue(queenCastleIndexes[1], forWhite ? 'R' : 'r');
+        } else {
+            basicEval -= getBaseFieldValue(startIndex, type);
+            basicEval += getBaseFieldValue(endIndex, type);
+        }
+
+        return basicEval;
     }
 
-    private static double getHitValue(char type){
-        boolean white = Character.isUpperCase(type);
-        PieceType pType = charToPieceType(type);
-        return white ? - pType.getValueOfPieceType() : pType.getValueOfPieceType();
+    private static double evaluationWithFieldValuesOnBitBoards(long wP, long wN, long wB, long wR, long wQ, long wK,
+                                                               long bP, long bN, long bB, long bR, long bQ, long bK){
+        double finalValue = 0;
+        for (int i = 0; i < 63; i++) {
+            if ((1L << i & wP) != 0){
+                finalValue += getBaseFieldValue(i, 'P') + PAWN_BASE_VALUE;
+            } else if ((1L << i & wN) != 0){
+                finalValue += getBaseFieldValue(i, 'N') + KNIGHT_OR_BISHOP_BASE_VALUE;
+            } else if ((1L << i & wB) != 0){
+                finalValue += getBaseFieldValue(i, 'B') + KNIGHT_OR_BISHOP_BASE_VALUE;
+            } else if ((1L << i & wR) != 0){
+                finalValue += getBaseFieldValue(i, 'R') + ROOK_BASE_VALUE;
+            } else if ((1L << i & wQ) != 0){
+                finalValue += getBaseFieldValue(i, 'Q') + QUEEN_BASE_VALUE;
+            } else if ((1L << i & wK) != 0) {
+                finalValue += getBaseFieldValue(i, 'K') + KING_BASE_VALUE;
+            } else if ((1L << i & bP) != 0){
+                finalValue += getBaseFieldValue(i, 'p') - PAWN_BASE_VALUE;
+            } else if ((1L << i & bN) != 0){
+                finalValue -= getBaseFieldValue(i, 'n') - KNIGHT_OR_BISHOP_BASE_VALUE;
+            } else if ((1L << i & bB) != 0){
+                finalValue += getBaseFieldValue(i, 'b') - KNIGHT_OR_BISHOP_BASE_VALUE;
+            } else if ((1L << i & bR) != 0){
+                finalValue += getBaseFieldValue(i, 'r') - ROOK_BASE_VALUE;
+            } else if ((1L << i & bQ) != 0){
+                finalValue += getBaseFieldValue(i, 'q') - QUEEN_BASE_VALUE;
+            }else if ((1L << i & bK) != 0) {
+                finalValue += getBaseFieldValue(i, 'k') - KING_BASE_VALUE;
+            }
+        }
+        return finalValue;
+    }
+
+    public static double evaluationOfAMoveWithOutFieldValues(StringBuilder moves,
+                                                             long wP, long wN, long wB, long wR, long wQ, long wK,
+                                                             long bP, long bN, long bB, long bR, long bQ, long bK){
+        return evaluationOfAMoveWithOutFieldValues(
+                moves.toString(),
+                wP, wN, wB, wR, wQ, wK,
+                bP, bN, bB, bR, bQ, bK);
+    }
+
+    private static double evaluationOfAMoveWithOutFieldValues(String moves,
+                                                              long wP, long wN, long wB, long wR, long wQ, long wK,
+                                                              long bP, long bN, long bB, long bR, long bQ, long bK){
+        if (moves.isEmpty()){
+            return
+                    evaluationOfAMoveWithOutFieldValues(
+                            moves,
+                            wP, wN, wB, wR, wQ, wK,
+                            bP, bN, bB, bR, bQ, bK,
+                            'N', 'Z');
+
+        } else {
+            return
+                    evaluationOfAMoveWithOutFieldValues(
+                            moves,
+                            wP, wN, wB, wR, wQ, wK,
+                            bP, bN, bB, bR, bQ, bK,
+                            moves.charAt(moves.length() - 3), moves.charAt(moves.length() - 2));
+        }
+    }
+
+    private static double evaluationOfAMoveWithOutFieldValues(String moves,
+                                                             long wP, long wN, long wB, long wR, long wQ, long wK,
+                                                             long bP, long bN, long bB, long bR, long bQ, long bK,
+                                                             char CifItsCapture, char capturedType){
+
+        double finalValue = evaluationWithOutFieldValuesOnBitBoards(
+                wP, wN, wB, wR, wQ, wK,
+                bP, bN, bB, bR, bQ, bK);
+
+        String[] s = moves.split("_");
+        String move = s[s.length - 1];
+        String[] moveParts = move.split("-");
+        String type = moveParts[0];
+
+        boolean forWhite = Character.isUpperCase(type.charAt(0));
+
+        if ('C' == CifItsCapture){
+            finalValue -= forWhite ?
+                                -requireNonNull(getPieceType(capturedType)).getValueOfPieceType() :
+                                 requireNonNull(getPieceType(capturedType)).getValueOfPieceType();
+        }
+
+        return finalValue;
+    }
+
+    private static double evaluationWithOutFieldValuesOnBitBoards(long wP, long wN, long wB, long wR, long wQ, long wK,
+                                                                  long bP, long bN, long bB, long bR, long bQ, long bK){
+        double finalValue = 0;
+        for (int i = 0; i < 63; i++) {
+            if ((1L << i & wP) != 0){
+                finalValue += PAWN_BASE_VALUE;
+            } else if ((1L << i & wN) != 0){
+                finalValue += KNIGHT_OR_BISHOP_BASE_VALUE;
+            } else if ((1L << i & wB) != 0){
+                finalValue += KNIGHT_OR_BISHOP_BASE_VALUE;
+            } else if ((1L << i & wR) != 0){
+                finalValue += ROOK_BASE_VALUE;
+            } else if ((1L << i & wQ) != 0){
+                finalValue += QUEEN_BASE_VALUE;
+            } else if ((1L << i & wK) != 0) {
+                finalValue += KING_BASE_VALUE;
+            } else if ((1L << i & bP) != 0){
+                finalValue -= PAWN_BASE_VALUE;
+            } else if ((1L << i & bN) != 0){
+                finalValue -= KNIGHT_OR_BISHOP_BASE_VALUE;
+            } else if ((1L << i & bB) != 0){
+                finalValue -= KNIGHT_OR_BISHOP_BASE_VALUE;
+            } else if ((1L << i & bR) != 0){
+                finalValue -= ROOK_BASE_VALUE;
+            } else if ((1L << i & bQ) != 0){
+                finalValue -= QUEEN_BASE_VALUE;
+            }else if ((1L << i & bK) != 0) {
+                finalValue -= KING_BASE_VALUE;
+            }
+        }
+        return finalValue;
     }
 
 }

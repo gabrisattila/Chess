@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
+import static classes.Game.Model.Structure.BitBoard.BBVars.oppositeInsideEight;
 import static classes.Game.Model.Structure.Board.*;
 import static classes.Game.I18N.METHODS.*;
 
@@ -67,7 +68,7 @@ public class Evaluator {
 
     //region Base Field Values
 
-    public static double getBaseFieldValueFor(IPiece p){
+    public static double getBaseFieldValue(IPiece p){
         if (p.getType() != N){
             if (whiteDown){
                 return p.isWhite() ? FIELD_BASE_VALUES_BY_PIECE_TYPE.get(p.getType())[p.getI()][p.getJ()] :
@@ -82,45 +83,55 @@ public class Evaluator {
         }
     }
     
-    public static double getBaseFieldValueFor(int indexOfPiece, char Type){
+    public static double getBaseFieldValue(int indexOfPiece, char Type){
         boolean forWhite = Character.isUpperCase(Type);
-        PieceType type = null;
+        PieceType type;
         int i = indexOfPiece / 8, j = indexOfPiece % 8;
-        type = getPieceType(Type, type);
-        if (type != N){
+        type = getPieceType(Type);
+        return getBaseFieldValue(type, forWhite, i, j);
+    }
+
+    public static double getBaseFieldValue(int indexOfPiece, String Type){
+        boolean forWhite = Character.isUpperCase(Type.charAt(0));
+        PieceType type;
+        int i = indexOfPiece / 8, j = oppositeInsideEight.get(indexOfPiece % 8);
+        type = getPieceType(Type);
+        return getBaseFieldValue(type, forWhite, i, j);
+    }
+
+    private static double getBaseFieldValue(PieceType type, boolean forWhite, int i, int j){
+        if (type == P) {
+            return forWhite ? PAWN_BASE_VALUE_MATRIX_WP[i][j] : -PAWN_BASE_VALUE_MATRIX_BP[i][j];
+        }else if (type == B){
+            return forWhite ? BISHOP_BASE_VALUE_MATRIX_WP[i][j] : -BISHOP_BASE_VALUE_MATRIX_BP[i][j];
+        } else if (type == R) {
+            return forWhite ? ROOK_BASE_VALUE_MATRIX_WP[i][j] : -ROOK_BASE_VALUE_MATRIX_BP[i][j];
+        } else if (type == Q) {
             if (whiteDown){
-                return forWhite ? FIELD_BASE_VALUES_BY_PIECE_TYPE.get(type)[i][j] :
-                        mirrorMatrixHorizontally(FIELD_BASE_VALUES_BY_PIECE_TYPE.get(type))[i][j];
-            }else {
-                Double[][] mirroredVertically = mirrorMatrixVertically(FIELD_BASE_VALUES_BY_PIECE_TYPE.get(type));
-                return forWhite ? mirroredVertically[i][j] :
-                        mirrorMatrixHorizontally(mirroredVertically)[i][j];
+                return forWhite ? QUEEN_BASE_VALUE_MATRIX_WD_WP[i][j] : -QUEEN_BASE_VALUE_MATRIX_WD_BP[i][j];
+            } else {
+                return forWhite ? QUEEN_BASE_VALUE_MATRIX_BD_WP[i][j] : -QUEEN_BASE_VALUE_MATRIX_BD_BP[i][j];
             }
-        }else {
-            return FIELD_BASE_VALUES_BY_PIECE_TYPE.get(N)[i][j];
+        } else if (type == K) {
+            if (whiteDown){
+                return forWhite ? KING_BASE_VALUE_MATRIX_WD_WP[i][j] : -KING_BASE_VALUE_MATRIX_WD_BP[i][j];
+            } else {
+                return forWhite ? KING_BASE_VALUE_MATRIX_BD_WP[i][j] : -KING_BASE_VALUE_MATRIX_BD_BP[i][j];
+            }
+        } else {
+            double val = FIELD_BASE_VALUES_BY_PIECE_TYPE.get(N)[i][j];
+            return forWhite ? val : -val;
         }
     }
 
-    private static PieceType getPieceType(char Type, PieceType type) {
-        switch (Type){
-            case 'P', 'p' -> type = P;
-            case 'N', 'n' -> type = N;
-            case 'B', 'b' -> type = B;
-            case 'R', 'r' -> type = R;
-            case 'Q', 'q' -> type = Q;
-            case 'K', 'k' -> type = K;
-        }
-        return type;
-    }
-
-    public static double getBaseFieldValueFor(long bitBoard, char TYPE){
+    public static double getBaseFieldValue(long bitBoard, char TYPE){
         boolean isWhite = Character.isUpperCase(TYPE);
         PieceType type = null;
-        type = getPieceType(TYPE, type);
-        return getBaseFieldValueFor(bitBoard, isWhite, type);
+        type = getPieceType(TYPE);
+        return getBaseFieldValue(bitBoard, isWhite, type);
     }
 
-    private static double getBaseFieldValueFor(long bitBoard, boolean isWhite, PieceType type){
+    private static double getBaseFieldValue(long bitBoard, boolean isWhite, PieceType type){
         double value = 0;
         long i = bitBoard & -bitBoard;
         int j, z;
@@ -156,49 +167,6 @@ public class Evaluator {
         }
     }
 
-    private static void pawnBaseFieldValues(){
-        pawnBaseFieldValues(true);
-        pawnBaseFieldValues(false);
-    }
-
-    private static void pawnBaseFieldValues(boolean downPlayer) {
-        
-    }
-
-    private static void knightBaseFieldValues() {
-
-    }
-
-    private static void bishopBaseFieldValues(){
-        bishopBaseFieldValues(true);
-        bishopBaseFieldValues(false);
-    }
-
-    private static void bishopBaseFieldValues(boolean downPlayer) {
-
-    }
-
-    private static void rookBaseFieldValues(){
-        rookBaseFieldValues(true);
-        rookBaseFieldValues(false);
-    }
-
-    private static void rookBaseFieldValues(boolean downPlayer){
-        
-    }
-    
-    private static void queenBaseValues() {
-
-    }
-
-    private static void kingBaseFieldValues(){
-        kingBaseFieldValues(true);
-        kingBaseFieldValues(false);
-    }
-
-    private static void kingBaseFieldValues(boolean downPlayer) {
-
-    }
 
     /**
      * @param evenOrOddBoardWidthHeight Megmutatja, hogy páros vagy páratlan board baseFieldValue-t állítjuk.

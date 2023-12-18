@@ -1,8 +1,6 @@
 package classes.Ai;
 
-import classes.Game.I18N.Location;
 import classes.Game.I18N.Pair;
-import classes.Game.Model.Structure.*;
 import classes.Game.Model.Structure.BitBoard.Zobrist;
 import lombok.*;
 
@@ -15,7 +13,6 @@ import static classes.Ai.AiTree.*;
 import static classes.Ai.FenConverter.*;
 import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.METHODS.*;
-import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.Model.Logic.EDT.*;
 import static classes.Game.Model.Structure.BitBoard.BBVars.*;
@@ -24,7 +21,6 @@ import static classes.Game.Model.Structure.BitBoard.BitBoards.*;
 import static classes.Game.Model.Structure.Board.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Game.Model.Structure.GameOverOrPositionEnd.*;
-import static classes.Game.Model.Structure.Move.*;
 
 /**
  * thread descriptor object
@@ -97,8 +93,8 @@ public class AI extends Thread {
             int emPassant = emPassantToBitBoard(emPassantChance);
             long zKey = Zobrist.getZobristKey(whiteToPlay, emPassant,
                     whiteSmallCastleEnabled, whiteBigCastleEnabled, blackSmallCastleEnabled, blackBigCastleEnabled,
-                    whitePawn, whiteBishop, whiteKnight, whiteRook, whiteQueen, whiteKing,
-                    blackPawn, blackBishop, blackKnight, blackRook, blackQueen, blackKing);
+                    whitePawn, whiteKnight, whiteBishop, whiteRook, whiteQueen, whiteKing,
+                    blackPawn, blackKnight, blackBishop, blackRook, blackQueen, blackKing);
             AiNodeBBStyle tree = new AiNodeBBStyle(zKey, "");
 
             int startTime = (int) System.currentTimeMillis();
@@ -166,16 +162,18 @@ public class AI extends Thread {
 
             if (maxNeeded){
                 
-                double possibleMax = WHITE_GOT_CHECKMATE;
-
+                double possibleMax = -Double.MAX_VALUE;
+                double evaluationOfTheNode = WHITE_GOT_CHECKMATE;
+                
                 if (legalMoves.isEmpty()){
                     if ((whiteKing &
                             unsafeFor(true,
                                     whitePawn, whiteKnight, whiteBishop, whiteRook, whiteQueen, whiteKing,
                                     blackPawn, blackKnight, blackBishop, blackRook, blackQueen, blackKing)) == 0){
                         //DRAW
-                        possibleMax = DRAW;
+                        evaluationOfTheNode = DRAW;
                     }
+                    possibleMax = evaluationOfTheNode;
                 }
                 
                 for (int i = 0; i < legalMoves.size(); i++) {
@@ -205,7 +203,7 @@ public class AI extends Thread {
                             nextBoards.get(6), nextBoards.get(7), nextBoards.get(8), nextBoards.get(9), nextBoards.get(10), nextBoards.get(11));
 
                     nodeNum++;
-                    double evaluationOfTheNode = miniMaxWithBitBoards(
+                    evaluationOfTheNode = miniMaxWithBitBoards(
                             next, depth + 1, false, alpha, beta,
                             (Integer) emPassantAndCastle.get(0),
                             (boolean) emPassantAndCastle.get(1), (boolean) emPassantAndCastle.get(2),
@@ -253,6 +251,7 @@ public class AI extends Thread {
                     if (nextBoards.isEmpty()){
                         break;
                     }
+
                     ArrayList<Object> emPassantAndCastle = emPassantAndCastleCases(legalMove, wKC, wQC, bKC, bQC);
                     AiNodeBBStyle next = putNewToNodeMap(starterPos, legalMove,
                             false, (Integer) emPassantAndCastle.get(0),

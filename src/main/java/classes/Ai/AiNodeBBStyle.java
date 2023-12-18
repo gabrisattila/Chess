@@ -23,11 +23,11 @@ public class AiNodeBBStyle {
     private double finalValue;
 
     private Set<AiNodeBBStyle> children;
-    
+
     private boolean wKC, wQC, bKC, bQC;
-    
+
     private int emPassant;
-    
+
     private long wP,  wN,  wB,  wR, wQ, wK, bP,  bN,  bB,  bR,  bQ, bK;
 
     //endregion
@@ -63,13 +63,7 @@ public class AiNodeBBStyle {
 
     @Override
     public boolean equals(Object o){
-        return o instanceof AiNodeBBStyle &&
-                ((AiNodeBBStyle) o).wKC  == wKC && ((AiNodeBBStyle) o).wQC  == wQC && ((AiNodeBBStyle) o).bKC  == bKC &&
-                ((AiNodeBBStyle) o).bQC  == bQC && ((AiNodeBBStyle) o).emPassant == emPassant &&
-                ((AiNodeBBStyle) o).wP  == wP && ((AiNodeBBStyle) o).wN  == wN && ((AiNodeBBStyle) o).wB  == wB &&
-                ((AiNodeBBStyle) o).wR  == wR && ((AiNodeBBStyle) o).wQ  == wQ && ((AiNodeBBStyle) o).wK  == wK &&
-                ((AiNodeBBStyle) o).bP  == bP && ((AiNodeBBStyle) o).bN  == bN && ((AiNodeBBStyle) o).bB  == bB &&
-                ((AiNodeBBStyle) o).bR  == bR && ((AiNodeBBStyle) o).bQ  == bQ && ((AiNodeBBStyle) o).bK  == bK;
+        return o instanceof AiNodeBBStyle && zobristKey == ((AiNodeBBStyle) o).zobristKey;
     }
 
     public static String aiNodeBBToFen(AiNodeBBStyle node){

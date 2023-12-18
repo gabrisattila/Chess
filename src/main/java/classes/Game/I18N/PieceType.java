@@ -67,7 +67,6 @@ public enum PieceType {
         }
     }
 
-
     public double getValueOfPieceType(){
         switch (this){
             case P -> {
@@ -88,5 +87,54 @@ public enum PieceType {
         }
         return 0;
     }
+    
+    public static PieceType getPieceType(char c){
+        switch (c){
+            case 'P', 'p' -> {
+                return P;
+            }
+            case 'N', 'n' -> {
+                return N;
+            }
+            case 'B', 'b' -> {
+                return B;
+            }
+            case 'R', 'r' -> {
+                return R;
+            }
+            case 'Q', 'q' -> {
+                return Q;
+            }
+            case 'K', 'k' -> {
+                return K;
+            }
+        }
+        return null;
+    }
+
+    public static PieceType getPieceType(String s){
+        switch (s){
+            case "P", "p" -> {
+                return P;
+            }
+            case "N", "n" -> {
+                return N;
+            }
+            case "B", "b" -> {
+                return B;
+            }
+            case "R", "r" -> {
+                return R;
+            }
+            case "Q", "q" -> {
+                return Q;
+            }
+            case "K", "k" -> {
+                return K;
+            }
+        }
+        return null;
+    }
+
 
 }

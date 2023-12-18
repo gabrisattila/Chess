@@ -1,11 +1,11 @@
 package classes.Game.I18N;
 
+import classes.Ai.Evaluator;
 import classes.GUI.FrameParts.ViewField;
 import classes.Game.Model.Structure.*;
 
 import java.util.*;
 
-import static classes.Ai.Evaluator.*;
 import static classes.Ai.FenConverter.charToPieceType;
 import static classes.GUI.FrameParts.ViewBoard.getViewBoard;
 import static classes.Game.I18N.VARS.MUTABLE.*;
@@ -66,7 +66,7 @@ public class Helpers {
                     PieceType pieceType = charToPieceType(whatNeeded.get(z + 1).charAt(0));
                     String white = 'w' == whatNeeded.get(z + 1).charAt(1) ? "WHITE" : "BLACK";
                     Piece p = new Piece(new PieceAttributes(pieceType, white), new Location(i, j));
-                    fieldInString.append(getBaseFieldValueFor(p));
+                    fieldInString.append(Evaluator.getBaseFieldValue(p));
                 }
                 if (whatNeeded.contains("watchW")){
                     fieldInString.append(((Field) getBoard().getField(field.getI(), field.getJ())).getWhiteWatcherCount());
