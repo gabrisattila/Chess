@@ -244,7 +244,7 @@ public class BitBoards {
     public static long removeBit(long bitBoard, int index){
         if (index < 0 || index > 63)
             throw new ChessGameException("Index isn't in the range of bitBoard");
-        return (getBit(bitBoard, index) == 0 ? bitBoard ^ 1L << index : 0);
+        return (getBit(bitBoard, index) == 0 ? bitBoard & ~(1L << index) : 0);
     }
 
     //endregion

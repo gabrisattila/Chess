@@ -4,7 +4,6 @@ public class BitBoardMoves {
 
 
 
-
     //region Pawns
 
 
