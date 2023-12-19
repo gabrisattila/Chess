@@ -1,8 +1,12 @@
 package classes.Ai.Evaluation;
 
+import lombok.*;
+
 import java.util.ArrayList;
 import java.util.Objects;
 
+@Getter
+@Setter
 public class BoardState {
 
     //region Fields
@@ -25,6 +29,9 @@ public class BoardState {
     private int isolatedPawnNum;
 
     private int possibleMoveNum;
+
+
+    private int kingPossibleMoveNum;
 
 
     //endregion
@@ -54,16 +61,50 @@ public class BoardState {
         return null;
     }
 
+    /**
+     * @returns 7 element
+     */
     private ArrayList<Object> getOpeningParams(){
-        return null;
+        ArrayList<Object> params = alwaysNeededParams();
+        params.add(possibleMoveNum);
+        return params;
     }
 
+    /**
+     * @returns 9 element
+     */
     private ArrayList<Object> getMidGameParams(){
-        return null;
+        ArrayList<Object> params = alwaysNeededParams();
+        params.add(blockedPawnNum);
+        params.add(isolatedPawnNum);
+        params.add(possibleMoveNum);
+        return params;
     }
 
+    /**
+     * @returns 10 element
+     */
     private ArrayList<Object> getEndGameParams(){
-        return null;
+        ArrayList<Object> params = alwaysNeededParams();
+        params.add(blockedPawnNum);
+        params.add(isolatedPawnNum);
+        params.add(possibleMoveNum);
+        params.add(kingPossibleMoveNum);
+        return params;
+    }
+
+    /**
+     * @return basicly it returns a list that contains 6 element
+     */
+    private ArrayList<Object> alwaysNeededParams() {
+        ArrayList<Object> params = new ArrayList<>();
+        params.add(whiteTurn);
+        params.add(pawnNum);
+        params.add(knightNum);
+        params.add(bishopNum);
+        params.add(rookNum);
+        params.add(queenNum);
+        return params;
     }
 
     //endregion

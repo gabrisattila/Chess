@@ -57,6 +57,33 @@ public class Evaluator {
 
     //endregion
 
+
+    //region Eval BitBoards
+
+    public static int getPawnNum(long pawnBoard){
+        return Long.bitCount(pawnBoard);
+    }
+
+    public static int getKnightNum(long knightBoard){
+        return Long.bitCount(knightBoard);
+    }
+
+    public static int getBishopNum(long bishopBoard){
+        return Long.bitCount(bishopBoard);
+    }
+
+    public static int getRookNum(long rookBoard){
+        return Long.bitCount(rookBoard);
+    }
+
+    public static int getQueenNum(long queenBoard){
+        return Long.bitCount(queenBoard);
+    }
+
+
+    //endregion
+
+
     //region Base Of Eval
 
     public static double evaluate(BoardState boardState){
@@ -75,14 +102,36 @@ public class Evaluator {
     }
 
     private static double evaluate(ArrayList<Object> params){
+        double finalValue = 0;
         if (params.size() == 7) { // OPENING
-
-        } else if (params.size() == 8) { // MID_GAME
-
-        } else if (params.size() == 9) { // END_GAME
-
+            finalValue =
+                    PAWN_BASE_VALUE * (int) params.get(1) +
+                    KNIGHT_OR_BISHOP_BASE_VALUE * ((int) params.get(2) + (int) params.get(3)) +
+                    ROOK_BASE_VALUE * (int) params.get(4) +
+                    QUEEN_BASE_VALUE * (int) params.get(5) +
+                    KING_BASE_VALUE +
+                    0.5 * (int) params.get(6);
+        } else if (params.size() == 9) { // MID_GAME
+            finalValue =
+                    PAWN_BASE_VALUE * (int) params.get(1) +
+                    KNIGHT_OR_BISHOP_BASE_VALUE * ((int) params.get(2) + (int) params.get(3)) +
+                    ROOK_BASE_VALUE * (int) params.get(4) +
+                    QUEEN_BASE_VALUE * (int) params.get(5) +
+                    KING_BASE_VALUE -
+                    0.5 * ((int) params.get(6) + (int) params.get(7)) +
+                    0.1 * (int) params.get(8);
+        } else if (params.size() == 10) { // END_GAME
+            finalValue =
+                    PAWN_BASE_VALUE * (int) params.get(1) +
+                    KNIGHT_OR_BISHOP_BASE_VALUE * ((int) params.get(2) + (int) params.get(3)) +
+                    ROOK_BASE_VALUE * (int) params.get(4) +
+                    QUEEN_BASE_VALUE * (int) params.get(5) +
+                    KING_BASE_VALUE -
+                    0.5 * ((int) params.get(6) + (int) params.get(7)) +
+                    0.1 * (int) params.get(8) +
+                    (int) params.get(9);
         }
-        return Double.MIN_VALUE;
+        return (boolean) params.get(0) ? finalValue : -finalValue;
     }
 
     //endregion

@@ -1,6 +1,7 @@
 package classes.Ai.BitBoards;
 
 import classes.Ai.AI.AiNode;
+import classes.Ai.Evaluation.BoardState;
 
 import java.util.*;
 
@@ -32,6 +33,16 @@ public class BitBoardMoves {
         OCCUPIED = mergeFullBitBoard(new ArrayList<>(){{add(wP); add(wN); add(wB); add(wR); add(wQ); add(wK);
             add(bP); add(bN); add(bB); add(bR); add(bQ); add(bK);}});
         EMPTY = ~OCCUPIED;
+
+        BoardState boardBeforeMoves = new BoardState();
+        boardBeforeMoves.setWhiteTurn(maxNeeded);
+        boardBeforeMoves.setPawnNum(maxNeeded ? getPawnNum(wP) : getPawnNum(bP));
+        boardBeforeMoves.setKnightNum(maxNeeded ? getKnightNum(wN) : getKnightNum(bN));
+        boardBeforeMoves.setBishopNum(maxNeeded ? getBishopNum(wB) : getBishopNum(bB));
+        boardBeforeMoves.setRookNum(maxNeeded ? getRookNum(wR) : getRookNum(bR));
+        boardBeforeMoves.setQueenNum(maxNeeded ? getQueenNum(wQ) : getQueenNum(bQ));
+
+
         String moves = pawnMoves(
                 maxNeeded, emPassantChance, wP,  wN,  wB,  wR,  wQ,  wK, bP,  bN,  bB,  bR,  bQ,  bK);
         moves += knightMoves(maxNeeded, wP,  wN,  wB,  wR,  wQ,  wK, bP,  bN,  bB,  bR,  bQ,  bK);
