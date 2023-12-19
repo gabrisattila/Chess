@@ -3,10 +3,7 @@ package classes.Ai.BitBoards;
 import classes.Game.I18N.ChessGameException;
 import lombok.*;
 
-import java.util.ArrayList;
-
 import static classes.Ai.FenConverter.*;
-import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Ai.BitBoards.BBVars.*;
 
@@ -14,87 +11,80 @@ import static classes.Ai.BitBoards.BBVars.*;
 @Setter
 public class BitBoards {
 
-    //region Fields
-
-    //endregion
-
-
-    //region Methods
-
     //region Fen To BitBoards
-
 
     public static void setUpBitBoard(String fen){
         String bbFen = FenToBitBoardFen(fen);
-        String pieces = bbFen.split(" ")[0];
-        for (char c : englishPieceLetters) {
-            switch (c){
-                case 'p' -> blackPawn = FenPiecesToBitBoard(pieces, c);
-                case 'n' -> blackKnight = FenPiecesToBitBoard(pieces, c);
-                case 'b' -> blackBishop = FenPiecesToBitBoard(pieces, c);
-                case 'r' -> blackRook = FenPiecesToBitBoard(pieces, c);
-                case 'q' -> blackQueen = FenPiecesToBitBoard(pieces, c);
-                case 'k' -> blackKing = FenPiecesToBitBoard(pieces, c);
-                case 'P' -> whitePawn = FenPiecesToBitBoard(pieces, c);
-                case 'N' -> whiteKnight = FenPiecesToBitBoard(pieces, c);
-                case 'B' -> whiteBishop = FenPiecesToBitBoard(pieces, c);
-                case 'R' -> whiteRook = FenPiecesToBitBoard(pieces, c);
-                case 'Q' -> whiteQueen = FenPiecesToBitBoard(pieces, c);
-                case 'K' -> whiteKing = FenPiecesToBitBoard(pieces, c);
+        String[] fenParts = bbFen.split(" ");
+        String pieces = fenParts[0];
+        sideToMove = "w".equals(fenParts[1]) ? 1 : 0;
+        int bitCounter = 63;
+        for (int i = 0; i < pieces.length(); i++) {
+            if (Character.isLetter(pieces.charAt(i))){
+                bitBoards[getIndex(pieces.charAt(i))] = setBit(bitBoards[getIndex(pieces.charAt(i))], bitCounter);
+                bitCounter--;
+            } else if (Character.isDigit(pieces.charAt(i))){
+                bitCounter -= Character.getNumericValue(pieces.charAt(i));
             }
         }
+
+        parseCastlingRights(fenParts[2]);
+
+        emPassantBB = emPassantToBitBoardEmPassant(emPassantChance);
+
     }
 
-    /**
-     * @param Fen always should be the first part of a BitBoardFen String
-     * @param piece the type of BitBoards we want to create
-     * @return the BitBoards
-     */
-    public static long FenPiecesToBitBoard(String Fen, char piece){
-        long bitBoard = 0;
-
-        //This will be out shifter or we can say cursor
-        int Field = 63;
-
-        long actualBit;
-        for (int i = 0; i < Fen.length(); i++) {
-            actualBit = 1L << Field;
-            switch (Fen.charAt(i)) {
-                case '/':
-                    Field += 1;
-                    break;
-                case '1':
-                    break;
-                case '2':
-                    Field -= 1;
-                    break;
-                case '3':
-                    Field -= 2;
-                    break;
-                case '4':
-                    Field -= 3;
-                    break;
-                case '5':
-                    Field -= 4;
-                    break;
-                case '6':
-                    Field -= 5;
-                    break;
-                case '7':
-                    Field -= 6;
-                    break;
-                case '8':
-                    Field -= 7;
-                    break;
-                default:
-                    if (Fen.charAt(i) == piece) {
-                        bitBoard |= actualBit;
-                    }
+    public static int getIndex(char piece){
+        switch (piece){
+            case 'P' -> {
+                return wPawnI;
             }
-            Field--;
+            case 'N' -> {
+                return wKnightI;
+            }
+            case 'B' -> {
+                return wBishopI;
+            }
+            case 'R' -> {
+                return wRookI;
+            }
+            case 'Q' -> {
+                return wQueenI;
+            }
+            case 'K' -> {
+                return wKingI;
+            }
+            case 'p' -> {
+                return bPawnI;
+            }
+            case 'n' -> {
+                return bKnightI;
+            }
+            case 'b' -> {
+                return bBishopI;
+            }
+            case 'r' -> {
+                return bRookI;
+            }
+            case 'q' -> {
+                return bQueenI;
+            }
+            case 'k' -> {
+                return bKingI;
+            }
         }
+        return -1;
+    }
 
-        return bitBoard;
+    private static void parseCastlingRights(String castling){
+        for (int i = 0; i < 4; i++) {
+            switch (castling.charAt(i)){
+                case 'K' -> castle |= wK;
+                case 'Q' -> castle |= wQ;
+                case 'k' -> castle |= bK;
+                case 'q' -> castle |= bQ;
+            }
+        }
     }
 
     public static int emPassantToBitBoardEmPassant(String emPassantChance){
@@ -164,7 +154,7 @@ public class BitBoards {
         printBitBoard(forWhite, king, 'K');
     }
 
-    private static void printBitBoard(boolean forWhite, long piece, char type) {
+    public static void printBitBoard(boolean forWhite, long piece, char type) {
         System.out.println((forWhite ? "White: " : "Black: ") + type);
         System.out.println(BitBoards.toString(piece));
     }
@@ -211,8 +201,7 @@ public class BitBoards {
 
     //endregion
 
-
-    //region Moves
+    //region Methods
 
     public static String toString(long bitBoard){
         StringBuilder sb = new StringBuilder();
@@ -246,8 +235,6 @@ public class BitBoards {
             throw new ChessGameException("Index isn't in the range of bitBoard");
         return (getBit(bitBoard, index) == 0 ? bitBoard & ~(1L << index) : 0);
     }
-
-    //endregion
 
     //endregion
 

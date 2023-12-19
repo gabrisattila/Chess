@@ -44,6 +44,10 @@ public enum PieceType {
         return "";
     }
 
+    public char toChar(boolean forWhite){
+        return toString(forWhite).charAt(0);
+    }
+
     public char toLowerCase(){
         switch (this){
             case P -> {

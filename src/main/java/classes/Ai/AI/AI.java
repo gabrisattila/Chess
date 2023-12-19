@@ -84,11 +84,11 @@ public class AI extends Thread {
         convertOneBoardToAnother(getViewBoard(), getBoard());
         GameOverDecision(getBoard(), Double.MIN_VALUE);
         if (!gameFinished()) {
-            MINIMAX();
+//            MINIMAX();
         }
     }
 
-    private void MINIMAX(){
+    /*private void MINIMAX(){
         nodeNum = 0;
 
         setUpBitBoard(BoardToFen(getBoard()));
@@ -116,7 +116,7 @@ public class AI extends Thread {
         putToAlreadyWatchedZKeys(bestChild.getZobristKey(), bestChild);
         FenToBoard(nodeAndItsFen.getSecond(), getBoard());
 
-    }
+    }*/
 
     private double miniMax(
             AiNode starterPos, int depth, boolean maxNeeded, double alpha, double beta,

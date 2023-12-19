@@ -12,6 +12,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Date;
 
+import static classes.Ai.BitBoards.BitBoardMoves.fillBaseBitBoardPossibilities;
 import static classes.Ai.FenConverter.*;
 import static classes.GUI.Frame.Window.*;
 import static classes.GUI.FrameParts.GameBoard.*;
@@ -277,6 +278,7 @@ public class ChessButton extends JButton {
             labelTexting(!oneAi || !whiteAi);
             initialization();
             Zobrist.fillZobristTable();
+            fillBaseBitBoardPossibilities();
         }
 
         public static void saveBoard(IBoard board) {

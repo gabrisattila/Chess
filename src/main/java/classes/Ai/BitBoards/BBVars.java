@@ -10,34 +10,83 @@ import static classes.Game.I18N.VARS.MUTABLE.whiteDown;
 
 public class BBVars {
 
-    //region Base BitBoards
+    //region Base Piece BitBoards
 
-    public static long whitePawn = 0L;
+    //One for each piece
+    public static final long[] bitBoards = new long[12];
 
-    public static long whiteKnight = 0L;
+    public static final int wPawnI = 0;
 
-    public static long whiteBishop = 0L;
+    public static final int wKnightI = 1;
 
-    public static long whiteRook = 0L;
+    public static final int wBishopI = 2;
 
-    public static long whiteQueen = 0L;
+    public static final int wRookI = 3;
 
-    public static long whiteKing = 0L;
+    public static final int wQueenI = 4;
 
+    public static final int wKingI = 5;
 
-    public static long blackPawn = 0L;
+    public static final int bPawnI = 6;
 
-    public static long blackKnight = 0L;
+    public static final int bKnightI = 7;
 
-    public static long blackBishop = 0L;
+    public static final int bBishopI = 8;
 
-    public static long blackRook = 0L;
+    public static final int bRookI = 9;
 
-    public static long blackQueen = 0L;
+    public static final int bQueenI = 10;
 
-    public static long blackKing = 0L;
+    public static final int bKingI = 11;
+
+    public static final int[] pieceIndexes = new int[]{
+            wPawnI, wKnightI, wBishopI, wRookI, wQueenI, wKingI, bPawnI, bKnightI, bBishopI, bRookI, bQueenI, bKingI
+    };
+
+    //First we always generate all the possible moves from all squares
+    public static long[][] pawnPossibilityTable = new long[2][64];
+
+    public static long[] knightPossibilityTable = new long[64];
+
+    public static long[] bishopPossibilityTable = new long[64];
+
+    public static long[] rookPossibilityTable = new long[64];
+
+    public static long[] queenPossibilityTable = new long[64];
+
+    public static long[] kingPossibilityTable = new long[64];
+
+    public static long[][] basePossibilities = new long[12][64];
 
     //endregion
+
+    public static final long[] occupancies = new long[3];
+
+    //We use it like white to play but more useful here in int 1 = white, 0 = black
+    public static int sideToMove;
+
+
+    /**
+     *
+     0001    1  white king castle to the king side
+     0010    2  white king castle to the queen side
+     0100    4  black king castle to the king side
+     1000    8  black king castle to the queen side
+     */
+    public static final int wK = 1;
+
+    public static final int wQ = 2;
+
+    public static final int bK = 3;
+
+    public static final int bQ = 4;
+
+    /**
+     * In this we store castle options
+     */
+    public static int castle = 0;
+
+    public static int emPassantBB = -1;
     
     //region Helper Boards
 
@@ -51,7 +100,7 @@ public class BBVars {
 
     public static final long ROW_1 = whiteDown ? 255L : -72057594037927936L;
 
-    public static final long ROW_8 = whiteDown ? -72057594037927936L : 255L;
+    public static final long ROW_2 = whiteDown ? 0x000000000000FF00L : 0x00FF000000000000L;
 
     public static final long ROW_3 = whiteDown ? 0x00000000000000FFL : 0x000000FF00000000L;
 
@@ -60,6 +109,10 @@ public class BBVars {
     public static final long ROW_5 = whiteDown ? 1095216660480L : 4278190080L;
 
     public static final long ROW_6 = whiteDown ? 0x000000FF00000000L : 0x00000000000000FFL;
+
+    public static final long ROW_7 = whiteDown ? 1095216660480L : 4278190080L;
+
+    public static final long ROW_8 = whiteDown ? -72057594037927936L : 255L;
 
     public static final Integer[] corners = new Integer[]{0, 7, 56, 63};
 
@@ -147,8 +200,8 @@ public class BBVars {
     //endregion
 
     public static final ArrayList<Character> englishPieceLetters = new ArrayList<>(){{
-        add('p'); add('n'); add('b'); add('r'); add('q'); add('k');
         add('P'); add('N'); add('B'); add('R'); add('Q'); add('K');
+        add('p'); add('n'); add('b'); add('r'); add('q'); add('k');
     }};
 
     public static final String[] squaresStrings = new String[]{
