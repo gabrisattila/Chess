@@ -136,5 +136,47 @@ public enum PieceType {
         return null;
     }
 
+    public static String getProperPieceImage(char a){
+        switch (a){
+            case 'P' -> {
+                return pieceImagesForLog[0];
+            }
+            case 'N' -> {
+                return pieceImagesForLog[1];
+            }
+            case 'B' -> {
+                return pieceImagesForLog[2];
+            }
+            case 'R' -> {
+                return pieceImagesForLog[3];
+            }
+            case 'Q' -> {
+                return pieceImagesForLog[4];
+            }
+            case 'K' -> {
+                return pieceImagesForLog[5];
+            }
+            case 'p' -> {
+                return pieceImagesForLog[6];
+            }
+            case 'n' -> {
+                return pieceImagesForLog[7];
+            }
+            case 'b' -> {
+                return pieceImagesForLog[8];
+            }
+            case 'r' -> {
+                return pieceImagesForLog[9];
+            }
+            case 'q' -> {
+                return pieceImagesForLog[10];
+            }
+            case 'k' -> {
+                return pieceImagesForLog[11];
+            }
+        }
+        return "";
+    }
+
 
 }

@@ -560,6 +560,9 @@ public class VARS {
 
         //endregion
 
+        //First white ones after black ones
+        public static final String[] pieceImagesForLog = new String[]{"♙", "♘", "♗", "♖", "♕", "♔", "♟︎", "♞", "♝", "♜", "♛", "♚"};
+
     }
 
     public static class MUTABLE {

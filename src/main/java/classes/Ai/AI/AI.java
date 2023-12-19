@@ -13,7 +13,7 @@ import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.Model.Logic.EDT.*;
 import static classes.Ai.BitBoards.BBVars.*;
-import static classes.Ai.BitBoards.BitBoardMoves.*;
+import static classes.Ai.BitBoards.BitBoardMoves_.*;
 import static classes.Ai.BitBoards.BitBoards.*;
 import static classes.Game.Model.Structure.Board.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;

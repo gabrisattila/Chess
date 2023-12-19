@@ -1,5 +1,6 @@
 package classes.Ai.BitBoards;
 
+import classes.Game.I18N.ChessGameException;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -22,12 +23,6 @@ public class BitBoards {
 
     //region Fen To BitBoards
 
-    public static void setUpStarterBitBoards(){
-//        whiteDown = false;
-        String starterFen = whiteDown ? usualFens.get("whiteDownStarter") : usualFens.get("blackDownStarter");
-        setUpBitBoard(starterFen);
-        
-    }
 
     public static void setUpBitBoard(String fen){
         String bbFen = FenToBitBoardFen(fen);
@@ -219,14 +214,6 @@ public class BitBoards {
 
     //region Moves
 
-    public static long mergeFullBitBoard(ArrayList<Long> pieceBoards){
-        long fullBoard = 0L;
-        for (long board : pieceBoards) {
-            fullBoard |= board;
-        }
-        return fullBoard;
-    }
-
     public static String toString(long bitBoard){
         StringBuilder sb = new StringBuilder();
         for (int i = 63; i >= 0; i--) {
@@ -240,6 +227,24 @@ public class BitBoards {
             }
         }
         return sb.toString();
+    }
+
+    public static long getBit(long bitBoard, int index){
+        if (index < 0 || index > 63)
+            throw new ChessGameException("Index isn't in the range of bitBoard");
+        return bitBoard & 1L << index;
+    }
+
+    public static long setBit(long bitBoard, int index){
+        if (index < 0 || index > 63)
+            throw new ChessGameException("Index isn't in the range of bitBoard");
+        return bitBoard | 1L << index;
+    }
+
+    public static long removeBit(long bitBoard, int index){
+        if (index < 0 || index > 63)
+            throw new ChessGameException("Index isn't in the range of bitBoard");
+        return (getBit(bitBoard, index) == 0 ? bitBoard ^ 1L << index : 0);
     }
 
     //endregion

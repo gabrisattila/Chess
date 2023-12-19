@@ -9,6 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import static classes.GUI.Frame.Window.*;
+import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 
@@ -56,7 +57,7 @@ public class Logger extends JTextArea {
             }
 
             if (!move.isItIsCastle()){
-                step += englishToHungarianPieceLetters.get(move.getWhat().getType().toString(move.getWhat().isWhite()).charAt(0));
+                step += getProperPieceImage(move.getWhat().getType().toString(move.getWhat().isWhite()).charAt(0));
                 step += " ";
                 step += move.getFrom().toLoggerString();
                 step += " - ";
@@ -132,7 +133,7 @@ public class Logger extends JTextArea {
         char rank = (char) ('8' - row);
         String step = firstLoc ? " " : "";
         step += firstLoc ? (!whiteToPlay ? (stepNumber + ". ") : (stepNumber < 10 ? "    " : "     ")) : "";
-        step += pieceHere == 0 ? "" : englishToHungarianPieceLetters.get(pieceHere);
+        step += pieceHere == 0 ? "" : getProperPieceImage(pieceHere);
         step += firstLoc ? " " : "";
         step += file;
         step += rank;
