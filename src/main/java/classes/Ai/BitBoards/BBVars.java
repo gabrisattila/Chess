@@ -13,7 +13,7 @@ public class BBVars {
     //region Base Piece BitBoards
 
     //One for each piece
-    public static final long[] bitBoards = new long[12];
+    public static long[] bitBoards = new long[12];
 
     public static final int wPawnI = 0;
 
@@ -66,8 +66,7 @@ public class BBVars {
     public static int sideToMove;
 
 
-    /**
-     *
+    /** Castling vars explanation
      0001    1  white king castle to the king side
      0010    2  white king castle to the queen side
      0100    4  black king castle to the king side
@@ -84,9 +83,21 @@ public class BBVars {
     /**
      * In this we store castle options
      */
-    public static int castle = 0;
+    public static int castle = 1; // all castles enabled
 
-    public static int emPassantBB = -1;
+    public static int bbEmPassant = -1;
+
+    //For Undo move
+    public static long[] bitBoardsCopy = new long[12];
+
+    public static int castleCopy = 0;
+
+    public static int bbEmPassantCopy = -1;
+
+
+    public static int[] movesInATurn = new int[256]; // This is the max number of possibilities in a turn.
+
+    public static int moveCount = 0;
     
     //region Helper Boards
 

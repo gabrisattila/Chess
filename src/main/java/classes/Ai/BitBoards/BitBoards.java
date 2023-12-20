@@ -17,7 +17,7 @@ public class BitBoards {
         String bbFen = FenToBitBoardFen(fen);
         String[] fenParts = bbFen.split(" ");
         String pieces = fenParts[0];
-        sideToMove = "w".equals(fenParts[1]) ? 1 : 0;
+        whiteToPlay = "w".equals(fenParts[1]);
         int bitCounter = 63;
         for (int i = 0; i < pieces.length(); i++) {
             if (Character.isLetter(pieces.charAt(i))){
@@ -30,7 +30,7 @@ public class BitBoards {
 
         parseCastlingRights(fenParts[2]);
 
-        emPassantBB = emPassantToBitBoardEmPassant(emPassantChance);
+        BBVars.bbEmPassant = emPassantToBitBoardEmPassant(emPassantChance);
 
     }
 

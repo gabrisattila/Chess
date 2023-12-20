@@ -1,14 +1,19 @@
 package classes.Ai.BitBoards;
 
+import classes.Main;
 import lombok.*;
+
+import java.util.Arrays;
 
 import static classes.Ai.BitBoards.BBVars.*;
 import static classes.Ai.BitBoards.BitBoards.*;
-import static classes.Game.I18N.VARS.MUTABLE.whiteDown;
+import static classes.Game.I18N.VARS.MUTABLE.*;
 
 @Getter
 @Setter
 public class BitBoardMoves {
+
+    //region Base Possibilities
 
     public static long pawnPossibilities(int forWhite, int from){
         long possibility = 0L;
@@ -114,4 +119,328 @@ public class BitBoardMoves {
         basePossibilities[11] = kingPossibilityTable;
 
     }
+
+    public static long getPawnBoard(boolean forWhite){
+        return bitBoards[forWhite ? wPawnI : bPawnI];
+    }
+
+    public static long getKnightBoard(boolean forWhite){
+        return bitBoards[forWhite ? wKnightI : bKnightI];
+    }
+
+    public static long getBishopBoard(boolean forWhite){
+        return bitBoards[forWhite ? wBishopI : bBishopI];
+    }
+
+    public static long getRookBoard(boolean forWhite){
+        return bitBoards[forWhite ? wRookI : bRookI];
+    }
+
+    public static long getQueenBoard(boolean forWhite){
+        return bitBoards[forWhite ? wQueenI : bQueenI];
+    }
+
+    public static long getKingBoard(boolean forWhite){
+        return bitBoards[forWhite ? wKingI : bKingI];
+    }
+
+    public static int getSide(boolean forWhite){
+        return forWhite ? 1 : 0;
+    }
+
+    //endregion
+
+    public static boolean isSquareAttacked(boolean forWhite, int squareIndex){
+        return
+                (pawnPossibilityTable[getSide(forWhite)][squareIndex] & getPawnBoard(forWhite)) != 0 ||
+                (knightPossibilityTable[squareIndex] & getKnightBoard(forWhite)) != 0 ||
+                (bishopPossibilityTable[squareIndex] & getBishopBoard(forWhite)) != 0 ||
+                (rookPossibilityTable[squareIndex] & getRookBoard(forWhite)) != 0 ||
+                (queenPossibilityTable[squareIndex] & getQueenBoard(forWhite)) != 0 ||
+                (kingPossibilityTable[squareIndex] & getKingBoard(forWhite)) != 0;
+    }
+
+    /*
+          binary move bits
+
+    0000 0000 0000 0000 0011 1111    source square       Because we can represent 63 squares in 6 bits
+    0000 0000 0000 1111 1100 0000    target square       ------------------- || ----------------------
+    0000 0000 1111 0000 0000 0000    piece               Because we can represent 12 piece whitePawn (0000) - blackKing 1111
+    0000 1111 0000 0000 0000 0000    promoted piece      ----------------------- || ----------------------
+    0001 0000 0000 0000 0000 0000    capture flag        Is move was capture
+    0100 0000 0000 0000 0000 0000    emPassant flag      Is move was emPassant
+    1000 0000 0000 0000 0000 0000    castling flag       Is move was castling
+
+    Decoding helpers in order:
+    0x3f
+    0xfc0
+    0xf000
+    0xf0000
+    0x100000
+    0x200000
+    0x400000
+    0x800000
+*/
+
+    //region Create And Decode Move
+
+    private static int createMove(int from, int to, int what, int promotion,
+                                  boolean wasCapture, boolean wasEmPassant, boolean wasCastling){
+
+        return
+                (from) |
+                (to << 6) |
+                (what << 12) |
+                (promotion << 16) |
+                (wasCapture ? 1 << 20 : 0) |
+                (wasEmPassant ? 1 << 22 : 0) |
+                (wasCastling ? 1 << 23 : 0);
+    }
+
+    private static int getFrom(int move){
+        return move & 0x3f;
+    }
+
+    private static int getTo(int move){
+        return move & 0xfc0;
+    }
+
+    private static int getWhat(int move){
+        return move & 0xf000;
+    }
+
+    private static int getPromotion(int move){
+        return move & 0xf0000;
+    }
+
+    private static boolean isCapture(int move){
+        return (move & 0x100000) != 0;
+    }
+
+    private static boolean isEmPassant(int move){
+        return (move & 0x400000) != 0;
+    }
+
+    private static boolean isCastling(int move){
+        return (move & 0x800000) != 0;
+    }
+
+    public static void addMove(int move){
+        movesInATurn[moveCount] = move;
+        moveCount++;
+    }
+
+    //endregion
+
+
+    //region Make and Undo Moves
+
+    public static void copyPosition(){
+        bitBoardsCopy = Arrays.copyOf(bitBoards, bitBoards.length);
+        castleCopy = castle;
+        bbEmPassantCopy = bbEmPassant;
+        whiteToPlay = !whiteToPlay;
+    }
+
+    public static void undoMove(){
+        bitBoards = bitBoardsCopy;
+        castle = castleCopy;
+        bbEmPassant = bbEmPassantCopy;
+        whiteToPlay = !whiteToPlay;
+    }
+
+    /**
+     * @param move the move we want to make
+     * @return true if after the move our king isn't in check - it's a legal move
+     */
+    public static boolean makeMove(int move){
+        copyPosition();
+        int from = getFrom(move);
+        int to = getTo(move);
+        int what = getWhat(move);
+        int promotion = getPromotion(move);
+        boolean capture = isCapture(move);
+        boolean emPassant = isEmPassant(move);
+        boolean castling = isCastling(move);
+
+        bitBoards[what] = removeBit(bitBoards[what], from);
+        bitBoards[what] = setBit(bitBoards[what], to);
+
+        //move is capture
+        if (capture) {
+            for (int
+                 piece = whiteToPlay ? bPawnI : wPawnI;
+                 piece <= (whiteToPlay ? bKingI : wKingI);
+                 piece++)
+            {
+                    if (getBit(bitBoards[piece], to) != 0) {
+                        removeBit(bitBoardsCopy[piece], to);
+                        break;
+                    }
+            }
+        }
+
+        //move is pawn promotion
+        if (promotion != 0){
+            for (int
+                 piece = whiteToPlay ? bKnightI : wKnightI;
+                 piece <= (whiteToPlay ? bQueenI : wQueenI);
+                 piece++)
+            {
+                if (getBit(bitBoards[piece], to) != 0){
+                    removeBit(bitBoards[piece], to);
+                    break;
+                }
+            }
+        }
+
+        //move is emPassant action
+        if (emPassant) {
+            removeBit(getPawnBoard(!whiteToPlay), to + (whiteDown ? (whiteToPlay ? -8 : 8) : (whiteToPlay ? 8 : -8)));
+        }
+
+        //move is castling action
+        if (castling) {
+            int rookFrom = -1;
+            int rookTo = -1;
+            if (to == 1){ // whiteDown wKC
+                rookFrom = 0;
+                rookTo = 2;
+                castle &= wK;
+            } else if (to == 5) { // whiteDown wQC
+                rookFrom = 7;
+                rookTo = 4;
+                castle &= wQ;
+            } else if (to == 57) { // whiteDown bKC
+                rookFrom = 56;
+                rookTo = 58;
+                castle &= bK;
+            } else if (to == 61) { // whiteDown bQC
+                rookFrom = 63;
+                rookTo = 60;
+                castle &= bQ;
+            } else if (to == 62) { // !whiteDown wKC
+                rookFrom = 63;
+                rookTo = 61;
+                castle &= wK;
+            } else if (to == 58) { // !whiteDown wQC
+                rookFrom = 56;
+                rookTo = 59;
+                castle &= wQ;
+            } else if (to == 6) { // !whiteDown bKC
+                rookFrom = 7;
+                rookTo = 5;
+                castle &= bK;
+            } else if (to == 2) { // !whiteDown bQC
+                rookFrom = 0;
+                rookTo = 3;
+                castle &= bQ;
+            }
+            removeBit(getRookBoard(whiteToPlay), rookFrom);
+            setBit(getRookBoard(whiteToPlay), rookTo);
+        }
+
+        whiteToPlay = !whiteToPlay;
+
+        if (isSquareAttacked(!whiteToPlay, Long.numberOfLeadingZeros(getKingBoard(!whiteToPlay)))){
+            undoMove();
+            return false;
+        }else
+            return true;
+    }
+
+    public static void generateMoves(){
+        moveCount = 0;
+
+        HITTABLE_BY_BLACK = getPawnBoard(true) | getKnightBoard(true) | getBishopBoard(true) | getRookBoard(true) | getQueenBoard(true);
+        HITTABLE_BY_WHITE = getPawnBoard(false) | getKnightBoard(false) | getBishopBoard(false) | getRookBoard(false) | getQueenBoard(false);
+        OCCUPIED = HITTABLE_BY_BLACK | HITTABLE_BY_WHITE | getKingBoard(true) | getKingBoard(false);
+        EMPTY = ~OCCUPIED;
+        
+        int from, to;
+        long currentBitBoardCopy, possibility = 0;
+        long shouldBePartOfMove = 0;
+        for (int piece : pieceIndexes) {
+            currentBitBoardCopy = bitBoards[piece];
+            while (currentBitBoardCopy != 0){
+                from = 63 - Long.numberOfLeadingZeros(currentBitBoardCopy);
+                switch (piece){
+                    case wPawnI -> {
+                        possibility = pawnPossibilityTable[1][from];
+                    }
+                    case bPawnI -> {
+                        possibility = pawnPossibilityTable[0][from];
+                    }
+                    case wKnightI -> {
+                        possibility = knightPossibilityTable[from];
+                        shouldBePartOfMove = HITTABLE_BY_WHITE | EMPTY;
+                    } 
+                    case bKnightI -> {
+                        possibility = knightPossibilityTable[from];
+                        shouldBePartOfMove = HITTABLE_BY_BLACK | EMPTY;
+                    }
+                    case wBishopI -> {
+                        possibility = bishopPossibilityTable[from];
+                        shouldBePartOfMove = HITTABLE_BY_WHITE | EMPTY;
+                    }
+                    case bBishopI -> {
+                        possibility = bishopPossibilityTable[from];
+                        shouldBePartOfMove = HITTABLE_BY_BLACK | EMPTY;
+                    }
+                    case wRookI -> {
+                        possibility = rookPossibilityTable[from];
+                        shouldBePartOfMove = HITTABLE_BY_WHITE | EMPTY;
+                    }
+                    case bRookI -> {
+                        possibility = rookPossibilityTable[from];
+                        shouldBePartOfMove = HITTABLE_BY_BLACK | EMPTY;
+                    }
+                    case wQueenI -> {
+                        possibility = queenPossibilityTable[from];
+                        shouldBePartOfMove = HITTABLE_BY_WHITE | EMPTY;
+                    }
+                    case bQueenI -> {
+                        possibility = queenPossibilityTable[from];
+                        shouldBePartOfMove = HITTABLE_BY_BLACK | EMPTY;
+                    }
+                    case wKingI -> {
+                        possibility = kingPossibilityTable[from];
+                        shouldBePartOfMove = HITTABLE_BY_WHITE | EMPTY;
+                    }
+                    case bKingI -> {
+                        possibility = kingPossibilityTable[from];
+                        shouldBePartOfMove = HITTABLE_BY_BLACK | EMPTY;
+                    }
+                }
+                while (possibility != 0){
+                    to = 63 - Long.numberOfTrailingZeros(possibility);
+                    if (piece == wPawnI || piece == bPawnI){
+                        if (8 == Math.abs(from - to)){
+                            shouldBePartOfMove = EMPTY;
+                        } else if (16 == Math.abs(from - to)) {
+                            shouldBePartOfMove = EMPTY & (piece == wPawnI ? ROW_4 & ROW_3 : ROW_5 & ROW_6);
+                        }
+                    }
+
+                    if ((1L << to & shouldBePartOfMove) != 0) {
+                        addMove(
+                                createMove(from, to, piece, 0,
+                                        (to & (wKingI <= piece ? HITTABLE_BY_WHITE : HITTABLE_BY_BLACK)) != 0,
+                                        (to & EMPTY & 1L << bbEmPassant) != 0 && (piece == wPawnI || piece == bPawnI),
+                                        (piece == wKingI || piece == bKingI) && 2 == Math.abs(from - to)
+                                        )
+                        );
+                    }
+                    //TODO Megírni a emPassant aut-ot, a promotiont, és a castling-et
+                    possibility = removeBit(possibility, to);
+                }
+                currentBitBoardCopy = removeBit(currentBitBoardCopy, from);
+            }
+        }
+    }
+
+    //endregion
+
+
+
 }
