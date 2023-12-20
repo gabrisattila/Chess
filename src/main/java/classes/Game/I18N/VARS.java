@@ -513,6 +513,7 @@ public class VARS {
             put("4mpOn6depth", "8/8/8/8/K1P4r/8/3p4/3k4 b ---- - 1 1");
             put("test1WhiteDown", "8/8/8/5K2/3P2R1/2b5/1p2k3/8 b ---- - 1 1");
             put("test2WhiteDown", "8/8/8/8/3K4/2P5/1b6/3k4 b ---- - 1 1");
+            put("kingSpanHelp", "4ppp1/3pp1pp/4ppp1/8/8/8/8/8 w ---- - 1 1");
 
             //endregion
 
