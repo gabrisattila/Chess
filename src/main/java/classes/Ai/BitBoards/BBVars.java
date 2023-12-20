@@ -76,9 +76,9 @@ public class BBVars {
 
     public static final int wQ = 2;
 
-    public static final int bK = 3;
+    public static final int bK = 4;
 
-    public static final int bQ = 4;
+    public static final int bQ = 8;
 
     /**
      * In this we store castle options
@@ -93,6 +93,8 @@ public class BBVars {
     public static int castleCopy = 0;
 
     public static int bbEmPassantCopy = -1;
+
+    public static boolean whiteToPlayCopy = false;
 
 
     public static int[] movesInATurn = new int[256]; // This is the max number of possibilities in a turn.

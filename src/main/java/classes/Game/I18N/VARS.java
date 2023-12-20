@@ -436,10 +436,9 @@ public class VARS {
 
             //region Castle Case
 
-            put("whiteDownOnlyKingsAndRooks", "R3K2R/8/8/8/8/8/8/r3k2r w KQkq - 1 0");
             put("whiteUpOnlyKingsAndRooks", "r2k3r/8/8/8/8/8/8/R2K3R w KQkq - 1 0");
             put("whiteDownEachCanCastleBothSides", "R3K2R/8/8/8/8/8/8/r3k2r w KQkq - 1 0");
-            put("whiteDownBlackCanCastleOneSide", "R3K3/8/8/8/8/8/8/4k2r w -Qk- - 1 0");
+            put("whiteDownBothCanCastleOneSide", "R3K3/8/8/8/8/8/8/4k2r w -Qk- - 1 0");
             put("whiteDownBlackCanCastleNoSide", "R3KR2/8/8/8/8/8/8/4k2r b -Qk- - 1 1");
             put("whiteDownBlackCanCastleNoSideBecauseItIsInCheck", "R3K3/4R3/8/8/8/8/8/4k2r b -Qk- - 1 1");
 

@@ -168,14 +168,14 @@ public class BitBoardMoves {
 
     //endregion
 
-    public static boolean isSquareAttacked(boolean forWhite, int squareIndex){
+    public static boolean isSquareAttacked(boolean attackerColor, int squareIndex){
         return
-                (pawnPossibilityTable[getSide(forWhite)][squareIndex] & getPawnBoard(forWhite)) != 0 ||
-                (knightPossibilityTable[squareIndex] & getKnightBoard(forWhite)) != 0 ||
-                (bishopPossibilityTable[squareIndex] & getBishopBoard(forWhite)) != 0 ||
-                (rookPossibilityTable[squareIndex] & getRookBoard(forWhite)) != 0 ||
-                (queenPossibilityTable[squareIndex] & getQueenBoard(forWhite)) != 0 ||
-                (kingPossibilityTable[squareIndex] & getKingBoard(forWhite)) != 0;
+                (pawnPossibilityTable[getSide(attackerColor)][squareIndex] & getPawnBoard(attackerColor)) != 0 ||
+                (knightPossibilityTable[squareIndex] & getKnightBoard(attackerColor)) != 0 ||
+                (bishopPossibilities(squareIndex, false) & getBishopBoard(attackerColor)) != 0 ||
+                (rookPossibilities(squareIndex, false) & getRookBoard(attackerColor)) != 0 ||
+                (queenPossibilities(squareIndex, false) & getQueenBoard(attackerColor)) != 0 ||
+                (kingPossibilityTable[squareIndex] & getKingBoard(attackerColor)) != 0;
     }
 
     /*
@@ -223,7 +223,7 @@ public class BitBoardMoves {
         return (move & 0xfc0) >> 6;
     }
 
-    private static int getWhat(int move){
+    public static int getWhat(int move){
         return (move & 0xf000) >> 12;
     }
 
@@ -399,10 +399,10 @@ public class BitBoardMoves {
     }
 
     public static long calcKingPossibility(int piece, long possibility){
-        if ((castle & (piece == wKingI ? wK : bK)) != 0)
+        if ((castle & (piece == wKingI ? wK : bK)) == 0)
             possibility &= ~(1L << (63 - Long.numberOfLeadingZeros(bitBoards[piece]) - (whiteDown ? 2 : -2)));
 
-        if ((castle & (piece == wKingI ? wQ : bQ)) != 0)
+        if ((castle & (piece == wKingI ? wQ : bQ)) == 0)
             possibility &= ~(1L << (63 - Long.numberOfLeadingZeros(bitBoards[piece]) - (whiteDown ? -2 : 2)));
 
         return possibility;
@@ -416,14 +416,14 @@ public class BitBoardMoves {
         bitBoardsCopy = Arrays.copyOf(bitBoards, bitBoards.length);
         castleCopy = castle;
         bbEmPassantCopy = bbEmPassant;
-        whiteToPlay = !whiteToPlay;
+        whiteToPlayCopy = whiteToPlay;
     }
 
     public static void undoMove(){
         bitBoards = bitBoardsCopy;
         castle = castleCopy;
         bbEmPassant = bbEmPassantCopy;
-        whiteToPlay = !whiteToPlay;
+        whiteToPlay = whiteToPlayCopy;
     }
 
     /**
@@ -431,116 +431,122 @@ public class BitBoardMoves {
      * @return true if after the move our king isn't in check - it's a legal move
      */
     public static boolean makeMove(int move){
-        copyPosition();
-        int from = getFrom(move);
-        int to = getTo(move);
         int what = getWhat(move);
-        int promotion = getPromotion(move);
-        boolean capture = isCapture(move);
-        boolean emPassant = isEmPassant(move);
-        boolean castling = isCastling(move);
+        if ((what <= wKingI == whiteToPlay)){
+            copyPosition();
+            int from = getFrom(move);
+            int to = getTo(move);
+            int promotion = getPromotion(move);
+            boolean capture = isCapture(move);
+            boolean emPassant = isEmPassant(move);
+            boolean castling = isCastling(move);
 
-        bitBoards[what] = removeBit(bitBoards[what], from);
-        bitBoards[what] = setBit(bitBoards[what], to);
+            bitBoards[what] = removeBit(bitBoards[what], from);
+            bitBoards[what] = setBit(bitBoards[what], to);
 
-        //move is capture
-        if (capture) {
-            for (int
-                 piece = whiteToPlay ? bPawnI : wPawnI;
-                 piece <= (whiteToPlay ? bKingI : wKingI);
-                 piece++)
-            {
+            //move is capture
+            if (capture) {
+                for (int
+                     piece = whiteToPlay ? bPawnI : wPawnI;
+                     piece <= (whiteToPlay ? bKingI : wKingI);
+                     piece++)
+                {
                     if (getBit(bitBoards[piece], to) != 0) {
                         bitBoards[piece] = removeBit(bitBoards[piece], to);
                         break;
                     }
-            }
-        }
-
-        //move is pawn promotion
-        if (promotion != 0){
-            for (int
-                 piece = whiteToPlay ? bKnightI : wKnightI;
-                 piece <= (whiteToPlay ? bQueenI : wQueenI);
-                 piece++)
-            {
-                if (getBit(bitBoards[piece], to) != 0){
-                    bitBoards[piece] = removeBit(bitBoards[piece], to);
-                    break;
                 }
             }
-        }
 
-        //move is emPassant action
-        if (emPassant) {
-            bitBoards[whiteToPlay ? 6 : 0] =
-                    removeBit(getPawnBoard(!whiteToPlay), to + (whiteDown ? (whiteToPlay ? -8 : 8) : (whiteToPlay ? 8 : -8)));
-        }
-
-        //move is castling action
-        if (castling) {
-            int rookFrom = -1;
-            int rookTo = -1;
-            if (to == 1){ // whiteDown wKC
-                rookFrom = 0;
-                rookTo = 2;
-                castle &= wK;
-            } else if (to == 5) { // whiteDown wQC
-                rookFrom = 7;
-                rookTo = 4;
-                castle &= wQ;
-            } else if (to == 57) { // whiteDown bKC
-                rookFrom = 56;
-                rookTo = 58;
-                castle &= bK;
-            } else if (to == 61) { // whiteDown bQC
-                rookFrom = 63;
-                rookTo = 60;
-                castle &= bQ;
-            } else if (to == 62) { // !whiteDown wKC
-                rookFrom = 63;
-                rookTo = 61;
-                castle &= wK;
-            } else if (to == 58) { // !whiteDown wQC
-                rookFrom = 56;
-                rookTo = 59;
-                castle &= wQ;
-            } else if (to == 6) { // !whiteDown bKC
-                rookFrom = 7;
-                rookTo = 5;
-                castle &= bK;
-            } else if (to == 2) { // !whiteDown bQC
-                rookFrom = 0;
-                rookTo = 3;
-                castle &= bQ;
+            //move is pawn promotion
+            if (promotion != 0){
+                for (int
+                     piece = whiteToPlay ? bKnightI : wKnightI;
+                     piece <= (whiteToPlay ? bQueenI : wQueenI);
+                     piece++)
+                {
+                    if (getBit(bitBoards[piece], to) != 0){
+                        bitBoards[piece] = removeBit(bitBoards[piece], to);
+                        break;
+                    }
+                }
             }
-            bitBoards[whiteToPlay ? wRookI : bRookI] = removeBit(getRookBoard(whiteToPlay), rookFrom);
-            bitBoards[whiteToPlay ? wRookI : bRookI] = setBit(getRookBoard(whiteToPlay), rookTo);
-        }
 
-        if (what == wPawnI){
-            if (16 == Math.abs(from - to) && (
-                    (getPawnBoard(false) & (1L << to - 1 & ~(whiteDown ? COL_A : COL_H))) != 0 ||
-                    (getPawnBoard(false) & (1L << to + 1 & ~(whiteDown ? COL_H : COL_A))) != 0)
+            //move is emPassant action
+            if (emPassant) {
+                bitBoards[whiteToPlay ? bPawnI : wPawnI] =
+                        removeBit(getPawnBoard(!whiteToPlay), to + (whiteDown ? (whiteToPlay ? -8 : 8) : (whiteToPlay ? 8 : -8)));
+            }
+
+            //move is castling action
+            if (castling) {
+                int rookFrom = -1;
+                int rookTo = -1;
+                if (to == 1){ // whiteDown wKC
+                    rookFrom = 0;
+                    rookTo = 2;
+                    castle &= wK;
+                } else if (to == 5) { // whiteDown wQC
+                    rookFrom = 7;
+                    rookTo = 4;
+                    castle &= wQ;
+                } else if (to == 57) { // whiteDown bKC
+                    rookFrom = 56;
+                    rookTo = 58;
+                    castle &= bK;
+                } else if (to == 61) { // whiteDown bQC
+                    rookFrom = 63;
+                    rookTo = 60;
+                    castle &= bQ;
+                } else if (to == 62) { // !whiteDown wKC
+                    rookFrom = 63;
+                    rookTo = 61;
+                    castle &= wK;
+                } else if (to == 58) { // !whiteDown wQC
+                    rookFrom = 56;
+                    rookTo = 59;
+                    castle &= wQ;
+                } else if (to == 6) { // !whiteDown bKC
+                    rookFrom = 7;
+                    rookTo = 5;
+                    castle &= bK;
+                } else if (to == 2) { // !whiteDown bQC
+                    rookFrom = 0;
+                    rookTo = 3;
+                    castle &= bQ;
+                }
+                bitBoards[whiteToPlay ? wRookI : bRookI] = removeBit(getRookBoard(whiteToPlay), rookFrom);
+                bitBoards[whiteToPlay ? wRookI : bRookI] = setBit(getRookBoard(whiteToPlay), rookTo);
+            }
+
+            if (what == wPawnI){
+                if (16 == Math.abs(from - to) && (
+                        (getPawnBoard(false) & (1L << to - 1 & ~(whiteDown ? COL_A : COL_H))) != 0 ||
+                                (getPawnBoard(false) & (1L << to + 1 & ~(whiteDown ? COL_H : COL_A))) != 0)
+                ){
+                    bbEmPassant = whiteDown ? to - 8 : to + 8;
+                }
+            } else if (what == bPawnI) {
+                if (16 == Math.abs(from - to) && (
+                        (getPawnBoard(true) & (1L << to - 1 & ~(whiteDown ? COL_A : COL_H))) != 0 ||
+                                (getPawnBoard(true) & (1L << to + 1 & ~(whiteDown ? COL_H : COL_A))) != 0)
+                ){
+                    bbEmPassant = whiteDown ? to + 8 : to - 8;
+                }
+            }
+
+            whiteToPlay = !whiteToPlay;
+
+            if (
+                    getKingBoard(what == wRookI) != 0 &&
+                            isSquareAttacked(what != wRookI, 63 - Long.numberOfLeadingZeros(getKingBoard(what == wRookI)))
             ){
-                bbEmPassant = whiteDown ? to - 8 : to + 8;
-            }
-        } else if (what == bPawnI) {
-            if (16 == Math.abs(from - to) && (
-                    (getPawnBoard(true) & (1L << to - 1 & ~(whiteDown ? COL_A : COL_H))) != 0 ||
-                    (getPawnBoard(true) & (1L << to + 1 & ~(whiteDown ? COL_H : COL_A))) != 0)
-            ){
-                bbEmPassant = whiteDown ? to + 8 : to - 8;
-            }
+                undoMove();
+                return false;
+            }else
+                return true;
         }
-
-        whiteToPlay = !whiteToPlay;
-
-        if (getKingBoard(!whiteToPlay) != 0 && isSquareAttacked(!whiteToPlay, Long.numberOfLeadingZeros(getKingBoard(!whiteToPlay)))){
-            undoMove();
-            return false;
-        }else
-            return true;
+        return false;
     }
 
     //endregion
