@@ -537,9 +537,8 @@ public class BitBoardMoves {
 
             whiteToPlay = !whiteToPlay;
 
-            if (
-                    getKingBoard(what == wRookI) != 0 &&
-                            isSquareAttacked(what != wRookI, 63 - Long.numberOfLeadingZeros(getKingBoard(what == wRookI)))
+            if (getKingBoard(!whiteToPlay) != 0 &&
+                            isSquareAttacked(whiteToPlay, 63 - Long.numberOfLeadingZeros(getKingBoard(!whiteToPlay)))
             ){
                 undoMove();
                 return false;

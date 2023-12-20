@@ -13,16 +13,14 @@ public class Main {
 
     public static void main(String[] args) {
 //        new EDT();
-        setUpBitBoard(VARS.FINALS.testFens.get("whiteDownEachCanCastleBothSides"));
+        setUpBitBoard(VARS.FINALS.testFens.get("whiteDownWithOutPawns"));
         fillBaseBitBoardPossibilities();
         generateMoves();
         int move;
-        printFullBoard();
         for (int i = 0; i < moveCount; i++) {
             move = movesInATurn[i];
             copyPosition();
             System.out.println(moveToString(move));
-            whiteToPlay = false;
             if (makeMove(move)){
                 printFullBoard();
             }
