@@ -144,7 +144,15 @@ public class BitBoards {
 
         return fen.toString();
     }
-    
+
+    public static void printFullBoard(){
+        long full = 0;
+        for (int piece : pieceIndexes) {
+            full |= bitBoards[piece];
+        }
+        System.out.println(BitBoards.toString(full));
+    }
+
     private static void printBitBoards(boolean forWhite, long pawn, long knight, long bishop, long rook, long queen, long king) {
         printBitBoard(forWhite, pawn, 'P');
         printBitBoard(forWhite, knight, 'N');
@@ -226,14 +234,14 @@ public class BitBoards {
 
     public static long setBit(long bitBoard, int index){
         if (index < 0 || index > 63)
-            throw new ChessGameException("Index isn't in the range of bitBoard");
+            throw new ChessGameException("Index isn't in the range of bitBoard. Because the index is: " + index);
         return bitBoard | 1L << index;
     }
 
     public static long removeBit(long bitBoard, int index){
         if (index < 0 || index > 63)
             throw new ChessGameException("Index isn't in the range of bitBoard");
-        return (getBit(bitBoard, index) == 0 ? bitBoard & ~(1L << index) : 0);
+        return (getBit(bitBoard, index) == 0 ? 0 : bitBoard & ~(1L << index));
     }
 
     //endregion

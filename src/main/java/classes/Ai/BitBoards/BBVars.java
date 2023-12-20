@@ -83,7 +83,7 @@ public class BBVars {
     /**
      * In this we store castle options
      */
-    public static int castle = 1; // all castles enabled
+    public static int castle = 0; // all castles enabled
 
     public static int bbEmPassant = -1;
 
@@ -111,17 +111,17 @@ public class BBVars {
 
     public static final long ROW_1 = whiteDown ? 255L : -72057594037927936L;
 
-    public static final long ROW_2 = whiteDown ? 0x000000000000FF00L : 0x00FF000000000000L;
+    public static final long ROW_2 = whiteDown ? 65280 : 71776119061217280L;
 
-    public static final long ROW_3 = whiteDown ? 0x00000000000000FFL : 0x000000FF00000000L;
+    public static final long ROW_3 = whiteDown ? 16711680 : 280375465082880L;
 
     public static final long ROW_4 = whiteDown ? 4278190080L : 1095216660480L;
 
     public static final long ROW_5 = whiteDown ? 1095216660480L : 4278190080L;
 
-    public static final long ROW_6 = whiteDown ? 0x000000FF00000000L : 0x00000000000000FFL;
+    public static final long ROW_6 = whiteDown ? 280375465082880L : 16711680;
 
-    public static final long ROW_7 = whiteDown ? 1095216660480L : 4278190080L;
+    public static final long ROW_7 = whiteDown ? 71776119061217280L : 65280;
 
     public static final long ROW_8 = whiteDown ? -72057594037927936L : 255L;
 

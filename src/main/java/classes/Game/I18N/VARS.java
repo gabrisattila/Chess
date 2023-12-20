@@ -103,17 +103,6 @@ public class VARS {
 
         public final static Color BACK_GROUND = new Color(33, 3, 8, 205);
 
-
-        //Minding belülről kezdve számolódnak a koncentrikus körök, mert azok biztos fenn lesznek.
-
-        public static final double FIRST_BASE_FIELD_VALUE = 6.0;
-
-        public static final double SECOND_BASE_FIELD_VALUE = 4.0;
-
-        public static final double THIRD_BASE_FIELD_VALUE = 2.3;
-
-        public static final double FOURTH_BASE_FIELD_VALUE = 1.5;
-
         public static final Double[][] PAWN_BASE_VALUE_MATRIX_WP = new Double[][] {
                 {1.65, 1.65, 1.65, 1.65, 1.65, 1.65, 1.65, 1.65},
                 {1.65, 1.65, 1.65, 0.75, 0.75, 1.65, 1.65, 1.65},
@@ -409,9 +398,6 @@ public class VARS {
         public static Map<String, String> usualFens = new HashMap<>(){{
             put("whiteDownStarter", "RNBQKBNR/PPPPPPPP/8/8/8/8/pppppppp/rnbqkbnr w KQkq - 1 0");
             put("blackDownStarter", "rnbkqbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBKQBNR w KQkq - 1 0");
-
-            put("white[0, 0]StarterBitBoard", "RNBKQBNR/PPPPPPPP/8/8/8/8/pppppppp/rnbkqbnr w KQkq - 1 0");
-            put("black[0, 0]StarterBitBoard", "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 1 0");
         }};
 
         public static Map<String, String> testFens = new HashMap<>(){{
@@ -437,7 +423,7 @@ public class VARS {
 
             //region EmPassant Case
 
-            put("whiteDownWhitePawnsFrontEmPassant", "8/8/8/PPPPPPP1/7P/8/pppppppp/8 w ---- - 1 0");
+            put("whiteDownWhitePawnsFrontEmPassant", "8/8/8/PPPPPPP1/6pP/8/pppppp1p/8 w ---- - 1 0");
             put("whiteDownBlackPawnsFrontEmPassant", "8/PPPPPPPP/8/8/pppppppp/8/8/8 w ---- - 1 0");
             put("blackDownBlackPawnsFrontEmPassant", "8/8/8/pppppppp/8/8/PPPPPPPP/8 w ---- - 1 0");
             put("blackDownWhitePawnsFrontEmPassant", "8/pppppppp/8/8/PPPPPPPP/8/8/8 w ---- - 1 0");
@@ -459,9 +445,9 @@ public class VARS {
 
             //endregion
 
-            //region Pawn Got In
+            //region Pawn Promotion
 
-            put("whiteDownOnePawnInTheEdgeOfPawnGotIn", "2K5/8/8/8/7k/8/1P6/8 w ---- - 1 0");
+            put("whiteDownOnePawnInTheEdgeOfPawnPromotion", "2K5/8/8/8/7k/8/1P6/8 w ---- - 1 0");
             put("whiteDownOneOnePawn", "2K5/p7/8/8/7k/8/1P6/8 w ---- - 1 0");
 
             //endregion
@@ -513,7 +499,6 @@ public class VARS {
             put("4mpOn6depth", "8/8/8/8/K1P4r/8/3p4/3k4 b ---- - 1 1");
             put("test1WhiteDown", "8/8/8/5K2/3P2R1/2b5/1p2k3/8 b ---- - 1 1");
             put("test2WhiteDown", "8/8/8/8/3K4/2P5/1b6/3k4 b ---- - 1 1");
-            put("kingSpanHelp", "4ppp1/3pp1pp/4ppp1/8/8/8/8/8 w ---- - 1 1");
 
             //endregion
 

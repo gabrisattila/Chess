@@ -1,13 +1,12 @@
 package classes.Ai.BitBoards;
 
-import classes.Game.I18N.Pair;
-import classes.Main;
 import lombok.*;
 
 import java.util.Arrays;
 
 import static classes.Ai.BitBoards.BBVars.*;
 import static classes.Ai.BitBoards.BitBoards.*;
+import static classes.Game.I18N.VARS.FINALS.pieceImagesForLog;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 
 @Getter
@@ -39,13 +38,13 @@ public class BitBoardMoves {
                 possibility |= (whiteDown ? bitBoard >> 8 : bitBoard << 8);
             }
             if ((whiteDown ? bitBoard >> 16 : bitBoard << 16) != 0 && (bitBoard & ROW_7) != 0) {
-                possibility |= (whiteDown ? bitBoard >> 16 : bitBoard << 16) & ROW_7;
+                possibility |= (whiteDown ? bitBoard >> 16 : bitBoard << 16);
             }
-            if ((whiteDown ? (bitBoard >> 7 & ~COL_A) : (bitBoard << 9 & ~COL_H)) != 0) {
-                possibility |= (whiteDown ? (bitBoard >> 7 & ~COL_A) : (bitBoard << 9 & ~COL_H));
+            if ((whiteDown ? (bitBoard >> 7 & ~COL_H) : (bitBoard << 9 & ~COL_A)) != 0) {
+                possibility |= (whiteDown ? (bitBoard >> 7 & ~COL_H) : (bitBoard << 9 & ~COL_A));
             }
-            if ((whiteDown ? (bitBoard >> 9 & ~COL_H) : (bitBoard << 7 & ~COL_A)) != 0) {
-                possibility |= (whiteDown ? (bitBoard >> 9 & ~COL_H) : (bitBoard << 7 & ~COL_A));
+            if ((whiteDown ? (bitBoard >> 9 & ~COL_A) : (bitBoard << 7 & ~COL_H)) != 0) {
+                possibility |= (whiteDown ? (bitBoard >> 9 & ~COL_A) : (bitBoard << 7 & ~COL_H));
             }
         }
         return possibility;
@@ -55,16 +54,16 @@ public class BitBoardMoves {
         return removeAB_OR_GH_Cols(from, (from >= 18 ? (KNIGHT_SPAN << (from - 18)) : (KNIGHT_SPAN >> (18 - from))));
     }
 
-    public static long bishopPossibilities(int from){
-        return diagonalAndVerticalMoves(from);
+    public static long bishopPossibilities(int from, boolean forBase){
+        return diagonalAndVerticalMoves(from, forBase);
     }
 
-    public static long rookPossibilities(int from){
-        return horizontalAndVerticalMoves(from);
+    public static long rookPossibilities(int from, boolean forBase){
+        return horizontalAndVerticalMoves(from, forBase);
     }
 
-    public static long queenPossibilities(int from){
-        return diagonalAndVerticalMoves(from) | horizontalAndVerticalMoves(from);
+    public static long queenPossibilities(int from, boolean forBase){
+        return diagonalAndVerticalMoves(from, forBase) | horizontalAndVerticalMoves(from, forBase);
     }
 
     public static long kingPossibilities(int from){
@@ -72,16 +71,34 @@ public class BitBoardMoves {
     }
 
 
-    private static long diagonalAndVerticalMoves(int from){
+    private static long diagonalAndVerticalMoves(int from, boolean forBase) {
         long binaryFrom = 1L << from;
         int rowIndex = from / 8, colIndex = (from % 8);
-        return DiagonalMasks8[rowIndex + colIndex] ^ binaryFrom | AntiDiagonalMasks8[rowIndex + 7 - colIndex] ^ binaryFrom;
+        if (forBase){
+            return DiagonalMasks8[rowIndex + colIndex] ^ binaryFrom | AntiDiagonalMasks8[rowIndex + 7 - colIndex] ^ binaryFrom;
+        } else {
+            long firstPart = ((OCCUPIED & DiagonalMasks8[rowIndex + colIndex]) - (2 * binaryFrom)) ^
+                    Long.reverse(Long.reverse(OCCUPIED & DiagonalMasks8[rowIndex + colIndex]) - (2 * Long.reverse(binaryFrom)))
+                    & DiagonalMasks8[rowIndex + colIndex];
+            long secondPart = ((OCCUPIED & AntiDiagonalMasks8[rowIndex + 7 - colIndex]) - (2 * binaryFrom)) ^
+                    Long.reverse(Long.reverse(OCCUPIED & AntiDiagonalMasks8[rowIndex + 7 - colIndex]) - (2 * Long.reverse(binaryFrom)))
+                    & AntiDiagonalMasks8[rowIndex + 7 - colIndex];
+            return DiagonalMasks8[rowIndex + colIndex] & firstPart | AntiDiagonalMasks8[rowIndex + 7 - colIndex] & secondPart;
+        }
     }
 
-    private static long horizontalAndVerticalMoves(int from){
+    private static long horizontalAndVerticalMoves(int from, boolean forBase){
         long binaryFrom = 1L << from;
         int rowIndex = from / 8, colIndex = (from % 8);
-        return RowMasks8[rowIndex] ^ binaryFrom | ColMasks8[colIndex] ^ binaryFrom;
+        if (forBase){
+            return RowMasks8[rowIndex] ^ binaryFrom | ColMasks8[colIndex] ^ binaryFrom;
+        }else {
+            long firstPart = ((OCCUPIED & RowMasks8[rowIndex]) - (2 * binaryFrom)) ^
+                    Long.reverse(Long.reverse(OCCUPIED & RowMasks8[rowIndex]) - (2 * Long.reverse(binaryFrom)));
+            long secondPart = ((OCCUPIED & ColMasks8[colIndex]) - (2 * binaryFrom)) ^
+                    Long.reverse(Long.reverse(OCCUPIED & ColMasks8[colIndex]) - (2 * Long.reverse(binaryFrom)));
+            return firstPart & RowMasks8[rowIndex] | secondPart & ColMasks8[colIndex];
+        }
     }
 
     private static long removeAB_OR_GH_Cols(int from, long possibility){
@@ -99,9 +116,9 @@ public class BitBoardMoves {
                 pawnPossibilityTable[i][j] = pawnPossibilities(i, j);
                 if (i == 0){
                     knightPossibilityTable[j] = knightPossibilities(j);
-                    bishopPossibilityTable[j] = bishopPossibilities(j);
-                    rookPossibilityTable[j] = rookPossibilities(j);
-                    queenPossibilityTable[j] = queenPossibilities(j);
+                    bishopPossibilityTable[j] = bishopPossibilities(j, true);
+                    rookPossibilityTable[j] = rookPossibilities(j, true);
+                    queenPossibilityTable[j] = queenPossibilities(j, true);
                     kingPossibilityTable[j] = kingPossibilities(j);
                 }
             }
@@ -203,15 +220,15 @@ public class BitBoardMoves {
     }
 
     private static int getTo(int move){
-        return move & 0xfc0;
+        return (move & 0xfc0) >> 6;
     }
 
     private static int getWhat(int move){
-        return move & 0xf000;
+        return (move & 0xf000) >> 12;
     }
 
     private static int getPromotion(int move){
-        return move & 0xf0000;
+        return (move & 0xf0000) >> 16;
     }
 
     private static boolean isCapture(int move){
@@ -226,13 +243,172 @@ public class BitBoardMoves {
         return (move & 0x800000) != 0;
     }
 
+    public static String moveToString(int move){
+        String m = "";
+        m += pieceImagesForLog[getWhat(move)];
+        m += " goes from: ";
+        m += getFrom(move);
+        m += " to: ";
+        m += getTo(move);
+        m += ".";
+        m += getPromotion(move) == 0 ? "" : " And become " + pieceImagesForLog[getPromotion(move)];
+        m += isCapture(move) ? " Caused capture. " : "";
+        m += isEmPassant(move) ? " It was em-passant move." : "";
+        m += isCastling(move) ? " It was castle. " : "";
+        m += "\n";
+        return m;
+    }
+
+    public static String intToBitString(int i){
+        StringBuilder s = new StringBuilder();
+        for (int j = 31; j >= 0; j--) {
+            if ((1 << j & i) != 0)
+                s.append('1');
+            else
+                s.append('0');
+            if (j % 4 == 0)
+                s.append('\n');
+        }
+        return s.toString();
+    }
+
     public static void addMove(int move){
         movesInATurn[moveCount] = move;
         moveCount++;
     }
 
-    //endregion
+    public static void generateMoves(){
+        moveCount = 0;
 
+        HITTABLE_BY_BLACK = getPawnBoard(true) | getKnightBoard(true) | getBishopBoard(true) | getRookBoard(true) | getQueenBoard(true);
+        HITTABLE_BY_WHITE = getPawnBoard(false) | getKnightBoard(false) | getBishopBoard(false) | getRookBoard(false) | getQueenBoard(false);
+        OCCUPIED = HITTABLE_BY_BLACK | HITTABLE_BY_WHITE | getKingBoard(true) | getKingBoard(false);
+        EMPTY = ~OCCUPIED;
+
+        int from, to;
+        long currentBitBoardCopy, possibility = 0;
+        long shouldBePartOfMove = 0;
+        for (int piece : pieceIndexes) {
+            currentBitBoardCopy = bitBoards[piece];
+            while (currentBitBoardCopy != 0){
+                from = 63 - Long.numberOfLeadingZeros(currentBitBoardCopy);
+                switch (piece){
+                    case wPawnI -> {
+                        possibility = pawnPossibilityTable[1][from];
+                    }
+                    case bPawnI -> {
+                        possibility = pawnPossibilityTable[0][from];
+                    }
+                    case wKnightI -> {
+                        possibility = knightPossibilityTable[from];
+                        shouldBePartOfMove = shouldBePartOf(true);
+                    }
+                    case bKnightI -> {
+                        possibility = knightPossibilityTable[from];
+                        shouldBePartOfMove = shouldBePartOf(false);
+                    }
+                    case wBishopI -> {
+                        possibility = bishopPossibilities(from, false);
+                        shouldBePartOfMove = shouldBePartOf(true);
+                    }
+                    case bBishopI -> {
+                        possibility = bishopPossibilities(from, false);
+                        shouldBePartOfMove = shouldBePartOf(false);
+                    }
+                    case wRookI -> {
+                        possibility = rookPossibilities(from, false);
+                        shouldBePartOfMove = shouldBePartOf(true);
+                    }
+                    case bRookI -> {
+                        possibility = rookPossibilities(from, false);
+                        shouldBePartOfMove = shouldBePartOf(false);
+                    }
+                    case wQueenI -> {
+                        possibility = queenPossibilities(from, false);
+                        shouldBePartOfMove = shouldBePartOf(true);
+                    }
+                    case bQueenI -> {
+                        possibility = queenPossibilities(from, false);
+                        shouldBePartOfMove = shouldBePartOf(false);
+                    }
+                    case wKingI -> {
+                        possibility = kingPossibilityTable[from];
+                        shouldBePartOfMove = shouldBePartOf(true);
+                        possibility = calcKingPossibility(piece, possibility);
+                    }
+                    case bKingI -> {
+                        possibility = kingPossibilityTable[from];
+                        shouldBePartOfMove = shouldBePartOf(false);
+                        possibility = calcKingPossibility(piece, possibility);
+                    }
+                }
+                while (possibility != 0){
+                    to = Long.numberOfTrailingZeros(possibility);
+
+                    //Calc what should be part of pawn range
+                    if (piece == wPawnI || piece == bPawnI){
+                        //Simple 1 forward
+                        if (8 == Math.abs(from - to)){
+                            shouldBePartOfMove = EMPTY;
+                        }
+                        //2 forward
+                        else if (16 == Math.abs(from - to)) {
+                            shouldBePartOfMove = EMPTY & (piece == wPawnI ? (ROW_4 | ROW_3) : (ROW_5 | ROW_6));
+                        }
+                        //Hit and if there's emPassant possibility, combine it
+                        else {
+                            shouldBePartOfMove = (piece == wPawnI ? HITTABLE_BY_WHITE : HITTABLE_BY_BLACK);
+                            if (bbEmPassant != -1){
+                                if (piece == wPawnI && (1L << bbEmPassant & ROW_6) != 0){ // wh
+                                    shouldBePartOfMove |= 1L << bbEmPassant;
+                                } else if (piece == bPawnI && (1L << bbEmPassant & ROW_3) != 0) {
+                                    shouldBePartOfMove |= 1L << bbEmPassant;
+                                }
+                            }
+                        }
+                    }
+
+                    if ((1L << to & shouldBePartOfMove) != 0) {
+
+                        //Handling pawn promotion
+                        int promotion = 0;
+                        if (piece == wPawnI && (1L << to & ROW_8) != 0){
+                            promotion = wQueenI;
+                        } else if (piece == bPawnI && (1L << to & ROW_1) != 0) {
+                            promotion = bQueenI;
+                        }
+
+                        //Add new move to move list
+                        addMove(
+                                createMove(from, to, piece, promotion,
+                                        (1L << to & (piece <= wKingI ? HITTABLE_BY_WHITE : HITTABLE_BY_BLACK)) != 0,
+                                        (1L << to & EMPTY & 1L << bbEmPassant) != 0 && (piece == wPawnI || piece == bPawnI),
+                                        (piece == wKingI || piece == bKingI) && 2 == Math.abs(from - to)
+                                )
+                        );
+                    }
+                    possibility = removeBit(possibility, to);
+                }
+                currentBitBoardCopy = removeBit(currentBitBoardCopy, from);
+            }
+        }
+    }
+
+    private static long shouldBePartOf(boolean forWhite){
+        return (forWhite ? HITTABLE_BY_WHITE : HITTABLE_BY_BLACK) | EMPTY;
+    }
+
+    public static long calcKingPossibility(int piece, long possibility){
+        if ((castle & (piece == wKingI ? wK : bK)) != 0)
+            possibility &= ~(1L << (63 - Long.numberOfLeadingZeros(bitBoards[piece]) - (whiteDown ? 2 : -2)));
+
+        if ((castle & (piece == wKingI ? wQ : bQ)) != 0)
+            possibility &= ~(1L << (63 - Long.numberOfLeadingZeros(bitBoards[piece]) - (whiteDown ? -2 : 2)));
+
+        return possibility;
+    }
+
+    //endregion
 
     //region Make and Undo Moves
 
@@ -275,7 +451,7 @@ public class BitBoardMoves {
                  piece++)
             {
                     if (getBit(bitBoards[piece], to) != 0) {
-                        removeBit(bitBoardsCopy[piece], to);
+                        bitBoards[piece] = removeBit(bitBoards[piece], to);
                         break;
                     }
             }
@@ -289,7 +465,7 @@ public class BitBoardMoves {
                  piece++)
             {
                 if (getBit(bitBoards[piece], to) != 0){
-                    removeBit(bitBoards[piece], to);
+                    bitBoards[piece] = removeBit(bitBoards[piece], to);
                     break;
                 }
             }
@@ -297,7 +473,8 @@ public class BitBoardMoves {
 
         //move is emPassant action
         if (emPassant) {
-            removeBit(getPawnBoard(!whiteToPlay), to + (whiteDown ? (whiteToPlay ? -8 : 8) : (whiteToPlay ? 8 : -8)));
+            bitBoards[whiteToPlay ? 6 : 0] =
+                    removeBit(getPawnBoard(!whiteToPlay), to + (whiteDown ? (whiteToPlay ? -8 : 8) : (whiteToPlay ? 8 : -8)));
         }
 
         //move is castling action
@@ -337,8 +514,8 @@ public class BitBoardMoves {
                 rookTo = 3;
                 castle &= bQ;
             }
-            removeBit(getRookBoard(whiteToPlay), rookFrom);
-            setBit(getRookBoard(whiteToPlay), rookTo);
+            bitBoards[whiteToPlay ? wRookI : bRookI] = removeBit(getRookBoard(whiteToPlay), rookFrom);
+            bitBoards[whiteToPlay ? wRookI : bRookI] = setBit(getRookBoard(whiteToPlay), rookTo);
         }
 
         if (what == wPawnI){
@@ -359,143 +536,13 @@ public class BitBoardMoves {
 
         whiteToPlay = !whiteToPlay;
 
-        if (isSquareAttacked(!whiteToPlay, Long.numberOfLeadingZeros(getKingBoard(!whiteToPlay)))){
+        if (getKingBoard(!whiteToPlay) != 0 && isSquareAttacked(!whiteToPlay, Long.numberOfLeadingZeros(getKingBoard(!whiteToPlay)))){
             undoMove();
             return false;
         }else
             return true;
     }
 
-    public static void generateMoves(){
-        moveCount = 0;
-
-        HITTABLE_BY_BLACK = getPawnBoard(true) | getKnightBoard(true) | getBishopBoard(true) | getRookBoard(true) | getQueenBoard(true);
-        HITTABLE_BY_WHITE = getPawnBoard(false) | getKnightBoard(false) | getBishopBoard(false) | getRookBoard(false) | getQueenBoard(false);
-        OCCUPIED = HITTABLE_BY_BLACK | HITTABLE_BY_WHITE | getKingBoard(true) | getKingBoard(false);
-        EMPTY = ~OCCUPIED;
-        
-        int from, to;
-        long currentBitBoardCopy, possibility = 0;
-        long shouldBePartOfMove = 0;
-        for (int piece : pieceIndexes) {
-            currentBitBoardCopy = bitBoards[piece];
-            while (currentBitBoardCopy != 0){
-                from = 63 - Long.numberOfLeadingZeros(currentBitBoardCopy);
-                switch (piece){
-                    case wPawnI -> {
-                        possibility = pawnPossibilityTable[1][from];
-                    }
-                    case bPawnI -> {
-                        possibility = pawnPossibilityTable[0][from];
-                    }
-                    case wKnightI -> {
-                        possibility = knightPossibilityTable[from];
-                        shouldBePartOfMove = shouldBePartOf(true);
-                    } 
-                    case bKnightI -> {
-                        possibility = knightPossibilityTable[from];
-                        shouldBePartOfMove = shouldBePartOf(false);
-                    }
-                    case wBishopI -> {
-                        possibility = bishopPossibilityTable[from];
-                        shouldBePartOfMove = shouldBePartOf(true);
-                    }
-                    case bBishopI -> {
-                        possibility = bishopPossibilityTable[from];
-                        shouldBePartOfMove = shouldBePartOf(false);
-                    }
-                    case wRookI -> {
-                        possibility = rookPossibilityTable[from];
-                        shouldBePartOfMove = shouldBePartOf(true);
-                    }
-                    case bRookI -> {
-                        possibility = rookPossibilityTable[from];
-                        shouldBePartOfMove = shouldBePartOf(false);
-                    }
-                    case wQueenI -> {
-                        possibility = queenPossibilityTable[from];
-                        shouldBePartOfMove = shouldBePartOf(true);
-                    }
-                    case bQueenI -> {
-                        possibility = queenPossibilityTable[from];
-                        shouldBePartOfMove = shouldBePartOf(false);
-                    }
-                    case wKingI -> {
-                        possibility = kingPossibilityTable[from];
-                        shouldBePartOfMove = shouldBePartOf(true);
-                        possibility = calcKingPossibility(piece, possibility);
-                    }
-                    case bKingI -> {
-                        possibility = kingPossibilityTable[from];
-                        shouldBePartOfMove = shouldBePartOf(false);
-                        possibility = calcKingPossibility(piece, possibility);
-                    }
-                }
-                while (possibility != 0){
-                    to = 63 - Long.numberOfTrailingZeros(possibility);
-
-                    //Calc what should be part of pawn range
-                    if (piece == wPawnI || piece == bPawnI){
-                        //Simple 1 forward
-                        if (8 == Math.abs(from - to)){
-                            shouldBePartOfMove = EMPTY;
-                        }
-                        //2 forward
-                        else if (16 == Math.abs(from - to)) {
-                            shouldBePartOfMove = EMPTY & (piece == wPawnI ? ROW_4 & ROW_3 : ROW_5 & ROW_6);
-                        }
-                        //Hit and if there's emPassant possibility, combine it
-                        else {
-                            shouldBePartOfMove = (piece == wPawnI ? HITTABLE_BY_WHITE : HITTABLE_BY_BLACK);
-                            if (bbEmPassant != -1){
-                                shouldBePartOfMove |= 1L << bbEmPassant;
-                            }
-                        }
-                    }
-
-                    if ((1L << to & shouldBePartOfMove) != 0) {
-
-                        //Handling pawn promotion
-                        int promotion = 0;
-                        if (piece == wPawnI && (to & ROW_8) != 0){
-                            promotion = wQueenI;
-                        } else if (piece == bPawnI && (to & ROW_1) != 0) {
-                            promotion = bQueenI;
-                        }
-
-                        //Add new move to move list
-                        addMove(
-                                createMove(from, to, piece, promotion,
-                                        (to & (wKingI <= piece ? HITTABLE_BY_WHITE : HITTABLE_BY_BLACK)) != 0,
-                                        (to & EMPTY & 1L << bbEmPassant) != 0 && (piece == wPawnI || piece == bPawnI),
-                                        (piece == wKingI || piece == bKingI) && 2 == Math.abs(from - to)
-                                        )
-                        );
-                    }
-                    //TODO Megírni a emPassant aut-ot, a promotiont, és a castling-et
-                    possibility = removeBit(possibility, to);
-                }
-                currentBitBoardCopy = removeBit(currentBitBoardCopy, from);
-            }
-        }
-    }
-    
-    private static long shouldBePartOf(boolean forWhite){
-        return (forWhite ? HITTABLE_BY_WHITE : HITTABLE_BY_BLACK) | EMPTY;        
-    }
-    
-    public static long calcKingPossibility(int piece, long possibility){
-        if ((castle & (piece == wKingI ? wK : bK)) != 0)
-            possibility &= ~(1L << (63 - Long.numberOfLeadingZeros(bitBoards[piece]) - (whiteDown ? 2 : -2)));
-            
-        if ((castle & (piece == wKingI ? wQ : bQ)) != 0)
-            possibility &= ~(1L << (63 - Long.numberOfLeadingZeros(bitBoards[piece]) - (whiteDown ? -2 : 2)));
-        
-        return possibility;
-    }
-
     //endregion
-
-
 
 }
