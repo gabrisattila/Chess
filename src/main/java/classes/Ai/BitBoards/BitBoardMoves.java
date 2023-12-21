@@ -215,11 +215,11 @@ public class BitBoardMoves {
                 (wasCastling ? 1 << 23 : 0);
     }
 
-    private static int getFrom(int move){
+    public static int getFrom(int move){
         return move & 0x3f;
     }
 
-    private static int getTo(int move){
+    public static int getTo(int move){
         return (move & 0xfc0) >> 6;
     }
 
@@ -245,6 +245,7 @@ public class BitBoardMoves {
 
     public static String moveToString(int move){
         String m = "";
+        m += getWhat(move) <= wKingI ? "White " : "Black ";
         m += pieceImagesForLog[getWhat(move)];
         m += " goes from: ";
         m += getFrom(move);
@@ -277,7 +278,7 @@ public class BitBoardMoves {
         moveCount++;
     }
 
-    public static void generateMoves(){
+    public static void generateMoves(/*boolean forWhite*/){
         moveCount = 0;
 
         HITTABLE_BY_BLACK = getPawnBoard(true) | getKnightBoard(true) | getBishopBoard(true) | getRookBoard(true) | getQueenBoard(true);
@@ -289,108 +290,110 @@ public class BitBoardMoves {
         long currentBitBoardCopy, possibility = 0;
         long shouldBePartOfMove = 0;
         for (int piece : pieceIndexes) {
-            currentBitBoardCopy = bitBoards[piece];
-            while (currentBitBoardCopy != 0){
-                from = 63 - Long.numberOfLeadingZeros(currentBitBoardCopy);
-                switch (piece){
-                    case wPawnI -> {
-                        possibility = pawnPossibilityTable[1][from];
+//            if (forWhite == (piece <= wKingI)){
+                currentBitBoardCopy = bitBoards[piece];
+                while (currentBitBoardCopy != 0) {
+                    from = 63 - Long.numberOfLeadingZeros(currentBitBoardCopy);
+                    switch (piece) {
+                        case wPawnI -> {
+                            possibility = pawnPossibilityTable[1][from];
+                        }
+                        case bPawnI -> {
+                            possibility = pawnPossibilityTable[0][from];
+                        }
+                        case wKnightI -> {
+                            possibility = knightPossibilityTable[from];
+                            shouldBePartOfMove = shouldBePartOf(true);
+                        }
+                        case bKnightI -> {
+                            possibility = knightPossibilityTable[from];
+                            shouldBePartOfMove = shouldBePartOf(false);
+                        }
+                        case wBishopI -> {
+                            possibility = bishopPossibilities(from, false);
+                            shouldBePartOfMove = shouldBePartOf(true);
+                        }
+                        case bBishopI -> {
+                            possibility = bishopPossibilities(from, false);
+                            shouldBePartOfMove = shouldBePartOf(false);
+                        }
+                        case wRookI -> {
+                            possibility = rookPossibilities(from, false);
+                            shouldBePartOfMove = shouldBePartOf(true);
+                        }
+                        case bRookI -> {
+                            possibility = rookPossibilities(from, false);
+                            shouldBePartOfMove = shouldBePartOf(false);
+                        }
+                        case wQueenI -> {
+                            possibility = queenPossibilities(from, false);
+                            shouldBePartOfMove = shouldBePartOf(true);
+                        }
+                        case bQueenI -> {
+                            possibility = queenPossibilities(from, false);
+                            shouldBePartOfMove = shouldBePartOf(false);
+                        }
+                        case wKingI -> {
+                            possibility = kingPossibilityTable[from];
+                            shouldBePartOfMove = shouldBePartOf(true);
+                            possibility = calcKingPossibility(piece, possibility);
+                        }
+                        case bKingI -> {
+                            possibility = kingPossibilityTable[from];
+                            shouldBePartOfMove = shouldBePartOf(false);
+                            possibility = calcKingPossibility(piece, possibility);
+                        }
                     }
-                    case bPawnI -> {
-                        possibility = pawnPossibilityTable[0][from];
-                    }
-                    case wKnightI -> {
-                        possibility = knightPossibilityTable[from];
-                        shouldBePartOfMove = shouldBePartOf(true);
-                    }
-                    case bKnightI -> {
-                        possibility = knightPossibilityTable[from];
-                        shouldBePartOfMove = shouldBePartOf(false);
-                    }
-                    case wBishopI -> {
-                        possibility = bishopPossibilities(from, false);
-                        shouldBePartOfMove = shouldBePartOf(true);
-                    }
-                    case bBishopI -> {
-                        possibility = bishopPossibilities(from, false);
-                        shouldBePartOfMove = shouldBePartOf(false);
-                    }
-                    case wRookI -> {
-                        possibility = rookPossibilities(from, false);
-                        shouldBePartOfMove = shouldBePartOf(true);
-                    }
-                    case bRookI -> {
-                        possibility = rookPossibilities(from, false);
-                        shouldBePartOfMove = shouldBePartOf(false);
-                    }
-                    case wQueenI -> {
-                        possibility = queenPossibilities(from, false);
-                        shouldBePartOfMove = shouldBePartOf(true);
-                    }
-                    case bQueenI -> {
-                        possibility = queenPossibilities(from, false);
-                        shouldBePartOfMove = shouldBePartOf(false);
-                    }
-                    case wKingI -> {
-                        possibility = kingPossibilityTable[from];
-                        shouldBePartOfMove = shouldBePartOf(true);
-                        possibility = calcKingPossibility(piece, possibility);
-                    }
-                    case bKingI -> {
-                        possibility = kingPossibilityTable[from];
-                        shouldBePartOfMove = shouldBePartOf(false);
-                        possibility = calcKingPossibility(piece, possibility);
-                    }
-                }
-                while (possibility != 0){
-                    to = Long.numberOfTrailingZeros(possibility);
+                    while (possibility != 0) {
+                        to = Long.numberOfTrailingZeros(possibility);
 
-                    //Calc what should be part of pawn range
-                    if (piece == wPawnI || piece == bPawnI){
-                        //Simple 1 forward
-                        if (8 == Math.abs(from - to)){
-                            shouldBePartOfMove = EMPTY;
-                        }
-                        //2 forward
-                        else if (16 == Math.abs(from - to)) {
-                            shouldBePartOfMove = EMPTY & (piece == wPawnI ? (ROW_4 | ROW_3) : (ROW_5 | ROW_6));
-                        }
-                        //Hit and if there's emPassant possibility, combine it
-                        else {
-                            shouldBePartOfMove = (piece == wPawnI ? HITTABLE_BY_WHITE : HITTABLE_BY_BLACK);
-                            if (bbEmPassant != -1){
-                                if (piece == wPawnI && (1L << bbEmPassant & ROW_6) != 0){ // wh
-                                    shouldBePartOfMove |= 1L << bbEmPassant;
-                                } else if (piece == bPawnI && (1L << bbEmPassant & ROW_3) != 0) {
-                                    shouldBePartOfMove |= 1L << bbEmPassant;
+                        //Calc what should be part of pawn range
+                        if (piece == wPawnI || piece == bPawnI) {
+                            //Simple 1 forward
+                            if (8 == Math.abs(from - to)) {
+                                shouldBePartOfMove = EMPTY;
+                            }
+                            //2 forward
+                            else if (16 == Math.abs(from - to)) {
+                                shouldBePartOfMove = EMPTY & (piece == wPawnI ? (ROW_4 | ROW_3) : (ROW_5 | ROW_6));
+                            }
+                            //Hit and if there's emPassant possibility, combine it
+                            else {
+                                shouldBePartOfMove = (piece == wPawnI ? HITTABLE_BY_WHITE : HITTABLE_BY_BLACK);
+                                if (bbEmPassant != -1) {
+                                    if (piece == wPawnI && (1L << bbEmPassant & ROW_6) != 0) { // wh
+                                        shouldBePartOfMove |= 1L << bbEmPassant;
+                                    } else if (piece == bPawnI && (1L << bbEmPassant & ROW_3) != 0) {
+                                        shouldBePartOfMove |= 1L << bbEmPassant;
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    if ((1L << to & shouldBePartOfMove) != 0) {
+                        if ((1L << to & shouldBePartOfMove) != 0) {
 
-                        //Handling pawn promotion
-                        int promotion = 0;
-                        if (piece == wPawnI && (1L << to & ROW_8) != 0){
-                            promotion = wQueenI;
-                        } else if (piece == bPawnI && (1L << to & ROW_1) != 0) {
-                            promotion = bQueenI;
+                            //Handling pawn promotion
+                            int promotion = 0;
+                            if (piece == wPawnI && (1L << to & ROW_8) != 0) {
+                                promotion = wQueenI;
+                            } else if (piece == bPawnI && (1L << to & ROW_1) != 0) {
+                                promotion = bQueenI;
+                            }
+
+                            //Add new move to move list
+                            addMove(
+                                    createMove(from, to, piece, promotion,
+                                            (1L << to & (piece <= wKingI ? HITTABLE_BY_WHITE : HITTABLE_BY_BLACK)) != 0,
+                                            (1L << to & EMPTY & 1L << bbEmPassant) != 0 && (piece == wPawnI || piece == bPawnI),
+                                            (piece == wKingI || piece == bKingI) && 2 == Math.abs(from - to)
+                                    )
+                            );
                         }
-
-                        //Add new move to move list
-                        addMove(
-                                createMove(from, to, piece, promotion,
-                                        (1L << to & (piece <= wKingI ? HITTABLE_BY_WHITE : HITTABLE_BY_BLACK)) != 0,
-                                        (1L << to & EMPTY & 1L << bbEmPassant) != 0 && (piece == wPawnI || piece == bPawnI),
-                                        (piece == wKingI || piece == bKingI) && 2 == Math.abs(from - to)
-                                )
-                        );
+                        possibility = removeBit(possibility, to);
                     }
-                    possibility = removeBit(possibility, to);
+                    currentBitBoardCopy = removeBit(currentBitBoardCopy, from);
                 }
-                currentBitBoardCopy = removeBit(currentBitBoardCopy, from);
-            }
+//            }
         }
     }
 

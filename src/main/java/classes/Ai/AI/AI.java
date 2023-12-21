@@ -1,7 +1,14 @@
 package classes.Ai.AI;
 
+import classes.Ai.BitBoards.BitBoardMoves;
+import classes.Game.I18N.ChessGameException;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Random;
+
+import static classes.Ai.AI.AiNode.*;
 import static classes.Ai.BitBoards.BitBoardMoves.*;
 import static classes.Ai.BitBoards.BitBoards.*;
 import static classes.Ai.FenConverter.*;
@@ -78,18 +85,22 @@ public class AI extends Thread {
         bestMove = 0;
         nodeNum = 0;
 
-        setUpBitBoard(BoardToFen(getBoard()));
+        String starterFen = BoardToFen(getBoard());
+        AiNode starterPos = new AiNode();
+        setUpBitBoard(starterFen);
 
         int startTime = (int) System.currentTimeMillis();
 
-        double evaluatedSearch = miniMax(whiteToPlay, 0, -Double.MAX_VALUE, Double.MAX_VALUE);
+        double evaluatedSearch = miniMax(starterPos, whiteToPlay, 0, -Double.MAX_VALUE, Double.MAX_VALUE);
 //        double evaluatedSearch = negaMax(0, -Double.MAX_VALUE, Double.MAX_VALUE);
+
+        bestMove = sortOutBestChild(starterPos, evaluatedSearch);
 
         printSearchData(startTime, evaluatedSearch);
         System.exit(130);
     }
 
-    private double miniMax(boolean maxNeeded, double depth, double alpha, double beta){
+    private double miniMax(AiNode starterPos, boolean maxNeeded, double depth, double alpha, double beta){
 
         if (depth == MINIMAX_DEPTH){
 
@@ -108,13 +119,16 @@ public class AI extends Thread {
             //                ROOK_BASE_VALUE * Long.bitCount(bitBoards[wRookI]) -
             //                QUEEN_BASE_VALUE * Long.bitCount(bitBoards[wQueenI])
             //        );
+
+            starterPos.setFinalValue(/*evauation*/ 0);
+
             return 0;
         }
 
         nodeNum++;
 
         double evaluatedMiniMax;
-        generateMoves();
+        generateMoves(/*maxNeeded*/);
         int move;
 
         if (maxNeeded){
@@ -129,18 +143,28 @@ public class AI extends Thread {
                 //Make move be the next in the generated move list
                 move = movesInATurn[i];
                 if (makeMove(move)){ // Make Move, call miniMax recursively if it's legal move
-                    evaluatedMiniMax = miniMax(false, depth + 1, alpha, beta);
+
+                    AiNode next = new AiNode(move);
+                    starterPos.getChildren().add(next);
+
+                    evaluatedMiniMax = miniMax(next, false, depth + 1, alpha, beta);
+                    ply--;
                     undoMove();
-                    possibleMax = Math.max(possibleMax, evaluatedMiniMax);
+
+                    if (evaluatedMiniMax > possibleMax){
+                        possibleMax = evaluatedMiniMax;
+                    }
+
                     alpha = Math.max(alpha, evaluatedMiniMax);
                     if (beta <= alpha)
                         break;
-                } else { // else take back move
+
+                } else {
                     ply--;
-                    undoMove();
                 }
             }
-            return possibleMax + ply;
+
+            return possibleMax /*+ ply*/;
         } else {
             double possibleMin = Double.MAX_VALUE;
 
@@ -153,19 +177,27 @@ public class AI extends Thread {
                 //Make move be the next in the generated move list
                 move = movesInATurn[i];
                 if (makeMove(move)){ // If move is legal
-                    evaluatedMiniMax = miniMax(true, depth + 1, alpha, beta);
-                    undoMove();
+
+                    AiNode next = new AiNode(move);
+                    starterPos.getChildren().add(next);
+
+                    evaluatedMiniMax = miniMax(next, true, depth + 1, alpha, beta);
                     ply--;
-                    possibleMin = Math.min(possibleMin, evaluatedMiniMax);
+                    undoMove();
+
+                    if (evaluatedMiniMax < possibleMin){
+                        possibleMin = evaluatedMiniMax;
+                    }
+
                     beta = Math.min(beta, evaluatedMiniMax);
                     if (beta <= alpha)
                         break;
-                } else { // else
+                } else {
                     ply--;
-                    undoMove();
                 }
             }
-            return possibleMin + ply;
+
+            return possibleMin /* + ply */;
         }
     }
 
@@ -174,9 +206,7 @@ public class AI extends Thread {
         if (depth == MINIMAX_DEPTH){
 
             //Here will come the evaluation
-            double evaluation;
-
-
+            double evaluation = 0;
 
             return 0;
         }
@@ -189,6 +219,10 @@ public class AI extends Thread {
 
         double oldAlpha = alpha;
 
+        System.out.println("\nThis is the move list in the " + nodeNum + ". node.\n");
+        Arrays.stream(movesInATurn).filter(m -> getTo(m) != getFrom(m)).forEach(m -> System.out.println(moveToString(m)));
+        System.out.println("\n");
+
         for (int i = 0; i < moveCount; i++) {
 
             copyPosition();
@@ -198,10 +232,14 @@ public class AI extends Thread {
 
             if (!makeMove(move)){ // If the move is illegal simply take back
                 ply--;
-                undoMove();
+                //Skip to next move
+                continue;
             }
 
             double evaluatedNegaMax = -negaMax(depth + 1, -beta, -alpha);
+
+            if (evaluatedNegaMax == -0)
+                evaluatedNegaMax = 0;
 
             ply--;
             undoMove();
@@ -217,7 +255,7 @@ public class AI extends Thread {
 
                 if (ply == 0)
                     //Set the best moves value
-                    bestMoveYet = movesInATurn[moveCount];
+                    bestMoveYet = movesInATurn[i];
             }
 
         }
@@ -232,10 +270,37 @@ public class AI extends Thread {
 
     }
 
+    private int sortOutBestChild(AiNode parent, double bestChildValue){
+
+        ArrayList<AiNode> bestChildren = new ArrayList<>();
+
+        //Collect the children which have the given best value
+        for (AiNode child : parent.getChildren()) {
+            if (bestChildValue == child.getFinalValue()){
+                bestChildren.add(child);
+            }
+        }
+
+        //If there's none throw error.
+        if (bestChildren.size() == 0)
+            throw new ChessGameException("\nThe search completed, and returned the possible best score (" + bestChildValue +
+                                            ") but none of it's children have the mentioned value.\n");
+
+        if (bestChildren.size() == 1){
+            //If only one child has the best value return its creator move.
+            return bestChildren.get(0).getTheMoveWhatsCreatedIt();
+        } else {
+            //If there's multiple, choose randomly from them.
+            Random randomGenerator = new Random();
+            return bestChildren.get(randomGenerator.nextInt(0, bestChildren.size())).getTheMoveWhatsCreatedIt();
+        }
+    }
+
     //endregion
 
     private void printSearchData(int startTime, double evaluatedSearch){
         int endTime = (int) System.currentTimeMillis();
+        System.out.println();
         System.out.println("The search run for " + (double)((endTime - startTime) / 1000) + " seconds.");
         System.out.println("Searched " + nodeNum + " nodes.");
         System.out.println("And found that the best move is: " + moveToString(bestMove) + " which score is: " + evaluatedSearch + ".");

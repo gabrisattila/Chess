@@ -29,19 +29,21 @@ public class Logger extends JTextArea {
 
     public static void initializeLogFile() {
 
-        File logger = new File(LOG_FILE_PATH);
-        try {
-            if (logger.createNewFile()){
-                System.out.println("Log file created.");
+        if (canBeLogger) {
+            File logger = new File(LOG_FILE_PATH);
+            try {
+                if (logger.createNewFile()) {
+                    System.out.println("\nLog file created.\n");
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(LOG_FILE_PATH))) {
-            writer.write("");
-        } catch (IOException e) {
-            e.printStackTrace();
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(LOG_FILE_PATH))) {
+                writer.write("");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

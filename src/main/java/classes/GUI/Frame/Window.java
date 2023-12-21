@@ -99,9 +99,8 @@ public class Window extends JFrame {
         buttonsEnabled(new ArrayList<>(){{add("Új játék"); add("Betöltés"); }});
 
         canBeLogger = false;
-        if (canBeLogger) {
-            addLogger();
-        }
+        addLogger();
+
     }
 
     private void addButtons() {
@@ -198,8 +197,10 @@ public class Window extends JFrame {
     //region Logger
 
     private void addLogger() {
-        logger = loggerBox();
-        this.add(logger);
+        if (canBeLogger){
+            logger = loggerBox();
+            this.add(logger);
+        }
     }
 
     /**

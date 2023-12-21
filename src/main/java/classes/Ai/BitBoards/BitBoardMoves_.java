@@ -1,7 +1,6 @@
 package classes.Ai.BitBoards;
 
 import classes.Ai.AI.AiNode;
-import classes.Ai.Evaluation.BoardState;
 
 import java.util.*;
 
@@ -10,71 +9,9 @@ import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Ai.BitBoards.BBVars.*;
-import static classes.Ai.BitBoards.BitBoards.*;
 import static java.util.Objects.requireNonNull;
 
 public class BitBoardMoves_ {
-
-    public static ArrayList<String> possibleMoves(boolean forWhite, AiNode node){
-        return possibleMoves(forWhite,
-                node.getEmPassant(), node.isWKC(), node.isWQC(), node.isBKC(), node.isBQC(),
-                node.getWP(), node.getWN(), node.getWB(), node.getWR(), node.getWQ(), node.getWK(),
-                node.getBP(), node.getBN(), node.getBB(), node.getBR(), node.getBQ(), node.getBK());
-    }
-
-    public static ArrayList<String> possibleMoves(boolean maxNeeded, int emPassantChance,
-                                       boolean whiteKingCastleEnabled, boolean whiteQueenCastleEnabled,
-                                       boolean blackKingCastleEnabled, boolean blackQueenCastleEnabled,
-                                       long wP, long wN, long wB, long wR, long wQ, long wK,
-                                       long bP, long bN, long bB, long bR, long bQ, long bK) {
-
-        HITTABLE_BY_BLACK = wP | wN | wB | wR | wQ;
-        HITTABLE_BY_WHITE = bP | bN | bB | bR | bQ;
-        OCCUPIED = wP | wN | wB | wR | wQ | bP | bN | bB | bR | bQ;
-        EMPTY = ~OCCUPIED;
-
-        BoardState boardBeforeMoves = new BoardState();
-        boardBeforeMoves.setWhiteTurn(maxNeeded);
-        boardBeforeMoves.setPawnNum(maxNeeded ? getPawnNum(wP) : getPawnNum(bP));
-        boardBeforeMoves.setKnightNum(maxNeeded ? getKnightNum(wN) : getKnightNum(bN));
-        boardBeforeMoves.setBishopNum(maxNeeded ? getBishopNum(wB) : getBishopNum(bB));
-        boardBeforeMoves.setRookNum(maxNeeded ? getRookNum(wR) : getRookNum(bR));
-        boardBeforeMoves.setQueenNum(maxNeeded ? getQueenNum(wQ) : getQueenNum(bQ));
-
-
-        String moves = pawnMoves(
-                maxNeeded, emPassantChance, wP,  wN,  wB,  wR,  wQ,  wK, bP,  bN,  bB,  bR,  bQ,  bK);
-        moves += knightMoves(maxNeeded, wP,  wN,  wB,  wR,  wQ,  wK, bP,  bN,  bB,  bR,  bQ,  bK);
-        moves += bishopMoves(maxNeeded, wP,  wN,  wB,  wR,  wQ,  wK, bP,  bN,  bB,  bR,  bQ,  bK);
-        moves += rookMoves(maxNeeded, wP,  wN,  wB,  wR,  wQ,  wK, bP,  bN,  bB,  bR,  bQ,  bK);
-        moves += queenMoves(maxNeeded, wP,  wN,  wB,  wR,  wQ,  wK, bP,  bN,  bB,  bR,  bQ,  bK);
-        moves += kingMoves(
-                maxNeeded, whiteKingCastleEnabled, whiteQueenCastleEnabled,
-                blackKingCastleEnabled, blackQueenCastleEnabled,
-                wP, wN, wB, wR, wQ, wK, bP, bN, bB, bR, bQ, bK, OCCUPIED);
-        String[] moveList = moves.split("_");
-        TreeMap<Double, Set<String>> finalMoveMap = new TreeMap<>(maxNeeded ?
-                                                                    Comparator.<Double>reverseOrder() :
-                                                                    Comparator.<Double>naturalOrder());
-        if (!moves.isEmpty()){
-            String[] moveAndPoint;
-            double point;
-            for (String move : moveList) {
-                moveAndPoint = move.split("/");
-                move = moveAndPoint[0];
-                point = Double.parseDouble(moveAndPoint[1]);
-                putToPossibilityMap(finalMoveMap, point, move);
-            }
-
-            ArrayList<String> finalMoves = new ArrayList<>();
-            for (double d : finalMoveMap.keySet()) {
-                finalMoves.addAll(finalMoveMap.get(d));
-            }
-
-            return finalMoves;
-        }
-        return new ArrayList<>();
-    }
 
     public static long moveAPieceOnBoard(String move, long boardToMoveOn, String typeOfBoard){
 
@@ -138,12 +75,6 @@ public class BitBoardMoves_ {
         }
 
         return boardToMoveOn;
-    }
-
-    public static long unsafeFor(boolean forWhite, AiNode node){
-        return unsafeFor(forWhite,
-                node.getWP(), node.getWN(), node.getWB(), node.getWR(), node.getWQ(), node.getWK(),
-                node.getBB(), node.getBN(), node.getBB(), node.getBR(), node.getBQ(), node.getBK());
     }
 
     public static long unsafeFor(boolean forWhite,
@@ -672,12 +603,6 @@ public class BitBoardMoves_ {
                 moves.toString(),
                 wP, wN, wB, wR, wQ, wK,
                 bP, bN, bB, bR, bQ, bK);
-    }
-
-    public static double evaluationOfAMoveWithFieldValues(AiNode node){
-        return evaluationOfAMoveWithFieldValues(node.getTheMoveWhatsCreatedIt(),
-                node.getWP(), node.getWN(), node.getWB(), node.getWR(), node.getWQ(), node.getWK(),
-                node.getBB(), node.getBN(), node.getBB(), node.getBR(), node.getBQ(), node.getBK());
     }
 
     public static double evaluationOfAMoveWithFieldValues(String moves,
