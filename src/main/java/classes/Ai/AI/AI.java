@@ -70,6 +70,8 @@ public class AI extends Thread {
         }
     }
 
+    //region Search
+
     private void searchForBestMove(){
 
         ply = 0;
@@ -79,10 +81,12 @@ public class AI extends Thread {
         setUpBitBoard(BoardToFen(getBoard()));
 
         int startTime = (int) System.currentTimeMillis();
-//        double evaluatedSearch = miniMax(whiteToPlay, 0, -Double.MAX_VALUE, Double.MAX_VALUE);
-        double evaluatedSearch = negaMax(0, -Double.MAX_VALUE, Double.MAX_VALUE);
-        int endTime = (int) System.currentTimeMillis();
-        System.out.println("Best move is: " + moveToString(bestMove));
+
+        double evaluatedSearch = miniMax(whiteToPlay, 0, -Double.MAX_VALUE, Double.MAX_VALUE);
+//        double evaluatedSearch = negaMax(0, -Double.MAX_VALUE, Double.MAX_VALUE);
+
+        printSearchData(startTime, evaluatedSearch);
+        System.exit(130);
     }
 
     private double miniMax(boolean maxNeeded, double depth, double alpha, double beta){
@@ -226,6 +230,15 @@ public class AI extends Thread {
         //Node Fail Low
         return alpha;
 
+    }
+
+    //endregion
+
+    private void printSearchData(int startTime, double evaluatedSearch){
+        int endTime = (int) System.currentTimeMillis();
+        System.out.println("The search run for " + (double)((endTime - startTime) / 1000) + " seconds.");
+        System.out.println("Searched " + nodeNum + " nodes.");
+        System.out.println("And found that the best move is: " + moveToString(bestMove) + " which score is: " + evaluatedSearch + ".");
     }
 
     //endregion
