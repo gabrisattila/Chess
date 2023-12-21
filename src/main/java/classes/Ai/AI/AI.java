@@ -17,6 +17,7 @@ import static classes.Game.Model.Logic.EDT.*;
 import static classes.Game.Model.Structure.Board.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.GUI.FrameParts.Logger.*;
+import static classes.Game.Model.Structure.GameOverOrPositionEnd.*;
 import static classes.Game.Model.Structure.IBoard.convertOneBoardToAnother;
 
 
@@ -95,6 +96,10 @@ public class AI extends Thread {
 
         makeMove(bestMove);
         FenToBoard(bitBoardsToFen(), getBoard());
+        if (evaluatedSearch == WHITE_GOT_CHECKMATE || evaluatedSearch == BLACK_GOT_CHECKMATE) {
+            finalGameEnd();
+            return;
+        }
 
         printSearchData(startTime, evaluatedSearch);
     }
@@ -111,7 +116,12 @@ public class AI extends Thread {
 
         nodeNum++;
 
-        if (depth == MINIMAX_DEPTH){
+        if (depth == MINIMAX_DEPTH || isDraw()){
+
+            if (isDraw()){
+                starterPos.setFinalValue(DRAW);
+                return DRAW;
+            }
 
             //Here will come the evaluation
             double evaluation;
@@ -136,6 +146,8 @@ public class AI extends Thread {
 
         int[] movesInThisTurn = generateMoves(maxNeeded);
 
+        int legalMoves = 0;
+
         if (maxNeeded){
             double possibleMax = -Double.MAX_VALUE;
 
@@ -143,21 +155,32 @@ public class AI extends Thread {
 
                 copyPosition();
 
-                if (makeMove(move)) { //If move is legal*
+                if (makeMove(move)) { //If move is legal
+                    legalMoves++;
+                    ply++;
 
                     AiNode next = new AiNode(move);
                     starterPos.getChildren()[starterPos.getChildrenNum()] = next;
                     starterPos.setChildrenNum(starterPos.getChildrenNum() + 1);
 
                     evaluatedMiniMax = miniMax(next, false, depth + 1, alpha, beta);
+                    ply--;
                     undoMove();
 
                     possibleMax = Math.max(evaluatedMiniMax, possibleMax);
 
-                    alpha = Math.max(alpha, evaluatedMiniMax);
-                    if (beta <= alpha)
-                        break;
+//                    alpha = Math.max(alpha, evaluatedMiniMax);
+//                    if (beta <= alpha)
+//                        break;
+                }else {
+                    ply--;
                 }
+            }
+            if (legalMoves == 0){
+                if (isSquareAttacked(false, 63 - Long.numberOfLeadingZeros(bitBoards[wKingI])))
+                    possibleMax = WHITE_GOT_CHECKMATE + ply;
+                else
+                    possibleMax = DRAW + ply;
             }
             starterPos.setFinalValue(possibleMax);
             return possibleMax;
@@ -169,21 +192,31 @@ public class AI extends Thread {
                 copyPosition();
 
                 if (makeMove(move)){ // If move is legal
-
+                    legalMoves++;
+                    ply++;
 
                     AiNode next = new AiNode(move);
                     starterPos.getChildren()[starterPos.getChildrenNum()] = next;
                     starterPos.setChildrenNum(starterPos.getChildrenNum() + 1);
 
                     evaluatedMiniMax = miniMax(next, true, depth + 1, alpha, beta);
+                    ply--;
                     undoMove();
 
                     possibleMin = Math.min(evaluatedMiniMax, possibleMin);
 
-                    beta = Math.min(beta, evaluatedMiniMax);
-                    if (beta <= alpha)
-                        break;
+//                    beta = Math.min(beta, evaluatedMiniMax);
+//                    if (beta <= alpha)
+//                        break;
+                }else {
+                    ply--;
                 }
+            }
+            if (legalMoves == 0){
+                if (isSquareAttacked(true,63 - Long.numberOfLeadingZeros(bitBoards[bKingI])))
+                    possibleMin = BLACK_GOT_CHECKMATE + ply;
+                else
+                    possibleMin = DRAW + ply;
             }
             starterPos.setFinalValue(possibleMin);
             return possibleMin;

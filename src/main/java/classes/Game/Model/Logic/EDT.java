@@ -85,7 +85,7 @@ public class EDT {
             buttonsEnabled(new ArrayList<>(){{add("Mentés"); add("Szünet");}});
             ai = new AI();
             try {
-                sleep(300);
+                sleep(2500);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }

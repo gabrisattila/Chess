@@ -424,7 +424,6 @@ public class VARS {
 
             //region EmPassant Case
 
-            put("whiteDownWhitePawnsFrontEmPassant", "8/8/8/PPPPPPP1/6pP/8/pppppp1p/8 w ---- - 1 0");
             put("whiteDownBlackPawnsFrontEmPassant", "8/PPPPPPPP/8/8/pppppppp/8/8/8 w ---- - 1 0");
             put("blackDownBlackPawnsFrontEmPassant", "8/8/8/pppppppp/8/8/PPPPPPPP/8 w ---- - 1 0");
             put("blackDownWhitePawnsFrontEmPassant", "8/pppppppp/8/8/PPPPPPPP/8/8/8 w ---- - 1 0");
@@ -472,6 +471,9 @@ public class VARS {
 
             //region CheckMate
 
+            put("whiteDownCheckMateInTwoWhiteGotItByTwoRooks", "K7/8/6r1/k6r/8/8/8/8 b ---- - 1 1");
+            put("whiteDownCheckMateInOneWhiteGotItByTwoRooks", "K7/7r/6r1/k7/8/8/8/8 b ---- - 1 1");
+            put("whiteDownCheckMateInOneWhiteGotItWithPawnProm", "K7/3p4/k1p5/8/8/8/8/8 b ---- - 1 1");
             put("whiteDownCheckMateInOneTwoKingOneRookOneStep3x3", "1k1/3/K1R b ---- - 1 1");
             put("whiteDownCheckMateInOneTwoKingOneRookOneStep3x3WhiteStarts", "k2/3/K1R w ---- - 1 0");
             put("whiteDownCheckMateInOneTwoKingOneRookTwoStep4x4", "k3/4/K3/2R1 b ---- - 1 1");
@@ -500,6 +502,7 @@ public class VARS {
             put("test1WhiteDown", "8/8/8/5K2/3P2R1/2b5/1p2k3/8 b ---- - 1 1");
             put("test2WhiteDown", "8/8/8/8/3K4/2P5/1b6/3k4 b ---- - 1 1");
             put("whiteDownMostSimplePawnAgainstPawn", "8/8/8/P7/7p/8/8/8 w ---- - 1 0");
+            put("whiteDownWhitePawnsFront", "8/PPPPPPPP/8/8/8/8/pppppppp/8 w ---- - 1 0");
 
             //endregion
 
@@ -558,7 +561,7 @@ public class VARS {
 
         public static int MAX_HEIGHT = 8;
 
-        public static int MINIMAX_DEPTH = 4;
+        public static int MINIMAX_DEPTH = 5;
 
         public static GameState currentGameState = MIDDLE_GAME;
 

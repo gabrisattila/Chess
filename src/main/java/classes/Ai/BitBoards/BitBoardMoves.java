@@ -7,6 +7,7 @@ import java.util.Arrays;
 
 import static classes.Ai.BitBoards.BBVars.*;
 import static classes.Ai.BitBoards.BitBoards.*;
+import static classes.Game.I18N.VARS.FINALS.abc;
 import static classes.Game.I18N.VARS.FINALS.pieceImagesForLog;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 
@@ -567,15 +568,25 @@ public class BitBoardMoves {
         m += getWhat(move) <= wKingI ? "White " : "Black ";
         m += pieceImagesForLog[getWhat(move)];
         m += " goes from: ";
-        m += getFrom(move);
+        m += intToSquare(getFrom(move));
         m += " to: ";
-        m += getTo(move);
+        m += intToSquare(getTo(move));
         m += ".";
         m += getPromotion(move) == 0 ? "" : " And become " + pieceImagesForLog[getPromotion(move)];
         m += isCapture(move) ? " Caused capture. " : "";
         m += isEmPassant(move) ? " It was em-passant move." : "";
         m += isCastling(move) ? " It was castle. " : "";
         m += "\n";
+        return m;
+    }
+
+    private static String intToSquare(int move){
+        int i = move / 8;
+        int j = 7 - (move % 8);
+        i++;
+        String m = "";
+        m += abc.get(j);
+        m += i;
         return m;
     }
 

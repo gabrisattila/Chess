@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
+import static classes.Ai.BitBoards.BBVars.*;
 import static classes.Ai.Evaluation.Old_Evaluator.*;
 import static classes.GUI.Frame.Window.*;
 import static classes.GUI.FrameParts.ViewBoard.*;
@@ -103,7 +104,7 @@ public class GameOverOrPositionEnd {
         } else if (isDraw(submissionOrDraw, board)) {
             finalGameEnd();
             return DRAW;
-        } else if (isSubmission(submissionOrDraw) || itWorthToGiveUp()) {
+        } else if (isSubmission(submissionOrDraw)) {
             finalGameEnd();
             return submissionOrDraw;
         }
@@ -167,34 +168,33 @@ public class GameOverOrPositionEnd {
         }
     }
 
-    public static boolean isDraw(long whitePawn, long whiteKnight, long whiteBishop, long whiteRook, long whiteQueen, long whiteKing,
-                                 long blackPawn, long blackKnight, long blackBishop, long blackRook, long blackQueen, long blackKing){
+    public static boolean isDraw(){
 
         thirdSimilarPositionOfTheGame = happenedList.keySet().stream().anyMatch(a -> happenedList.get(a) == 3);
 
         boolean allRemainingPiecesAreKing =
-                whitePawn == 0 && whiteKnight == 0 && whiteBishop == 0 && whiteRook == 0 && whiteQueen == 0 && whiteKing != 0 &&
-                blackPawn == 0 && blackKnight == 0 && blackBishop == 0 && blackRook == 0 && blackQueen == 0 && blackKing != 0;
+                bitBoards[wPawnI] == 0 && bitBoards[wKnightI] == 0 && bitBoards[wBishopI] == 0 && bitBoards[wRookI] == 0 && bitBoards[wQueenI] == 0 && bitBoards[wKingI] != 0 &&
+                bitBoards[bPawnI] == 0 && bitBoards[bKnightI] == 0 && bitBoards[bBishopI] == 0 && bitBoards[bRookI] == 0 && bitBoards[bQueenI] == 0 && bitBoards[bKingI] != 0;
         boolean noBigOneRemained =
-                (whitePawn == 0 && whiteRook == 0 && whiteQueen == 0 && whiteKing != 0 &&
-                 blackPawn == 0 && blackRook == 0 && blackQueen == 0 && blackKing != 0);
+                (bitBoards[wPawnI] == 0 && bitBoards[wRookI] == 0 && bitBoards[wQueenI] == 0 && bitBoards[wKingI] != 0 &&
+                 bitBoards[bPawnI] == 0 && bitBoards[bRookI] == 0 && bitBoards[bQueenI] == 0 && bitBoards[bKingI] != 0);
         boolean only1WBishop =
-                (Long.bitCount(whiteBishop) == 1 && whiteKnight == 0 && blackBishop == 0 && blackKnight == 0);
+                (Long.bitCount(bitBoards[wBishopI]) == 1 && bitBoards[wKnightI] == 0 && bitBoards[bBishopI] == 0 && bitBoards[bKnightI] == 0);
         boolean only1BBishop =
-                (Long.bitCount(blackBishop) == 1 && whiteKnight == 0 && whiteBishop == 0 && blackKnight == 0);
+                (Long.bitCount(bitBoards[bBishopI]) == 1 && bitBoards[wKnightI] == 0 && bitBoards[wBishopI] == 0 && bitBoards[bKnightI] == 0);
         boolean only1WKnight =
-                (Long.bitCount(whiteKnight) == 1 && whiteBishop == 0 && blackBishop == 0 && blackKnight == 0);
+                (Long.bitCount(bitBoards[wKnightI]) == 1 && bitBoards[wBishopI] == 0 && bitBoards[bBishopI] == 0 && bitBoards[bKnightI] == 0);
         boolean only1BKnight =
-                (Long.bitCount(blackKnight) == 1 && whiteBishop == 0 && blackBishop == 0 && whiteKnight == 0);
+                (Long.bitCount(bitBoards[bKnightI]) == 1 && bitBoards[wBishopI] == 0 && bitBoards[bBishopI] == 0 && bitBoards[wKnightI] == 0);
         boolean only1WBishop1BKnight =
-                (Long.bitCount(whiteBishop) == 1 && (Long.bitCount(blackKnight) == 1) && blackBishop == 0 && whiteKnight == 0);
+                (Long.bitCount(bitBoards[wBishopI]) == 1 && (Long.bitCount(bitBoards[bKnightI]) == 1) && bitBoards[bBishopI] == 0 && bitBoards[wKnightI] == 0);
         boolean only1BBishop1WKnight =
-                (Long.bitCount(blackBishop) == 1 && (Long.bitCount(whiteKnight) == 1) && blackBishop == 0 && whiteKnight == 0);
+                (Long.bitCount(bitBoards[bBishopI]) == 1 && (Long.bitCount(bitBoards[wKnightI]) == 1) && bitBoards[bBishopI] == 0 && bitBoards[wKnightI] == 0);
         boolean only2KnightFromTheSameColor =
-                (Long.bitCount(whiteKnight) == 2 || Long.bitCount(blackKnight) == 2) && blackBishop == 0 && whiteBishop == 0;
+                (Long.bitCount(bitBoards[wKnightI]) == 2 || Long.bitCount(bitBoards[bKnightI]) == 2) && bitBoards[bBishopI] == 0 && bitBoards[wBishopI] == 0;
         boolean twoBishopAgainstOne =
-                (Long.bitCount(whiteBishop) == 2 && Long.bitCount(blackBishop) == 1 && blackKnight == 0 && whiteKnight == 0)  ||
-                (Long.bitCount(whiteBishop) == 1 && Long.bitCount(blackBishop) == 2 && blackKnight == 0 && whiteKnight == 0);
+                (Long.bitCount(bitBoards[wBishopI]) == 2 && Long.bitCount(bitBoards[bBishopI]) == 1 && bitBoards[bKnightI] == 0 && bitBoards[wKnightI] == 0)  ||
+                (Long.bitCount(bitBoards[wBishopI]) == 1 && Long.bitCount(bitBoards[bBishopI]) == 2 && bitBoards[bKnightI] == 0 && bitBoards[wKnightI] == 0);
 
         return thirdSimilarPositionOfTheGame || allRemainingPiecesAreKing ||
                 (noBigOneRemained &&
@@ -240,8 +240,7 @@ public class GameOverOrPositionEnd {
                 getBoard().getPieces().stream().allMatch(p -> p.getType() == K || p.getType() == N);
     }
 
-
-    private static void finalGameEnd(){
+    public static void finalGameEnd(){
         gameEndFlag.set(true);
         buttonsEnabled(new ArrayList<>(){{add("None");}});
         getViewBoard().clearPiecesRanges();
