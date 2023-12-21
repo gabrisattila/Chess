@@ -128,7 +128,8 @@ public class AI extends Thread {
         nodeNum++;
 
         double evaluatedMiniMax;
-        generateMoves(/*maxNeeded*/);
+
+        generateMoves(maxNeeded);
         int move;
 
         if (maxNeeded){
@@ -214,7 +215,7 @@ public class AI extends Thread {
         nodeNum++;
 
         int move;
-        generateMoves();
+//        generateMoves();
         int bestMoveYet = 0;
 
         double oldAlpha = alpha;

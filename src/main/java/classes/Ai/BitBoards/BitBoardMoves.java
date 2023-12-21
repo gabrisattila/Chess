@@ -278,7 +278,7 @@ public class BitBoardMoves {
         moveCount++;
     }
 
-    public static void generateMoves(/*boolean forWhite*/){
+    public static void generateMoves(boolean forWhite){
         moveCount = 0;
 
         HITTABLE_BY_BLACK = getPawnBoard(true) | getKnightBoard(true) | getBishopBoard(true) | getRookBoard(true) | getQueenBoard(true);
@@ -290,7 +290,7 @@ public class BitBoardMoves {
         long currentBitBoardCopy, possibility = 0;
         long shouldBePartOfMove = 0;
         for (int piece : pieceIndexes) {
-//            if (forWhite == (piece <= wKingI)){
+            if (forWhite == (piece <= wKingI)){
                 currentBitBoardCopy = bitBoards[piece];
                 while (currentBitBoardCopy != 0) {
                     from = 63 - Long.numberOfLeadingZeros(currentBitBoardCopy);
@@ -393,7 +393,7 @@ public class BitBoardMoves {
                     }
                     currentBitBoardCopy = removeBit(currentBitBoardCopy, from);
                 }
-//            }
+            }
         }
     }
 
