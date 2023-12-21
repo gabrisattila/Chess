@@ -100,6 +100,15 @@ public class BBVars {
     public static int[] movesInATurn = new int[256]; // This is the max number of possibilities in a turn.
 
     public static int moveCount = 0;
+
+
+    /**
+     * Helper in miniMax to find easier the closest move in case of equal evaluation point
+     */
+    public static int ply = 0;
+
+    public static int bestMove;
+
     
     //region Helper Boards
 

@@ -98,7 +98,7 @@ public class Window extends JFrame {
         addButtons();
         buttonsEnabled(new ArrayList<>(){{add("Új játék"); add("Betöltés"); }});
 
-//        canBeLogger = false;
+        canBeLogger = false;
         if (canBeLogger) {
             addLogger();
         }
