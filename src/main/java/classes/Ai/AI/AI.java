@@ -1,22 +1,18 @@
 package classes.Ai.AI;
 
-import classes.Ai.BitBoards.BitBoardMoves;
 import classes.Game.I18N.ChessGameException;
-import classes.Game.Model.Structure.Move;
 import lombok.*;
 
-import javax.rmi.ssl.SslRMIClientSocketFactory;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Arrays;
 import java.util.Random;
 
-import static classes.Ai.AI.AiNode.*;
 import static classes.Ai.BitBoards.BitBoardMoves.*;
 import static classes.Ai.BitBoards.BitBoards.*;
 import static classes.Ai.BitBoards.BBVars.*;
 import static classes.Ai.FenConverter.*;
 import static classes.GUI.FrameParts.ViewBoard.*;
+import static classes.Game.I18N.METHODS.*;
+import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.Model.Logic.EDT.*;
 import static classes.Game.Model.Structure.Board.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
@@ -120,29 +116,25 @@ public class AI extends Thread {
             //Here will come the evaluation
             double evaluation;
 
-            //return maxNeeded ?
-            //        (
-            //                PAWN_BASE_VALUE * Long.bitCount(bitBoards[wPawnI]) +
-            //                KNIGHT_OR_BISHOP_BASE_VALUE * (Long.bitCount(bitBoards[wKnightI] + Long.numberOfLeadingZeros(bitBoards[wBishopI]))) +
-            //                ROOK_BASE_VALUE * Long.bitCount(bitBoards[wRookI]) +
-            //                QUEEN_BASE_VALUE * Long.bitCount(bitBoards[wQueenI])
-            //        ) :
-            //        (
-            //                -PAWN_BASE_VALUE * Long.bitCount(bitBoards[wPawnI]) -
-            //                KNIGHT_OR_BISHOP_BASE_VALUE * (Long.bitCount(bitBoards[wKnightI] + Long.numberOfLeadingZeros(bitBoards[wBishopI]))) -
-            //                ROOK_BASE_VALUE * Long.bitCount(bitBoards[wRookI]) -
-            //                QUEEN_BASE_VALUE * Long.bitCount(bitBoards[wQueenI])
-            //        );-
+            evaluation =
+                    PAWN_BASE_VALUE * Long.bitCount(bitBoards[wPawnI]) +
+                        KNIGHT_OR_BISHOP_BASE_VALUE * (Long.bitCount(bitBoards[wKnightI] + Long.bitCount(bitBoards[wBishopI]))) +
+                        ROOK_BASE_VALUE * Long.bitCount(bitBoards[wRookI]) +
+                        QUEEN_BASE_VALUE * Long.bitCount(bitBoards[wQueenI])
+                        +
+                    -PAWN_BASE_VALUE * Long.bitCount(bitBoards[bPawnI]) -
+                        KNIGHT_OR_BISHOP_BASE_VALUE * (Long.bitCount(bitBoards[bKnightI] + Long.bitCount(bitBoards[bBishopI]))) -
+                        ROOK_BASE_VALUE * Long.bitCount(bitBoards[bRookI]) -
+                        QUEEN_BASE_VALUE * Long.bitCount(bitBoards[bQueenI]);
 
-            starterPos.setFinalValue(/*evauation*/ 0);
 
-            return 0;
+            starterPos.setFinalValue(evaluation);
+            return evaluation;
         }
 
         double evaluatedMiniMax;
 
         int[] movesInThisTurn = generateMoves(maxNeeded);
-//        System.out.println(moveListToString(movesInThisTurn));
 
         if (maxNeeded){
             double possibleMax = -Double.MAX_VALUE;
@@ -151,34 +143,24 @@ public class AI extends Thread {
 
                 copyPosition();
 
-                ply++;
-
-                //Make move be the next in the generated move list
-                if (makeMove(move)) { // Make Move, call miniMax recursively if it's legal move
-
-//                    System.out.println("The board state in " + nodeNum + ". node.\nAfter " + moveToString(move) + " move completed.\n");
-//                    printFullBoard();
+                if (makeMove(move)) { //If move is legal*
 
                     AiNode next = new AiNode(move);
-                    starterPos.getChildren().add(next);
+                    starterPos.getChildren()[starterPos.getChildrenNum()] = next;
+                    starterPos.setChildrenNum(starterPos.getChildrenNum() + 1);
 
                     evaluatedMiniMax = miniMax(next, false, depth + 1, alpha, beta);
-                    ply--;
                     undoMove();
 
                     possibleMax = Math.max(evaluatedMiniMax, possibleMax);
 
-//                    alpha = Math.max(alpha, evaluatedMiniMax);
-//                    if (beta <= alpha)
-//                        break;
-
-                } else {
-                    ply--;
-//                    undoMove();
+                    alpha = Math.max(alpha, evaluatedMiniMax);
+                    if (beta <= alpha)
+                        break;
                 }
             }
             starterPos.setFinalValue(possibleMax);
-            return possibleMax /*+ ply*/;
+            return possibleMax;
         } else {
             double possibleMin = Double.MAX_VALUE;
 
@@ -186,33 +168,25 @@ public class AI extends Thread {
 
                 copyPosition();
 
-                ply++;
-
-                //Make move be the next in the generated move list
                 if (makeMove(move)){ // If move is legal
 
-//                    System.out.println("The board state in " + nodeNum + ". node.\nAfter " + moveToString(move) + " move completed.\n");
-//                    printFullBoard();
 
                     AiNode next = new AiNode(move);
-                    starterPos.getChildren().add(next);
+                    starterPos.getChildren()[starterPos.getChildrenNum()] = next;
+                    starterPos.setChildrenNum(starterPos.getChildrenNum() + 1);
 
                     evaluatedMiniMax = miniMax(next, true, depth + 1, alpha, beta);
-                    ply--;
                     undoMove();
 
                     possibleMin = Math.min(evaluatedMiniMax, possibleMin);
 
-//                    beta = Math.min(beta, evaluatedMiniMax);
-//                    if (beta <= alpha)
-//                        break;
-                } else {
-                    ply--;
-//                    undoMove();
+                    beta = Math.min(beta, evaluatedMiniMax);
+                    if (beta <= alpha)
+                        break;
                 }
             }
             starterPos.setFinalValue(possibleMin);
-            return possibleMin /* + ply */;
+            return possibleMin;
         }
     }
 
@@ -251,7 +225,8 @@ public class AI extends Thread {
                 continue;
             }
             AiNode next = new AiNode(move);
-            starterPos.getChildren().add(next);
+            starterPos.getChildren()[starterPos.getChildrenNum()] = next;
+            starterPos.setChildrenNum(starterPos.getChildrenNum() + 1);
             double evaluatedNegaMax = -negaMax(next, depth + 1, -beta, -alpha);
 
             if (evaluatedNegaMax == -0)
@@ -294,7 +269,7 @@ public class AI extends Thread {
 
         //Collect the children which have the given best value
         for (AiNode child : parent.getChildren()) {
-            if (bestChildValue == child.getFinalValue()){
+            if (notNull(child) && bestChildValue == child.getFinalValue()){
                 bestChildren.add(child);
             }
         }

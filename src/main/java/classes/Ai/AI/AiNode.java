@@ -22,7 +22,9 @@ public class AiNode {
 
     private double finalValue;
 
-    private Set<AiNode> children;
+    private AiNode[] children;
+
+    private int childrenNum = 0;
 
     //endregion
 
@@ -30,18 +32,12 @@ public class AiNode {
     //region Constructor
 
     public AiNode(){
-        children = new HashSet<>();
+        children = new AiNode[100];
     }
 
     public AiNode(int creatorMove){
         theMoveWhatsCreatedIt = creatorMove;
-        children = new HashSet<>();
-    }
-
-    public AiNode(long zKey, int creatorMove){
-        zobristKey = zKey;
-        theMoveWhatsCreatedIt = creatorMove;
-        children = new HashSet<>();
+        children = new AiNode[100];
     }
 
     //endregion

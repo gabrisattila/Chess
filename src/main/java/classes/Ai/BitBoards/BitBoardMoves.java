@@ -328,7 +328,8 @@ public class BitBoardMoves {
                             }
                             //2 forward
                             else if (16 == Math.abs(from - to)) {
-                                shouldBePartOfMove = EMPTY & (piece == wPawnI ? (ROW_4 | ROW_3) : (ROW_5 | ROW_6));
+                                int minus = whiteDown ? (forWhite ? 8 : -8) : (forWhite ? -8 : 8);
+                                shouldBePartOfMove = EMPTY & (piece == wPawnI ? (ROW_4 | ROW_3) : (ROW_5 | ROW_6)) & 1L << (to - minus);
                             }
                             //Hit and if there's emPassant possibility, combine it
                             else {
@@ -401,23 +402,10 @@ public class BitBoardMoves {
     }
 
     public static void undoMove(){
-        //Set back the last 
-        //bitBoards = bitBoardsCopy.get(bitBoardsCopy.size() - 1);
-        //bitBoardsCopy.remove(bitBoardsCopy.size() - 1);
         bitBoards = bitBoardsCopy.pop();
-        //castle = castleCopy.get(castleCopy.size() - 1);
-        //castleCopy.remove(castleCopy.size() - 1);
         castle = castleCopy.pop();
-        //bbEmPassant = bbEmPassantCopy.get(bbEmPassantCopy.size() - 1);
-        //bbEmPassantCopy.remove(bbEmPassantCopy.size() - 1);
         bbEmPassant = bbEmPassantCopy.pop();
-        //whiteToPlay = whiteToPlayCopy.get(whiteToPlayCopy.size() - 1);
-        //whiteToPlayCopy.remove(whiteToPlayCopy.size() - 1);
         whiteToPlay = whiteToPlayCopy.pop();
-//        bitBoards = bitBoardsCopy;
-//        castle = castleCopy;
-//        bbEmPassant = bbEmPassantCopy;
-//        whiteToPlay = whiteToPlayCopy;
     }
 
     /**
@@ -517,6 +505,38 @@ public class BitBoardMoves {
                                 (getPawnBoard(true) & (1L << to + 1 & ~(whiteDown ? COL_H : COL_A))) != 0)
                 ){
                     bbEmPassant = whiteDown ? to + 8 : to - 8;
+                }
+            }
+
+            if (what == wKingI){
+                castle &= wK;
+                castle &= wQ;
+            } else if (what == bKingI) {
+                castle &= bK;
+                castle &= bQ;
+            } else if (what == wRookI) {
+                if (whiteDown){
+                    if (from == 0)
+                        castle &= wK;
+                    else
+                        castle &= wQ;
+                }else {
+                    if (from == 63)
+                        castle &= wK;
+                    else
+                        castle &= wQ;
+                }
+            } else if (what == bRookI) {
+                if (whiteDown){
+                    if (from == 56)
+                        castle &= bK;
+                    else
+                        castle &= bQ;
+                }else {
+                    if (from == 0)
+                        castle &= bK;
+                    else
+                        castle &= bQ;
                 }
             }
 
