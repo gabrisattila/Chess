@@ -101,7 +101,6 @@ public class AI extends Thread {
         FenToBoard(bitBoardsToFen(), getBoard());
 
         printSearchData(startTime, evaluatedSearch);
-//        System.exit(130);
     }
 
     private AiNode getNewNodeAndSetUpProperEnvironmentForMinimaxStart(){
@@ -133,7 +132,7 @@ public class AI extends Thread {
             //                KNIGHT_OR_BISHOP_BASE_VALUE * (Long.bitCount(bitBoards[wKnightI] + Long.numberOfLeadingZeros(bitBoards[wBishopI]))) -
             //                ROOK_BASE_VALUE * Long.bitCount(bitBoards[wRookI]) -
             //                QUEEN_BASE_VALUE * Long.bitCount(bitBoards[wQueenI])
-            //        );
+            //        );-
 
             starterPos.setFinalValue(/*evauation*/ 0);
 
@@ -166,8 +165,7 @@ public class AI extends Thread {
                     evaluatedMiniMax = miniMax(next, false, depth + 1, alpha, beta);
                     ply--;
                     undoMove();
-//                    System.out.println("The move: " + moveToString(move) + " set back.");
-//                    printFullBoard();
+
                     possibleMax = Math.max(evaluatedMiniMax, possibleMax);
 
 //                    alpha = Math.max(alpha, evaluatedMiniMax);
@@ -176,7 +174,7 @@ public class AI extends Thread {
 
                 } else {
                     ply--;
-                    undoMove();
+//                    undoMove();
                 }
             }
             starterPos.setFinalValue(possibleMax);
@@ -202,8 +200,7 @@ public class AI extends Thread {
                     evaluatedMiniMax = miniMax(next, true, depth + 1, alpha, beta);
                     ply--;
                     undoMove();
-//                    System.out.println("The move: " + moveToString(move) + " set back.");
-//                    printFullBoard();
+
                     possibleMin = Math.min(evaluatedMiniMax, possibleMin);
 
 //                    beta = Math.min(beta, evaluatedMiniMax);
@@ -211,7 +208,7 @@ public class AI extends Thread {
 //                        break;
                 } else {
                     ply--;
-                    undoMove();
+//                    undoMove();
                 }
             }
             starterPos.setFinalValue(possibleMin);
