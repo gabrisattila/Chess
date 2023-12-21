@@ -43,7 +43,7 @@ public class EDT {
 
     public EDT() {
         exceptionIgnorer();
-        saveBoardInsteadOfException();
+//        saveBoardInsteadOfException();
         initialization();
     }
 

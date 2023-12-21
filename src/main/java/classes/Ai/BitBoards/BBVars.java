@@ -5,6 +5,7 @@ import classes.Ai.AI.AiNode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Stack;
 
 import static classes.Game.I18N.VARS.MUTABLE.whiteDown;
 
@@ -88,13 +89,22 @@ public class BBVars {
     public static int bbEmPassant = -1;
 
     //For Undo move
-    public static long[] bitBoardsCopy = new long[12];
 
-    public static int castleCopy = 0;
+//    public static long[] bitBoardsCopy = new long[12];
+//
+//    public static int castleCopy = 0;
+//
+//    public static int bbEmPassantCopy = -1;
+//
+//    public static boolean whiteToPlayCopy = false;
 
-    public static int bbEmPassantCopy = -1;
+    public static Stack<long[]> bitBoardsCopy = new Stack<>();
 
-    public static boolean whiteToPlayCopy = false;
+    public static Stack<Integer> castleCopy = new Stack<>();
+
+    public static Stack<Integer> bbEmPassantCopy = new Stack<>();
+
+    public static Stack<Boolean> whiteToPlayCopy = new Stack<>();
 
 
     public static int[] movesInATurn = new int[256]; // This is the max number of possibilities in a turn.

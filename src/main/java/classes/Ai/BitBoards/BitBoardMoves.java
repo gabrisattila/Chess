@@ -1,5 +1,6 @@
 package classes.Ai.BitBoards;
 
+import classes.Game.I18N.Location;
 import lombok.*;
 
 import java.util.Arrays;
@@ -202,7 +203,7 @@ public class BitBoardMoves {
 
     //region Create And Decode Move
 
-    private static int createMove(int from, int to, int what, int promotion,
+    private static Integer createMove(int from, int to, int what, int promotion,
                                   boolean wasCapture, boolean wasEmPassant, boolean wasCastling){
 
         return
@@ -235,42 +236,12 @@ public class BitBoardMoves {
         return (move & 0x100000) != 0;
     }
 
-    private static boolean isEmPassant(int move){
+    public static boolean isEmPassant(int move){
         return (move & 0x400000) != 0;
     }
 
-    private static boolean isCastling(int move){
+    public static boolean isCastling(int move){
         return (move & 0x800000) != 0;
-    }
-
-    public static String moveToString(int move){
-        String m = "";
-        m += getWhat(move) <= wKingI ? "White " : "Black ";
-        m += pieceImagesForLog[getWhat(move)];
-        m += " goes from: ";
-        m += getFrom(move);
-        m += " to: ";
-        m += getTo(move);
-        m += ".";
-        m += getPromotion(move) == 0 ? "" : " And become " + pieceImagesForLog[getPromotion(move)];
-        m += isCapture(move) ? " Caused capture. " : "";
-        m += isEmPassant(move) ? " It was em-passant move." : "";
-        m += isCastling(move) ? " It was castle. " : "";
-        m += "\n";
-        return m;
-    }
-
-    public static String intToBitString(int i){
-        StringBuilder s = new StringBuilder();
-        for (int j = 31; j >= 0; j--) {
-            if ((1 << j & i) != 0)
-                s.append('1');
-            else
-                s.append('0');
-            if (j % 4 == 0)
-                s.append('\n');
-        }
-        return s.toString();
     }
 
     public static void addMove(int move){
@@ -278,13 +249,15 @@ public class BitBoardMoves {
         moveCount++;
     }
 
-    public static void generateMoves(boolean forWhite){
-        moveCount = 0;
+    public static int[] generateMoves(boolean forWhite){
 
         HITTABLE_BY_BLACK = getPawnBoard(true) | getKnightBoard(true) | getBishopBoard(true) | getRookBoard(true) | getQueenBoard(true);
         HITTABLE_BY_WHITE = getPawnBoard(false) | getKnightBoard(false) | getBishopBoard(false) | getRookBoard(false) | getQueenBoard(false);
         OCCUPIED = HITTABLE_BY_BLACK | HITTABLE_BY_WHITE | getKingBoard(true) | getKingBoard(false);
         EMPTY = ~OCCUPIED;
+
+        int moveCount = 0;
+        int[] moves = new int[256];
 
         int from, to;
         long currentBitBoardCopy, possibility = 0;
@@ -381,13 +354,13 @@ public class BitBoardMoves {
                             }
 
                             //Add new move to move list
-                            addMove(
+                            moves[moveCount] =
                                     createMove(from, to, piece, promotion,
                                             (1L << to & (piece <= wKingI ? HITTABLE_BY_WHITE : HITTABLE_BY_BLACK)) != 0,
                                             (1L << to & EMPTY & 1L << bbEmPassant) != 0 && (piece == wPawnI || piece == bPawnI),
                                             (piece == wKingI || piece == bKingI) && 2 == Math.abs(from - to)
-                                    )
-                            );
+                                    );
+                            moveCount++;
                         }
                         possibility = removeBit(possibility, to);
                     }
@@ -395,6 +368,7 @@ public class BitBoardMoves {
                 }
             }
         }
+        return Arrays.stream(moves).filter(m -> getFrom(m) != getTo(m)).toArray();
     }
 
     private static long shouldBePartOf(boolean forWhite){
@@ -416,17 +390,34 @@ public class BitBoardMoves {
     //region Make and Undo Moves
 
     public static void copyPosition(){
-        bitBoardsCopy = Arrays.copyOf(bitBoards, bitBoards.length);
-        castleCopy = castle;
-        bbEmPassantCopy = bbEmPassant;
-        whiteToPlayCopy = whiteToPlay;
+        bitBoardsCopy.push(Arrays.copyOf(bitBoards, bitBoards.length));
+        castleCopy.push(castle);
+        bbEmPassantCopy.push(bbEmPassant);
+        whiteToPlayCopy.push(whiteToPlay);
+//        bitBoardsCopy = Arrays.copyOf(bitBoards, bitBoards.length);
+//        castleCopy = castle;
+//        bbEmPassantCopy = bbEmPassant;
+//        whiteToPlayCopy = whiteToPlay;
     }
 
     public static void undoMove(){
-        bitBoards = bitBoardsCopy;
-        castle = castleCopy;
-        bbEmPassant = bbEmPassantCopy;
-        whiteToPlay = whiteToPlayCopy;
+        //Set back the last 
+        //bitBoards = bitBoardsCopy.get(bitBoardsCopy.size() - 1);
+        //bitBoardsCopy.remove(bitBoardsCopy.size() - 1);
+        bitBoards = bitBoardsCopy.pop();
+        //castle = castleCopy.get(castleCopy.size() - 1);
+        //castleCopy.remove(castleCopy.size() - 1);
+        castle = castleCopy.pop();
+        //bbEmPassant = bbEmPassantCopy.get(bbEmPassantCopy.size() - 1);
+        //bbEmPassantCopy.remove(bbEmPassantCopy.size() - 1);
+        bbEmPassant = bbEmPassantCopy.pop();
+        //whiteToPlay = whiteToPlayCopy.get(whiteToPlayCopy.size() - 1);
+        //whiteToPlayCopy.remove(whiteToPlayCopy.size() - 1);
+        whiteToPlay = whiteToPlayCopy.pop();
+//        bitBoards = bitBoardsCopy;
+//        castle = castleCopy;
+//        bbEmPassant = bbEmPassantCopy;
+//        whiteToPlay = whiteToPlayCopy;
     }
 
     /**
@@ -436,7 +427,6 @@ public class BitBoardMoves {
     public static boolean makeMove(int move){
         int what = getWhat(move);
         if ((what <= wKingI == whiteToPlay)){
-            copyPosition();
             int from = getFrom(move);
             int to = getTo(move);
             int promotion = getPromotion(move);
@@ -463,16 +453,8 @@ public class BitBoardMoves {
 
             //move is pawn promotion
             if (promotion != 0){
-                for (int
-                     piece = whiteToPlay ? bKnightI : wKnightI;
-                     piece <= (whiteToPlay ? bQueenI : wQueenI);
-                     piece++)
-                {
-                    if (getBit(bitBoards[piece], to) != 0){
-                        bitBoards[piece] = removeBit(bitBoards[piece], to);
-                        break;
-                    }
-                }
+                bitBoards[what] = removeBit(bitBoards[what], to);
+                bitBoards[promotion] = setBit(bitBoards[promotion], to);
             }
 
             //move is emPassant action
@@ -549,6 +531,60 @@ public class BitBoardMoves {
                 return true;
         }
         return false;
+    }
+
+    private static Location bitBoardIndexToLocation(int index){
+        int i = (index / 8) + 1, j = 7 - index % 8;
+        return new Location(i, j);
+    }
+
+    //endregion
+
+    //region Print move
+
+    public static String moveToString(int move){
+        String m = "";
+        m += getWhat(move) <= wKingI ? "White " : "Black ";
+        m += pieceImagesForLog[getWhat(move)];
+        m += " goes from: ";
+        m += getFrom(move);
+        m += " to: ";
+        m += getTo(move);
+        m += ".";
+        m += getPromotion(move) == 0 ? "" : " And become " + pieceImagesForLog[getPromotion(move)];
+        m += isCapture(move) ? " Caused capture. " : "";
+        m += isEmPassant(move) ? " It was em-passant move." : "";
+        m += isCastling(move) ? " It was castle. " : "";
+        m += "\n";
+        return m;
+    }
+
+    public static String intToBitString(int i){
+        StringBuilder s = new StringBuilder();
+        for (int j = 31; j >= 0; j--) {
+            if ((1 << j & i) != 0)
+                s.append('1');
+            else
+                s.append('0');
+            if (j % 4 == 0)
+                s.append('\n');
+        }
+        return s.toString();
+    }
+
+    public static String moveListToString(int[] movesInATurn){
+        StringBuilder moveList = new StringBuilder();
+
+        int index = 0;
+        for (int move : movesInATurn) {
+            if (getFrom(move) != getTo(move)){
+                moveList.append(index).append(". move in list: ").append(moveToString(move));
+                moveList.append("---------------------\n");
+                index++;
+            }
+        }
+
+        return moveList.toString();
     }
 
     //endregion

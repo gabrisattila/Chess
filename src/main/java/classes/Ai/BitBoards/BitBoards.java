@@ -14,11 +14,17 @@ public class BitBoards {
     //region Fen To BitBoards
 
     public static void setUpBitBoard(String fen){
+
         String bbFen = FenToBitBoardFen(fen);
         String[] fenParts = bbFen.split(" ");
         String pieces = fenParts[0];
+
         whiteToPlay = "w".equals(fenParts[1]);
+
         int bitCounter = 63;
+
+        bitBoards = new long[12];
+
         for (int i = 0; i < pieces.length(); i++) {
             if (Character.isLetter(pieces.charAt(i))){
                 bitBoards[getIndex(pieces.charAt(i))] = setBit(bitBoards[getIndex(pieces.charAt(i))], bitCounter);
@@ -97,10 +103,7 @@ public class BitBoards {
 
     //region Bit Boards To Fen
 
-    public static String bitBoardsToFen(
-            boolean whiteTurn, int emPassant, boolean wKC, boolean wQC, boolean bKC, boolean bQC,
-            long whitePawn, long whiteKnight, long whiteBishop, long whiteRook, long whiteQueen, long whiteKing,
-            long blackPawn, long blackKnight, long blackBishop, long blackRook, long blackQueen, long blackKing) {
+    public static String bitBoardsToFen() {
         StringBuilder fen = new StringBuilder();
         StringBuilder row = new StringBuilder();
         int counter = 0;
@@ -111,10 +114,16 @@ public class BitBoards {
 
         for (int i = 0; i < MAX_WIDTH * MAX_HEIGHT; i++) {
             counter = upgradeCounter(i, counter,
-                    whitePawn, whiteKnight, whiteBishop, whiteRook, whiteQueen, whiteKing,
-                    blackPawn, blackKnight, blackBishop, blackRook, blackQueen, blackKing);
-            counter = getCounterAndAppendToFen(row, counter, i, whitePawn, whiteKnight, whiteBishop, whiteRook, whiteQueen, whiteKing, true);
-            counter = getCounterAndAppendToFen(row, counter, i, blackPawn, blackKnight, blackBishop, blackRook, blackQueen, blackKing, false);
+                    bitBoards[wPawnI], bitBoards[wKnightI], bitBoards[wBishopI], bitBoards[wRookI], bitBoards[wQueenI], bitBoards[wKingI],
+                    bitBoards[bPawnI], bitBoards[bKnightI], bitBoards[bBishopI], bitBoards[bRookI], bitBoards[bQueenI], bitBoards[bKingI]);
+            counter = getCounterAndAppendToFen(
+                    row, counter, i,
+                    bitBoards[wPawnI], bitBoards[wKnightI], bitBoards[wBishopI], bitBoards[wRookI], bitBoards[wQueenI], bitBoards[wKingI], 
+                    true);
+            counter = getCounterAndAppendToFen(
+                    row, counter, i,
+                    bitBoards[bPawnI], bitBoards[bKnightI], bitBoards[bBishopI], bitBoards[bRookI], bitBoards[bQueenI], bitBoards[bKingI], 
+                    false);
             if ((i + 1) % MAX_WIDTH == 0){
                 if (counter != 0)
                     row.append(counter);
@@ -127,30 +136,34 @@ public class BitBoards {
             }
         }
 
-        fen.append(" ").append(whiteTurn ? "w" : "b");
+        fen.append(" ").append(whiteToPlay ? "w" : "b");
         fen.append(" ");
-        fen.append(wKC ? "K" : "-");
-        fen.append(wQC ? "Q" : "-");
-        fen.append(bKC ? "k" : "-");
-        fen.append(bQC ? "q" : "-");
+        fen.append((castle & wK) != 0 ? "K" : "-");
+        fen.append((castle & wQ) != 0 ? "Q" : "-");
+        fen.append((castle & bK) != 0 ? "k" : "-");
+        fen.append((castle & bQ) != 0 ? "q" : "-");
         fen.append(" ");
-        String emPassantString = emPassant == -1 ? "-" : String.valueOf(emPassant / 8);
-        emPassantString += emPassant == -1 ? "" : String.valueOf(emPassant % 8);
-        fen.append(emPassantString);
+        emPassantChance = bbEmPassant == -1 ? "-" : String.valueOf(bbEmPassant / 8);
+        emPassantChance += bbEmPassant == -1 ? "" : String.valueOf(7 - (bbEmPassant % 8));
+        fen.append(emPassantChance);
         fen.append(" ");
         fen.append(stepNumber++);
         fen.append(" ");
-        fen.append(whiteTurn ? "0" : "1");
+        fen.append(whiteToPlay ? "0" : "1");
 
         return fen.toString();
     }
 
-    public static void printFullBoard(){
+    public static String fullBoardToString(){
         long full = 0;
         for (int piece : pieceIndexes) {
             full |= bitBoards[piece];
         }
-        System.out.println(BitBoards.toString(full));
+        return toString(full);
+    }
+
+    public static void printFullBitBoard(){
+        System.out.println(fullBoardToString());
     }
 
     private static void printBitBoards(boolean forWhite, long pawn, long knight, long bishop, long rook, long queen, long king) {

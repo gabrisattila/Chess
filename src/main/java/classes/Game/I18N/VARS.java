@@ -406,6 +406,7 @@ public class VARS {
 
             put("whiteDownWithOutPawns", "RNBQKBNR/8/8/8/8/8/8/rnbqkbnr w KQkq - 1 0");
             put("onlyTwoKnights8x8", "1NN5/8/8/8/8/8/8/1n4n1 w ---- - 1 0");
+            put("onlyOneKnights8x8", "1N6/8/8/8/8/8/8/6n1 w ---- - 1 0");
             put("onlyTwoKings8x8", "1K6/8/8/8/8/8/8/6k1 w ---- - 1 0");
             put("onlyKnights4x4", "1N2/4/4/2n1 w ---- - 1 0");
             put("onlyBishops", "2B2B2/8/8/8/8/8/8/2b2b2 w ---- - 1 0");
@@ -498,6 +499,7 @@ public class VARS {
             put("4mpOn6depth", "8/8/8/8/K1P4r/8/3p4/3k4 b ---- - 1 1");
             put("test1WhiteDown", "8/8/8/5K2/3P2R1/2b5/1p2k3/8 b ---- - 1 1");
             put("test2WhiteDown", "8/8/8/8/3K4/2P5/1b6/3k4 b ---- - 1 1");
+            put("whiteDownMostSimplePawnAgainstPawn", "8/8/8/P7/7p/8/8/8 w ---- - 1 0");
 
             //endregion
 
@@ -556,7 +558,7 @@ public class VARS {
 
         public static int MAX_HEIGHT = 8;
 
-        public static int MINIMAX_DEPTH = 6;
+        public static int MINIMAX_DEPTH = 1;
 
         public static GameState currentGameState = MIDDLE_GAME;
 
