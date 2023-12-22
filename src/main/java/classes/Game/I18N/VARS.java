@@ -557,7 +557,7 @@ public class VARS {
 
         public static int MAX_HEIGHT = 8;
 
-        public static int MINIMAX_DEPTH = 3;
+        public static int MINIMAX_DEPTH = 2;
 
         public static GameState currentGameState = MIDDLE_GAME;
 

@@ -177,9 +177,9 @@ public class AI extends Thread {
             }
             if (legalMoves == 0){
                 if (isSquareAttacked(false, 63 - Long.numberOfLeadingZeros(bitBoards[wKingI])))
-                    possibleMax = WHITE_GOT_CHECKMATE + ply;
+                    possibleMax = WHITE_GOT_CHECKMATE;// + ply;
                 else
-                    possibleMax = DRAW + ply;
+                    possibleMax = DRAW;// + ply;
             }
             starterPos.setFinalValue(possibleMax);
             return possibleMax;
@@ -212,9 +212,9 @@ public class AI extends Thread {
             }
             if (legalMoves == 0){
                 if (isSquareAttacked(true,63 - Long.numberOfLeadingZeros(bitBoards[bKingI])))
-                    possibleMin = BLACK_GOT_CHECKMATE + ply;
+                    possibleMin = BLACK_GOT_CHECKMATE;// + ply;
                 else
-                    possibleMin = DRAW + ply;
+                    possibleMin = DRAW;// + ply;
             }
             starterPos.setFinalValue(possibleMin);
             return possibleMin;

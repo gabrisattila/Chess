@@ -84,7 +84,6 @@ public class BitBoardMoves {
         return removeAB_OR_GH_Cols(from, (from >= 10 ? KING_SPAN << (from - 10) : KING_SPAN >> (10 - from)));
     }
 
-
     private static long diagonalAndVerticalMoves(int from, boolean forBase) {
         long binaryFrom = 1L << from;
         int rowIndex = from / 8, colIndex = (from % 8);
@@ -180,11 +179,17 @@ public class BitBoardMoves {
     public static int getSide(boolean forWhite){
         return forWhite ? 1 : 0;
     }
+    
+    private static void setOccupiedAndEmpty(){
+        OCCUPIED = bitBoards[wPawnI] | bitBoards[wKnightI] | bitBoards[wBishopI] | bitBoards[wRookI] | bitBoards[wQueenI] | bitBoards[wKingI] |
+                    bitBoards[bPawnI] | bitBoards[bKnightI] | bitBoards[bBishopI] | bitBoards[bRookI] | bitBoards[bQueenI] | bitBoards[bKingI];
+        EMPTY = ~OCCUPIED;
+    }
 
     //endregion
 
     public static boolean isSquareAttacked(boolean attackerColor, int squareIndex){
-
+        setOccupiedAndEmpty();
         return
                 decideWhetherIsAttackedByPawn(attackerColor, squareIndex) ||
                 (knightPossibilityTable[squareIndex] & getKnightBoard(attackerColor)) != 0 ||
@@ -281,8 +286,7 @@ public class BitBoardMoves {
 
         HITTABLE_BY_BLACK = getPawnBoard(true) | getKnightBoard(true) | getBishopBoard(true) | getRookBoard(true) | getQueenBoard(true);
         HITTABLE_BY_WHITE = getPawnBoard(false) | getKnightBoard(false) | getBishopBoard(false) | getRookBoard(false) | getQueenBoard(false);
-        OCCUPIED = HITTABLE_BY_BLACK | HITTABLE_BY_WHITE | getKingBoard(true) | getKingBoard(false);
-        EMPTY = ~OCCUPIED;
+        setOccupiedAndEmpty();
 
         int moveCount = 0;
         int[] moves = new int[256];
