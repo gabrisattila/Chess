@@ -794,8 +794,7 @@ U64 bishop_attacks[64][512];
 U64 rook_attacks[64][4096];
 
 // generate pawn attacks
-U64 mask_pawn_attacks(int side, int square)
-{
+U64 mask_pawn_attacks(int side, int square){
     // result attacks bitboard
     U64 attacks = 0ULL;
 
@@ -826,8 +825,7 @@ U64 mask_pawn_attacks(int side, int square)
 }
 
 // generate knight attacks
-U64 mask_knight_attacks(int square)
-{
+U64 mask_knight_attacks(int square){
     // result attacks bitboard
     U64 attacks = 0ULL;
 

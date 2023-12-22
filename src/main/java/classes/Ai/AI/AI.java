@@ -46,7 +46,8 @@ public class AI extends Thread {
     public void run(){
         try {
             aiMove();
-            receivedMoveFromAi(BoardToFen(getBoard()));
+            if (!gameFinished())
+                receivedMoveFromAi(BoardToFen(getBoard()));
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -92,13 +93,18 @@ public class AI extends Thread {
         int startTime = (int) System.currentTimeMillis();
 
         double evaluatedSearch = miniMax(starterPos, whiteToPlay, 0, -Double.MAX_VALUE, Double.MAX_VALUE);
-        bestMove = sortOutBestChild(starterPos, evaluatedSearch);
 
-        makeMove(bestMove);
-        FenToBoard(bitBoardsToFen(), getBoard());
-        if (evaluatedSearch == WHITE_GOT_CHECKMATE + ply || evaluatedSearch == BLACK_GOT_CHECKMATE + ply) {
+        if (evaluatedSearch == WHITE_GOT_CHECKMATE /* + ply */ || evaluatedSearch == BLACK_GOT_CHECKMATE /* + ply */ ||
+            evaluatedSearch == DRAW) {
+            //Show final game end pop up
+            gameEndDialog(evaluatedSearch);
             finalGameEnd();
             return;
+        }else {
+            //We only do the best move if there's no Check Mate or Draw
+            bestMove = sortOutBestChild(starterPos, evaluatedSearch);
+            makeMove(bestMove);
+            FenToBoard(bitBoardsToFen(), getBoard());
         }
 
         printSearchData(startTime, evaluatedSearch);

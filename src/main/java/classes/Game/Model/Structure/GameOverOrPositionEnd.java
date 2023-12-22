@@ -242,7 +242,6 @@ public class GameOverOrPositionEnd {
 
     public static void finalGameEnd(){
         gameEndFlag.set(true);
-        buttonsEnabled(new ArrayList<>(){{add("None");}});
         getViewBoard().clearPiecesRanges();
     }
 
