@@ -438,7 +438,7 @@ public class VARS {
 
             put("whiteUpOnlyKingsAndRooks", "r2k3r/8/8/8/8/8/8/R2K3R w KQkq - 1 0");
             put("whiteDownBothCanCastleBothSides", "R3K2R/8/8/8/8/8/8/r3k2r w KQkq - 1 0");
-            put("whiteDownBothCanCastleOneSide", "R3K3/8/8/8/8/8/8/4k2r w -Qk- - 1 0");
+            put("whiteDownBothCanCastleOneSide", "R3K3/8/7P/8/8/p7/8/4k2r w -Qk- - 1 0");
             put("whiteDownBlackCanCastleNoSide", "R3KR2/8/8/8/8/8/8/4k2r b -Qk- - 1 1");
             put("whiteDownBlackCanCastleNoSideBecauseItIsInCheck", "R3K3/4R3/8/8/8/8/8/4k2r b -Qk- - 1 1");
 
@@ -462,10 +462,6 @@ public class VARS {
             //region Check
 
             put("whiteDownCheckTestCheckWithQueenPiecesAroundEnemyKing", "K7/Q5rr/7k/6nn/8/8/8/8 w ---- - 1 0");
-            put("whiteDownOutOfMemoryAfterCheck1", "R1B1KR2/3PPPn1/N1P2NP1/1P4pP/2pB1p1p/4p1qb/p2p4/r1b1k1nr w -Qkq - 1 0");
-            put("whiteDownOutOfMemoryAfterCheck2", "2BK1BR1/3Q4/N1n3q1/3ppNpP/2b1n3/R6r/ppk2p1b/6r1 w ---- - 1 0");
-            put("problemWithCheck", "R3KB1B/PPPB1PPP/5N2/3P4/1NQ4p/1k4p1/pppp4/rnbq1bnb b ---- - 1 1");
-            put("bitBoardAiStaysInCheck", "RN2KB1R/PPP2PPP/5N2/3PP3/8/7Q/pppppp1p/rnb1qkr1 b ---- - 7 1");
 
             //endregion
 
@@ -561,7 +557,7 @@ public class VARS {
 
         public static int MAX_HEIGHT = 8;
 
-        public static int MINIMAX_DEPTH = 6;
+        public static int MINIMAX_DEPTH = 3;
 
         public static GameState currentGameState = MIDDLE_GAME;
 

@@ -479,41 +479,60 @@ public class BitBoardMoves {
             if (castling) {
                 int rookFrom = -1;
                 int rookTo = -1;
-                if (to == 1){ // whiteDown wKC
-                    rookFrom = 0;
-                    rookTo = 2;
-                    castle &= wK;
-                } else if (to == 5) { // whiteDown wQC
-                    rookFrom = 7;
-                    rookTo = 4;
-                    castle &= wQ;
-                } else if (to == 57) { // whiteDown bKC
-                    rookFrom = 56;
-                    rookTo = 58;
-                    castle &= bK;
-                } else if (to == 61) { // whiteDown bQC
-                    rookFrom = 63;
-                    rookTo = 60;
-                    castle &= bQ;
-                } else if (to == 62) { // !whiteDown wKC
-                    rookFrom = 63;
-                    rookTo = 61;
-                    castle &= wK;
-                } else if (to == 58) { // !whiteDown wQC
-                    rookFrom = 56;
-                    rookTo = 59;
-                    castle &= wQ;
-                } else if (to == 6) { // !whiteDown bKC
-                    rookFrom = 7;
-                    rookTo = 5;
-                    castle &= bK;
-                } else if (to == 2) { // !whiteDown bQC
-                    rookFrom = 0;
-                    rookTo = 3;
-                    castle &= bQ;
+                if (whiteDown){
+                    if (to == 1) { // whiteDown wKC
+                        rookFrom = 0;
+                        rookTo = 2;
+                        if ((castle & wK) != 0)
+                            castle -= wK;
+                    } else if (to == 5) { // whiteDown wQC
+                        rookFrom = 7;
+                        rookTo = 4;
+                        if ((castle & wQ) != 0)
+                            castle -= wQ;
+                    } else if (to == 57) { // whiteDown bKC
+                        rookFrom = 56;
+                        rookTo = 58;
+                        if ((castle & bK) != 0)
+                            castle -= bK;
+                    } else if (to == 61) { // whiteDown bQC
+                        rookFrom = 63;
+                        rookTo = 60;
+                        if ((castle & bQ) != 0)
+                            castle -= bQ;
+                    }
+                } else {
+                    if (to == 62) { // !whiteDown wKC
+                        rookFrom = 63;
+                        rookTo = 61;
+                        if ((castle & wK) != 0)
+                            castle -= wK;
+                    } else if (to == 58) { // !whiteDown wQC
+                        rookFrom = 56;
+                        rookTo = 59;
+                        if ((castle & wQ) != 0)
+                            castle -= wQ;
+                    } else if (to == 6) { // !whiteDown bKC
+                        rookFrom = 7;
+                        rookTo = 5;
+                        if ((castle & bK) != 0)
+                            castle -= bK;
+                    } else if (to == 2) { // !whiteDown bQC
+                        rookFrom = 0;
+                        rookTo = 3;
+                        if ((castle & bQ) != 0)
+                            castle -= bQ;
+                    }
                 }
-                bitBoards[whiteToPlay ? wRookI : bRookI] = removeBit(getRookBoard(whiteToPlay), rookFrom);
-                bitBoards[whiteToPlay ? wRookI : bRookI] = setBit(getRookBoard(whiteToPlay), rookTo);
+                if (rookFrom == -1){
+                    bitBoards[what] = removeBit(bitBoards[what], to);
+                    bitBoards[what] = setBit(bitBoards[what], from);
+                    whiteToPlay = !whiteToPlay;
+                    return false;
+                }else {
+                    bitBoards[whiteToPlay ? wRookI : bRookI] = removeBit(getRookBoard(whiteToPlay), rookFrom);
+                    bitBoards[whiteToPlay ? wRookI : bRookI] = setBit(getRookBoard(whiteToPlay), rookTo);
+                }
             }
 
             if (what == wPawnI){
@@ -533,34 +552,38 @@ public class BitBoardMoves {
             }
 
             if (what == wKingI){
-                castle &= wK;
-                castle &= wQ;
+                if ((castle & wK) != 0)
+                    castle -= wK;
+                if ((castle & wQ) != 0)
+                    castle -= wQ;
             } else if (what == bKingI) {
-                castle &= bK;
-                castle &= bQ;
+                if ((castle & bK) != 0)
+                    castle -= bK;
+                if ((castle & bQ) != 0)
+                    castle -= bQ;
             } else if (what == wRookI) {
                 if (whiteDown){
-                    if (from == 0)
-                        castle &= wK;
-                    else
-                        castle &= wQ;
+                    if (from == 0 && (castle & wK) != 0)
+                        castle -= wK;
+                    else if ((castle & wQ) != 0)
+                        castle -= wQ;
                 }else {
-                    if (from == 63)
-                        castle &= wK;
-                    else
-                        castle &= wQ;
+                    if (from == 63 && (castle & wK) != 0)
+                        castle -= wK;
+                    else if ((castle & wQ) != 0)
+                        castle -= wQ;
                 }
             } else if (what == bRookI) {
                 if (whiteDown){
-                    if (from == 56)
-                        castle &= bK;
-                    else
-                        castle &= bQ;
+                    if (from == 56 && (castle & bK) != 0)
+                        castle -= bK;
+                    else if ((castle & bQ) != 0)
+                        castle -= bQ;
                 }else {
-                    if (from == 0)
-                        castle &= bK;
-                    else
-                        castle &= bQ;
+                    if (from == 0 && (castle & bK) != 0)
+                        castle -= bK;
+                    else if ((castle & bQ) != 0)
+                        castle -= bQ;
                 }
             }
 

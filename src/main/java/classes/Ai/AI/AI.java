@@ -319,8 +319,6 @@ public class AI extends Thread {
         }
         if (bbEmPassant != -1 && !isEmPassant(best))
             bbEmPassant = -1;
-        if (castle != 0 && !isCastling(best))
-            castle = 0;
         return best;
     }
 
