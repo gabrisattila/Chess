@@ -45,7 +45,9 @@ public class BBVars {
     };
 
     //First we always generate all the possible moves from all squares
-    public static long[][] pawnPossibilityTable = new long[2][64];
+    public static long[][] pawnSimpleStepTable = new long[2][64];
+
+    public static long[][] pawnAttackTable = new long[2][64];
 
     public static long[] knightPossibilityTable = new long[64];
 

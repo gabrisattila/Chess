@@ -17,7 +17,7 @@ public class BitBoardMoves {
 
     //region Base Possibilities
 
-    public static long pawnPossibilities(int forWhite, int from){
+    public static long pawnSimpleSteps(int forWhite, int from){
         long possibility = 0L;
         long bitBoard = 0L;
         bitBoard = setBit(bitBoard, from);
@@ -29,12 +29,6 @@ public class BitBoardMoves {
             if ((whiteDown ? bitBoard << 16 : bitBoard >> 16) != 0 && (bitBoard & ROW_2) != 0) {
                 possibility |= (whiteDown ? bitBoard << 16 : bitBoard >> 16);
             }
-            if ((whiteDown ? (bitBoard << 7 & ~COL_A) : (bitBoard >> 9 & ~COL_H)) != 0) {
-                possibility |= (whiteDown ? (bitBoard << 7 & ~COL_A) : (bitBoard >> 9 & ~COL_H));
-            }
-            if ((whiteDown ? (bitBoard << 9 & ~COL_H) : (bitBoard >> 7 & ~COL_A)) != 0) {
-                possibility |= (whiteDown ? (bitBoard << 9 & ~COL_H) : (bitBoard >> 7 & ~COL_A));
-            }
         } else { // for black pawns
             if ((whiteDown ? bitBoard >> 8 : bitBoard << 8) != 0){
                 possibility |= (whiteDown ? bitBoard >> 8 : bitBoard << 8);
@@ -42,6 +36,24 @@ public class BitBoardMoves {
             if ((whiteDown ? bitBoard >> 16 : bitBoard << 16) != 0 && (bitBoard & ROW_7) != 0) {
                 possibility |= (whiteDown ? bitBoard >> 16 : bitBoard << 16);
             }
+        }
+        return possibility;
+    }
+
+    private static long pawnAttacks(int forWhite, int from){
+        long possibility = 0L;
+        long bitBoard = 0L;
+        bitBoard = setBit(bitBoard, from);
+
+        if (forWhite == 1){
+            if ((whiteDown ? (bitBoard << 7 & ~COL_A) : (bitBoard >> 9 & ~COL_H)) != 0) {
+                possibility |= (whiteDown ? (bitBoard << 7 & ~COL_A) : (bitBoard >> 9 & ~COL_H));
+            }
+            if ((whiteDown ? (bitBoard << 9 & ~COL_H) : (bitBoard >> 7 & ~COL_A)) != 0) {
+                possibility |= (whiteDown ? (bitBoard << 9 & ~COL_H) : (bitBoard >> 7 & ~COL_A));
+            }
+        } else {
+
             if ((whiteDown ? (bitBoard >> 7 & ~COL_H) : (bitBoard << 9 & ~COL_A)) != 0) {
                 possibility |= (whiteDown ? (bitBoard >> 7 & ~COL_H) : (bitBoard << 9 & ~COL_A));
             }
@@ -115,7 +127,8 @@ public class BitBoardMoves {
     public static void fillBaseBitBoardPossibilities(){
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 64; j++) {
-                pawnPossibilityTable[i][j] = pawnPossibilities(i, j);
+                pawnSimpleStepTable[i][j] = pawnSimpleSteps(i, j);
+                pawnAttackTable[i][j] = pawnAttacks(i, j);
                 if (i == 0){
                     knightPossibilityTable[j] = knightPossibilities(j);
                     bishopPossibilityTable[j] = bishopPossibilities(j, true);
@@ -125,13 +138,13 @@ public class BitBoardMoves {
                 }
             }
         }
-        basePossibilities[0] = pawnPossibilityTable[1];
+        basePossibilities[0] = pawnSimpleStepTable[1];
         basePossibilities[1] = knightPossibilityTable;
         basePossibilities[2] = bishopPossibilityTable;
         basePossibilities[3] = rookPossibilityTable;
         basePossibilities[4] = queenPossibilityTable;
         basePossibilities[5] = kingPossibilityTable;
-        basePossibilities[6] = pawnPossibilityTable[0];
+        basePossibilities[6] = pawnSimpleStepTable[0];
         basePossibilities[7] = knightPossibilityTable;
         basePossibilities[8] = bishopPossibilityTable;
         basePossibilities[9] = rookPossibilityTable;
@@ -171,13 +184,27 @@ public class BitBoardMoves {
     //endregion
 
     public static boolean isSquareAttacked(boolean attackerColor, int squareIndex){
+
         return
-                (pawnPossibilityTable[getSide(attackerColor)][squareIndex] & getPawnBoard(attackerColor)) != 0 ||
+                decideWhetherIsAttackedByPawn(attackerColor, squareIndex) ||
                 (knightPossibilityTable[squareIndex] & getKnightBoard(attackerColor)) != 0 ||
                 (bishopPossibilities(squareIndex, false) & getBishopBoard(attackerColor)) != 0 ||
                 (rookPossibilities(squareIndex, false) & getRookBoard(attackerColor)) != 0 ||
                 (queenPossibilities(squareIndex, false) & getQueenBoard(attackerColor)) != 0 ||
                 (kingPossibilityTable[squareIndex] & getKingBoard(attackerColor)) != 0;
+    }
+
+    private static boolean decideWhetherIsAttackedByPawn(boolean attackerColor, int squareIndex){
+        boolean attackedByPawn = false;
+        long pawnBoardCopy = bitBoards[attackerColor ? wPawnI : bPawnI];
+        int i;
+        while (pawnBoardCopy != 0){
+            i = 63 - Long.numberOfLeadingZeros(pawnBoardCopy);
+            if ((pawnAttackTable[getSide(attackerColor)][i] & 1L << squareIndex) != 0)
+                attackedByPawn = true;
+            pawnBoardCopy = removeBit(pawnBoardCopy, i);
+        }
+        return attackedByPawn;
     }
 
     /*
@@ -270,10 +297,10 @@ public class BitBoardMoves {
                     from = 63 - Long.numberOfLeadingZeros(currentBitBoardCopy);
                     switch (piece) {
                         case wPawnI -> {
-                            possibility = pawnPossibilityTable[1][from];
+                            possibility = pawnSimpleStepTable[1][from];
                         }
                         case bPawnI -> {
-                            possibility = pawnPossibilityTable[0][from];
+                            possibility = pawnSimpleStepTable[0][from];
                         }
                         case wKnightI -> {
                             possibility = knightPossibilityTable[from];
@@ -396,10 +423,6 @@ public class BitBoardMoves {
         castleCopy.push(castle);
         bbEmPassantCopy.push(bbEmPassant);
         whiteToPlayCopy.push(whiteToPlay);
-//        bitBoardsCopy = Arrays.copyOf(bitBoards, bitBoards.length);
-//        castleCopy = castle;
-//        bbEmPassantCopy = bbEmPassant;
-//        whiteToPlayCopy = whiteToPlay;
     }
 
     public static void undoMove(){

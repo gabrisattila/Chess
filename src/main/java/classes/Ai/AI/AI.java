@@ -96,7 +96,7 @@ public class AI extends Thread {
 
         makeMove(bestMove);
         FenToBoard(bitBoardsToFen(), getBoard());
-        if (evaluatedSearch == WHITE_GOT_CHECKMATE || evaluatedSearch == BLACK_GOT_CHECKMATE) {
+        if (evaluatedSearch == WHITE_GOT_CHECKMATE + ply || evaluatedSearch == BLACK_GOT_CHECKMATE + ply) {
             finalGameEnd();
             return;
         }
@@ -160,8 +160,7 @@ public class AI extends Thread {
                     ply++;
 
                     AiNode next = new AiNode(move);
-                    starterPos.getChildren()[starterPos.getChildrenNum()] = next;
-                    starterPos.setChildrenNum(starterPos.getChildrenNum() + 1);
+                    starterPos.getChildren().add(next);
 
                     evaluatedMiniMax = miniMax(next, false, depth + 1, alpha, beta);
                     ply--;
@@ -169,9 +168,9 @@ public class AI extends Thread {
 
                     possibleMax = Math.max(evaluatedMiniMax, possibleMax);
 
-//                    alpha = Math.max(alpha, evaluatedMiniMax);
-//                    if (beta <= alpha)
-//                        break;
+                    alpha = Math.max(alpha, evaluatedMiniMax);
+                    if (beta <= alpha)
+                        break;
                 }else {
                     ply--;
                 }
@@ -196,8 +195,7 @@ public class AI extends Thread {
                     ply++;
 
                     AiNode next = new AiNode(move);
-                    starterPos.getChildren()[starterPos.getChildrenNum()] = next;
-                    starterPos.setChildrenNum(starterPos.getChildrenNum() + 1);
+                    starterPos.getChildren().add(next);
 
                     evaluatedMiniMax = miniMax(next, true, depth + 1, alpha, beta);
                     ply--;
@@ -205,9 +203,9 @@ public class AI extends Thread {
 
                     possibleMin = Math.min(evaluatedMiniMax, possibleMin);
 
-//                    beta = Math.min(beta, evaluatedMiniMax);
-//                    if (beta <= alpha)
-//                        break;
+                    beta = Math.min(beta, evaluatedMiniMax);
+                    if (beta <= alpha)
+                        break;
                 }else {
                     ply--;
                 }
@@ -258,8 +256,7 @@ public class AI extends Thread {
                 continue;
             }
             AiNode next = new AiNode(move);
-            starterPos.getChildren()[starterPos.getChildrenNum()] = next;
-            starterPos.setChildrenNum(starterPos.getChildrenNum() + 1);
+            starterPos.getChildren().add(next);
             double evaluatedNegaMax = -negaMax(next, depth + 1, -beta, -alpha);
 
             if (evaluatedNegaMax == -0)
