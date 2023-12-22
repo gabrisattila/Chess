@@ -1,5 +1,6 @@
 package classes.Game.I18N;
 
+import classes.Ai.AI.AiNode;
 import classes.Ai.Evaluation.GameState;
 import classes.GUI.FrameParts.*;
 import classes.Game.Model.Structure.*;
@@ -441,6 +442,7 @@ public class VARS {
             put("whiteDownBothCanCastleOneSide", "R3K3/8/7P/8/8/p7/8/4k2r w -Qk- - 1 0");
             put("whiteDownBlackCanCastleNoSide", "R3KR2/8/8/8/8/8/8/4k2r b -Qk- - 1 1");
             put("whiteDownBlackCanCastleNoSideBecauseItIsInCheck", "R3K3/4R3/8/8/8/8/8/4k2r b -Qk- - 1 1");
+            put("whiteDownCanCastleNoSideButItWants", "R1B2B1R/PPPP1PPP/4PK1N/N7/8/Q3n1pp/pppppp2/1rbqkb1r b --k- - 1 1");
 
             //endregion
 

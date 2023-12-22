@@ -61,7 +61,7 @@ public class GameOverOrPositionEnd {
                     (whiteToPlay ? "Feladtad." : "Az ellenfeled feladta a partit.") :
                     ("Világos feladta.");
         }
-        buttonsEnabled(new ArrayList<>(){{add("Új játék"); add("Betöltés");}});
+        buttonsEnabled(new ArrayList<>(){{add("Új játék"); add("Mentés"); add("Betöltés");}});
         JOptionPane.showMessageDialog(getViewBoard(), message, title, JOptionPane.INFORMATION_MESSAGE);
     }
 
@@ -110,8 +110,8 @@ public class GameOverOrPositionEnd {
         }
 
         if (submissionOrDraw == DRAW_OFFER) {
-            if (itWorthToOfferOrRecommendDraw()){
-                showFlashFrame("Döntetlent ajánlottál, \naz ellenfeled nem fogadta el.", 5);
+            if (itWorthRecommendDraw()){
+                showFlashFrame("Döntetlent ajánlottál, \naz ellenfeled fogadta el.", 5);
                 finalGameEnd();
                 return DRAW;
             }
@@ -170,7 +170,7 @@ public class GameOverOrPositionEnd {
 
     public static boolean isDraw(){
 
-        thirdSimilarPositionOfTheGame = happenedList.keySet().stream().anyMatch(a -> happenedList.get(a) == 3);
+        thirdSimilarPositionOfTheGame = !happenedList.isEmpty() && happenedList.keySet().stream().anyMatch(a -> happenedList.get(a) == 3);
 
         boolean allRemainingPiecesAreKing =
                 bitBoards[wPawnI] == 0 && bitBoards[wKnightI] == 0 && bitBoards[wBishopI] == 0 && bitBoards[wRookI] == 0 && bitBoards[wQueenI] == 0 && bitBoards[wKingI] != 0 &&
@@ -217,7 +217,7 @@ public class GameOverOrPositionEnd {
                 getBoard().getPieces(whiteToPlay).stream().allMatch(p -> p.getType() == K || p.getType() == P);
     }
 
-    public static boolean itWorthToOfferOrRecommendDraw(){
+    public static boolean itWorthRecommendDraw(){
         if (getBoard().getPieces().size() == 3 && getBoard().hasTwoKings() &&
                 getBoard().getPieces().stream().allMatch(p -> p.getType() == K || p.getType() == P)){
             IPiece onlyPawn = null;

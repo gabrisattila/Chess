@@ -6,6 +6,7 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.Random;
 
+import static classes.Ai.AI.AiNode.*;
 import static classes.Ai.BitBoards.BitBoardMoves.*;
 import static classes.Ai.BitBoards.BitBoards.*;
 import static classes.Ai.BitBoards.BBVars.*;
@@ -85,6 +86,7 @@ public class AI extends Thread {
         ply = 0;
         bestMove = 0;
         nodeNum = 0;
+        transPosNum = 0;
 
         String starterFen = BoardToFen(getBoard());
         AiNode starterPos = getNewNodeAndSetUpProperEnvironmentForMinimaxStart();
@@ -96,16 +98,19 @@ public class AI extends Thread {
 
         if (evaluatedSearch == WHITE_GOT_CHECKMATE /* + ply */ || evaluatedSearch == BLACK_GOT_CHECKMATE /* + ply */ ||
             evaluatedSearch == DRAW) {
-            //Show final game end pop up
-            gameEndDialog(evaluatedSearch);
-            finalGameEnd();
-            return;
-        }else {
-            //We only do the best move if there's no Check Mate or Draw
-            bestMove = sortOutBestChild(starterPos, evaluatedSearch);
-            makeMove(bestMove);
-            FenToBoard(bitBoardsToFen(), getBoard());
+            if (starterPos.getChildren().isEmpty()) {
+                //Show final game end pop up
+                gameEndDialog(evaluatedSearch);
+                finalGameEnd();
+                return;
+            }
         }
+        //We only do the best move if there's no Check Mate or Draw
+        bestMove = sortOutBestChild(starterPos, evaluatedSearch);
+        makeMove(bestMove);
+        String newPosFen = bitBoardsToFen();
+        FenToBoard(newPosFen, getBoard());
+        appendToHappenedList(newPosFen);
 
         printSearchData(startTime, evaluatedSearch);
     }
@@ -165,7 +170,7 @@ public class AI extends Thread {
                     legalMoves++;
                     ply++;
 
-                    AiNode next = new AiNode(move);
+                    AiNode next = putNewToNodeMap(move);
                     starterPos.getChildren().add(next);
 
                     evaluatedMiniMax = miniMax(next, false, depth + 1, alpha, beta);
@@ -200,7 +205,7 @@ public class AI extends Thread {
                     legalMoves++;
                     ply++;
 
-                    AiNode next = new AiNode(move);
+                    AiNode next = putNewToNodeMap(move);
                     starterPos.getChildren().add(next);
 
                     evaluatedMiniMax = miniMax(next, true, depth + 1, alpha, beta);
@@ -334,6 +339,7 @@ public class AI extends Thread {
         System.out.println("The search run for " + (double)((endTime - startTime) / 1000) + " seconds.");
         System.out.println("Searched " + (nodeNum - 1) + " nodes.");
         System.out.println("And found that the best move is: " + moveToString(bestMove) + " which score is: " + evaluatedSearch + ".");
+        System.out.println(transPosNum + " transposition skipped.");
     }
 
     //endregion

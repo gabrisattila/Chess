@@ -409,11 +409,43 @@ public class BitBoardMoves {
     }
 
     public static long calcKingPossibility(int piece, long possibility){
-        if ((castle & (piece == wKingI ? wK : bK)) == 0)
-            possibility &= ~(1L << (63 - Long.numberOfLeadingZeros(bitBoards[piece]) - (whiteDown ? 2 : -2)));
+        int kingLoc = 63 - Long.numberOfLeadingZeros(bitBoards[piece]);
+        int kingsNewPlace;
+        int rookNewPlace;
+        int rookPlusRoad;
+        int rookOrigin;
+        kingsNewPlace = kingLoc - (whiteDown ? 2 : -2);
+        if ((castle & (piece == wKingI ? wK : bK)) == 0){
+            possibility &= ~(1L << kingsNewPlace);
+        } else {
+            rookNewPlace = kingLoc - (whiteDown ? 1 : -1);
+            rookOrigin = kingLoc - (whiteDown ? 3 : -3);
+            if (
+                    (1L << kingsNewPlace & EMPTY) == 0 || (1L << rookNewPlace & EMPTY) == 0 ||
+                            (1L << rookOrigin & bitBoards[piece == wKingI ? wRookI : bRookI]) == 0 ||
+                            isSquareAttacked(piece != wKingI, kingsNewPlace) ||
+                            isSquareAttacked(piece != wKingI, rookNewPlace)
+            ) {
+                possibility &= ~(1L << kingsNewPlace);
+            }
+        }
 
-        if ((castle & (piece == wKingI ? wQ : bQ)) == 0)
-            possibility &= ~(1L << (63 - Long.numberOfLeadingZeros(bitBoards[piece]) - (whiteDown ? -2 : 2)));
+        kingsNewPlace = kingLoc - (whiteDown ? -2 : 2);
+        if ((castle & (piece == wKingI ? wQ : bQ)) == 0) {
+            possibility &= ~(1L << kingsNewPlace);
+        } else {
+            rookNewPlace = kingLoc - (whiteDown ? -1 : 1);
+            rookPlusRoad = kingLoc - (whiteDown ? -3 : 3);
+            rookOrigin = kingLoc - (whiteDown ? -4 : 4);
+            if (
+                    (1L << kingsNewPlace & EMPTY) == 0 || (1L << rookNewPlace & EMPTY) == 0 ||
+                            (1L << rookPlusRoad & EMPTY) != 0 || (1L << rookOrigin & bitBoards[piece == wKingI ? wRookI : bRookI]) == 0 ||
+                            isSquareAttacked(piece != wKingI, kingsNewPlace) ||
+                            isSquareAttacked(piece != wKingI, rookNewPlace)
+            ) {
+                possibility &= ~(1L << kingsNewPlace);
+            }
+        }
 
         return possibility;
     }

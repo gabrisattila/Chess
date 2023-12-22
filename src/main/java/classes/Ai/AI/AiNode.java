@@ -57,8 +57,20 @@ public class AiNode {
         return Zobrist.getZobristKey(forWhite, emPassant, wKC, wQC, bKC, bQC, wP, wN, wB, wR, wQ, wK, bP, bN, bB, bR, bQ, bK);
     }
 
-    public static AiNode putNewToNodeMap(String creatorMove){
-        return null;
+    public static AiNode putNewToNodeMap(int creatorMove){
+        long zKey = calcZobristKey(
+                whiteToPlay, bbEmPassant, (castle & wK) != 0, (castle & wQ) != 0, (castle & bK) != 0, (castle & bQ) != 0,
+                bitBoards[wPawnI], bitBoards[wKnightI], bitBoards[wBishopI], bitBoards[wRookI], bitBoards[wQueenI], bitBoards[wKingI],
+                        bitBoards[bPawnI], bitBoards[bKnightI], bitBoards[bBishopI], bitBoards[bRookI], bitBoards[bQueenI], bitBoards[bKingI]
+        );
+//        AiNode next = alreadyWatchedNodes.get(zKey);
+        AiNode next = new AiNode(creatorMove);
+//        if (isNull(next)){
+//            putToAlreadyWatchedZKeys(zKey, next);
+//        } else {
+//            transPosNum++;
+//        }
+        return next;
     }
 
     public static void putToAlreadyWatchedZKeys(long zKey, AiNode node){
