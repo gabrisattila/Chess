@@ -2,8 +2,6 @@ package classes.AI.Evaluation;
 
 import classes.Game.I18N.PieceType;
 
-import java.util.ArrayList;
-
 import static classes.AI.BitBoards.BBVars.*;
 import static classes.AI.BitBoards.BitBoards.*;
 import static classes.AI.Evaluation.GameState.*;
@@ -15,13 +13,16 @@ public class Evaluator {
 
     //region With FieldValues
 
-    public static double evaluateEndGame(){
+    public static double evaluate(int possibilityNumAfterMove, int enemyKingPossibilityNumAfterMove, boolean forWhite){
         double eval = evaluateWithFieldValues();
+        eval += (forWhite ? +1 : -1) * 0.1 * possibilityNumAfterMove;
+        if (currentGameState == SECOND_STATE)
+            eval -= (forWhite ? +1 : -1) * enemyKingPossibilityNumAfterMove;
         return eval;
     }
 
     public static double evaluateWithFieldValues(){
-        long currentBitBoard = 0;
+        long currentBitBoard;
         int from, i, j;
         PieceType type;
         boolean white;

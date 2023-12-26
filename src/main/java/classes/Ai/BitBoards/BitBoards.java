@@ -254,7 +254,7 @@ public class BitBoards {
     }
 
     public static int getFirstBitIndex(long bitBoard){
-        return 63 - Long.numberOfTrailingZeros(bitBoard);
+        return 63 - Long.numberOfLeadingZeros(bitBoard);
     }
 
     //endregion

@@ -2,10 +2,8 @@ package classes.AI.Evaluation;
 
 public enum GameState {
 
-    OPENING,
+    FIRST_STATE,
 
-    MIDDLE_GAME,
-
-    END_GAME
+    SECOND_STATE
 
 }

@@ -10,6 +10,7 @@ import java.awt.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static classes.AI.BitBoards.BBVars.ply;
 import static classes.AI.Evaluation.GameState.*;
 import static classes.Game.I18N.METHODS.dateToString;
 import static classes.Game.I18N.PieceType.*;
@@ -607,10 +608,7 @@ public class VARS {
 
         public static int MAX_HEIGHT = 8;
 
-        public static int MINIMAX_DEPTH = 8;
-
-        public static GameState currentGameState = MIDDLE_GAME;
-
+        public static int MINIMAX_DEPTH = 4;
         public static int nodeNum = 0;
 
         public static int transPosNum = 0;
@@ -660,6 +658,9 @@ public class VARS {
         public static String emPassantChance = "-";
 
         public static int stepNumber = 1;
+
+        public static GameState currentGameState = (stepNumber + ply) > 20 ? FIRST_STATE : SECOND_STATE;
+
 
         public static int evenOrOddStep = 0;
 

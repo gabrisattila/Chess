@@ -1,6 +1,5 @@
 package classes.AI.BitBoards;
 
-import classes.Game.I18N.Location;
 import classes.Game.I18N.Pair;
 import lombok.*;
 
@@ -330,20 +329,23 @@ public class BitBoardMoves {
                 (getBishopAttacks(attackerColor) & 1L << squareIndex) != 0 ||
                 (getRookAttacks(attackerColor) & 1L << squareIndex) != 0 ||
                 (getQueenAttacks(attackerColor) & 1L << squareIndex) != 0 ||
-                (kingPossibilityTable[squareIndex] & getKingBoard(attackerColor)) != 0;
+                (
+                        (kingPossibilityTable[getFirstBitIndex(getKingBoard(attackerColor))]
+                                ^ 1L << (getFirstBitIndex(getKingBoard(attackerColor)) - 2)
+                                ^ 1L << (getFirstBitIndex(getKingBoard(attackerColor)) + 2))
+                & 1L << squareIndex) != 0;
     }
 
     private static boolean decideWhetherIsAttackedByPawn(boolean attackerColor, int squareIndex){
-        boolean attackedByPawn = false;
         long pawnBoardCopy = bitBoards[attackerColor ? wPawnI : bPawnI];
         int i;
         while (pawnBoardCopy != 0){
             i = getFirstBitIndex(pawnBoardCopy);
             if ((pawnAttackTable[getSide(attackerColor)][i] & 1L << squareIndex) != 0)
-                attackedByPawn = true;
+                return true;
             pawnBoardCopy = removeBit(pawnBoardCopy, i);
         }
-        return attackedByPawn;
+        return false;
     }
 
     private static int possibilitiesNumInNextTurn(boolean forWhite){
@@ -443,6 +445,10 @@ public class BitBoardMoves {
         return (move & 0x100000) != 0;
     }
 
+    public static boolean isCheck(int move){
+        return (move & 0x200000) != 0;
+    }
+
     public static boolean isEmPassant(int move){
         return (move & 0x400000) != 0;
     }
@@ -455,24 +461,24 @@ public class BitBoardMoves {
 
         double value;
         int move;
+        boolean moveIsCheck;
 
         int from, to;
         long currentBitBoardCopy, possibility;
         long shouldBePartOfMove;
 
-        TreeMap<Double, Set<Integer>> valuedMoves = null;
+        TreeMap<Double, Set<Integer>> valuedMoves =
+                new TreeMap<>(forWhite ?
+                                        Comparator.<Double>reverseOrder() :
+                                        Comparator.<Double>naturalOrder());
 
 
         for (int piece : pieceIndexes) {
 
-            setHittableOccupiedEmpty();
 
             if (forWhite == (piece <= wKingI)){
 
-                valuedMoves = new TreeMap<>(forWhite ?
-                                                       Comparator.<Double>reverseOrder() :
-                                                       Comparator.<Double>naturalOrder());
-
+                setHittableOccupiedEmpty();
                 currentBitBoardCopy = bitBoards[piece];
 
                 while (currentBitBoardCopy != 0) {
@@ -494,7 +500,7 @@ public class BitBoardMoves {
                             //2 forward
                             else if (16 == Math.abs(from - to)) {
                                 int minus = whiteDown ? (forWhite ? 8 : -8) : (forWhite ? -8 : 8);
-                                shouldBePartOfMove = EMPTY & (piece == wPawnI ? (ROW_4 | ROW_3) : (ROW_5 | ROW_6)) & 1L << (to - minus) & 1L << to;
+                                shouldBePartOfMove = EMPTY & (piece == wPawnI ? (ROW_4 | ROW_3) : (ROW_5 | ROW_6)) & 1L << (to - minus) | 1L << to;
                             }
                             //Hit and if there's emPassant possibility, combine it
                             else {
@@ -532,8 +538,13 @@ public class BitBoardMoves {
 
                             if (makeMove(move)){
                                 int possibilitiesAfterMove = possibilitiesNumInNextTurn(forWhite);
-                                int enemyKingPossibilitiesAfterMove;
-                                value = evaluate();
+                                int enemyKingPossibilitiesAfterMove = Long.bitCount(
+                                        calcKingPossibility(forWhite ? bKingI : wKingI,
+                                                            kingPossibilities(getFirstBitIndex(getKingBoard(!forWhite))))
+                                );
+                                moveIsCheck = isSquareAttacked(forWhite, getFirstBitIndex(getKingBoard(!forWhite)));
+                                move |= moveIsCheck ? 0x200000 : 0;
+                                value = evaluate(possibilitiesAfterMove, enemyKingPossibilitiesAfterMove, forWhite);
                                 putToMap(valuedMoves, value, move);
                             }
                             undoMove();
@@ -550,8 +561,8 @@ public class BitBoardMoves {
     private static Pair<Long, Long> possibilitiesAndShouldBePartOf(int piece, int from){
         long possibility = 0, shouldBePartOfMove = 0;
         switch (piece) {
-            case wPawnI -> possibility = pawnSimpleStepTable[1][from];
-            case bPawnI -> possibility = pawnSimpleStepTable[0][from];
+            case wPawnI -> possibility = pawnSimpleStepTable[1][from] | pawnAttackTable[1][from];
+            case bPawnI -> possibility = pawnSimpleStepTable[0][from] | pawnAttackTable[0][from];
             case wKnightI -> {
                 possibility = knightPossibilityTable[from];
                 shouldBePartOfMove = shouldBePartOf(true);
@@ -841,11 +852,6 @@ public class BitBoardMoves {
         return false;
     }
 
-    private static Location bitBoardIndexToLocation(int index){
-        int i = (index / 8) + 1, j = 7 - index % 8;
-        return new Location(i, j);
-    }
-
     //endregion
 
     //region Print move
@@ -861,6 +867,7 @@ public class BitBoardMoves {
         m += ".";
         m += getPromotion(move) == 0 ? "" : " And become " + pieceImagesForLog[getPromotion(move)];
         m += isCapture(move) ? " Caused capture. " : "";
+        m += isCheck(move) ? " Caused check. " : "";
         m += isEmPassant(move) ? " It was em-passant move." : "";
         m += isCastling(move) ? " It was castle. " : "";
         m += "\n";
@@ -890,7 +897,7 @@ public class BitBoardMoves {
         return s.toString();
     }
 
-    public static String moveListToString(int[] movesInATurn){
+    public static String moveListToString(Collection<Integer> movesInATurn){
         StringBuilder moveList = new StringBuilder();
 
         int index = 0;

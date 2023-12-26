@@ -169,7 +169,7 @@ public class AI extends Thread {
                     AiNode next = putNewToNodeMap(move);
                     starterPos.getChildren().add(next);
 
-                    evaluatedMiniMax = miniMax(next, false, depth + 1, alpha, beta, value);
+                    evaluatedMiniMax = miniMax(next, false, (isCheck(move) ? 0 : 1) + depth, alpha, beta, value);
                     ply--;
                     undoMove();
 
@@ -207,7 +207,7 @@ public class AI extends Thread {
                     AiNode next = putNewToNodeMap(move);
                     starterPos.getChildren().add(next);
 
-                    evaluatedMiniMax = miniMax(next, true, depth + 1, alpha, beta, value);
+                    evaluatedMiniMax = miniMax(next, true, (isCheck(move) ? 0 : 1) + depth, alpha, beta, value);
                     ply--;
                     undoMove();
 
