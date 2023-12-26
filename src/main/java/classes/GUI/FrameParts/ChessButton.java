@@ -99,7 +99,7 @@ public class ChessButton extends JButton {
                     case "Világossal szeretnék lenni" -> newGameBlackAiClicked();
                     case "Sötéttel szeretnék lenni" -> newGameWhiteAiClicked();
                     case "Ai vs Ai" -> newGameAiVsAiClicked();
-                    case "Test" -> newGameTestClicked();
+//                    case "Test" -> newGameTestClicked();
                     case "Szünet" -> pauseClicked();
                     case "Mentés" -> saveClicked();
                     case "Betöltés" -> loadClicked();
@@ -117,24 +117,31 @@ public class ChessButton extends JButton {
             }
             isFirstOpen = false;
             JDialog newGameDialog = new JDialog();
+
+            JPanel buttonPanel = new JPanel(new GridLayout(2, 2));
+
             newGameDialog.setTitle("Új játék kiválasztása");
             newGameDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-            newGameDialog.setLayout(new GridLayout(2, 2));
+            newGameDialog.setLayout(new GridLayout(3, 1));
+
+            //A Kommenteket kivéve kapjuk meg a tesztet elindításáért felelős gombot
+
+//            newGameDialog.setLayout(new GridLayout(4, 1));
 
             ChessButton blackAi = new ChessButton("<html><div style='text-align: center;'>Világossal<br>szeretnék lenni</div></html>");
             ChessButton whiteAi = new ChessButton("<html><div style='text-align: center;'>Sötéttel<br>szeretnék lenni</div></html>");
             ChessButton aiVsAi = new ChessButton("<html><div style='text-align: center;'>Ai vs Ai</div></html>");
-            ChessButton test = new ChessButton("<html><div style='text-align: center;'>Teszt</div></html>");
+//            ChessButton test = new ChessButton("<html><div style='text-align: center;'>Teszt</div></html>");
 
             blackAi.setBorder(BorderFactory.createLineBorder(BLACK, 13));
             whiteAi.setBorder(BorderFactory.createLineBorder(BLACK, 13));
             aiVsAi.setBorder(BorderFactory.createLineBorder(BLACK, 13));
-            test.setBorder(BorderFactory.createLineBorder(BLACK, 13));
+//            test.setBorder(BorderFactory.createLineBorder(BLACK, 13));
 
             blackAi.setBorderPainted(true);
             whiteAi.setBorderPainted(true);
             aiVsAi.setBorderPainted(true);
-            test.setBorderPainted(true);
+//            test.setBorderPainted(true);
 
             blackAi.addActionListener(e -> {
                 newGameBlackAiClicked();
@@ -151,15 +158,19 @@ public class ChessButton extends JButton {
                 newGameDialog.dispose();
             });
 
-            test.addActionListener(e -> {
-                newGameTestClicked();
-                newGameDialog.dispose();
-            });
+//            test.addActionListener(e -> {
+//                newGameTestClicked();
+//                newGameDialog.dispose();
+//            });
+
+            buttonPanel.add(blackAi);
+            buttonPanel.add(whiteAi);
+            buttonPanel.add(aiVsAi);
 
             newGameDialog.add(blackAi);
             newGameDialog.add(whiteAi);
             newGameDialog.add(aiVsAi);
-            newGameDialog.add(test);
+//            newGameDialog.add(test);
 
             newGameDialog.setBounds((int) NEW_GAME_WINDOW_START_X, (int) NEW_GAME_WINDOW_START_Y, (int) NEW_GAME_WINDOW_WIDTH, (int) NEW_GAME_WINDOW_HEIGHT); // középre pozícionálás
             newGameDialog.setModal(true); // modális beállítás
@@ -179,9 +190,9 @@ public class ChessButton extends JButton {
             newGameInitialization(false, false, false, "");
         }
 
-        private void newGameTestClicked() {
-            newGameInitialization(true, false, true, "");
-        }
+//        private void newGameTestClicked() {
+//            newGameInitialization(true, false, true, "");
+//        }
 
         private void pauseClicked() {
 
@@ -278,8 +289,6 @@ public class ChessButton extends JButton {
             buttonsEnabled(new ArrayList<>(){{add("All");}});
             labelTexting(!oneAi || !whiteAi);
             initialization();
-//            Zobrist.fillZobristTable();
-//            fillBaseBitBoardPossibilities();
         }
 
         public static void saveBoard(IBoard board) {
