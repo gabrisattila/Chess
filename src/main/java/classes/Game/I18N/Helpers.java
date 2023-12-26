@@ -1,14 +1,16 @@
 package classes.Game.I18N;
 
-import classes.Ai.Evaluation.Old_Evaluator;
 import classes.GUI.FrameParts.ViewField;
-import classes.Game.Model.Structure.*;
+import classes.Game.Model.Structure.Field;
+import classes.Game.Model.Structure.IBoard;
+import classes.Game.Model.Structure.IPiece;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Set;
 
 import static classes.GUI.FrameParts.ViewBoard.getViewBoard;
-import static classes.Game.I18N.PieceType.getPieceType;
-import static classes.Game.I18N.VARS.MUTABLE.*;
+import static classes.Game.I18N.VARS.MUTABLE.MAX_HEIGHT;
+import static classes.Game.I18N.VARS.MUTABLE.MAX_WIDTH;
 import static classes.Game.Model.Structure.Board.getBoard;
 
 public class Helpers {
@@ -60,13 +62,6 @@ public class Helpers {
                         fieldInString.append("null");
                     }
                     fieldInString.append(" ");
-                }
-                if (whatNeeded.contains("base")){
-                    int z = whatNeeded.indexOf("base");
-                    PieceType pieceType = getPieceType(whatNeeded.get(z + 1).charAt(0));
-                    String white = 'w' == whatNeeded.get(z + 1).charAt(1) ? "WHITE" : "BLACK";
-                    Piece p = new Piece(new PieceAttributes(pieceType, white), new Location(i, j));
-                    fieldInString.append(Old_Evaluator.getBaseFieldValue(p));
                 }
                 if (whatNeeded.contains("watchW")){
                     fieldInString.append(((Field) getBoard().getField(field.getI(), field.getJ())).getWhiteWatcherCount());

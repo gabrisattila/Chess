@@ -1,12 +1,14 @@
 package classes.Game.I18N;
 
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Arrays;
 
-import static classes.Game.I18N.METHODS.*;
-import static classes.Game.I18N.VARS.MUTABLE.*;
+import static classes.Game.I18N.METHODS.countOccurrences;
+import static classes.Game.I18N.VARS.MUTABLE.MAX_HEIGHT;
+import static classes.Game.I18N.VARS.MUTABLE.MAX_WIDTH;
 
 @Getter
 @Setter

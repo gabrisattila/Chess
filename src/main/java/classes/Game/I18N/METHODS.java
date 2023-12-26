@@ -1,21 +1,12 @@
 package classes.Game.I18N;
 
-import classes.GUI.FrameParts.ViewPiece;
-import classes.Game.Model.Structure.*;
-
-import javax.swing.*;
-import java.awt.*;
-import java.util.*;
-import javax.swing.Timer;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-import static classes.Ai.FenConverter.*;
-import static classes.GUI.FrameParts.ChessButton.ChessButtonMouseListener.saveBoard;
-import static classes.GUI.FrameParts.ViewBoard.getViewBoard;
-import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
-import static classes.GUI.Frame.Window.*;
-import static java.util.Objects.requireNonNull;
 
 public class METHODS {
 
@@ -181,5 +172,4 @@ public class METHODS {
         }
         return stringBuilder.toString();
     }
-
 }

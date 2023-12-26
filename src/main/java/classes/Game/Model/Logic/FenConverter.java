@@ -1,21 +1,21 @@
-package classes.Ai;
+package classes.Game.Model.Logic;
 
-import classes.GUI.FrameParts.*;
-import classes.Game.I18N.*;
+import classes.GUI.FrameParts.ViewField;
+import classes.GUI.FrameParts.ViewPiece;
 import classes.Game.I18N.Location;
+import classes.Game.I18N.PieceAttributes;
 import classes.Game.Model.Structure.*;
 
-import static classes.Game.I18N.ChessGameException.*;
-import static classes.Game.I18N.METHODS.*;
+import static classes.Game.I18N.ChessGameException.throwBadTypeErrorIfNeeded;
+import static classes.Game.I18N.ChessGameException.throwFenErrorIfNeeded;
+import static classes.Game.I18N.METHODS.containsLocation;
 import static classes.Game.I18N.PieceAttributes.*;
-import static classes.Game.I18N.PieceType.*;
+import static classes.Game.I18N.PieceType.K;
+import static classes.Game.I18N.PieceType.P;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 
-/**
- * FEN string structure:
- *  "piecesOnTheBoard WhiteOrBlackToPlay castleCases emPassantChance stepCount evenOrOddStep"
- */
 public class FenConverter {
+
 
     /**
      * @param fen original fen
@@ -25,7 +25,7 @@ public class FenConverter {
         String[] originFenParts = fen.split(" ");
         String pieces = originFenParts[0];
         String originOtherParts = originFenParts[1] + ' ' + originFenParts[2] + ' ' + originFenParts[3] + ' ' +
-                                    originFenParts[4] + ' ' + originFenParts[5];
+                originFenParts[4] + ' ' + originFenParts[5];
         String[] originPiecesParts = pieces.split("/");
         StringBuilder bbFenPieces = new StringBuilder();
         for (int i = originPiecesParts.length - 1; i >= 0; i--) {
@@ -192,12 +192,12 @@ public class FenConverter {
     }
 
     public static void emPassantHelper(String emPassant, PieceAttributes piece){
-            char sorInChar = emPassant.charAt(0);
-            char oszlopInChar = emPassant.charAt(1);
-            piece.setPossibleEmPassant(
-                    Integer.parseInt(String.valueOf(sorInChar)),
-                    Integer.parseInt(String.valueOf(oszlopInChar))
-            );
+        char sorInChar = emPassant.charAt(0);
+        char oszlopInChar = emPassant.charAt(1);
+        piece.setPossibleEmPassant(
+                Integer.parseInt(String.valueOf(sorInChar)),
+                Integer.parseInt(String.valueOf(oszlopInChar))
+        );
     }
 
     private static void enemyAndOwnStartRowFenToBoard(PieceAttributes piece){
@@ -222,5 +222,4 @@ public class FenConverter {
         blackBigCastleEnabled = 'q' == castleCases.charAt(3);
 
     }
-
 }

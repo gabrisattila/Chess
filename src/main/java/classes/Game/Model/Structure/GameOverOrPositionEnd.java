@@ -2,22 +2,22 @@ package classes.Game.Model.Structure;
 
 import classes.GUI.FrameParts.ViewBoard;
 import classes.Game.I18N.PieceType;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.swing.*;
-
 import java.awt.*;
 import java.util.ArrayList;
 
-import static classes.Ai.BitBoards.BBVars.*;
-import static classes.Ai.Evaluation.Old_Evaluator.*;
-import static classes.GUI.Frame.Window.*;
-import static classes.GUI.FrameParts.ViewBoard.*;
-import static classes.Game.I18N.METHODS.*;
+import static classes.AI.BitBoards.BBVars.*;
+import static classes.GUI.Frame.Window.buttonsEnabled;
+import static classes.GUI.FrameParts.ViewBoard.getViewBoard;
+import static classes.Game.I18N.METHODS.isNull;
+import static classes.Game.I18N.METHODS.notNull;
 import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
-import static classes.Game.Model.Structure.Board.*;
+import static classes.Game.Model.Structure.Board.getBoard;
 import static classes.Game.Model.Structure.IBoard.convertOneBoardToAnother;
 
 @Getter
@@ -117,7 +117,7 @@ public class GameOverOrPositionEnd {
             }
         }
 
-        return evaluate();
+        return 0;
     }
 
     private static boolean isCheckMate(Board board) {

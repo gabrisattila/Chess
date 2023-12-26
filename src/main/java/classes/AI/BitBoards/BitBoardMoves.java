@@ -1,15 +1,17 @@
 package classes.AI.BitBoards;
 
 import classes.Game.I18N.Location;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Arrays;
 
 import static classes.AI.BitBoards.BBVars.*;
-import static classes.Ai.BitBoards.BitBoards.*;
+import static classes.AI.BitBoards.BitBoards.*;
 import static classes.Game.I18N.VARS.FINALS.abc;
 import static classes.Game.I18N.VARS.FINALS.pieceImagesForLog;
-import static classes.Game.I18N.VARS.MUTABLE.*;
+import static classes.Game.I18N.VARS.MUTABLE.whiteDown;
+import static classes.Game.I18N.VARS.MUTABLE.whiteToPlay;
 
 @Getter
 @Setter

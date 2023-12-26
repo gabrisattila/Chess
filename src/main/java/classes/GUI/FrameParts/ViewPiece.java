@@ -4,15 +4,15 @@ import classes.Game.I18N.Location;
 import classes.Game.I18N.PieceAttributes;
 import classes.Game.I18N.PieceType;
 import classes.Game.Model.Structure.IPiece;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.swing.*;
-
 import java.util.HashSet;
 import java.util.Set;
 
 import static classes.Game.I18N.PieceType.getPieceType;
-import static classes.Game.I18N.VARS.FINALS.*;
+import static classes.Game.I18N.VARS.FINALS.WHITE_STRING;
 
 @Getter
 @Setter

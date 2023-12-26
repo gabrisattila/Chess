@@ -1,5 +1,6 @@
 package classes.GUI.FrameParts;
 
+import classes.GUI.Frame.Window;
 import classes.Game.Model.Structure.Move;
 
 import javax.swing.*;
@@ -8,13 +9,11 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import static classes.GUI.Frame.Window.*;
-import static classes.Game.I18N.PieceType.*;
+import static classes.Game.I18N.PieceType.getProperPieceImage;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 
 public class Logger extends JTextArea {
-
 
     public Logger() {
         initializeLogger();
@@ -75,12 +74,12 @@ public class Logger extends JTextArea {
             step += '\n';
 
             if (move.isMustLogged())
-                getLogger().log(step);
+                Window.getLogger().log(step);
         }
     }
 
     public static void logAiStep(String move){
-        getLogger().log(move);
+        Window.getLogger().log(move);
     }
 
     public static String detectChessMove(String fen1, String fen2) {

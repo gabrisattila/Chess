@@ -1,12 +1,14 @@
 package classes.AI.Ai;
 
-import classes.Ai.BitBoards.Zobrist;
+import classes.AI.BitBoards.Zobrist;
 import lombok.*;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 import static classes.AI.BitBoards.BBVars.*;
-import static classes.Game.I18N.VARS.MUTABLE.*;
+import static classes.Game.I18N.VARS.MUTABLE.happenedList;
+import static classes.Game.I18N.VARS.MUTABLE.whiteToPlay;
 
 @Getter
 @Setter

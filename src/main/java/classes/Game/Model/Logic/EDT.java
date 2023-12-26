@@ -1,20 +1,20 @@
 package classes.Game.Model.Logic;
 
-import classes.Ai.AI.AI;
-import lombok.*;
+import classes.AI.Ai.AI;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.swing.*;
-
-
 import java.util.ArrayList;
 
-import static classes.Ai.FenConverter.*;
 import static classes.GUI.Frame.Window.*;
 import static classes.GUI.FrameParts.ChessButton.ChessButtonMouseListener.saveBoard;
-import static classes.GUI.FrameParts.ViewBoard.*;
-import static classes.Game.I18N.METHODS.*;
+import static classes.GUI.FrameParts.Logger.initializeLogFile;
+import static classes.GUI.FrameParts.ViewBoard.getViewBoard;
+import static classes.Game.I18N.METHODS.switchWhoComes;
 import static classes.Game.I18N.VARS.MUTABLE.*;
-import static classes.GUI.FrameParts.Logger.*;
+import static classes.Game.Model.Logic.FenConverter.BoardToFen;
+import static classes.Game.Model.Logic.FenConverter.FenToBoard;
 import static java.lang.Thread.sleep;
 
 /**

@@ -1,20 +1,26 @@
 package classes.Game.Model.Structure;
 
 import classes.GUI.FrameParts.ViewPiece;
-import classes.Game.I18N.*;
-import lombok.*;
+import classes.Game.I18N.Location;
+import classes.Game.I18N.Pair;
+import classes.Game.I18N.PieceAttributes;
+import classes.Game.I18N.PieceType;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.swing.*;
 import java.util.stream.Collectors;
 
-import static classes.Ai.AI.AI.*;
-import static classes.GUI.FrameParts.Logger.*;
-import static classes.Game.I18N.Location.*;
+import static classes.AI.Ai.AI.waitOnPause;
+import static classes.GUI.FrameParts.Logger.logStep;
+import static classes.Game.I18N.Location.stringToLocation;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.PieceType.*;
-import static classes.Game.I18N.VARS.FINALS.*;
+import static classes.Game.I18N.VARS.FINALS.BlackPieceChoiceInsteadOfPawnGotIn;
+import static classes.Game.I18N.VARS.FINALS.WhitePieceChoiceInsteadOfPawnGotIn;
 import static classes.Game.I18N.VARS.MUTABLE.*;
-import static classes.Game.Model.Structure.Board.*;
+import static classes.Game.Model.Structure.Board.getBoard;
+import static classes.Game.Model.Structure.Board.getTheMiddleLocation;
 
 @Getter
 @Setter

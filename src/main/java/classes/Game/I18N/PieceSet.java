@@ -1,6 +1,7 @@
 package classes.Game.I18N;
 
-import classes.Game.Model.Structure.*;
+import classes.Game.Model.Structure.IPiece;
+import classes.Game.Model.Structure.Piece;
 
 import java.util.ArrayList;
 

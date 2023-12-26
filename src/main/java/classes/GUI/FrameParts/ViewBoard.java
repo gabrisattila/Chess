@@ -1,17 +1,21 @@
 package classes.GUI.FrameParts;
 
 import classes.Game.I18N.Location;
-import classes.Game.Model.Structure.*;
-import lombok.*;
+import classes.Game.Model.Structure.IBoard;
+import classes.Game.Model.Structure.IField;
+import classes.Game.Model.Structure.IPiece;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
 
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
-import static classes.Game.Model.Structure.Board.*;
-import static classes.Game.Model.Structure.GameOverOrPositionEnd.*;
+import static classes.Game.Model.Structure.Board.getBoard;
+import static classes.Game.Model.Structure.GameOverOrPositionEnd.GameOverDecision;
 
 @Getter
 @Setter
@@ -25,7 +29,7 @@ public class ViewBoard extends Component implements IBoard {
 
     private static ViewBoard viewBoard;
 
-    private ArrayList<ArrayList<classes.Game.Model.Structure.IField>> fields;
+    private ArrayList<ArrayList<IField>> fields;
 
     private ArrayList<IPiece> pieces;
 

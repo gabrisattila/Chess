@@ -92,14 +92,6 @@ public class BBVars {
 
     //For Undo move
 
-//    public static long[] bitBoardsCopy = new long[12];
-//
-//    public static int castleCopy = 0;
-//
-//    public static int bbEmPassantCopy = -1;
-//
-//    public static boolean whiteToPlayCopy = false;
-
     public static Stack<long[]> bitBoardsCopy = new Stack<>();
 
     public static Stack<Integer> castleCopy = new Stack<>();

@@ -2,10 +2,10 @@ package classes.Game.I18N;
 
 
 import classes.GUI.FrameParts.ViewField;
+
 import lombok.*;
 
 import static classes.GUI.FrameParts.ViewBoard.*;
-import static classes.Game.I18N.METHODS.*;
 
 @Getter
 @Setter

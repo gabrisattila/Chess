@@ -7,11 +7,13 @@ import classes.Game.I18N.PieceType;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.PieceType.*;
-import static classes.Game.I18N.VARS.FINALS.*;
+import static classes.Game.I18N.VARS.FINALS.WHITE_STRING;
+import static classes.Game.I18N.VARS.FINALS.matrixChooser;
 
 @Getter
 @Setter

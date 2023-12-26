@@ -10,15 +10,13 @@ import static classes.AI.Ai.AiNode.*;
 import static classes.AI.BitBoards.BBVars.*;
 import static classes.AI.BitBoards.BitBoardMoves.*;
 import static classes.AI.BitBoards.BitBoards.*;
-import static classes.GUI.FrameParts.Logger.detectChessMove;
-import static classes.GUI.FrameParts.Logger.logAiStep;
+import static classes.GUI.FrameParts.Logger.*;
 import static classes.GUI.FrameParts.ViewBoard.getViewBoard;
-import static classes.Game.I18N.METHODS.notNull;
+import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Game.Model.Logic.EDT.receivedMoveFromAi;
-import static classes.Game.Model.Logic.FenConverter.BoardToFen;
-import static classes.Game.Model.Logic.FenConverter.FenToBoard;
+import static classes.Game.Model.Logic.FenConverter.*;
 import static classes.Game.Model.Structure.Board.getBoard;
 import static classes.Game.Model.Structure.GameOverOrPositionEnd.*;
 import static classes.Game.Model.Structure.IBoard.convertOneBoardToAnother;
@@ -107,6 +105,7 @@ public class AI extends Thread {
                 return;
             }
         }
+
         //We only do the best move if there's no Check Mate or Draw
         bestMove = sortOutBestChild(starterPos, evaluatedSearch);
         makeMove(bestMove);

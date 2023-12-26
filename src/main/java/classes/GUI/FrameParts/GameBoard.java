@@ -2,20 +2,21 @@ package classes.GUI.FrameParts;
 
 import classes.Game.I18N.Location;
 import classes.Game.Model.Structure.IField;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.swing.*;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import static classes.GUI.FrameParts.SideLabel.*;
+import static classes.GUI.FrameParts.SideLabel.collectProperLabelTexts;
+import static classes.GUI.FrameParts.ViewBoard.getViewBoard;
 import static classes.Game.I18N.VARS.FINALS.*;
-import static classes.Game.I18N.VARS.MUTABLE.*;
-import static classes.GUI.FrameParts.ViewBoard.*;
+import static classes.Game.I18N.VARS.MUTABLE.MAX_HEIGHT;
+import static classes.Game.I18N.VARS.MUTABLE.MAX_WIDTH;
 
 @Getter
 @Setter

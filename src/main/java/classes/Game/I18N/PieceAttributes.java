@@ -1,9 +1,8 @@
 package classes.Game.I18N;
 
-
 import lombok.*;
 
-import static classes.Game.I18N.METHODS.*;
+import static classes.Game.I18N.METHODS.isNull;
 import static classes.Game.I18N.PieceType.getPieceType;
 import static classes.Game.I18N.VARS.FINALS.*;
 

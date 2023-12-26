@@ -4,20 +4,22 @@ import classes.GUI.FrameParts.*;
 import classes.Game.I18N.Pair;
 import classes.Game.I18N.PieceAttributes;
 import classes.Game.Model.Structure.IField;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.swing.*;
-
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
-import static classes.Game.I18N.PieceAttributes.*;
 import static classes.GUI.FrameParts.GameBoard.cleanFieldFromLeftIcon;
-import static classes.GUI.FrameParts.ViewBoard.*;
-import static classes.Game.I18N.METHODS.*;
+import static classes.GUI.FrameParts.ViewBoard.getViewBoard;
+import static classes.Game.I18N.METHODS.isNull;
+import static classes.Game.I18N.PieceAttributes.charToPieceAttributes;
+import static classes.Game.I18N.PieceAttributes.createSourceStringFromGotAttributes;
 import static classes.Game.I18N.VARS.FINALS.*;
-import static classes.Game.I18N.VARS.MUTABLE.*;
+import static classes.Game.I18N.VARS.MUTABLE.canBeLogger;
 import static java.util.Objects.requireNonNull;
 
 @Getter
@@ -28,7 +30,6 @@ public class Window extends JFrame {
 
     private static Window window;
 
-    @Getter
     private GameBoard gameBoard;
 
     @Getter
@@ -37,6 +38,7 @@ public class Window extends JFrame {
     @Getter
     private static ArrayList<ChessButton> buttons = buttons();
 
+    @Getter
     private static Pair<ArrayList<ViewField>, ArrayList<ViewField>> takenPiecePlaces = new Pair<>(new ArrayList<>(16), new ArrayList<>(16));
 
     //endregion

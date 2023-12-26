@@ -1,10 +1,14 @@
 package classes.Game.Model.Structure;
 
 
-import classes.Game.I18N.*;
+import classes.Game.I18N.Location;
+import classes.Game.I18N.Pair;
 import lombok.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -226,7 +230,7 @@ public class Board implements IBoard {
         for (IPiece enemyTiszt : getTisztek(!my)) {
             if (isThereAnyPieceInPossibleBindingBy(enemyTiszt)){
                 IPiece boundPiece = boundPieceBy(enemyTiszt);
-                if (notNull(boundPiece)) {
+                if (notNull(boundPiece) && boundPiece.isWhite() != enemyTiszt.isWhite()) {
                     boundPieces.add(boundPiece);
                     ((Piece) boundPiece).setBounderPiece(enemyTiszt);
                 }

@@ -3,11 +3,14 @@ package classes.Game.Model.Structure;
 
 import classes.Game.I18N.Location;
 import classes.Game.I18N.PieceAttributes;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
-import static classes.Game.I18N.ChessGameException.*;
-import static classes.Game.I18N.METHODS.*;
-import static classes.Game.I18N.PieceSet.*;
+import static classes.Game.I18N.ChessGameException.throwBadTypeErrorIfNeeded;
+import static classes.Game.I18N.METHODS.isNull;
+import static classes.Game.I18N.METHODS.notNull;
+import static classes.Game.I18N.PieceSet.firstEmptyBlack;
+import static classes.Game.I18N.PieceSet.firstEmptyWhite;
 
 @Getter
 @Setter
