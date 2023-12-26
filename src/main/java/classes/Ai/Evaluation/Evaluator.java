@@ -5,6 +5,7 @@ import classes.Game.I18N.PieceType;
 import java.util.ArrayList;
 
 import static classes.AI.BitBoards.BBVars.*;
+import static classes.AI.Evaluation.GameState.*;
 import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;

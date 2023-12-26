@@ -6,7 +6,7 @@ import lombok.*;
 import java.util.Arrays;
 
 import static classes.AI.BitBoards.BBVars.*;
-import static classes.Ai.BitBoards.BitBoards.*;
+import static classes.AI.BitBoards.BitBoards.*;
 import static classes.Game.I18N.VARS.FINALS.abc;
 import static classes.Game.I18N.VARS.FINALS.pieceImagesForLog;
 import static classes.Game.I18N.VARS.MUTABLE.*;

@@ -1,4 +1,4 @@
-package classes.Ai.Evaluation;
+package classes.AI.Evaluation;
 
 import lombok.*;
 

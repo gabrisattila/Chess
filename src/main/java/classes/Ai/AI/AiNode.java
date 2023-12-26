@@ -1,6 +1,6 @@
 package classes.AI.Ai;
 
-import classes.Ai.BitBoards.Zobrist;
+import classes.AI.BitBoards.Zobrist;
 import lombok.*;
 
 import java.util.*;

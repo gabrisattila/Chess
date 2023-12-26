@@ -1,6 +1,6 @@
 package classes.Game.I18N;
 
-import classes.AI.Evaluation.GameState;
+import classes.AI.Evaluation.*;
 import classes.GUI.FrameParts.ViewField;
 import classes.GUI.FrameParts.ViewPiece;
 import classes.Game.Model.Structure.Piece;
@@ -10,7 +10,7 @@ import java.awt.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static classes.AI.Evaluation.GameState.MIDDLE_GAME;
+import static classes.AI.Evaluation.GameState.*;
 import static classes.Game.I18N.METHODS.dateToString;
 import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.MUTABLE.MAX_WIDTH;
