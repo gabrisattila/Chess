@@ -1,8 +1,7 @@
 package classes.Game.Model.Logic;
 
 import classes.AI.Ai.AI;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -13,8 +12,7 @@ import static classes.GUI.FrameParts.Logger.initializeLogFile;
 import static classes.GUI.FrameParts.ViewBoard.getViewBoard;
 import static classes.Game.I18N.METHODS.switchWhoComes;
 import static classes.Game.I18N.VARS.MUTABLE.*;
-import static classes.Game.Model.Logic.FenConverter.BoardToFen;
-import static classes.Game.Model.Logic.FenConverter.FenToBoard;
+import static classes.Game.Model.Logic.FenConverter.*;
 import static java.lang.Thread.sleep;
 
 /**

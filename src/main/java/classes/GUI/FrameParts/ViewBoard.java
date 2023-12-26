@@ -11,8 +11,9 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import static classes.Game.I18N.METHODS.*;
-import static classes.Game.I18N.PieceType.*;
+import static classes.Game.I18N.METHODS.isNull;
+import static classes.Game.I18N.METHODS.notNull;
+import static classes.Game.I18N.PieceType.P;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Game.Model.Structure.Board.getBoard;
 import static classes.Game.Model.Structure.GameOverOrPositionEnd.GameOverDecision;

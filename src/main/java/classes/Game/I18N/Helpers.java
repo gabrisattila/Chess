@@ -1,17 +1,19 @@
 package classes.Game.I18N;
 
 import classes.GUI.FrameParts.ViewField;
+import classes.GUI.FrameParts.ViewField;
 import classes.Game.Model.Structure.Field;
 import classes.Game.Model.Structure.IBoard;
 import classes.Game.Model.Structure.IPiece;
+import classes.Game.Model.Structure.Piece;
 
 import java.util.ArrayList;
 import java.util.Set;
 
-import static classes.GUI.FrameParts.ViewBoard.getViewBoard;
-import static classes.Game.I18N.VARS.MUTABLE.MAX_HEIGHT;
-import static classes.Game.I18N.VARS.MUTABLE.MAX_WIDTH;
-import static classes.Game.Model.Structure.Board.getBoard;
+import static classes.GUI.FrameParts.ViewBoard.*;
+import static classes.Game.I18N.PieceType.*;
+import static classes.Game.I18N.VARS.MUTABLE.*;
+import static classes.Game.Model.Structure.Board.*;
 
 public class Helpers {
 

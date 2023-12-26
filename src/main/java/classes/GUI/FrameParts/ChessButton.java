@@ -19,7 +19,7 @@ import static classes.Game.I18N.METHODS.dateToString;
 import static classes.Game.I18N.METHODS.notNull;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
-import static classes.Game.Model.Logic.EDT.initialization;
+import static classes.Game.Model.Logic.EDT.*;
 import static classes.Game.Model.Logic.FenConverter.BoardToFen;
 import static classes.Game.Model.Structure.GameOverOrPositionEnd.GameOverDecision;
 import static classes.Game.Model.Structure.GameOverOrPositionEnd.showFlashFrame;

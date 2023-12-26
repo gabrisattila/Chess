@@ -6,12 +6,10 @@ import classes.Game.I18N.Location;
 import classes.Game.I18N.PieceAttributes;
 import classes.Game.Model.Structure.*;
 
-import static classes.Game.I18N.ChessGameException.throwBadTypeErrorIfNeeded;
-import static classes.Game.I18N.ChessGameException.throwFenErrorIfNeeded;
-import static classes.Game.I18N.METHODS.containsLocation;
+import static classes.Game.I18N.ChessGameException.*;
+import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.PieceAttributes.*;
-import static classes.Game.I18N.PieceType.K;
-import static classes.Game.I18N.PieceType.P;
+import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 
 public class FenConverter {

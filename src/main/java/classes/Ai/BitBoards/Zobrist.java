@@ -2,6 +2,7 @@ package classes.AI.BitBoards;
 
 import classes.Game.I18N.Pair;
 import lombok.*;
+import lombok.Setter;
 
 import java.security.SecureRandom;
 import java.util.HashMap;

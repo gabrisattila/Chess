@@ -3,9 +3,9 @@ package classes.AI.BitBoards;
 import classes.Game.I18N.ChessGameException;
 import lombok.*;
 
-import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.AI.BitBoards.BBVars.*;
-import static classes.Game.Model.Logic.FenConverter.FenToBitBoardFen;
+import static classes.Game.I18N.VARS.MUTABLE.*;
+import static classes.Game.Model.Logic.FenConverter.*;
 
 @Getter
 @Setter
@@ -107,10 +107,6 @@ public class BitBoards {
         StringBuilder fen = new StringBuilder();
         StringBuilder row = new StringBuilder();
         int counter = 0;
-
-//        System.out.println();
-//        printBitBoards(true, whitePawn, whiteKnight, whiteBishop, whiteRook, whiteQueen, whiteKing);
-//        printBitBoards(false, blackPawn, blackKnight, blackBishop, blackRook, blackQueen, blackKing);
 
         for (int i = 0; i < MAX_WIDTH * MAX_HEIGHT; i++) {
             counter = upgradeCounter(i, counter,

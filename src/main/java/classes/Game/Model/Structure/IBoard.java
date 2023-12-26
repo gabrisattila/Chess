@@ -5,7 +5,7 @@ import classes.Game.I18N.Location;
 
 import java.util.ArrayList;
 
-import static classes.Game.I18N.METHODS.translate;
+import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Game.Model.Logic.FenConverter.*;

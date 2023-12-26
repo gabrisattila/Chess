@@ -2,18 +2,16 @@ package classes.Game.Model.Structure;
 
 import classes.GUI.FrameParts.ViewBoard;
 import classes.Game.I18N.PieceType;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
 import static classes.AI.BitBoards.BBVars.*;
-import static classes.GUI.Frame.Window.buttonsEnabled;
-import static classes.GUI.FrameParts.ViewBoard.getViewBoard;
-import static classes.Game.I18N.METHODS.isNull;
-import static classes.Game.I18N.METHODS.notNull;
+import static classes.GUI.Frame.Window.*;
+import static classes.GUI.FrameParts.ViewBoard.*;
+import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;

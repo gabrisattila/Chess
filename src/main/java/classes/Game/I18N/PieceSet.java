@@ -5,8 +5,7 @@ import classes.Game.Model.Structure.Piece;
 
 import java.util.ArrayList;
 
-import static classes.Game.I18N.VARS.MUTABLE.blackPieceSet;
-import static classes.Game.I18N.VARS.MUTABLE.whitePieceSet;
+import static classes.Game.I18N.VARS.MUTABLE.*;
 
 public class PieceSet extends ArrayList<IPiece> {
 

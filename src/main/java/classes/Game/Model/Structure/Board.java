@@ -3,7 +3,8 @@ package classes.Game.Model.Structure;
 
 import classes.Game.I18N.Location;
 import classes.Game.I18N.Pair;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,10 +13,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static classes.Game.I18N.ChessGameException.*;
+import static classes.Game.I18N.ChessGameException.throwBadTypeErrorIfNeeded;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.PieceType.*;
-import static classes.Game.I18N.VARS.FINALS.*;
+import static classes.Game.I18N.VARS.FINALS.matrixChooser;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 
 
@@ -604,43 +605,6 @@ public class Board implements IBoard {
     private Set<IPiece> getTisztek(boolean my) {
         return pieces.isEmpty() ? new HashSet<>() :
                 pieces.stream().filter(p -> p.isWhite() == my && p.getType() != P && p.getType() != K).collect(Collectors.toSet());
-    }
-
-    //endregion
-
-    //region Used by AiNode
-
-    public void addLegalMovesToPieces(boolean forWhite) {
-        for (IPiece p : getPieces(forWhite)) {
-            for (Location to : p.getPossibleRange()) {
-                ((Piece) p).getLegalMoves().add(new Move(
-                        p,
-                        to,
-                        ((Piece) p).getBoard()
-                ));
-            }
-        }
-    }
-
-    public HashMap<IPiece, Set<Move>> getAllLegalMoves(boolean forWhite){
-        HashMap<IPiece, Set<Move>> legals = new HashMap<>();
-        for (IPiece p : getPieces(forWhite)) {
-            if (!((Piece) p).getLegalMoves().isEmpty()) {
-                legals.put(
-                        p,
-                        ((Piece) p).getLegalMoves()
-                );
-            }
-        }
-        return legals;
-    }
-
-    public Set<IPiece> getPiecesWithoutHit(boolean forWhite){
-        return getPiecesWithoutHit().stream().filter(p -> p.isWhite() == forWhite).collect(Collectors.toSet());
-    }
-
-    public Set<IPiece> getPiecesWithoutHit() {
-        return getPieces().stream().filter(p -> containsLocation(p.getLocation())).collect(Collectors.toSet());
     }
 
     //endregion

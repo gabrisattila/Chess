@@ -6,9 +6,8 @@ import lombok.Setter;
 
 import java.util.Arrays;
 
-import static classes.Game.I18N.METHODS.countOccurrences;
-import static classes.Game.I18N.VARS.MUTABLE.MAX_HEIGHT;
-import static classes.Game.I18N.VARS.MUTABLE.MAX_WIDTH;
+import static classes.Game.I18N.METHODS.*;
+import static classes.Game.I18N.VARS.MUTABLE.*;
 
 @Getter
 @Setter

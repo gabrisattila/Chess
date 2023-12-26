@@ -1,9 +1,9 @@
 package classes.AI.Evaluation;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 @Getter
 @Setter

@@ -2,7 +2,6 @@ package classes.Game.I18N;
 
 
 import classes.GUI.FrameParts.ViewField;
-
 import lombok.*;
 
 import static classes.GUI.FrameParts.ViewBoard.*;

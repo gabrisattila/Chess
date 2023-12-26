@@ -5,8 +5,7 @@ import classes.Game.I18N.PieceAttributes;
 import classes.Game.Model.Logic.EDT;
 import classes.Game.Model.Structure.IPiece;
 import classes.Game.Model.Structure.Move;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.swing.*;
 import java.awt.event.MouseAdapter;

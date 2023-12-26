@@ -30,6 +30,7 @@ public class Window extends JFrame {
 
     private static Window window;
 
+    @Getter
     private GameBoard gameBoard;
 
     @Getter
@@ -38,7 +39,6 @@ public class Window extends JFrame {
     @Getter
     private static ArrayList<ChessButton> buttons = buttons();
 
-    @Getter
     private static Pair<ArrayList<ViewField>, ArrayList<ViewField>> takenPiecePlaces = new Pair<>(new ArrayList<>(16), new ArrayList<>(16));
 
     //endregion
@@ -100,7 +100,7 @@ public class Window extends JFrame {
         addButtons();
         buttonsEnabled(new ArrayList<>(){{add("Új játék"); add("Betöltés"); }});
 
-//        canBeLogger = false;
+        canBeLogger = false;
         addLogger();
 
     }
