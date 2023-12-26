@@ -1,10 +1,10 @@
 package classes.AI.Ai;
 
 import classes.Game.I18N.ChessGameException;
+import classes.Game.I18N.Pair;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.Random;
+import java.util.*;
 
 import static classes.AI.Ai.AiNode.*;
 import static classes.AI.BitBoards.BBVars.*;
@@ -94,7 +94,7 @@ public class AI extends Thread {
 
         int startTime = (int) System.currentTimeMillis();
 
-        double evaluatedSearch = miniMax(starterPos, whiteToPlay, 0, -Double.MAX_VALUE, Double.MAX_VALUE);
+        double evaluatedSearch = miniMax(starterPos, whiteToPlay, 0, -Double.MAX_VALUE, Double.MAX_VALUE, 0);
 
         if (evaluatedSearch == WHITE_GOT_CHECKMATE /* + ply */ || evaluatedSearch == BLACK_GOT_CHECKMATE /* + ply */ ||
             evaluatedSearch == DRAW) {
@@ -124,7 +124,7 @@ public class AI extends Thread {
         return new AiNode();
     }
 
-    private double miniMax(AiNode starterPos, boolean maxNeeded, double depth, double alpha, double beta){
+    private double miniMax(AiNode starterPos, boolean maxNeeded, double depth, double alpha, double beta, double inheritedValue){
 
         nodeNum++;
 
@@ -136,36 +136,31 @@ public class AI extends Thread {
             }
 
             //Here will come the evaluation
-            double evaluation;
-
-            evaluation =
-                    PAWN_BASE_VALUE * Long.bitCount(bitBoards[wPawnI]) +
-                        KNIGHT_OR_BISHOP_BASE_VALUE * (Long.bitCount(bitBoards[wKnightI] + Long.bitCount(bitBoards[wBishopI]))) +
-                        ROOK_BASE_VALUE * Long.bitCount(bitBoards[wRookI]) +
-                        QUEEN_BASE_VALUE * Long.bitCount(bitBoards[wQueenI])
-                        +
-                    -PAWN_BASE_VALUE * Long.bitCount(bitBoards[bPawnI]) -
-                        KNIGHT_OR_BISHOP_BASE_VALUE * (Long.bitCount(bitBoards[bKnightI] + Long.bitCount(bitBoards[bBishopI]))) -
-                        ROOK_BASE_VALUE * Long.bitCount(bitBoards[bRookI]) -
-                        QUEEN_BASE_VALUE * Long.bitCount(bitBoards[bQueenI]);
-
-
-            starterPos.setFinalValue(evaluation);
-            return evaluation;
+            starterPos.setFinalValue(inheritedValue);
+            return inheritedValue;
         }
 
         double evaluatedMiniMax;
 
-        int[] movesInThisTurn = generateMoves(maxNeeded);
+        Pair<ArrayList<Double>, ArrayList<Integer>> valuedMoves = getPairList(generateMoves(maxNeeded));
+
+        int move;
+        double value;
+
+        ArrayList<Double> valuesInThisTurn = valuedMoves.getFirst();
+        ArrayList<Integer> movesInThisTurn = valuedMoves.getSecond();
 
         int legalMoves = 0;
 
         if (maxNeeded){
             double possibleMax = -Double.MAX_VALUE;
 
-            for (int move : movesInThisTurn) {
+            for (int i = 0; i < movesInThisTurn.size(); i++) {
 
                 copyPosition();
+
+                move = movesInThisTurn.get(i);
+                value = valuesInThisTurn.get(i);
 
                 if (makeMove(move)) { //If move is legal
                     legalMoves++;
@@ -174,7 +169,7 @@ public class AI extends Thread {
                     AiNode next = putNewToNodeMap(move);
                     starterPos.getChildren().add(next);
 
-                    evaluatedMiniMax = miniMax(next, false, depth + 1, alpha, beta);
+                    evaluatedMiniMax = miniMax(next, false, depth + 1, alpha, beta, value);
                     ply--;
                     undoMove();
 
@@ -188,7 +183,7 @@ public class AI extends Thread {
                 }
             }
             if (legalMoves == 0){
-                if (isSquareAttacked(false, 63 - Long.numberOfLeadingZeros(bitBoards[wKingI])))
+                if (isSquareAttacked(false, getFirstBitIndex(bitBoards[wKingI])))
                     possibleMax = WHITE_GOT_CHECKMATE;// + ply;
                 else
                     possibleMax = DRAW;// + ply;
@@ -198,9 +193,12 @@ public class AI extends Thread {
         } else {
             double possibleMin = Double.MAX_VALUE;
 
-            for (int move : movesInThisTurn) {
+            for (int i = 0; i < movesInThisTurn.size(); i++) {
 
                 copyPosition();
+
+                move = movesInThisTurn.get(i);
+                value = valuesInThisTurn.get(i);
 
                 if (makeMove(move)){ // If move is legal
                     legalMoves++;
@@ -209,7 +207,7 @@ public class AI extends Thread {
                     AiNode next = putNewToNodeMap(move);
                     starterPos.getChildren().add(next);
 
-                    evaluatedMiniMax = miniMax(next, true, depth + 1, alpha, beta);
+                    evaluatedMiniMax = miniMax(next, true, depth + 1, alpha, beta, value);
                     ply--;
                     undoMove();
 
@@ -223,7 +221,7 @@ public class AI extends Thread {
                 }
             }
             if (legalMoves == 0){
-                if (isSquareAttacked(true,63 - Long.numberOfLeadingZeros(bitBoards[bKingI])))
+                if (isSquareAttacked(true, getFirstBitIndex(bitBoards[bKingI])))
                     possibleMin = BLACK_GOT_CHECKMATE;// + ply;
                 else
                     possibleMin = DRAW;// + ply;
@@ -233,76 +231,16 @@ public class AI extends Thread {
         }
     }
 
-    private double negaMax(AiNode starterPos, int depth, double alpha, double beta){
-
-        if (depth == MINIMAX_DEPTH){
-
-            //Here will come the evaluation
-            double evaluation = 0;
-            starterPos.setFinalValue(evaluation);
-            return 0;
-        }
-
-        nodeNum++;
-
-        int move;
-        generateMoves(whiteToPlay);
-        int bestMoveYet = 0;
-
-        double oldAlpha = alpha;
-
-//        System.out.println("\nThis is the move list in the " + nodeNum + ". node.\n");
-//        Arrays.stream(movesInATurn).filter(m -> getTo(m) != getFrom(m)).forEach(m -> System.out.println(moveToString(m)));
-//        System.out.println("\n");
-
-        for (int i = 0; i < moveCount; i++) {
-
-            copyPosition();
-
-            ply++;
-            move = movesInATurn[i];
-
-            if (!makeMove(move)){ // If the move is illegal simply take back
-                ply--;
-                //Skip to next move
-                continue;
+    private Pair<ArrayList<Double>, ArrayList<Integer>> getPairList(TreeMap<Double, Set<Integer>> generated){
+        ArrayList<Double> values = new ArrayList<>();
+        ArrayList<Integer> moves = new ArrayList<>();
+        for (double val : generated.keySet()) {
+            for (int move : generated.get(val)) {
+                values.add(val);
+                moves.add(move);
             }
-            AiNode next = new AiNode(move);
-            starterPos.getChildren().add(next);
-            double evaluatedNegaMax = -negaMax(next, depth + 1, -beta, -alpha);
-
-            if (evaluatedNegaMax == -0)
-                evaluatedNegaMax = 0;
-
-            ply--;
-            undoMove();
-
-            //Node Fail Hard Beta Cut-Off
-            if (evaluatedNegaMax >= beta){
-                starterPos.setFinalValue(beta);
-                return beta;
-            }
-
-            //Found better move
-            if (evaluatedNegaMax > alpha){
-                alpha = evaluatedNegaMax;
-
-                if (ply == 0)
-                    //Set the best moves value
-                    bestMoveYet = movesInATurn[i];
-            }
-
         }
-
-        if (oldAlpha != alpha){
-            //Set best move
-            bestMove = bestMoveYet;
-        }
-
-        //Node Fail Low
-        starterPos.setFinalValue(alpha);
-        return alpha;
-
+        return new Pair<>(values, moves);
     }
 
     private int sortOutBestChild(AiNode parent, double bestChildValue){

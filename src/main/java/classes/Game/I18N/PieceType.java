@@ -1,5 +1,6 @@
 package classes.Game.I18N;
 
+import static classes.AI.BitBoards.BBVars.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 
 public enum PieceType {
@@ -90,6 +91,29 @@ public enum PieceType {
             }
         }
         return 0;
+    }
+
+    public static PieceType getPieceType(int pieceIndex){
+        switch (pieceIndex){
+            case wPawnI, bPawnI -> {
+                return P;
+            }
+            case wKnightI, bKnightI -> {
+                return N;
+            }
+            case wBishopI, bBishopI -> {
+                return B;
+            }
+            case wRookI, bRookI -> {
+                return R;
+            }
+            case wQueenI, bQueenI -> {
+                return Q;
+            }
+            default -> {
+                return K;
+            }
+        }
     }
     
     public static PieceType getPieceType(char c){

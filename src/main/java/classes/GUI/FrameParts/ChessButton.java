@@ -1,8 +1,8 @@
 package classes.GUI.FrameParts;
 
+import classes.AI.BitBoards.Zobrist;
 import classes.Game.Model.Structure.IBoard;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,17 +12,16 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Date;
 
+import static classes.AI.BitBoards.BitBoardMoves.*;
 import static classes.GUI.Frame.Window.*;
 import static classes.GUI.FrameParts.GameBoard.labelTexting;
 import static classes.GUI.FrameParts.ViewBoard.getViewBoard;
-import static classes.Game.I18N.METHODS.dateToString;
-import static classes.Game.I18N.METHODS.notNull;
+import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.VARS.FINALS.*;
 import static classes.Game.I18N.VARS.MUTABLE.*;
 import static classes.Game.Model.Logic.EDT.*;
-import static classes.Game.Model.Logic.FenConverter.BoardToFen;
-import static classes.Game.Model.Structure.GameOverOrPositionEnd.GameOverDecision;
-import static classes.Game.Model.Structure.GameOverOrPositionEnd.showFlashFrame;
+import static classes.Game.Model.Logic.FenConverter.*;
+import static classes.Game.Model.Structure.GameOverOrPositionEnd.*;
 
 public class ChessButton extends JButton {
 
@@ -289,6 +288,8 @@ public class ChessButton extends JButton {
             buttonsEnabled(new ArrayList<>(){{add("All");}});
             labelTexting(!oneAi || !whiteAi);
             initialization();
+            Zobrist.fillZobristTable();
+            fillBaseBitBoardPossibilities();
         }
 
         public static void saveBoard(IBoard board) {
