@@ -5,6 +5,7 @@ import classes.GUI.FrameParts.ViewField;
 import lombok.*;
 
 import static classes.GUI.FrameParts.ViewBoard.*;
+import static classes.Game.I18N.METHODS.containsLocation;
 
 @Getter
 @Setter
@@ -68,7 +69,7 @@ public class Location {
         return loc;
     }
 
-    public static Location stringToLocation(String location){
+    public static Location emPassantStringToLocation(String location){
         if (
                 location.length() != 2 ||
                 !Character.isDigit(location.charAt(0)) ||

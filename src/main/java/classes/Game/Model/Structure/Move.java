@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 import static classes.AI.Ai.AI.*;
 import static classes.GUI.FrameParts.Logger.*;
-import static classes.Game.I18N.Location.stringToLocation;
+import static classes.Game.I18N.Location.emPassantStringToLocation;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
@@ -210,7 +210,7 @@ public class Move {
 
         if (what.getType() == K && Math.abs(from.getJ() - to.getJ()) == 2){
             return "castle";
-        } else if (what.getType() == P && to.equals(stringToLocation(emPassantChance))) {
+        } else if (what.getType() == P && to.equals(emPassantStringToLocation(emPassantChance))) {
             return "emPassant";
         } else if (emPassantAuthorizationIf()) {
             return "emPassantAut";
