@@ -90,9 +90,7 @@ public class ViewPiece extends ImageIcon implements IPiece{
     }
 
     @Override
-    public void updateRange() {
-
-    }
+    public void updateRange() {}
 
     //endregion
 

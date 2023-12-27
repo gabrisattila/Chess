@@ -51,7 +51,6 @@ public class GameBoard extends JLayeredPane {
     //region Methods
 
     public static void clearLeftIcons()  {
-
         for (var v : getViewBoard().getFields()) {
             for (IField f : v) {
                 cleanFieldFromLeftIcon(f);

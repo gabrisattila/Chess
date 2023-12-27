@@ -24,7 +24,6 @@ package classes.AI.BitBoards;
 
 
 //TODO :
-// Zobrist törlése, úgy ahogy van
 // Tesztelés
 // - először legfontosabb régi függvények kiválogatása update range összevetése generateMove-al
 // - sima fontos régi függvények

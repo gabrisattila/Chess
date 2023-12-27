@@ -137,7 +137,7 @@ public class Piece implements IPiece {
         watchedRange = getRange(getType(), false);
     }
 
-    private Set<Location> getRange(PieceType type, boolean posOrWatch)  {
+    protected Set<Location> getRange(PieceType type, boolean posOrWatch)  {
         switch (type){
             case P -> {
                 return range(P, posOrWatch);
@@ -158,7 +158,7 @@ public class Piece implements IPiece {
         return range(P, posOrWatch);
     }
 
-    private Set<Location> range(PieceType type, boolean posOrWatch)  {
+    protected Set<Location> range(PieceType type, boolean posOrWatch)  {
         Set<Location> range = new HashSet<>();
         Set<Location> optionsToIterateTrough = (type == P && getEnemyStartRow() > getOwnStartRow()) ?
                 matrixChooser.get(type) :
@@ -193,7 +193,7 @@ public class Piece implements IPiece {
 
     //region Piece cases separately
 
-    private boolean pawnCase(Location l, boolean posOrWatch)  {
+    protected boolean pawnCase(Location l, boolean posOrWatch)  {
         if (containsLocation(l)){
             if (l.getJ() == getJ()){
                 if (isTherePiece(l))
@@ -232,7 +232,7 @@ public class Piece implements IPiece {
         return false;
     }
 
-    private Set<Location> runTrough(int i, int j, int addToI, int addToJ, boolean possibleOrWatched)  {
+    protected Set<Location> runTrough(int i, int j, int addToI, int addToJ, boolean possibleOrWatched)  {
         boolean b = true;
         Set<Location> pRange = new HashSet<>();
         Set<Location> wRange = new HashSet<>();
@@ -264,11 +264,11 @@ public class Piece implements IPiece {
 
     //region Helpers for ranges
 
-    private boolean enemyColor(Location Location)  {
+    protected boolean enemyColor(Location Location)  {
         return board.getPiece(Location).isWhite() != isWhite();
     }
 
-    private boolean enemyColor(int i, int j)  {
+    protected boolean enemyColor(int i, int j)  {
         return board.getPiece(i, j).isWhite() != isWhite();
     }
 
