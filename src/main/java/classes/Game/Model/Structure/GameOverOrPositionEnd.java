@@ -111,7 +111,7 @@ public class GameOverOrPositionEnd {
             if (itWorthRecommendDraw()){
                 showFlashFrame("Döntetlent ajánlottál, \naz ellenfeled fogadta el.", 5);
                 finalGameEnd();
-                return DRAW;
+                return DRAW_OFFER;
             }
         }
 
@@ -123,7 +123,7 @@ public class GameOverOrPositionEnd {
             if (notNull(board.getCheckers())){
                 if (notNull(board.getCheckers().getSecond())){
                     return board.getKing(whiteToPlay).getPossibleRange().isEmpty();
-                }else {
+                } else {
                     return board.getPieces(whiteToPlay).stream().allMatch(p -> p.getPossibleRange().isEmpty());
                 }
             }
@@ -146,23 +146,39 @@ public class GameOverOrPositionEnd {
                                               board.getPieces().stream().allMatch(p -> p.getType() == K);
             boolean remained2KingAnd1KnightOr1Bishop =
                                               board.getPieces().size() == 3 &&
-                                              board.getPieces().stream().allMatch(p -> p.getType() == K || p.getType() == N || p.getType() == PieceType.R);
-            boolean remained2KingAnd2Knight = board.getPieces().size() == 4;
-            if (remained2KingAnd2Knight){
-                IPiece possibleKnight = null, possibleBishop = null;
-                int knightCount = 0, bishopCount = 0;
+                                              board.getPieces().stream().allMatch(p -> p.getType() == K || p.getType() == N || p.getType() == B);
+            boolean remained2KingAnd2DrawPieces = board.getPieces().size() == 4;
+            if (remained2KingAnd2DrawPieces){
+                ArrayList<IPiece> possibleKnight = new ArrayList<>(), possibleBishop = new ArrayList<>();
                 for (IPiece p : board.getPieces()) {
                     if (p.getType() == B) {
-                        possibleBishop = p;
-                        bishopCount++;
+                        possibleBishop.add(p);
                     } else if (p.getType() == N) {
-                        possibleKnight = p;
-                        knightCount++;
+                        possibleKnight.add(p);
                     }
                 }
-                remained2KingAnd2Knight = knightCount == 1 && bishopCount == 1 && possibleKnight.isWhite() != possibleBishop.isWhite();
+                remained2KingAnd2DrawPieces =
+                        (possibleBishop.size() == 2 && possibleBishop.get(0).isWhite() != possibleBishop.get(1).isWhite()) ||
+                        (possibleKnight.size() == 2) ||
+                        (possibleKnight.size() == 1 && possibleBishop.size() == 1);
             }
-            return nextPlayerEmptyRange || thirdSimilarPositionOfTheGame || allRemainingPieceIsKing || remained2KingAnd1KnightOr1Bishop || remained2KingAnd2Knight;
+            boolean remained2King2KnightFromSameColorAnd1Bishop =
+                    board.getPieces().size() == 5;
+            if (remained2King2KnightFromSameColorAnd1Bishop){
+                ArrayList<IPiece> possibleKnight = new ArrayList<>(), possibleBishop = new ArrayList<>();
+                for (IPiece p : board.getPieces()) {
+                    if (p.getType() == B) {
+                        possibleBishop.add(p);
+                    } else if (p.getType() == N) {
+                        possibleKnight.add(p);
+                    }
+                }
+                remained2King2KnightFromSameColorAnd1Bishop =
+                        possibleKnight.size() == 2 &&  possibleKnight.get(0).isWhite() == possibleKnight.get(1).isWhite() &&
+                                possibleBishop.size() == 1 && possibleBishop.get(0).isWhite() != possibleKnight.get(0).isWhite();
+            }
+            return nextPlayerEmptyRange || thirdSimilarPositionOfTheGame || allRemainingPieceIsKing || remained2KingAnd1KnightOr1Bishop || remained2KingAnd2DrawPieces ||
+                    remained2King2KnightFromSameColorAnd1Bishop;
         }
     }
 

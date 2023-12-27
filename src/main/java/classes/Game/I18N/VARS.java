@@ -428,6 +428,16 @@ public class VARS {
 
             //endregion
 
+            //region Draw
+
+            put("draw1-1King", "K7/8/k7/8/8/8/8/8 w ---- - 1 0");
+            put("draw1-1King1-1Knight", "K7/8/k7/8/N6n/8/8/8 w ---- - 1 0");
+            put("draw1-1King1-1Bishop", "K7/8/k7/8/B6b/8/8/8 w ---- - 1 0");
+            put("draw1-1King1-2Knight", "K7/8/k7/8/NN5b/8/8/8 w ---- - 1 0");
+            put("draw1-1King2Knight", "K7/8/k7/NN6/8/8/8/8 w ---- - 1 0");
+
+            //endregion
+
             //region Check
 
             put("whiteDownCheckTestCheckWithQueenPiecesAroundEnemyKing", "K7/Q5rr/7k/6nn/8/8/8/8 w ---- - 1 0");
@@ -436,8 +446,8 @@ public class VARS {
 
             //region CheckMate
 
-            put("whiteDownCheckMateInTwoWhiteGotItByTwoRooks", "K7/8/6r1/k6r/8/8/8/8 b ---- - 1 1");
-            put("whiteDownCheckMateInOneWhiteGotItByTwoRooks", "K7/7r/6r1/k7/8/8/8/8 b ---- - 1 1");
+            put("whiteDownWhiteGotCheckMate", "K6r/6r1/k7/8/8/8/8/8 w ---- - 1 0");
+            put("blackDownBlackGotCheckMate", "k6R/6R1/8/K7/8/8/8/8 b ---- - 1 1");
             put("whiteDownCheckMateInOneWhiteGotItWithPawnProm", "K7/3p4/k1p5/8/8/8/8/8 b ---- - 1 1");
             put("whiteGotCheckMate", "5R1K/1Pr3qP/1B2p3/6n1/5P2/1Q5p/3R1pp1/4r1k1 w ---- - 1 0");
             put("blackGotCheckMateWrong", "RNB1K2R/PPP2PPP/8/2BPP3/8/5n1N/pppppQ1p/rnb2kr1 b KQ-- - 10 1");
