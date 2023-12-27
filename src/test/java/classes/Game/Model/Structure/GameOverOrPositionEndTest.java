@@ -34,40 +34,11 @@ public class GameOverOrPositionEndTest {
 
     @Test
     public void testGameEnd() {
-        FenConverter.FenToBoard(testFens.get("whiteDownWhiteGotCheckMate"), board);
-        GameOverDecision(board, 0);
-        Assert.assertTrue(gameEndFlag.get());
-        gameEndFlag.set(false);
-
-        FenConverter.FenToBoard(testFens.get("blackDownBlackGotCheckMate"), board);
-        GameOverDecision(board, 0);
-        Assert.assertTrue(gameEndFlag.get());
-        gameEndFlag.set(false);
-
-        FenConverter.FenToBoard(testFens.get("draw1-1King"), board);
-        GameOverDecision(board, 0);
-        Assert.assertTrue(gameEndFlag.get());
-        gameEndFlag.set(false);
-
-
-        FenConverter.FenToBoard(testFens.get("draw1-1King2Knight"), board);
-        GameOverDecision(board, 0);
-        Assert.assertTrue(gameEndFlag.get());
-        gameEndFlag.set(false);
-
-
-        FenConverter.FenToBoard(testFens.get("draw1-1King1-1Knight"), board);
-        GameOverDecision(board, 0);
-        Assert.assertTrue(gameEndFlag.get());
-        gameEndFlag.set(false);
-
-        FenConverter.FenToBoard(testFens.get("draw1-1King1-1Bishop"), board);
-        GameOverDecision(board, 0);
-        Assert.assertTrue(gameEndFlag.get());
-        gameEndFlag.set(false);
-
-        FenConverter.FenToBoard(testFens.get("draw1-1King1-2Knight"), board);
-        GameOverDecision(board, 0);
-        Assert.assertTrue(gameEndFlag.get());
+        for (String key : gameEndFens.keySet()) {
+            FenConverter.FenToBoard(gameEndFens.get(key), board);
+            GameOverDecision(board, 0);
+            Assert.assertTrue(gameEndFlag.get());
+            gameEndFlag.set(false);
+        }
     }
 }
