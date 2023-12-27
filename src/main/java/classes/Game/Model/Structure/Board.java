@@ -164,6 +164,7 @@ public class Board implements IBoard {
                 kingRangeInsteadOfCheck(whiteToPlay);
             }
         }
+        clearDuplicatesFromRanges();
     }
 
     //endregion
@@ -189,6 +190,19 @@ public class Board implements IBoard {
             if (p.getType() != K) {
                 p.updateRange();
             }
+        }
+    }
+
+    private void clearDuplicatesFromRanges(){
+        Set<Location> finalRange = new HashSet<>();
+        for (IPiece p : pieces) {
+            for (Location l : p.getPossibleRange()) {
+                if (!locationCollectionContains(finalRange, l)){
+                    finalRange.add(l);
+                }
+            }
+            ((Piece) p).setPossibleRange(finalRange);
+            finalRange = new HashSet<>();
         }
     }
 

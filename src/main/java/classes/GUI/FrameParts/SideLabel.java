@@ -53,28 +53,44 @@ public class SideLabel extends JLabel {
 
     //region Methods
 
-    public static ArrayList<String> collectProperLabelTexts(boolean whiteDown){
+    public static ArrayList<String> collectProperLabelTexts(){
         ArrayList<String> labelTextList = new ArrayList<>();
+        setBackNumsAndAbcToNormal();
+
         List<Character> numsSubList = nums.subList(0, MAX_HEIGHT);
         List<Character> abcSubList = abc.subList(0, MAX_WIDTH);
-        if (!whiteDown){
-            Collections.reverse(abcSubList);
+
+        if (whiteDown){
+            addReversedCharacterListToLabelList(labelTextList, numsSubList);
+            addCharacterListToLabelList(labelTextList, abcSubList);
+            addReversedCharacterListToLabelList(labelTextList, numsSubList);
+            addReversedCharacterListToLabelList(labelTextList, abcSubList);
         }else {
-            Collections.reverse(numsSubList);
+            addCharacterListToLabelList(labelTextList, numsSubList);
+            addReversedCharacterListToLabelList(labelTextList, abcSubList);
+            addReversedCharacterListToLabelList(labelTextList, numsSubList);
+            addReversedCharacterListToLabelList(labelTextList, abcSubList);
         }
-        for (int i = 0; i < MAX_HEIGHT; i++) {
-            labelTextList.add(String.valueOf(numsSubList.get(i)));
-        }
-        for (int i = 0; i < MAX_WIDTH; i++) {
-            labelTextList.add(" " + abcSubList.get(i) + " ");
-        }
-        for (int i = MAX_HEIGHT - 1; i >= 0; i--) {
-            labelTextList.add(String.valueOf(numsSubList.get(i)));
-        }
-        for (int i = MAX_WIDTH - 1; i >= 0; i--) {
-            labelTextList.add(" " + abcSubList.get(i) + " ");
-        }
+
         return labelTextList;
+    }
+
+    private static void addCharacterListToLabelList(List<String> labelTextList, List<Character> characters){
+        for (char c : characters) {
+            labelTextList.add(String.valueOf(c));
+        }
+    }
+
+    private static void addReversedCharacterListToLabelList(List<String> labelTextList, List<Character> characters){
+        Collections.reverse(characters);
+        addCharacterListToLabelList(labelTextList, characters);
+    }
+
+    public static void setBackNumsAndAbcToNormal(){
+        if (nums.get(0) != '1')
+            Collections.reverse(nums);
+        if (abc.get(0) != 'A')
+            Collections.reverse(abc);
     }
 
     //endregion

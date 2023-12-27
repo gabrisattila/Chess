@@ -79,7 +79,7 @@ public class EDT {
 
     public static void startAI(){
         if (!gameEndFlag.get()){
-            buttonsEnabled(new ArrayList<>(){{add("Mentés"); add("Szünet");}});
+            buttonsEnabled(new ArrayList<>(){{add("Új játék"); add("Mentés"); add("Szünet");}});
             ai = new AI();
             try {
                 sleep(300);

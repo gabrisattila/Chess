@@ -60,7 +60,7 @@ public class AI extends Thread {
         searchForBestMove();
     }
     
-    protected boolean gameFinished(){
+    public static boolean gameFinished(){
         return gameEndFlag.get();
     }
 

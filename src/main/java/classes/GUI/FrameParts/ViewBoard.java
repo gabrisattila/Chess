@@ -11,6 +11,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import static classes.AI.Ai.AI.gameFinished;
 import static classes.Game.I18N.METHODS.isNull;
 import static classes.Game.I18N.METHODS.notNull;
 import static classes.Game.I18N.PieceType.P;
@@ -115,7 +116,7 @@ public class ViewBoard extends Component implements IBoard {
 
         GameOverDecision(this, Double.MIN_VALUE);
 
-        if (!gameEndFlag.get()) {
+        if (!gameFinished()) {
             for (int i = 0; i < MAX_HEIGHT; i++) {
                 for (int j = 0; j < MAX_WIDTH; j++) {
                     if (getBoard().getField(i, j).isGotPiece() && notNull(getBoard().getPiece(i, j).getPossibleRange())) {

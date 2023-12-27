@@ -324,19 +324,15 @@ public class BitBoardMoves {
     public static boolean isSquareAttacked(boolean attackerColor, int squareIndex){
         setHittableOccupiedEmpty();
         return squareIndex >= 0 && squareIndex <= 63 &&
-                decideWhetherIsAttackedByPawn(attackerColor, squareIndex) ||
+                attackedByPawn(attackerColor, squareIndex) ||
                 (knightPossibilityTable[squareIndex] & getKnightBoard(attackerColor)) != 0 ||
                 (getBishopAttacks(attackerColor) & 1L << squareIndex) != 0 ||
                 (getRookAttacks(attackerColor) & 1L << squareIndex) != 0 ||
                 (getQueenAttacks(attackerColor) & 1L << squareIndex) != 0 ||
-                (
-                        (kingPossibilityTable[getFirstBitIndex(getKingBoard(attackerColor))]
-                                ^ 1L << (getFirstBitIndex(getKingBoard(attackerColor)) - 2)
-                                ^ 1L << (getFirstBitIndex(getKingBoard(attackerColor)) + 2))
-                & 1L << squareIndex) != 0;
+                attackedByKing(attackerColor, squareIndex);
     }
 
-    private static boolean decideWhetherIsAttackedByPawn(boolean attackerColor, int squareIndex){
+    private static boolean attackedByPawn(boolean attackerColor, int squareIndex){
         long pawnBoardCopy = bitBoards[attackerColor ? wPawnI : bPawnI];
         int i;
         while (pawnBoardCopy != 0){
@@ -348,15 +344,23 @@ public class BitBoardMoves {
         return false;
     }
 
-    private static int possibilitiesNumInNextTurn(boolean forWhite){
-        int moveCount = 0, from, to;
-        long currentBitBoard, possibilities, shouldBePartOfMove;
+    private static boolean attackedByKing(boolean attackerColor, int squareIndex){
+        long enemyKingPossibility = (kingPossibilityTable[getFirstBitIndex(getKingBoard(attackerColor))]
+                                                ^ 1L << (getFirstBitIndex(getKingBoard(attackerColor)) - 2)
+                                                ^ 1L << (getFirstBitIndex(getKingBoard(attackerColor)) + 2));
+        enemyKingPossibility = removeAB_OR_GH_Cols(getFirstBitIndex(getKingBoard(attackerColor)), enemyKingPossibility);
+        return (enemyKingPossibility & 1L << squareIndex) != 0;
+    }
 
+    private static Pair<Integer, Integer> possibilitiesNumInNextTurn(boolean forWhite){
+        int moveCount = 0, enemyKingMoveCount = 0, from, to;
+        long currentBitBoard, possibilities, shouldBePartOfMove;
+        int enemyKingIndex = forWhite ? bKingI : wKingI;
         for (int piece : pieceIndexes) {
 
             setHittableOccupiedEmpty();
 
-            if (forWhite == piece <= wKingI){
+            if (forWhite == piece <= wKingI || piece == enemyKingIndex){
 
                 currentBitBoard = bitBoards[piece];
 
@@ -395,7 +399,10 @@ public class BitBoardMoves {
                         }
 
                         if ((1L << to & shouldBePartOfMove) != 0){
-                            moveCount++;
+                            if (piece == enemyKingIndex)
+                                enemyKingMoveCount++;
+                            else
+                                moveCount++;
                         }
 
                         possibilities = removeBit(possibilities, to);
@@ -405,7 +412,7 @@ public class BitBoardMoves {
                 }
             }
         }
-        return moveCount;
+        return new Pair<>(moveCount, enemyKingMoveCount);
     }
 
     //endregion
@@ -499,7 +506,7 @@ public class BitBoardMoves {
                             //2 forward
                             else if (16 == Math.abs(from - to)) {
                                 int minus = whiteDown ? (forWhite ? 8 : -8) : (forWhite ? -8 : 8);
-                                shouldBePartOfMove = EMPTY & (piece == wPawnI ? (ROW_4 | ROW_3) : (ROW_5 | ROW_6)) & (1L << (to - minus) | 1L << to);
+                                shouldBePartOfMove = EMPTY & 1L << (to - minus) & 1L << to;
                             }
                             //Hit and if there's emPassant possibility, combine it
                             else {
@@ -536,11 +543,9 @@ public class BitBoardMoves {
                             copyPosition();
 
                             if (makeMove(move)){
-                                int possibilitiesAfterMove = possibilitiesNumInNextTurn(forWhite);
-                                int enemyKingPossibilitiesAfterMove = Long.bitCount(
-                                        calcKingPossibility(forWhite ? bKingI : wKingI,
-                                                            kingPossibilities(getFirstBitIndex(getKingBoard(!forWhite))))
-                                );
+                                Pair<Integer, Integer> moveCountsNextTurn = possibilitiesNumInNextTurn(forWhite);
+                                int possibilitiesAfterMove = moveCountsNextTurn.getFirst();
+                                double enemyKingPossibilitiesAfterMove = 0.1 * moveCountsNextTurn.getSecond();
                                 moveIsCheck = isSquareAttacked(forWhite, getFirstBitIndex(getKingBoard(!forWhite)));
                                 move |= moveIsCheck ? 0x200000 : 0;
                                 value = evaluate(possibilitiesAfterMove, enemyKingPossibilitiesAfterMove, forWhite);

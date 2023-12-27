@@ -91,17 +91,19 @@ public class Logger extends JTextArea {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 if (board1[i][j] != board2[i][j]) {
-                    if (fromRow == -1) {
+                    if (board2[i][j] == ' '){
                         fromRow = i;
                         fromCol = j;
-                        stepper = board1[i][j];
-                    } else {
+                    }else {
                         toRow = i;
                         toCol = j;
+                        stepper = board2[i][j];
                     }
                 }
             }
         }
+            // szám nem jó whiteDown-nál, figura image nem látszik
+            // betű nem jó !whiteDown-nál figura image nem látszik
         return convertToChessNotation(fromRow, fromCol, stepper, true) +
                 " - " +
                 convertToChessNotation(toRow, toCol, (char) 0, false) +
@@ -131,14 +133,14 @@ public class Logger extends JTextArea {
     }
 
     private static String convertToChessNotation(int row, int col, char pieceHere, boolean firstLoc) {
-        char file = (char) ('a' + col);
-        char rank = (char) ('8' - row);
+        char r = nums.get(whiteDown ? row : 7 - row);
+        char c = abc.get(whiteDown ? col : 7 - col);
         String step = firstLoc ? " " : "";
         step += firstLoc ? (!whiteToPlay ? (stepNumber + ". ") : (stepNumber < 10 ? "    " : "     ")) : "";
         step += pieceHere == 0 ? "" : getProperPieceImage(pieceHere);
         step += firstLoc ? " " : "";
-        step += file;
-        step += rank;
+        step += Character.toLowerCase(c);
+        step += r;
         return step;
     }
 

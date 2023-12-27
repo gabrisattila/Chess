@@ -232,6 +232,8 @@ public class Piece implements IPiece {
                 }
                 if (posOrWatch){
                     if (isTherePiece(l)){
+                        if (!enemyColor(l))
+                            ((Piece) getBoard().getPiece(l)).inDefend = true;
                         return enemyColor(l);
                     }else {
                         return notNull(attributes.getPossibleEmPassant()) && l.equals(getEmPassantLocation());

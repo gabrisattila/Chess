@@ -105,7 +105,7 @@ public class VARS {
         public final static Color BACK_GROUND = new Color(33, 3, 8, 205);
 
         public static final Double[][] PAWN_BASE_VALUE_MATRIX_WP = new Double[][] {
-                {0.9, 0.9, 0.90, 0.90, 0.90, 0.90, 0.90, 0.90},
+                {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},
                 {0.3, 0.3, 0.30, 0.40, 0.40, 0.30, 0.30, 0.30},
                 {0.2, 0.2, 0.20, 0.30, 0.30, 0.30, 0.20, 0.20},
                 {0.1, 0.1, 0.10, 0.20, 0.20, 0.10, 0.10, 0.10},
@@ -123,7 +123,7 @@ public class VARS {
                 {0.10, 0.10, 0.10, 0.20, 0.20, 0.10, 0.10, 0.10},
                 {0.20, 0.20, 0.20, 0.30, 0.30, 0.30, 0.20, 0.20},
                 {0.30, 0.30, 0.30, 0.40, 0.40, 0.30, 0.30, 0.30},
-                {0.90, 0.90, 0.90, 0.90, 0.90, 0.90, 0.90, 0.90}
+                {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0}
         };
 
         private static final Double[][] KNIGHT_BASE_VALUE_MATRIX = new Double[][] {
@@ -639,8 +639,6 @@ public class VARS {
         public static boolean theresOnlyOneAi = false;
 
         public static boolean whiteAiNeeded = false;
-
-        public static boolean isTest = false;
 
         public static boolean whiteDown = true;
 

@@ -13,10 +13,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import static classes.GUI.FrameParts.SideLabel.collectProperLabelTexts;
+import static classes.GUI.FrameParts.SideLabel.setBackNumsAndAbcToNormal;
 import static classes.GUI.FrameParts.ViewBoard.getViewBoard;
 import static classes.Game.I18N.VARS.FINALS.*;
-import static classes.Game.I18N.VARS.MUTABLE.MAX_HEIGHT;
-import static classes.Game.I18N.VARS.MUTABLE.MAX_WIDTH;
+import static classes.Game.I18N.VARS.MUTABLE.*;
 
 @Getter
 @Setter
@@ -205,18 +205,16 @@ public class GameBoard extends JLayeredPane {
 
     }
 
-    public static void labelTexting(boolean whiteDown)  {
-        labelTextList = collectProperLabelTexts(whiteDown);
+    public static void labelTexting()  {
+        labelTextList = collectProperLabelTexts();
         int i = 0;
         for (SideLabel label : labels) {
             label.setText(labelTextList.get(i));
             i++;
         }
 
-        if (nums.get(0) == '8')
-            Collections.reverse(nums);
-        if (abc.get(0) == 'N')
-            Collections.reverse(abc);
+        setBackNumsAndAbcToNormal();
+
         for (int j = 0; j < MAX_HEIGHT; j++) {
             for (int k = 0; k < MAX_WIDTH; k++) {
                 ((ViewField) getViewBoard().getField(j, k)).setCol(whiteDown ? nums.get(j) : nums.get(MAX_HEIGHT - (j + 1)));

@@ -178,15 +178,21 @@ public class ChessButton extends JButton {
         }
 
         private void newGameBlackAiClicked() {
-            newGameInitialization(true, false, false, "");
+            theresOnlyOneAi = true;
+            whiteAiNeeded = false;
+            newGameInitialization("");
         }
 
         private void newGameWhiteAiClicked() {
-            newGameInitialization(true, true, false, "");
+            theresOnlyOneAi = true;
+            whiteAiNeeded = true;
+            newGameInitialization("");
         }
 
         private void newGameAiVsAiClicked() {
-            newGameInitialization(false, false, false, "");
+            theresOnlyOneAi = false;
+            whiteAiNeeded = false;
+            newGameInitialization("");
         }
 
 //        private void newGameTestClicked() {
@@ -235,7 +241,20 @@ public class ChessButton extends JButton {
                 String aiColor = reader.readLine();
                 String fen = reader.readLine();
 
-                newGameInitialization(true, "whiteAi".equals(aiColor), false, fen);
+                if ('w' == aiColor.charAt(0)){
+                    if ("whiteDown".equals(aiColor.substring(0, 9))){
+                        theresOnlyOneAi = false;
+                        whiteAiNeeded = false;
+                    }else {
+                        theresOnlyOneAi = true;
+                        whiteAiNeeded = true;
+                    }
+                }else {
+                    theresOnlyOneAi = true;
+                    whiteAiNeeded = false;
+                }
+
+                newGameInitialization(fen);
             } else {
                 JOptionPane.showMessageDialog(null, "Fájl kiválasztás megszakítva.");
             }
@@ -260,16 +279,9 @@ public class ChessButton extends JButton {
             System.exit(0);
         }
 
-        private void newGameInitialization(boolean oneAi, boolean whiteAi, boolean test, String setUpFen) {
+        private void newGameInitialization(String setUpFen) {
             gameEndFlag.set(false);
-            stepNumber = 1;
-            theresOnlyOneAi = oneAi;
-            whiteAiNeeded = whiteAi;
-            isTest = test;
-
-            if (isTest && "".equals(setUpFen)){
-                setUpFen = testFens.get("whiteDownCanCastleNoSideButItWants");
-            }
+            stepNumber = whiteAiNeeded ? 0 : 1;
 
             if (!isFirstOpen && "".equals(setUpFen)){
                 setUpFen = usualFens.get(theresOnlyOneAi ?
@@ -286,7 +298,7 @@ public class ChessButton extends JButton {
             getWindow().addGameBoard(getWindow());
             setUpSides(setUpFen);
             buttonsEnabled(new ArrayList<>(){{add("All");}});
-            labelTexting(!oneAi || !whiteAi);
+            labelTexting();
             initialization();
             Zobrist.fillZobristTable();
             fillBaseBitBoardPossibilities();
