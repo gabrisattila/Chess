@@ -88,7 +88,7 @@ public class VARS {
 
         public static final double VERTICAL_SIDE_LABEL_HEIGHT = FIELD_HEIGHT;
 
-        public static final String LOG_FILE_PATH = "src\\main\\Saves\\log"+dateToString(new Date())+".txt";
+        public static final String LOG_FILE_PATH = "src\\main\\Saves\\log-ONLY-GAME_DESCRIPTION-CANT-LOAD"+dateToString(new Date())+".txt";
 
         public static final String WHITE_STRING = "WHITE";
 
@@ -182,60 +182,6 @@ public class VARS {
                 {0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5}
         };
 
-        /*public static final Double[][] QUEEN_BASE_VALUE_MATRIX_WD_WP = new Double[][] {
-                {0.75, 1.65, 1.65, 1.65, 1.65, 1.65, 1.65, 0.75},
-                {1.65, 2.00, 3.00, 3.00, 3.00, 2.00, 2.00, 1.65},
-                {1.65, 3.00, 3.00, 3.00, 3.00, 3.00, 3.00, 1.65},
-                {2.00, 3.00, 3.00, 3.00, 3.00, 3.00, 3.00, 2.00},
-                {2.00, 3.00, 3.00, 3.00, 3.00, 3.00, 3.00, 2.00},
-                {2.00, 3.00, 3.00, 3.00, 3.00, 3.00, 3.00, 2.00},
-                {2.00, 3.00, 3.00, 3.00, 3.00, 3.00, 3.00, 2.00},
-                {1.65, 1.65, 1.65, 2.00, 2.00, 1.65, 1.65, 1.65}
-        };
-
-        public static final Double[][] QUEEN_BASE_VALUE_MATRIX_WD_BP = new Double[][] {
-                {1.65, 1.65, 1.65, 2.00, 2.00, 1.65, 1.65, 1.65},
-                {2.00, 3.00, 3.00, 3.00, 3.00, 3.00, 3.00, 2.00},
-                {2.00, 3.00, 3.00, 3.00, 3.00, 3.00, 3.00, 2.00},
-                {2.00, 3.00, 3.00, 3.00, 3.00, 3.00, 3.00, 2.00},
-                {2.00, 3.00, 3.00, 3.00, 3.00, 3.00, 3.00, 2.00},
-                {1.65, 3.00, 3.00, 3.00, 3.00, 3.00, 3.00, 1.65},
-                {1.65, 2.00, 3.00, 3.00, 3.00, 2.00, 2.00, 1.65},
-                {0.75, 1.65, 1.65, 1.65, 1.65, 1.65, 1.65, 0.75}
-        };
-
-        public static final Double[][] QUEEN_BASE_VALUE_MATRIX_BD_WP = new Double[][] {
-                {0.75, 1.65, 1.65, 1.65, 1.65, 1.65, 1.65, 0.75},
-                {1.65, 2.00, 2.00, 3.00, 3.00, 3.00, 2.00, 1.65},
-                {1.65, 3.00, 3.00, 3.00, 3.00, 3.00, 3.00, 1.65},
-                {2.00, 3.00, 3.00, 3.00, 3.00, 3.00, 3.00, 2.00},
-                {2.00, 3.00, 3.00, 3.00, 3.00, 3.00, 3.00, 2.00},
-                {2.00, 3.00, 3.00, 3.00, 3.00, 3.00, 3.00, 2.00},
-                {2.00, 3.00, 3.00, 3.00, 3.00, 3.00, 3.00, 2.00},
-                {1.65, 1.65, 1.65, 2.00, 2.00, 1.65, 1.65, 1.65}
-        };
-
-        public static final Double[][] QUEEN_BASE_VALUE_MATRIX_BD_BP = new Double[][] {
-                {1.65, 1.65, 1.65, 2.00, 2.00, 1.65, 1.65, 1.65},
-                {2.00, 3.00, 3.00, 3.00, 3.00, 3.00, 3.00, 2.00},
-                {2.00, 3.00, 3.00, 3.00, 3.00, 3.00, 3.00, 2.00},
-                {2.00, 3.00, 3.00, 3.00, 3.00, 3.00, 3.00, 2.00},
-                {2.00, 3.00, 3.00, 3.00, 3.00, 3.00, 3.00, 2.00},
-                {1.65, 3.00, 3.00, 3.00, 3.00, 3.00, 3.00, 1.65},
-                {1.65, 2.00, 2.00, 3.00, 3.00, 3.00, 2.00, 1.65},
-                {0.75, 1.65, 1.65, 1.65, 1.65, 1.65, 1.65, 0.75}
-        };
-
-        public static final Double[][] KING_BASE_VALUE_MATRIX_WD_WP = new Double[][] {
-                {2.00, 3.00, 3.00, 1.65, 1.65, 1.65, 3.00, 2.00},
-                {2.00, 2.00, 1.65, 1.65, 1.65, 1.65, 2.00, 2.00},
-                {1.65, 1.65, 1.65, 1.65, 1.65, 1.65, 1.65, 1.65},
-                {1.65, 1.65, 1.65, 1.65, 1.65, 1.65, 1.65, 1.65},
-                {1.65, 1.65, 1.65, 0.75, 0.75, 1.65, 1.65, 1.65},
-                {1.65, 1.65, 1.65, 0.75, 0.75, 1.65, 1.65, 1.65},
-                {1.65, 1.65, 1.65, 0.75, 0.75, 1.65, 1.65, 1.65},
-                {1.65, 1.65, 1.65, 0.75, 0.75, 1.65, 1.65, 1.65}
-        };*/
 
         public static final Double[][] QUEEN_BASE_VALUE_MATRIX_WD_WP = new Double[][] {
                 {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
@@ -438,123 +384,9 @@ public class VARS {
             add('8');
         }};
 
-        public static final Map<Character, Character> englishToHungarianPieceLetters = new HashMap<>(){{
-            put('P', 'G');
-            put('p', 'g');
-            put('N', 'H');
-            put('n', 'h');
-            put('B', 'F');
-            put('b', 'f');
-            put('R', 'B');
-            put('r', 'b');
-            put('Q', 'V');
-            put('q', 'v');
-        }};
-
         public static Map<String, String> usualFens = new HashMap<>(){{
             put("whiteDownStarter", "RNBQKBNR/PPPPPPPP/8/8/8/8/pppppppp/rnbqkbnr w KQkq - 1 0");
             put("blackDownStarter", "rnbkqbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBKQBNR w KQkq - 1 0");
-        }};
-
-        public static Map<String, String> testFens = new HashMap<>(){{
-
-            //region Simple Piece Tests
-
-            put("whiteDownWithOutPawns", "RNBQKBNR/8/8/8/8/8/8/rnbqkbnr w KQkq - 1 0");
-            put("onlyTwoKnights8x8", "1NN5/8/8/8/8/8/8/1n4n1 w ---- - 1 0");
-            put("onlyOneKnights8x8", "1N6/8/8/8/8/8/8/6n1 w ---- - 1 0");
-            put("onlyTwoKings8x8", "1K6/8/8/8/8/8/8/6k1 w ---- - 1 0");
-            put("onlyKnights4x4", "1N2/4/4/2n1 w ---- - 1 0");
-            put("onlyBishops", "2B2B2/8/8/8/8/8/8/2b2b2 w ---- - 1 0");
-            put("onlyRooks", "R6R/8/8/8/8/8/8/r6r w ---- - 1 0");
-            put("onlyTwoBishops6x6", "1F4/6/6/6/6/4f1 w ---- - 1 0");
-            put("onlyTwoRooks6x6", "B5/6/6/6/6/5b w ---- - 1 0");
-            put("onlyTwoQueens6x6", "2V3/6/6/6/6/3v2 w ---- - 1 0");
-            put("onlyTwoQueensHitTest6x6", "2V3/6/6/6/6/2v3 w ---- - 1 0");
-            put("onlyTwoKings4x4", "1K2/4/4/2k1 w ---- - 1 0");
-
-            //endregion
-
-
-            //region Special Case Tests
-
-            //region EmPassant Case
-
-            put("whiteDownBlackPawnsFrontEmPassant", "8/PPPPPPPP/8/8/pppppppp/8/8/8 w ---- - 1 0");
-            put("blackDownBlackPawnsFrontEmPassant", "8/8/8/pppppppp/8/8/PPPPPPPP/8 w ---- - 1 0");
-            put("blackDownWhitePawnsFrontEmPassant", "8/pppppppp/8/8/PPPPPPPP/8/8/8 w ---- - 1 0");
-            put("whiteDown2And2Pawn", "8/8/8/P3P3/8/8/3p1p2/8 w ---- - 1 0");
-            put("blackDown2And2Pawn", "8/8/8/4p3/8/8/3P1P2/8 b ---- - 1 1");
-            put("whiteDown1And2Pawn", "8/8/8/4P3/8/8/3p1p2/8 w ---- - 1 0");
-            put("blackDownSneakyEmPassant", "8/5p2/4p3/r5PK/k7/8/8/8 b ---- - 1 1");
-
-            //endregion
-
-            //region Castle Case
-
-            put("whiteUpOnlyKingsAndRooks", "r2k3r/8/8/8/8/8/8/R2K3R w KQkq - 1 0");
-            put("whiteDownBothCanCastleBothSides", "R3K2R/8/8/8/8/8/8/r3k2r w KQkq - 1 0");
-            put("whiteDownBothCanCastleOneSide", "R3K3/8/7P/8/8/p7/8/4k2r w -Qk- - 1 0");
-            put("whiteDownBlackCanCastleNoSide", "R3KR2/8/8/8/8/8/8/4k2r b -Qk- - 1 1");
-            put("whiteDownBlackCanCastleNoSideBecauseItIsInCheck", "R3K3/4R3/8/8/8/8/8/4k2r b -Qk- - 1 1");
-            put("whiteDownCanCastleNoSideButItWants", "R1B2B1R/PPPP1PPP/4PK1N/N7/8/Q3n1pp/pppppp2/1rbqkb1r b --k- - 1 1");
-
-            //endregion
-
-            //region Pawn Promotion
-
-            put("whiteDownOnePawnInTheEdgeOfPawnPromotion", "2K5/8/8/8/7k/8/1P6/8 w ---- - 1 0");
-            put("whiteDownOneOnePawn", "2K5/p7/8/8/7k/8/1P6/8 w ---- - 1 0");
-
-            //endregion
-
-            //region Binding
-
-            put("whiteDownBindingTestWithQueen", "qQK5/8/8/8/7k/8/1P6/8 w ---- - 1 0");
-            put("whiteDownBindingTestWithKnight", "qNK5/8/8/8/7k/8/8/8 w ---- - 1 0");
-            put("whiteDownRookInBindingAfterCastle", "2KR3r/8/8/8/8/8/8/r3k3 w KQkq - 1 0");
-
-            //endregion
-
-            //region Check
-
-            put("whiteDownCheckTestCheckWithQueenPiecesAroundEnemyKing", "K7/Q5rr/7k/6nn/8/8/8/8 w ---- - 1 0");
-
-            //endregion
-
-            //region CheckMate
-
-            put("whiteDownCheckMateInTwoWhiteGotItByTwoRooks", "K7/8/6r1/k6r/8/8/8/8 b ---- - 1 1");
-            put("whiteDownCheckMateInOneWhiteGotItByTwoRooks", "K7/7r/6r1/k7/8/8/8/8 b ---- - 1 1");
-            put("whiteDownCheckMateInOneWhiteGotItWithPawnProm", "K7/3p4/k1p5/8/8/8/8/8 b ---- - 1 1");
-            put("whiteDownCheckMateInOneTwoKingOneRookOneStep3x3", "1k1/3/K1R b ---- - 1 1");
-            put("whiteDownCheckMateInOneTwoKingOneRookOneStep3x3WhiteStarts", "k2/3/K1R w ---- - 1 0");
-            put("whiteDownCheckMateInOneTwoKingOneRookTwoStep4x4", "k3/4/K3/2R1 b ---- - 1 1");
-            put("whiteDownCheckMateInOneTwoKingOneRookSomeSteps4x4", "k3/4/4/K2R b ---- - 1 1");
-            put("whiteDownCheckMateInOneTwoKingOneQueenSteps5x5", "k4/5/5/5/K3Q b ---- - 1 1");
-            put("whiteGotCheckMate", "5R1K/1Pr3qP/1B2p3/6n1/5P2/1Q5p/3R1pp1/4r1k1 w ---- - 1 0");
-            put("blackGotCheckMateWrong", "RNB1K2R/PPP2PPP/8/2BPP3/8/5n1N/pppppQ1p/rnb2kr1 b KQ-- - 10 1");
-
-            //endregion
-
-            //region Others
-
-            put("whiteDownOneRookTwoKing4x4", "K3/1R2/4/k3 b ---- - 1 1");
-            put("whiteDownOneRookTwoKing3x3", "K1R/3/1k1 w ---- - 1 0");
-            put("polgarVsKasparov", "3R1R1K/1Pr3PP/4p3/q5n1/3B1P2/1Q5p/5pp1/4r1k1 w ---- - 1 0");
-            put("whiteDownKingTakesOwnKnight", "1RB1KBR1/P4P1P/N3P1P1/3PpN2/1pPp4/5nQ1/pp2kpp1/r1bqnbr1 b ---- - 1 1");
-            put("blackMustTakeRookButItIsnt", "3R1R1K/1Pq2nPP/4p3/8/1Q3P2/7p/5pp1/4r1k1 w ---- - 1 0");
-            put("polgarVsKasparov25", "2r1r2k/1bqnbpp1/pp1p1n1p/4pP2/P3P2B/2N2B2/1PPN2PP/3RRQ1K b ---- - 5 1");
-            put("4mpOn6depth", "8/8/8/8/K1P4r/8/3p4/3k4 b ---- - 1 1");
-            put("test1WhiteDown", "8/8/8/5K2/3P2R1/2b5/1p2k3/8 b ---- - 1 1");
-            put("test2WhiteDown", "8/8/8/8/3K4/2P5/1b6/3k4 b ---- - 1 1");
-            put("whiteDownMostSimplePawnAgainstPawn", "8/8/8/P7/7p/8/8/8 w ---- - 1 0");
-            put("whiteDownWhitePawnsFront", "8/PPPPPPPP/8/8/8/8/pppppppp/8 w ---- - 1 0");
-
-            //endregion
-
-            //endregion
-
         }};
 
         //region PieceViews
@@ -612,8 +444,6 @@ public class VARS {
 
         public static int nodeNum = 0;
 
-        public static int transPosNum = 0;
-
         public static HashMap<String, Integer> happenedList = new HashMap<>();
 
         public static boolean thirdSimilarPositionOfTheGame = false;
@@ -659,7 +489,6 @@ public class VARS {
         public static int stepNumber = 1;
 
         public static GameState currentGameState = (stepNumber + ply) > 20 ? FIRST_STATE : SECOND_STATE;
-
 
         public static int evenOrOddStep = 0;
 

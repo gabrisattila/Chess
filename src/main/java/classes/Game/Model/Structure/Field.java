@@ -26,16 +26,6 @@ public class Field implements IField {
 
     private boolean gotPiece;
 
-    private double finalValue;
-
-    private Double baseValue;
-
-    private double kingBoost;
-
-    private int blackWatcherCount;
-
-    private int whiteWatcherCount;
-
     //endregion
 
 
@@ -44,14 +34,12 @@ public class Field implements IField {
     public Field(int i, int j) {
         Location = new Location(i, j);
         setPiece((Piece) null);
-        setValuesToZero();
     }
 
     public Field(Location Location, String color) {
         this.Location = Location;
         fieldColor = color;
         setPiece((Piece) null);
-        setValuesToZero();
     }
 
     //endregion
@@ -113,41 +101,5 @@ public class Field implements IField {
         gotPiece = false;
         setPiece((Piece) null);
     }
-
-
-    //Values
-    public void setValuesToZero(){
-        finalValue = 0;
-        kingBoost = 0;
-        whiteWatcherCount = 0;
-        blackWatcherCount = 0;
-    }
-
-    public void increaseWatcherCount(boolean forWhite){
-        if (forWhite)
-            whiteWatcherCount++;
-        else
-            blackWatcherCount--;
-    }
-
-    public void setFinalValue(){
-        if (isGotPiece()){
-//            finalValue = (Math.abs(getPiece().getVALUE())) + getBaseFieldValueFor(piece);
-//            finalValue = forWhite ? finalValue : -finalValue;
-            finalValue = getPiece().getVALUE();
-        }else {
-            finalValue = 0;
-        }
-//        if (forWhite ? whiteWatcherCount == 0 : blackWatcherCount == 0){
-//            if (isGotPiece())
-//                finalValue = getPiece().getVALUE();
-//            else
-//                finalValue = 0;
-//        }else {
-//            // + (forWhite ? whiteWatcherCount : blackWatcherCount)
-//        }
-    }
-
-    //endregion
 
 }

@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -104,11 +103,6 @@ public class Board implements IBoard {
         return getPiece(Location.getI(), Location.getJ());
     }
 
-    @Override
-    public IPiece getPiece(IField field) {
-        return getPiece(field.getI(), field.getJ());
-    }
-
     public Set<IPiece> getPieces(boolean forWhite){
         Set<IPiece> ps = new HashSet<>();
         for (IPiece p : pieces) {
@@ -180,9 +174,6 @@ public class Board implements IBoard {
             ((Piece) p).setBounderPiece(null);
             ((Piece) p).setInDefend(false);
         }
-        getFields().stream()
-                .flatMap(ArrayList::stream)
-                .forEach(f -> ((Field) f).setValuesToZero());
     }
 
     public void pseudos()  {

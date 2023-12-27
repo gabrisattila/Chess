@@ -45,54 +45,6 @@ public enum PieceType {
         return "";
     }
 
-    public char toChar(boolean forWhite){
-        return toString(forWhite).charAt(0);
-    }
-
-    public char toLowerCase(){
-        switch (this){
-            case P -> {
-                return 'p';
-            }
-            case N -> {
-                return 'n';
-            }
-            case B -> {
-                return 'b';
-            }
-            case R -> {
-                return 'r';
-            }
-            case Q -> {
-                return 'q';
-            }
-            default -> {
-                return 'k';
-            }
-        }
-    }
-
-    public double getValueOfPieceType(){
-        switch (this){
-            case P -> {
-                return PAWN_BASE_VALUE;
-            }
-            case N, B -> {
-                return KNIGHT_OR_BISHOP_BASE_VALUE;
-            }
-            case R -> {
-                return ROOK_BASE_VALUE;
-            }
-            case Q -> {
-                return QUEEN_BASE_VALUE;
-            }
-            case K -> {
-                return KING_BASE_VALUE;
-            }
-        }
-        return 0;
-    }
-
     public static PieceType getPieceType(int pieceIndex){
         switch (pieceIndex){
             case wPawnI, bPawnI -> {

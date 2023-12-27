@@ -10,7 +10,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Collections;
 
 import static classes.GUI.FrameParts.SideLabel.collectProperLabelTexts;
 import static classes.GUI.FrameParts.SideLabel.setBackNumsAndAbcToNormal;

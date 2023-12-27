@@ -323,7 +323,10 @@ public class BitBoardMoves {
 
     public static boolean isSquareAttacked(boolean attackerColor, int squareIndex){
         setHittableOccupiedEmpty();
-        return squareIndex >= 0 && squareIndex <= 63 &&
+        if (squareIndex < 0 || squareIndex > 63)
+            return false;
+        else
+            return
                 attackedByPawn(attackerColor, squareIndex) ||
                 (knightPossibilityTable[squareIndex] & getKnightBoard(attackerColor)) != 0 ||
                 (getBishopAttacks(attackerColor) & 1L << squareIndex) != 0 ||
@@ -383,7 +386,7 @@ public class BitBoardMoves {
                             //2 forward
                             else if (16 == Math.abs(from - to)) {
                                 int minus = whiteDown ? (forWhite ? 8 : -8) : (forWhite ? -8 : 8);
-                                shouldBePartOfMove = EMPTY & (piece == wPawnI ? (ROW_4 | ROW_3) : (ROW_5 | ROW_6)) & 1L << (to - minus) | 1L << to;
+                                shouldBePartOfMove = EMPTY & 1L << (to - minus) & 1L << to;
                             }
                             //Hit and if there's emPassant possibility, combine it
                             else {

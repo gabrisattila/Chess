@@ -11,8 +11,6 @@ import static classes.Game.I18N.VARS.MUTABLE.*;
 
 public class Evaluator {
 
-    //region With FieldValues
-
     public static double evaluate(int possibilityNumAfterMove, double enemyKingPossibilityNumAfterMove, boolean forWhite){
         double eval = evaluateWithFieldValues();
         eval += (forWhite ? +1 : -1) * 0.1 * possibilityNumAfterMove;
@@ -84,7 +82,5 @@ public class Evaluator {
             return forWhite ? val : -val;
         }
     }
-
-    //endregion
 
 }

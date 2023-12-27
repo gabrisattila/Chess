@@ -94,8 +94,6 @@ public interface IBoard {
 
     IPiece getPiece(Location Location) ;
 
-    IPiece getPiece(IField field) ;
-
     void rangeUpdater() ;
 
 }

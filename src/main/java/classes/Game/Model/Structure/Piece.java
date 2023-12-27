@@ -48,14 +48,6 @@ public class Piece implements IPiece {
         bounderPiece = null;
     }
 
-    public Piece(PieceAttributes attributes, Location location){
-        this.attributes = attributes;
-        Location = location;
-        possibleRange = new HashSet<>();
-        watchedRange = new HashSet<>();
-        bounderPiece = null;
-    }
-
     //endregion
 
 
@@ -93,10 +85,6 @@ public class Piece implements IPiece {
 
     public boolean isInBinding(){
         return notNull(bounderPiece);
-    }
-
-    public double getVALUE(){
-        return attributes.getVALUE();
     }
 
     @Override
@@ -138,8 +126,6 @@ public class Piece implements IPiece {
     }
 
     //endregion
-
-    //region Moving
 
     //region Range
 
@@ -293,8 +279,6 @@ public class Piece implements IPiece {
     public boolean theresNoPiece(int i, int j){
         return !board.getField(i, j).isGotPiece();
     }
-
-    //endregion
 
     //endregion
 

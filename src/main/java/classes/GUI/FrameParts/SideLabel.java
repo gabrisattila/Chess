@@ -63,14 +63,12 @@ public class SideLabel extends JLabel {
         if (whiteDown){
             addReversedCharacterListToLabelList(labelTextList, numsSubList);
             addCharacterListToLabelList(labelTextList, abcSubList);
-            addReversedCharacterListToLabelList(labelTextList, numsSubList);
-            addReversedCharacterListToLabelList(labelTextList, abcSubList);
         }else {
             addCharacterListToLabelList(labelTextList, numsSubList);
             addReversedCharacterListToLabelList(labelTextList, abcSubList);
-            addReversedCharacterListToLabelList(labelTextList, numsSubList);
-            addReversedCharacterListToLabelList(labelTextList, abcSubList);
         }
+        addReversedCharacterListToLabelList(labelTextList, numsSubList);
+        addReversedCharacterListToLabelList(labelTextList, abcSubList);
 
         return labelTextList;
     }

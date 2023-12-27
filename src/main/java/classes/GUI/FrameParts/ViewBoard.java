@@ -91,11 +91,6 @@ public class ViewBoard extends Component implements IBoard {
         return getPiece(Location.getI(), Location.getJ());
     }
 
-    @Override
-    public IPiece getPiece(IField field){
-        return getField(field.getI(), field.getJ()).getPiece();
-    }
-
 
     //endregion
 

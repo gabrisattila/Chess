@@ -78,11 +78,6 @@ public class AI extends Thread {
 
     protected void searchForBestMove(){
 
-        ply = 0;
-        bestMove = 0;
-        nodeNum = 0;
-        transPosNum = 0;
-
         String starterFen = BoardToFen(getBoard());
         AiNode starterPos = getNewNodeAndSetUpProperEnvironmentForMinimaxStart();
         setUpBitBoard(starterFen);
@@ -91,7 +86,7 @@ public class AI extends Thread {
 
         double evaluatedSearch = miniMax(starterPos, whiteToPlay, 0, -Double.MAX_VALUE, Double.MAX_VALUE, 0);
 
-        if (evaluatedSearch == WHITE_GOT_CHECKMATE /* + ply */ || evaluatedSearch == BLACK_GOT_CHECKMATE /* + ply */ ||
+        if (evaluatedSearch == WHITE_GOT_CHECKMATE || evaluatedSearch == BLACK_GOT_CHECKMATE ||
             evaluatedSearch == DRAW) {
             if (starterPos.getChildren().isEmpty()) {
                 //Show final game end pop up
@@ -111,10 +106,16 @@ public class AI extends Thread {
     }
 
     protected AiNode getNewNodeAndSetUpProperEnvironmentForMinimaxStart(){
+
+        ply = 0;
+        bestMove = 0;
+        nodeNum = 0;
+
         bitBoardsCopy.clear();
         castleCopy.clear();
         bbEmPassantCopy.clear();
         whiteToPlayCopy.clear();
+
         return new AiNode();
     }
 
@@ -159,7 +160,7 @@ public class AI extends Thread {
                     legalMoves++;
                     ply++;
 
-                    AiNode next = putNewToNodeMap(move);
+                    AiNode next = new AiNode(move);
                     starterPos.getChildren().add(next);
 
                     evaluatedMiniMax = miniMax(next, false, (isCheck(move) ? 0 : 1) + depth, alpha, beta, value);
@@ -177,9 +178,9 @@ public class AI extends Thread {
             }
             if (legalMoves == 0){
                 if (isSquareAttacked(false, getFirstBitIndex(bitBoards[wKingI])))
-                    possibleMax = WHITE_GOT_CHECKMATE;// + ply;
+                    possibleMax = WHITE_GOT_CHECKMATE;
                 else
-                    possibleMax = DRAW;// + ply;
+                    possibleMax = DRAW;
             }
             starterPos.setFinalValue(possibleMax);
             return possibleMax;
@@ -197,7 +198,7 @@ public class AI extends Thread {
                     legalMoves++;
                     ply++;
 
-                    AiNode next = putNewToNodeMap(move);
+                    AiNode next = new AiNode(move);
                     starterPos.getChildren().add(next);
 
                     evaluatedMiniMax = miniMax(next, true, (isCheck(move) ? 0 : 1) + depth, alpha, beta, value);
@@ -215,9 +216,9 @@ public class AI extends Thread {
             }
             if (legalMoves == 0){
                 if (isSquareAttacked(true, getFirstBitIndex(bitBoards[bKingI])))
-                    possibleMin = BLACK_GOT_CHECKMATE;// + ply;
+                    possibleMin = BLACK_GOT_CHECKMATE;
                 else
-                    possibleMin = DRAW;// + ply;
+                    possibleMin = DRAW;
             }
             starterPos.setFinalValue(possibleMin);
             return possibleMin;
@@ -271,7 +272,6 @@ public class AI extends Thread {
         System.out.println("The search run for " + (double)((endTime - startTime) / 1000) + " seconds.");
         System.out.println("Searched " + (nodeNum - 1) + " nodes.");
         System.out.println("And found that the best move is: " + moveToString(bestMove) + " which score is: " + evaluatedSearch + ".");
-        System.out.println(transPosNum + " transposition skipped.");
         System.out.println("Full BitBoard state after move: \n");
         printFullBitBoard();
         System.out.println();

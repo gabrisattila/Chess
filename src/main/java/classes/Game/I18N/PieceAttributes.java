@@ -25,8 +25,6 @@ public class PieceAttributes {
 
     private int[] possibleEmPassant;
 
-    private double VALUE;
-
     //endregion
 
 
@@ -37,7 +35,6 @@ public class PieceAttributes {
     public PieceAttributes(PieceType pieceType, String color){
         type = pieceType;
         this.color = color;
-        valueSetting();
         enemyAndOwnStartRow = new Pair<>();
     }
 
@@ -64,17 +61,6 @@ public class PieceAttributes {
 
     public void setType(PieceType type){
         this.type = type;
-        valueSetting();
-    }
-
-    public void valueSetting(){
-        switch (getType()){
-            case P -> VALUE = isWhite() ? PAWN_BASE_VALUE : - PAWN_BASE_VALUE;
-            case N, B -> VALUE = isWhite() ? KNIGHT_OR_BISHOP_BASE_VALUE : - KNIGHT_OR_BISHOP_BASE_VALUE;
-            case R -> VALUE = isWhite() ? ROOK_BASE_VALUE : - ROOK_BASE_VALUE;
-            case Q -> VALUE = isWhite() ? QUEEN_BASE_VALUE : - QUEEN_BASE_VALUE;
-            case K -> VALUE = isWhite() ? KING_BASE_VALUE : - KING_BASE_VALUE;
-        }
     }
 
     public Location getEmPassantLoc(){

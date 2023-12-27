@@ -205,15 +205,6 @@ public class GameOverOrPositionEnd {
     private static boolean isSubmission(double submissionOrDraw) {
         return submissionOrDraw == WHITE_SUBMITTED || submissionOrDraw == BLACK_SUBMITTED;
     }
-    
-    public static boolean itWorthToGiveUp(){
-
-        double enemyPiecesValueSum = getBoard().getPieces(!whiteToPlay).stream().mapToDouble(p -> ((Piece) p).getVALUE()).sum();
-        double myPiecesValueSum = getBoard().getPieces(whiteToPlay).stream().mapToDouble(p -> ((Piece) p).getVALUE()).sum();
-
-        return Math.abs(enemyPiecesValueSum + myPiecesValueSum) > ROOK_BASE_VALUE + KNIGHT_OR_BISHOP_BASE_VALUE &&
-                getBoard().getPieces(whiteToPlay).stream().allMatch(p -> p.getType() == K || p.getType() == P);
-    }
 
     public static boolean itWorthRecommendDraw(){
         if (getBoard().getPieces().size() == 3 && getBoard().hasTwoKings() &&

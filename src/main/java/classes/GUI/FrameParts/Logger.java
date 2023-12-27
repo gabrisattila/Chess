@@ -8,6 +8,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import static classes.AI.BitBoards.BBVars.KING_SIDE;
+import static classes.AI.BitBoards.BBVars.QUEEN_SIDE;
+import static classes.AI.BitBoards.BitBoardMoves.getKingBoard;
 import static classes.GUI.Frame.Window.*;
 import static classes.Game.I18N.PieceType.*;
 import static classes.Game.I18N.VARS.FINALS.*;
@@ -102,8 +105,14 @@ public class Logger extends JTextArea {
                 }
             }
         }
-            // szám nem jó whiteDown-nál, figura image nem látszik
-            // betű nem jó !whiteDown-nál figura image nem látszik
+        //Castle
+        if ((stepper == 'K' || stepper == 'k') && Math.abs(fromCol - toCol) == 2){
+            if ((getKingBoard(stepper == 'K') & KING_SIDE) != 0)
+                return "0-0";
+            if ((getKingBoard(stepper == 'K') & QUEEN_SIDE) != 0)
+                return "0-0-0";
+        }
+        //Others
         return convertToChessNotation(fromRow, fromCol, stepper, true) +
                 " - " +
                 convertToChessNotation(toRow, toCol, (char) 0, false) +
