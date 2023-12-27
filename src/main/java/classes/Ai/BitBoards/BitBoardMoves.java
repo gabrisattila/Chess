@@ -138,7 +138,7 @@ public class BitBoardMoves {
         long attacks = 0L;
         while (currentBitBoard != 0){
             index = getFirstBitIndex(currentBitBoard);
-            attacks |= bishopAttacks(index, forWhite) | rookAttacks(index, forWhite);
+            attacks |= queenAttacks(index, forWhite);
             currentBitBoard = removeBit(currentBitBoard, index);
         }
         return attacks;

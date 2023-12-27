@@ -21,3 +21,14 @@ package classes.AI.BitBoards;
 // 0x200000
 // 0x400000
 // 0x800000
+
+
+//TODO :
+// Zobrist törlése, úgy ahogy van
+// Tesztelés
+// - először legfontosabb régi függvények kiválogatása update range összevetése generateMove-al
+// - sima fontos régi függvények
+// - régi függvények
+// - bitBoard tesztelés
+// - bitBoard és range updater vica verza tesztelés
+// - Könyebb két lépéses mattokat megtalálja - e? Tesztként

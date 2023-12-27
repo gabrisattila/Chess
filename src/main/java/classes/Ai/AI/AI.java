@@ -29,11 +29,6 @@ import static classes.Game.Model.Structure.IBoard.convertOneBoardToAnother;
 @Setter
 public class AI extends Thread {
 
-    //region Fields
-
-    //endregion
-
-
     //region Constructor
 
     public AI(){}
@@ -65,7 +60,7 @@ public class AI extends Thread {
         searchForBestMove();
     }
     
-    private boolean gameFinished(){
+    protected boolean gameFinished(){
         return gameEndFlag.get();
     }
 
@@ -81,7 +76,7 @@ public class AI extends Thread {
 
     //region Search
 
-    private void searchForBestMove(){
+    protected void searchForBestMove(){
 
         ply = 0;
         bestMove = 0;
@@ -115,7 +110,7 @@ public class AI extends Thread {
         printSearchData(startTime, evaluatedSearch);
     }
 
-    private AiNode getNewNodeAndSetUpProperEnvironmentForMinimaxStart(){
+    protected AiNode getNewNodeAndSetUpProperEnvironmentForMinimaxStart(){
         bitBoardsCopy.clear();
         castleCopy.clear();
         bbEmPassantCopy.clear();
@@ -123,7 +118,7 @@ public class AI extends Thread {
         return new AiNode();
     }
 
-    private double miniMax(AiNode starterPos, boolean maxNeeded, double depth, double alpha, double beta, double inheritedValue){
+    protected double miniMax(AiNode starterPos, boolean maxNeeded, double depth, double alpha, double beta, double inheritedValue){
 
         nodeNum++;
 
@@ -134,7 +129,6 @@ public class AI extends Thread {
                 return DRAW;
             }
 
-            //Here will come the evaluation
             starterPos.setFinalValue(inheritedValue);
             return inheritedValue;
         }
@@ -230,7 +224,7 @@ public class AI extends Thread {
         }
     }
 
-    private Pair<ArrayList<Double>, ArrayList<Integer>> getPairList(TreeMap<Double, Set<Integer>> generated){
+    protected Pair<ArrayList<Double>, ArrayList<Integer>> getPairList(TreeMap<Double, Set<Integer>> generated){
         ArrayList<Double> values = new ArrayList<>();
         ArrayList<Integer> moves = new ArrayList<>();
         for (double val : generated.keySet()) {
@@ -242,7 +236,7 @@ public class AI extends Thread {
         return new Pair<>(values, moves);
     }
 
-    private int sortOutBestChild(AiNode parent, double bestChildValue){
+    protected int sortOutBestChild(AiNode parent, double bestChildValue){
 
         ArrayList<AiNode> bestChildren = new ArrayList<>();
 
@@ -271,7 +265,7 @@ public class AI extends Thread {
         return best;
     }
 
-    private void printSearchData(int startTime, double evaluatedSearch){
+    protected void printSearchData(int startTime, double evaluatedSearch){
         int endTime = (int) System.currentTimeMillis();
         System.out.println("\n  MiniMax end. \n----------------");
         System.out.println("The search run for " + (double)((endTime - startTime) / 1000) + " seconds.");

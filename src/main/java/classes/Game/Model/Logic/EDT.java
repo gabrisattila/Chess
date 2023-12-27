@@ -40,8 +40,7 @@ public class EDT {
     //region Constructor
 
     public EDT() {
-        exceptionIgnorer();
-//        saveBoardInsteadOfException();
+        saveBoardInsteadOfException();
         initialization();
     }
 
@@ -120,15 +119,6 @@ public class EDT {
             System.out.println(e.getMessage());
             e.printStackTrace();
             saveBoard(getViewBoard());
-        });
-    }
-
-    public static void exceptionIgnorer(){
-        Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
-            if (gameEndFlag.get()){
-                System.err.println("Unhandled exception caught: " + e.getMessage());
-                e.printStackTrace();
-            }
         });
     }
 
