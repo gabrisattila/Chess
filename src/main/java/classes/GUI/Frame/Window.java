@@ -39,6 +39,7 @@ public class Window extends JFrame {
     @Getter
     private static ArrayList<ChessButton> buttons = buttons();
 
+    @Getter
     private static Pair<ArrayList<ViewField>, ArrayList<ViewField>> takenPiecePlaces = new Pair<>(new ArrayList<>(16), new ArrayList<>(16));
 
     //endregion
