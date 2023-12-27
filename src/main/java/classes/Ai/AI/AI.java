@@ -225,7 +225,7 @@ public class AI extends Thread {
         }
     }
 
-    protected Pair<ArrayList<Double>, ArrayList<Integer>> getPairList(TreeMap<Double, Set<Integer>> generated){
+    public static Pair<ArrayList<Double>, ArrayList<Integer>> getPairList(TreeMap<Double, ArrayList<Integer>> generated){
         ArrayList<Double> values = new ArrayList<>();
         ArrayList<Integer> moves = new ArrayList<>();
         for (double val : generated.keySet()) {

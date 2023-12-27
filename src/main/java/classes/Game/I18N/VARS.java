@@ -88,7 +88,7 @@ public class VARS {
 
         public static final double VERTICAL_SIDE_LABEL_HEIGHT = FIELD_HEIGHT;
 
-        public static final String LOG_FILE_PATH = "src\\main\\Saves\\log-ONLY-GAME_DESCRIPTION-CANT-LOAD"+dateToString(new Date())+".txt";
+        public static final String LOG_FILE_PATH = "src\\main\\Saves\\log-"+dateToString(new Date())+".txt";
 
         public static final String WHITE_STRING = "WHITE";
 
@@ -387,6 +387,82 @@ public class VARS {
         public static Map<String, String> usualFens = new HashMap<>(){{
             put("whiteDownStarter", "RNBQKBNR/PPPPPPPP/8/8/8/8/pppppppp/rnbqkbnr w KQkq - 1 0");
             put("blackDownStarter", "rnbkqbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBKQBNR w KQkq - 1 0");
+        }};
+
+        public static Map<String, String> testFens = new HashMap<>(){{
+
+            //region Simple Piece Tests
+
+            put("whiteDownWithOutPawns", "RNBQKBNR/8/8/8/8/8/8/rnbqkbnr w KQkq - 1 0");
+            put("onlyTwoKnights8x8", "1NN5/8/8/8/8/8/8/1n4n1 w ---- - 1 0");
+            put("onlyOneKnights8x8", "1N6/8/8/8/8/8/8/6n1 w ---- - 1 0");
+            put("onlyTwoKings8x8", "1K6/8/8/8/8/8/8/6k1 w ---- - 1 0");
+            put("onlyBishops", "2B2B2/8/8/8/8/8/8/2b2b2 w ---- - 1 0");
+            put("onlyRooks", "R6R/8/8/8/8/8/8/r6r w ---- - 1 0");
+
+            //endregion
+
+
+            //region Special Case Tests
+
+            //region EmPassant Case
+
+            //TODO Ha belefér kitérni erre a sneakyre egyébként
+            //TODO KIVENNI
+//            put("blackDownSneakyEmPassant", "8/8/4p3/r4pPK/k7/8/8/8 w ---- 25 1 0");
+
+            //endregion
+
+            //region Castle Case
+
+            put("whiteDownBothCanCastleBothSides", "R3K2R/8/8/8/8/8/8/r3k2r w KQkq - 1 0");
+            put("whiteDownBothCanCastleOneSide", "R3K3/8/7P/8/8/p7/8/4k2r w -Qk- - 1 0");
+            put("whiteDownBlackCanCastleNoSide", "R3KR2/8/8/8/8/8/8/4k2r b -Qk- - 1 1");
+            put("whiteDownBlackCanCastleNoSideBecauseItIsInCheck", "R3K3/4R3/8/8/8/8/8/4k2r b -Qk- - 1 1");
+
+            //endregion
+
+            //region Pawn Promotion
+
+            put("whiteDownOnePawnInTheEdgeOfPawnPromotion", "2K5/8/8/8/7k/8/1P6/8 w ---- - 1 0");
+            put("whiteDownOneOnePawn", "2K5/p7/8/8/7k/8/1P6/8 w ---- - 1 0");
+
+            //endregion
+
+            //region Binding
+
+            put("whiteDownBindingTestWithQueen", "qQK5/8/8/8/7k/8/1P6/8 w ---- - 1 0");
+            put("whiteDownBindingTestWithKnight", "qNK5/8/8/8/7k/8/8/8 w ---- - 1 0");
+            put("whiteDownRookInBindingAfterCastle", "2KR3r/8/8/8/8/8/8/r3k3 w KQkq - 1 0");
+
+            //endregion
+
+            //region Check
+
+            put("whiteDownCheckTestCheckWithQueenPiecesAroundEnemyKing", "K7/Q5rr/7k/6nn/8/8/8/8 w ---- - 1 0");
+
+            //endregion
+
+            //region CheckMate
+
+            put("whiteDownCheckMateInTwoWhiteGotItByTwoRooks", "K7/8/6r1/k6r/8/8/8/8 b ---- - 1 1");
+            put("whiteDownCheckMateInOneWhiteGotItByTwoRooks", "K7/7r/6r1/k7/8/8/8/8 b ---- - 1 1");
+            put("whiteDownCheckMateInOneWhiteGotItWithPawnProm", "K7/3p4/k1p5/8/8/8/8/8 b ---- - 1 1");
+            put("whiteGotCheckMate", "5R1K/1Pr3qP/1B2p3/6n1/5P2/1Q5p/3R1pp1/4r1k1 w ---- - 1 0");
+            put("blackGotCheckMateWrong", "RNB1K2R/PPP2PPP/8/2BPP3/8/5n1N/pppppQ1p/rnb2kr1 b KQ-- - 10 1");
+
+            //endregion
+
+            //region Others
+
+            put("polgarVsKasparov", "3R1R1K/1Pr3PP/4p3/q5n1/3B1P2/1Q5p/5pp1/4r1k1 w ---- - 1 0");
+            put("blackMustTakeRookButItIsnt", "3R1R1K/1Pq2nPP/4p3/8/1Q3P2/7p/5pp1/4r1k1 w ---- - 1 0");
+            put("polgarVsKasparov25", "2r1r2k/1bqnbpp1/pp1p1n1p/4pP2/P3P2B/2N2B2/1PPN2PP/3RRQ1K b ---- - 5 1");
+            put("test2WhiteDown", "8/8/8/8/3K4/2P5/1b6/3k4 b ---- - 1 1");
+
+            //endregion
+
+            //endregion
         }};
 
         //region PieceViews

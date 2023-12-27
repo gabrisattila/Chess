@@ -6,6 +6,8 @@ import classes.Game.I18N.Location;
 import classes.Game.I18N.PieceAttributes;
 import classes.Game.Model.Structure.*;
 
+import java.util.Objects;
+
 import static classes.Game.I18N.ChessGameException.*;
 import static classes.Game.I18N.METHODS.*;
 import static classes.Game.I18N.PieceAttributes.*;

@@ -104,9 +104,7 @@ public class Piece implements IPiece {
 
     public Set<Location> getAttackRange(){
         if (getType() == P){
-            Set<Location> attackRange = new HashSet<>(possibleRange);
-            attackRange.removeIf(l -> l.getJ() == getJ());
-            return attackRange;
+            return watchedRange;
         }
         return possibleRange;
     }

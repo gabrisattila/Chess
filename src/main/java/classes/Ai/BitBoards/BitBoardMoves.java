@@ -361,7 +361,6 @@ public class BitBoardMoves {
         int enemyKingIndex = forWhite ? bKingI : wKingI;
         for (int piece : pieceIndexes) {
 
-            setHittableOccupiedEmpty();
 
             if (forWhite == piece <= wKingI || piece == enemyKingIndex){
 
@@ -370,6 +369,7 @@ public class BitBoardMoves {
                 while (currentBitBoard != 0){
 
                     from = getFirstBitIndex(currentBitBoard);
+                    setHittableOccupiedEmpty();
                     Pair<Long, Long> pAndS = possibilitiesAndShouldBePartOf(piece, from);
                     possibilities = pAndS.getFirst();
                     shouldBePartOfMove = pAndS.getSecond();
@@ -386,18 +386,13 @@ public class BitBoardMoves {
                             //2 forward
                             else if (16 == Math.abs(from - to)) {
                                 int minus = whiteDown ? (forWhite ? 8 : -8) : (forWhite ? -8 : 8);
-                                shouldBePartOfMove = EMPTY & 1L << (to - minus) & 1L << to;
+                                if ((EMPTY & 1L << (to - minus)) == 0)
+                                    break;
+                                shouldBePartOfMove = EMPTY & 1L << to;
                             }
                             //Hit and if there's emPassant possibility, combine it
                             else {
-                                shouldBePartOfMove = (piece == wPawnI ? HITTABLE_BY_WHITE : HITTABLE_BY_BLACK);
-                                if (bbEmPassant != -1) {
-                                    if (piece == wPawnI && (1L << bbEmPassant & ROW_6) != 0) { // wh
-                                        shouldBePartOfMove |= 1L << bbEmPassant;
-                                    } else if (piece == bPawnI && (1L << bbEmPassant & ROW_3) != 0) {
-                                        shouldBePartOfMove |= 1L << bbEmPassant;
-                                    }
-                                }
+                                shouldBePartOfMove = getShouldBePartOfMoveEmPassantCase(piece);
                             }
                         }
 
@@ -467,7 +462,7 @@ public class BitBoardMoves {
         return (move & 0x800000) != 0;
     }
 
-    public static TreeMap<Double, Set<Integer>> generateMoves(boolean forWhite){
+    public static TreeMap<Double, ArrayList<Integer>> generateMoves(boolean forWhite){
 
         double value;
         int move;
@@ -477,7 +472,7 @@ public class BitBoardMoves {
         long currentBitBoardCopy, possibility;
         long shouldBePartOfMove;
 
-        TreeMap<Double, Set<Integer>> valuedMoves =
+        TreeMap<Double, ArrayList<Integer>> valuedMoves =
                 new TreeMap<>(forWhite ?
                                         Comparator.<Double>reverseOrder() :
                                         Comparator.<Double>naturalOrder());
@@ -487,12 +482,12 @@ public class BitBoardMoves {
 
             if (forWhite == (piece <= wKingI)){
 
-                setHittableOccupiedEmpty();
                 currentBitBoardCopy = bitBoards[piece];
 
                 while (currentBitBoardCopy != 0) {
 
                     from = getFirstBitIndex(currentBitBoardCopy);
+                    setHittableOccupiedEmpty();
                     Pair<Long, Long> pAndS = possibilitiesAndShouldBePartOf(piece, from);
                     possibility = pAndS.getFirst();
                     shouldBePartOfMove = pAndS.getSecond();
@@ -509,18 +504,13 @@ public class BitBoardMoves {
                             //2 forward
                             else if (16 == Math.abs(from - to)) {
                                 int minus = whiteDown ? (forWhite ? 8 : -8) : (forWhite ? -8 : 8);
-                                shouldBePartOfMove = EMPTY & 1L << (to - minus) & 1L << to;
+                                if ((EMPTY & 1L << (to - minus)) == 0)
+                                    break;
+                                shouldBePartOfMove = EMPTY & 1L << to;
                             }
                             //Hit and if there's emPassant possibility, combine it
                             else {
-                                shouldBePartOfMove = (piece == wPawnI ? HITTABLE_BY_WHITE : HITTABLE_BY_BLACK);
-                                if (bbEmPassant != -1) {
-                                    if (piece == wPawnI && (1L << bbEmPassant & ROW_6) != 0) { // wh
-                                        shouldBePartOfMove |= 1L << bbEmPassant;
-                                    } else if (piece == bPawnI && (1L << bbEmPassant & ROW_3) != 0) {
-                                        shouldBePartOfMove |= 1L << bbEmPassant;
-                                    }
-                                }
+                                shouldBePartOfMove = getShouldBePartOfMoveEmPassantCase(piece);
                             }
                         }
 
@@ -564,6 +554,19 @@ public class BitBoardMoves {
 
         }
         return valuedMoves;
+    }
+
+    private static long getShouldBePartOfMoveEmPassantCase(int piece) {
+        long shouldBePartOfMove;
+        shouldBePartOfMove = (piece == wPawnI ? HITTABLE_BY_WHITE : HITTABLE_BY_BLACK);
+        if (bbEmPassant != -1) {
+            if (piece == wPawnI && (1L << bbEmPassant & ROW_6) != 0) {
+                shouldBePartOfMove |= 1L << bbEmPassant;
+            } else if (piece == bPawnI && (1L << bbEmPassant & ROW_3) != 0) {
+                shouldBePartOfMove |= 1L << bbEmPassant;
+            }
+        }
+        return shouldBePartOfMove;
     }
 
     private static Pair<Long, Long> possibilitiesAndShouldBePartOf(int piece, int from){
@@ -618,11 +621,11 @@ public class BitBoardMoves {
         return new Pair<>(possibility, shouldBePartOfMove);
     }
 
-    private static void putToMap(TreeMap<Double, Set<Integer>> map, double val, int move){
+    private static void putToMap(TreeMap<Double, ArrayList<Integer>> map, double val, int move){
         if (map.containsKey(val)){
             map.get(val).add(move);
         }else {
-            Set<Integer> moves = new HashSet<>();
+            ArrayList<Integer> moves = new ArrayList<>();
             moves.add(move);
             map.put(val, moves);
         }
@@ -634,40 +637,52 @@ public class BitBoardMoves {
 
     public static long calcKingPossibility(int piece, long possibility){
         int kingLoc = getFirstBitIndex(bitBoards[piece]);
+        boolean kingIsInCheck = isSquareAttacked(piece != wKingI, kingLoc);
+
         int kingsNewPlace;
         int rookNewPlace;
         int rookPlusRoad;
         int rookOrigin;
         kingsNewPlace = kingLoc - (whiteDown ? 2 : -2);
-        if ((castle & (piece == wKingI ? wK : bK)) == 0){
+
+        if (kingIsInCheck){
             possibility &= ~(1L << kingsNewPlace);
-        } else {
-            rookNewPlace = kingLoc - (whiteDown ? 1 : -1);
-            rookOrigin = kingLoc - (whiteDown ? 3 : -3);
-            if (
-                    (1L << kingsNewPlace & EMPTY) == 0 || (1L << rookNewPlace & EMPTY) == 0 ||
-                            (1L << rookOrigin & bitBoards[piece == wKingI ? wRookI : bRookI]) == 0 ||
-                            isSquareAttacked(piece != wKingI, kingsNewPlace) ||
-                            isSquareAttacked(piece != wKingI, rookNewPlace)
-            ) {
+        }else {
+            if ((castle & (piece == wKingI ? wK : bK)) == 0){
                 possibility &= ~(1L << kingsNewPlace);
+            } else {
+                rookNewPlace = kingLoc - (whiteDown ? 1 : -1);
+                rookOrigin = kingLoc - (whiteDown ? 3 : -3);
+                if (
+                        (1L << kingsNewPlace & EMPTY) == 0 || (1L << rookNewPlace & EMPTY) == 0 ||
+                                (1L << rookOrigin & bitBoards[piece == wKingI ? wRookI : bRookI]) == 0 ||
+                                isSquareAttacked(piece != wKingI, kingsNewPlace) ||
+                                isSquareAttacked(piece != wKingI, rookNewPlace)
+                ) {
+                    possibility &= ~(1L << kingsNewPlace);
+                }
             }
         }
 
         kingsNewPlace = kingLoc - (whiteDown ? -2 : 2);
-        if ((castle & (piece == wKingI ? wQ : bQ)) == 0) {
+
+        if (kingIsInCheck){
             possibility &= ~(1L << kingsNewPlace);
-        } else {
-            rookNewPlace = kingLoc - (whiteDown ? -1 : 1);
-            rookPlusRoad = kingLoc - (whiteDown ? -3 : 3);
-            rookOrigin = kingLoc - (whiteDown ? -4 : 4);
-            if (
-                    (1L << kingsNewPlace & EMPTY) == 0 || (1L << rookNewPlace & EMPTY) == 0 ||
-                            (1L << rookPlusRoad & EMPTY) != 0 || (1L << rookOrigin & bitBoards[piece == wKingI ? wRookI : bRookI]) == 0 ||
-                            isSquareAttacked(piece != wKingI, kingsNewPlace) ||
-                            isSquareAttacked(piece != wKingI, rookNewPlace)
-            ) {
+        }else {
+            if ((castle & (piece == wKingI ? wQ : bQ)) == 0) {
                 possibility &= ~(1L << kingsNewPlace);
+            } else {
+                rookNewPlace = kingLoc - (whiteDown ? -1 : 1);
+                rookPlusRoad = kingLoc - (whiteDown ? -3 : 3);
+                rookOrigin = kingLoc - (whiteDown ? -4 : 4);
+                if (
+                        (1L << kingsNewPlace & EMPTY) == 0 || (1L << rookNewPlace & EMPTY) == 0 ||
+                                (1L << rookPlusRoad & EMPTY) == 0 || (1L << rookOrigin & bitBoards[piece == wKingI ? wRookI : bRookI]) == 0 ||
+                                isSquareAttacked(piece != wKingI, kingsNewPlace) ||
+                                isSquareAttacked(piece != wKingI, rookNewPlace)
+                ) {
+                    possibility &= ~(1L << kingsNewPlace);
+                }
             }
         }
 

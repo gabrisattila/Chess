@@ -273,7 +273,6 @@ public class ChessButton extends JButton {
                                 (whiteAiNeeded ? "blackDownStarter" : "whiteDownStarter") :
                                 "whiteDownStarter");
             }
-
             int widthHeight = setUpFen.split("/").length;
             MAX_HEIGHT = widthHeight;
             MAX_WIDTH = widthHeight;

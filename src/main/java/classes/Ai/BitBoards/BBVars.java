@@ -78,7 +78,7 @@ public class BBVars {
     /**
      * In this we store castle options
      */
-    public static int castle = 15; // all castles enabled
+    public static int castle = 0; // no castles enabled, set after fen
 
     public static int bbEmPassant = -1;
 
