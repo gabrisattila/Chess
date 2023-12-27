@@ -402,16 +402,7 @@ public class VARS {
 
             //endregion
 
-
             //region Special Case Tests
-
-            //region EmPassant Case
-
-            //TODO Ha belefér kitérni erre a sneakyre egyébként
-            //TODO KIVENNI
-//            put("blackDownSneakyEmPassant", "8/8/4p3/r4pPK/k7/8/8/8 w ---- 25 1 0");
-
-            //endregion
 
             //region Castle Case
 
@@ -457,12 +448,16 @@ public class VARS {
 
             put("polgarVsKasparov", "3R1R1K/1Pr3PP/4p3/q5n1/3B1P2/1Q5p/5pp1/4r1k1 w ---- - 1 0");
             put("polgarVsKasparov25", "2r1r2k/1bqnbpp1/pp1p1n1p/4pP2/P3P2B/2N2B2/1PPN2PP/3RRQ1K b ---- - 5 1");
-            put("test1WhiteDown", "8/8/8/5K2/3P2R1/2b5/1p2k3/8 b ---- - 1 1");
-            put("test2WhiteDown", "8/8/8/8/3K4/2P5/1b6/3k4 b ---- - 1 1");
+            put("Kiwipete", "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 1 0");
+            put("simpleTest", "8/8/8/8/3K4/2P5/1b6/3k4 b ---- - 1 1");
+            put("position1", "r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w --kq - 0 0");
+            put("position2", "rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ-- - 1 8");
+            put("position3", "r4rk1/1pp1qppp/p1np1n2/2b1p1B1/2B1P1b1/P1NP1N2/1PP1QPPP/R4RK1 w ---- - 1 0");
 
             //endregion
 
             //endregion
+
         }};
 
         //region PieceViews

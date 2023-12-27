@@ -105,7 +105,7 @@ public class AI extends Thread {
         printSearchData(startTime, evaluatedSearch);
     }
 
-    protected AiNode getNewNodeAndSetUpProperEnvironmentForMinimaxStart(){
+    public static AiNode getNewNodeAndSetUpProperEnvironmentForMinimaxStart(){
 
         ply = 0;
         bestMove = 0;
