@@ -1,11 +1,9 @@
 package classes.Game.I18N;
 
-import classes.Game.Model.Logic.FenConverter;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
