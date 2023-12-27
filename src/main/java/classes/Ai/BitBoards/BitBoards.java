@@ -134,10 +134,10 @@ public class BitBoards {
 
         fen.append(" ").append(whiteToPlay ? "w" : "b");
         fen.append(" ");
-        fen.append((castle & wK) != 0 ? "K" : "-");
-        fen.append((castle & wQ) != 0 ? "Q" : "-");
-        fen.append((castle & bK) != 0 ? "k" : "-");
-        fen.append((castle & bQ) != 0 ? "q" : "-");
+        fen.append(whiteSmallCastleEnabled && (castle & wK) != 0 ? "K" : "-");
+        fen.append(whiteBigCastleEnabled && (castle & wQ) != 0 ? "Q" : "-");
+        fen.append(blackSmallCastleEnabled && (castle & bK) != 0 ? "k" : "-");
+        fen.append(blackBigCastleEnabled && (castle & bQ) != 0 ? "q" : "-");
         fen.append(" ");
         emPassantChance = bbEmPassant == -1 ? "-" : String.valueOf(bbEmPassant / 8);
         emPassantChance += bbEmPassant == -1 ? "" : String.valueOf(7 - (bbEmPassant % 8));
@@ -160,20 +160,6 @@ public class BitBoards {
 
     public static void printFullBitBoard(){
         System.out.println(fullBoardToString());
-    }
-
-    private static void printBitBoards(boolean forWhite, long pawn, long knight, long bishop, long rook, long queen, long king) {
-        printBitBoard(forWhite, pawn, 'P');
-        printBitBoard(forWhite, knight, 'N');
-        printBitBoard(forWhite, bishop, 'B');
-        printBitBoard(forWhite, rook, 'R');
-        printBitBoard(forWhite, queen, 'Q');
-        printBitBoard(forWhite, king, 'K');
-    }
-
-    public static void printBitBoard(boolean forWhite, long piece, char type) {
-        System.out.println((forWhite ? "White: " : "Black: ") + type);
-        System.out.println(BitBoards.toString(piece));
     }
 
     private static int getCounterAndAppendToFen(StringBuilder fenPieces, int counter, int i,

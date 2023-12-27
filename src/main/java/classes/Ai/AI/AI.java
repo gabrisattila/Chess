@@ -105,7 +105,6 @@ public class AI extends Thread {
                 return;
             }
         }
-
         //We only do the best move if there's no Check Mate or Draw
         bestMove = sortOutBestChild(starterPos, evaluatedSearch);
         makeMove(bestMove);
@@ -279,6 +278,9 @@ public class AI extends Thread {
         System.out.println("Searched " + (nodeNum - 1) + " nodes.");
         System.out.println("And found that the best move is: " + moveToString(bestMove) + " which score is: " + evaluatedSearch + ".");
         System.out.println(transPosNum + " transposition skipped.");
+        System.out.println("Full BitBoard state after move: \n");
+        printFullBitBoard();
+        System.out.println();
     }
 
     //endregion

@@ -71,8 +71,8 @@ public class BitBoardMoves {
     private static long bishopAttacks(int from, boolean forWhite){
         return diagonalAndAntiDiagonal(
                 from,
-                (forWhite ? HITTABLE_BY_WHITE : HITTABLE_BY_BLACK) | getKingBoard(forWhite),
-                (forWhite ? HITTABLE_BY_BLACK : HITTABLE_BY_WHITE) | getKingBoard(!forWhite)
+                (forWhite ? HITTABLE_BY_WHITE : HITTABLE_BY_BLACK) | getKingBoard(!forWhite),
+                (forWhite ? HITTABLE_BY_BLACK : HITTABLE_BY_WHITE) | getKingBoard(forWhite)
         );
     }
 
@@ -99,8 +99,8 @@ public class BitBoardMoves {
     private static long rookAttacks(int from, boolean forWhite){
         return horizontalAndVertical(
                 from,
-                (forWhite ? HITTABLE_BY_WHITE : HITTABLE_BY_BLACK) | getKingBoard(forWhite),
-                (forWhite ? HITTABLE_BY_BLACK : HITTABLE_BY_WHITE) | getKingBoard(!forWhite)
+                (forWhite ? HITTABLE_BY_WHITE : HITTABLE_BY_BLACK) | getKingBoard(!forWhite),
+                (forWhite ? HITTABLE_BY_BLACK : HITTABLE_BY_WHITE) | getKingBoard(forWhite)
         );
     }
 
@@ -323,7 +323,7 @@ public class BitBoardMoves {
 
     public static boolean isSquareAttacked(boolean attackerColor, int squareIndex){
         setHittableOccupiedEmpty();
-        return
+        return squareIndex >= 0 && squareIndex <= 63 &&
                 decideWhetherIsAttackedByPawn(attackerColor, squareIndex) ||
                 (knightPossibilityTable[squareIndex] & getKnightBoard(attackerColor)) != 0 ||
                 (getBishopAttacks(attackerColor) & 1L << squareIndex) != 0 ||
@@ -379,7 +379,7 @@ public class BitBoardMoves {
                             //2 forward
                             else if (16 == Math.abs(from - to)) {
                                 int minus = whiteDown ? (forWhite ? 8 : -8) : (forWhite ? -8 : 8);
-                                shouldBePartOfMove = EMPTY & (piece == wPawnI ? (ROW_4 | ROW_3) : (ROW_5 | ROW_6)) & 1L << (to - minus) & 1L << to;
+                                shouldBePartOfMove = EMPTY & (piece == wPawnI ? (ROW_4 | ROW_3) : (ROW_5 | ROW_6)) & 1L << (to - minus) | 1L << to;
                             }
                             //Hit and if there's emPassant possibility, combine it
                             else {
@@ -475,7 +475,6 @@ public class BitBoardMoves {
 
         for (int piece : pieceIndexes) {
 
-
             if (forWhite == (piece <= wKingI)){
 
                 setHittableOccupiedEmpty();
@@ -500,7 +499,7 @@ public class BitBoardMoves {
                             //2 forward
                             else if (16 == Math.abs(from - to)) {
                                 int minus = whiteDown ? (forWhite ? 8 : -8) : (forWhite ? -8 : 8);
-                                shouldBePartOfMove = EMPTY & (piece == wPawnI ? (ROW_4 | ROW_3) : (ROW_5 | ROW_6)) & 1L << (to - minus) | 1L << to;
+                                shouldBePartOfMove = EMPTY & (piece == wPawnI ? (ROW_4 | ROW_3) : (ROW_5 | ROW_6)) & (1L << (to - minus) | 1L << to);
                             }
                             //Hit and if there's emPassant possibility, combine it
                             else {
@@ -546,14 +545,15 @@ public class BitBoardMoves {
                                 move |= moveIsCheck ? 0x200000 : 0;
                                 value = evaluate(possibilitiesAfterMove, enemyKingPossibilitiesAfterMove, forWhite);
                                 putToMap(valuedMoves, value, move);
+                                undoMove();
                             }
-                            undoMove();
                         }
                         possibility = removeBit(possibility, to);
                     }
                     currentBitBoardCopy = removeBit(currentBitBoardCopy, from);
                 }
             }
+
         }
         return valuedMoves;
     }
@@ -572,27 +572,27 @@ public class BitBoardMoves {
                 shouldBePartOfMove = shouldBePartOf(false);
             }
             case wBishopI -> {
-                possibility = bishopAttacks(from, true);
+                possibility = bishopPossibilities(from, true);
                 shouldBePartOfMove = shouldBePartOf(true);
             }
             case bBishopI -> {
-                possibility = bishopAttacks(from, false);
+                possibility = bishopPossibilities(from, false);
                 shouldBePartOfMove = shouldBePartOf(false);
             }
             case wRookI -> {
-                possibility = rookAttacks(from, true);
+                possibility = rookPossibilities(from, true);
                 shouldBePartOfMove = shouldBePartOf(true);
             }
             case bRookI -> {
-                possibility = rookAttacks(from, false);
+                possibility = rookPossibilities(from, false);
                 shouldBePartOfMove = shouldBePartOf(false);
             }
             case wQueenI -> {
-                possibility = queenAttacks(from, true);
+                possibility = queenPossibilities(from, true);
                 shouldBePartOfMove = shouldBePartOf(true);
             }
             case bQueenI -> {
-                possibility = queenAttacks(from, false);
+                possibility = queenPossibilities(from, false);
                 shouldBePartOfMove = shouldBePartOf(false);
             }
             case wKingI -> {
@@ -882,19 +882,6 @@ public class BitBoardMoves {
         m += abc.get(j);
         m += i;
         return m;
-    }
-
-    public static String intToBitString(int i){
-        StringBuilder s = new StringBuilder();
-        for (int j = 31; j >= 0; j--) {
-            if ((1 << j & i) != 0)
-                s.append('1');
-            else
-                s.append('0');
-            if (j % 4 == 0)
-                s.append('\n');
-        }
-        return s.toString();
     }
 
     public static String moveListToString(Collection<Integer> movesInATurn){
