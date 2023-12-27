@@ -126,21 +126,20 @@ public class Board implements IBoard {
 
     @Override
     public void cleanBoard() {
-
-            for (ArrayList<IField> row : this.fields) {
-                for (IField f : row) {
-                    if (!(f instanceof Field)) {
-                        throwBadTypeErrorIfNeeded(new Object[]{
-                                f, Field.class.getName(),
-                                " ezért nem tudom elvégezni a clean műveletet.\n"
-                        });
-                    }
-                    f.clean();
+        for (ArrayList<IField> row : this.fields) {
+            for (IField f : row) {
+                if (!(f instanceof Field)) {
+                    throwBadTypeErrorIfNeeded(new Object[]{
+                            f, Field.class.getName(),
+                            " ezért nem tudom elvégezni a clean műveletet.\n"
+                    });
                 }
+                f.clean();
             }
-            pieces.clear();
-            whitePieceSet.clean();
-            blackPieceSet.clean();
+        }
+        pieces.clear();
+        whitePieceSet.clean();
+        blackPieceSet.clean();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package classes.GUI.Frame;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 public class WindowTest {
@@ -22,13 +23,16 @@ public class WindowTest {
 
     @Test
     public void testGetWhiteTakenPiecesPlace() {
+
     }
 
     @Test
     public void testGetBlackTakenPiecesPlace() {
+
     }
 
     @Test
     public void testGetGameBoard() {
+
     }
 }

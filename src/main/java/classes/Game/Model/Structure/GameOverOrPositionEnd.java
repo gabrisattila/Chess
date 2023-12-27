@@ -232,6 +232,7 @@ public class GameOverOrPositionEnd {
     public static void finalGameEnd(){
         gameEndFlag.set(true);
         getViewBoard().clearPiecesRanges();
+        getBoard().cleanBoard();
     }
 
     //endregion
