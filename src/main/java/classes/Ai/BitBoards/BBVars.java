@@ -2,10 +2,7 @@ package classes.AI.BitBoards;
 
 import classes.AI.Ai.AiNode;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 
 import static classes.Game.I18N.VARS.MUTABLE.whiteDown;
 
@@ -151,6 +148,11 @@ public class BBVars {
         put(2, 5);
         put(4, 3);
         put(3, 4);
+    }};
+
+    public static final ArrayList<String> englishPieceLetters = new ArrayList<>(){{
+        add("P"); add("N"); add("B"); add("R"); add("Q"); add("K");
+        add("p"); add("n"); add("b"); add("r"); add("q"); add("k");
     }};
 
     //endregion
