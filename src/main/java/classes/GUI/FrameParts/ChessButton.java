@@ -227,7 +227,7 @@ public class ChessButton extends JButton {
                 String fen = reader.readLine();
 
                 if ('w' == aiColor.charAt(0)){
-                    if ("whiteDown".equals(aiColor.substring(0, 9))){
+                    if ("whiteD".equals(aiColor.substring(0, 6))){
                         theresOnlyOneAi = false;
                         whiteAiNeeded = false;
                     }else {

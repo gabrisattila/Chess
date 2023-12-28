@@ -53,7 +53,6 @@ public class BitBoardMoves {
                 possibility |= (whiteDown ? (bitBoard << 9 & ~COL_H) : (bitBoard >> 7 & ~COL_A));
             }
         } else {
-
             if ((whiteDown ? (bitBoard >> 7 & ~COL_H) : (bitBoard << 9 & ~COL_A)) != 0) {
                 possibility |= (whiteDown ? (bitBoard >> 7 & ~COL_H) : (bitBoard << 9 & ~COL_A));
             }

@@ -52,7 +52,7 @@ public class AI extends Thread {
     public void aiMove() throws InterruptedException {
         convertOneBoardToAnother(getViewBoard(), getBoard());
         Move();
-        if (canBeLogger)
+        if (canBeLogger && !gameFinished())
             logAiStep(detectChessMove(BoardToFen(getViewBoard()), BoardToFen(getBoard())));
     }
 

@@ -27,8 +27,9 @@ public class GameBoard extends JLayeredPane {
 
     private JComboBox<JButton> whatToPlay;
 
-    private static ArrayList<Location> edgeCoordinates = new ArrayList<>();
+    static ArrayList<Location> edgeCoordinates = new ArrayList<>();
 
+    @Getter
     private static ArrayList<SideLabel> labels = new ArrayList<>(MAX_WIDTH * 2 + MAX_HEIGHT * 2);
 
     private static ArrayList<String> labelTextList;
@@ -152,7 +153,7 @@ public class GameBoard extends JLayeredPane {
 
     }
 
-    private void collectEdges() {
+    static void collectEdges() {
 
         edgeCoordinates = new ArrayList<>();
 

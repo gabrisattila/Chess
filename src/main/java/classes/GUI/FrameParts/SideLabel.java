@@ -37,6 +37,8 @@ public class SideLabel extends JLabel {
         setHorizontalAlignment(CENTER);
         setFont(new Font("Source Code Pro", Font.BOLD, 20));
         setOpaque(true);
+        xCoordinate = x;
+        yCoordinate = y;
 
         setBounds(
                 x, y,
