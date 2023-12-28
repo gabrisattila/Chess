@@ -2,6 +2,8 @@ package classes;
 
 
 import classes.AI.Ai.AI;
+import classes.AI.Ai.AiNode;
+import classes.AI.BitBoards.BitBoardMoves;
 import classes.Game.I18N.Location;
 import classes.Game.Model.Logic.FenConverter;
 import classes.Game.Model.Structure.Board;
@@ -10,12 +12,11 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 import static classes.AI.BitBoards.BitBoardMoves.*;
 import static classes.AI.BitBoards.BitBoards.setUpBitBoard;
 import static classes.Game.I18N.VARS.FINALS.testFens;
-import static classes.Game.I18N.VARS.MUTABLE.whiteToPlay;
+import static classes.Game.I18N.VARS.MUTABLE.*;
 
 public class CombinedMoveGenerationTest {
 
