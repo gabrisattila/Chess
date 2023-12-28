@@ -143,7 +143,16 @@ public class BitBoards {
         emPassantChance += bbEmPassant == -1 ? "" : String.valueOf(7 - (bbEmPassant % 8));
         fen.append(emPassantChance);
         fen.append(" ");
-        fen.append(stepNumber++);
+        int step;
+        if (theresOnlyOneAi){
+            if (whiteDown)
+                step = stepNumber++;
+            else
+                step = stepNumber;
+        }else {
+            step = whiteToPlay ? stepNumber++ : stepNumber;
+        }
+        fen.append(step);
         fen.append(" ");
         fen.append(whiteToPlay ? "0" : "1");
 

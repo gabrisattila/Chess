@@ -266,7 +266,6 @@ public class ChessButton extends JButton {
 
         private void newGameInitialization(String setUpFen) {
             gameEndFlag.set(false);
-            stepNumber = whiteAiNeeded ? 0 : 1;
 
             if (!isFirstOpen && "".equals(setUpFen)){
                 setUpFen = usualFens.get(theresOnlyOneAi ?
@@ -279,6 +278,7 @@ public class ChessButton extends JButton {
             MAX_WIDTH = widthHeight;
 
             whiteDown = !theresOnlyOneAi || !whiteAiNeeded;
+            stepNumber = 1;
 
             getWindow().addGameBoard(getWindow());
             setUpSides(setUpFen);
