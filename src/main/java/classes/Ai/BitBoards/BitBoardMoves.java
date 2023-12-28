@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.util.*;
 
+import static classes.AI.Ai.AI.waitOnPause;
 import static classes.AI.BitBoards.BBVars.*;
 import static classes.AI.BitBoards.BitBoards.*;
 import static classes.AI.Evaluation.Evaluator.*;
@@ -472,96 +473,101 @@ public class BitBoardMoves {
 
     public static TreeMap<Double, ArrayList<Integer>> generateMoves(boolean forWhite){
 
-        double value;
-        int move;
-        boolean moveIsCheck;
+        synchronized (pauseFlag){
 
-        int from, to;
-        long currentBitBoardCopy, possibility;
-        long shouldBePartOfMove;
+            waitOnPause();
 
-        TreeMap<Double, ArrayList<Integer>> valuedMoves =
-                new TreeMap<>(forWhite ?
-                                        Comparator.<Double>reverseOrder() :
-                                        Comparator.<Double>naturalOrder());
+            double value;
+            int move;
+            boolean moveIsCheck;
+
+            int from, to;
+            long currentBitBoardCopy, possibility;
+            long shouldBePartOfMove;
+
+            TreeMap<Double, ArrayList<Integer>> valuedMoves =
+                    new TreeMap<>(forWhite ?
+                            Comparator.<Double>reverseOrder() :
+                            Comparator.<Double>naturalOrder());
 
 
-        for (int piece : pieceIndexes) {
+            for (int piece : pieceIndexes) {
 
-            if (forWhite == (piece <= wKingI)){
+                if (forWhite == (piece <= wKingI)) {
 
-                currentBitBoardCopy = bitBoards[piece];
+                    currentBitBoardCopy = bitBoards[piece];
 
-                while (currentBitBoardCopy != 0) {
+                    while (currentBitBoardCopy != 0) {
 
-                    from = getFirstBitIndex(currentBitBoardCopy);
-                    setHittableOccupiedEmpty();
-                    Pair<Long, Long> pAndS = possibilitiesAndShouldBePartOf(piece, from);
-                    possibility = pAndS.getFirst();
-                    shouldBePartOfMove = pAndS.getSecond();
+                        from = getFirstBitIndex(currentBitBoardCopy);
+                        setHittableOccupiedEmpty();
+                        Pair<Long, Long> pAndS = possibilitiesAndShouldBePartOf(piece, from);
+                        possibility = pAndS.getFirst();
+                        shouldBePartOfMove = pAndS.getSecond();
 
-                    while (possibility != 0) {
-                        to = getFirstBitIndex(possibility);
+                        while (possibility != 0) {
+                            to = getFirstBitIndex(possibility);
 
-                        //Calc what should be part of pawn range
-                        if (piece == wPawnI || piece == bPawnI) {
-                            //Simple 1 forward
-                            if (8 == Math.abs(from - to)) {
-                                shouldBePartOfMove = EMPTY;
+                            //Calc what should be part of pawn range
+                            if (piece == wPawnI || piece == bPawnI) {
+                                //Simple 1 forward
+                                if (8 == Math.abs(from - to)) {
+                                    shouldBePartOfMove = EMPTY;
+                                }
+                                //2 forward
+                                else if (16 == Math.abs(from - to)) {
+                                    int minus = whiteDown ? (forWhite ? 8 : -8) : (forWhite ? -8 : 8);
+                                    if ((EMPTY & 1L << (to - minus)) == 0)
+                                        break;
+                                    shouldBePartOfMove = EMPTY & 1L << to;
+                                }
+                                //Hit and if there's emPassant possibility, combine it
+                                else {
+                                    shouldBePartOfMove = getShouldBePartOfMoveEmPassantAndHit(piece);
+                                }
                             }
-                            //2 forward
-                            else if (16 == Math.abs(from - to)) {
-                                int minus = whiteDown ? (forWhite ? 8 : -8) : (forWhite ? -8 : 8);
-                                if ((EMPTY & 1L << (to - minus)) == 0)
-                                    break;
-                                shouldBePartOfMove = EMPTY & 1L << to;
+
+                            if ((1L << to & shouldBePartOfMove) != 0) {
+
+                                //Handling pawn promotion
+                                int promotion = 0;
+                                if (piece == wPawnI && (1L << to & ROW_8) != 0) {
+                                    promotion = wQueenI;
+                                } else if (piece == bPawnI && (1L << to & ROW_1) != 0) {
+                                    promotion = bQueenI;
+                                }
+
+                                //Add new move to move list
+
+                                move = createMove(
+                                        from, to, piece, promotion,
+                                        (1L << to & (piece <= wKingI ? HITTABLE_BY_WHITE : HITTABLE_BY_BLACK)) != 0,
+                                        (1L << to & EMPTY & 1L << bbEmPassant) != 0 && (piece == wPawnI || piece == bPawnI),
+                                        (piece == wKingI || piece == bKingI) && 2 == Math.abs(from - to)
+                                );
+
+                                copyPosition();
+
+                                if (makeMove(move)) {
+                                    Pair<Integer, Integer> moveCountsNextTurn = possibilitiesNumInNextTurn(forWhite);
+                                    int possibilitiesAfterMove = moveCountsNextTurn.getFirst();
+                                    double enemyKingPossibilitiesAfterMove = 0.1 * moveCountsNextTurn.getSecond();
+                                    moveIsCheck = isSquareAttacked(forWhite, getFirstBitIndex(getKingBoard(!forWhite)));
+                                    move |= moveIsCheck ? 0x200000 : 0;
+                                    value = evaluate(possibilitiesAfterMove, enemyKingPossibilitiesAfterMove, forWhite);
+                                    putToMap(valuedMoves, value, move);
+                                    undoMove();
+                                }
                             }
-                            //Hit and if there's emPassant possibility, combine it
-                            else {
-                                shouldBePartOfMove = getShouldBePartOfMoveEmPassantAndHit(piece);
-                            }
+                            possibility = removeBit(possibility, to);
                         }
-
-                        if ((1L << to & shouldBePartOfMove) != 0) {
-
-                            //Handling pawn promotion
-                            int promotion = 0;
-                            if (piece == wPawnI && (1L << to & ROW_8) != 0) {
-                                promotion = wQueenI;
-                            } else if (piece == bPawnI && (1L << to & ROW_1) != 0) {
-                                promotion = bQueenI;
-                            }
-
-                            //Add new move to move list
-
-                            move = createMove(
-                                    from, to, piece, promotion,
-                                    (1L << to & (piece <= wKingI ? HITTABLE_BY_WHITE : HITTABLE_BY_BLACK)) != 0,
-                                    (1L << to & EMPTY & 1L << bbEmPassant) != 0 && (piece == wPawnI || piece == bPawnI),
-                                    (piece == wKingI || piece == bKingI) && 2 == Math.abs(from - to)
-                            );
-
-                            copyPosition();
-
-                            if (makeMove(move)){
-                                Pair<Integer, Integer> moveCountsNextTurn = possibilitiesNumInNextTurn(forWhite);
-                                int possibilitiesAfterMove = moveCountsNextTurn.getFirst();
-                                double enemyKingPossibilitiesAfterMove = 0.1 * moveCountsNextTurn.getSecond();
-                                moveIsCheck = isSquareAttacked(forWhite, getFirstBitIndex(getKingBoard(!forWhite)));
-                                move |= moveIsCheck ? 0x200000 : 0;
-                                value = evaluate(possibilitiesAfterMove, enemyKingPossibilitiesAfterMove, forWhite);
-                                putToMap(valuedMoves, value, move);
-                                undoMove();
-                            }
-                        }
-                        possibility = removeBit(possibility, to);
+                        currentBitBoardCopy = removeBit(currentBitBoardCopy, from);
                     }
-                    currentBitBoardCopy = removeBit(currentBitBoardCopy, from);
                 }
-            }
 
+            }
+            return valuedMoves;
         }
-        return valuedMoves;
     }
 
     private static long getShouldBePartOfMoveEmPassantAndHit(int piece) {

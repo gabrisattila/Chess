@@ -40,7 +40,7 @@ public class EDT {
     //region Constructor
 
     public EDT() {
-        saveBoardInsteadOfException();
+//        saveBoardInsteadOfException();
         initialization();
     }
 

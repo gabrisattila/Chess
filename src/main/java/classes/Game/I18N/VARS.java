@@ -88,7 +88,7 @@ public class VARS {
 
         public static final double VERTICAL_SIDE_LABEL_HEIGHT = FIELD_HEIGHT;
 
-        public static final String LOG_FILE_PATH = "src\\main\\Saves\\log-"+dateToString(new Date())+".txt";
+        public static final String LOG_FILE_PATH = "src\\main\\java\\Saves\\log-"+dateToString(new Date())+".txt";
 
         public static final String WHITE_STRING = "WHITE";
 

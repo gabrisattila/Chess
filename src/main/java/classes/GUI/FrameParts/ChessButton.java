@@ -210,7 +210,7 @@ public class ChessButton extends JButton {
         private void loadClicked() throws IOException {
             isFirstOpen = false;
 
-            JFileChooser fileChooser = new JFileChooser("src/main/Saves/");
+            JFileChooser fileChooser = new JFileChooser(LOG_FILE_PATH);
 
             int result = fileChooser.showOpenDialog(null);
 
@@ -292,7 +292,7 @@ public class ChessButton extends JButton {
 
             String fen = BoardToFen(board);
             String save = dateToString(new Date());
-            String savePath = "src\\main\\Saves\\" + save + ".txt";
+            String savePath = "src\\main\\java\\Saves\\" + " " + save + ".txt";
             File file = new File(savePath);
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
 
