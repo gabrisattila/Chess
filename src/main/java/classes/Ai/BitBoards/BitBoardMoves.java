@@ -258,6 +258,15 @@ public class BitBoardMoves {
         return possibility;
     }
 
+    private static long removeA_Or_H_Cols(int from, long possibility){
+        if ((1L << from & COL_A) != 0) {
+            possibility &= ~COL_H;
+        } else if ((1L << from & COL_H) != 0) {
+            possibility &= ~COL_A;
+        }
+        return possibility;
+    }
+
     public static void fillBaseBitBoardPossibilities(){
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 64; j++) {
@@ -391,7 +400,7 @@ public class BitBoardMoves {
                             }
                             //Hit and if there's emPassant possibility, combine it
                             else {
-                                shouldBePartOfMove = getShouldBePartOfMoveEmPassantCase(piece);
+                                shouldBePartOfMove = getShouldBePartOfMoveEmPassantAndHit(piece);
                             }
                         }
 
@@ -509,7 +518,7 @@ public class BitBoardMoves {
                             }
                             //Hit and if there's emPassant possibility, combine it
                             else {
-                                shouldBePartOfMove = getShouldBePartOfMoveEmPassantCase(piece);
+                                shouldBePartOfMove = getShouldBePartOfMoveEmPassantAndHit(piece);
                             }
                         }
 
@@ -555,7 +564,7 @@ public class BitBoardMoves {
         return valuedMoves;
     }
 
-    private static long getShouldBePartOfMoveEmPassantCase(int piece) {
+    private static long getShouldBePartOfMoveEmPassantAndHit(int piece) {
         long shouldBePartOfMove;
         shouldBePartOfMove = (piece == wPawnI ? HITTABLE_BY_WHITE : HITTABLE_BY_BLACK);
         if (bbEmPassant != -1) {
@@ -571,8 +580,8 @@ public class BitBoardMoves {
     private static Pair<Long, Long> possibilitiesAndShouldBePartOf(int piece, int from){
         long possibility = 0, shouldBePartOfMove = 0;
         switch (piece) {
-            case wPawnI -> possibility = pawnSimpleStepTable[1][from] | pawnAttackTable[1][from];
-            case bPawnI -> possibility = pawnSimpleStepTable[0][from] | pawnAttackTable[0][from];
+            case wPawnI -> possibility = removeA_Or_H_Cols(from, pawnSimpleStepTable[1][from] | pawnAttackTable[1][from]);
+            case bPawnI -> possibility = removeA_Or_H_Cols(from, pawnSimpleStepTable[0][from] | pawnAttackTable[0][from]);
             case wKnightI -> {
                 possibility = knightPossibilityTable[from];
                 shouldBePartOfMove = shouldBePartOf(true);

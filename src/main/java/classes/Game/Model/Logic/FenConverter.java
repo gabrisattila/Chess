@@ -182,6 +182,11 @@ public class FenConverter {
         return fenToReturn.toString();
     }
 
+    public static String createFenForHappenedList(String fen){
+        String[] fenParts = fen.split(" ");
+        return fenParts[0] + " " + fenParts[1] + " " + fenParts[2] + " " + fenParts[3] + " " + fenParts[5];
+    }
+
     private static void emPassantFenToBoard(String emPassant, PieceAttributes piece, int sor, int oszlop){
         if (piece.isWhite() == whiteToPlay &&
                 piece.getType() == P &&

@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static classes.Game.I18N.VARS.MUTABLE.happenedList;
+import static classes.Game.Model.Logic.FenConverter.createFenForHappenedList;
 
 @Getter
 @Setter
@@ -39,8 +40,10 @@ public class AiNode {
     //region Methods
 
     public static void appendToHappenedList(String fen) {
+        fen = createFenForHappenedList(fen);
         if (happenedList.containsKey(fen)) {
             int i = happenedList.get(fen);
+            i++;
             happenedList.put(fen, i);
         }else {
             happenedList.put(fen, 1);
