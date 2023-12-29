@@ -1,7 +1,7 @@
-package classes.Model.Game.Structure;
+package classes.Model.Structure;
 
-import classes.Model.Game.I18N.Location;
-import classes.Model.Game.I18N.PieceAttributes;
+import classes.Model.I18N.Location;
+import classes.Model.I18N.PieceAttributes;
 
 public interface IField {
 

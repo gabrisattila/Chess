@@ -1,8 +1,8 @@
 package classes.Model.AI.Ai;
 
 import classes.Model.AI.BitBoards.BitBoardMoves;
-import classes.Model.Game.I18N.ChessGameException;
-import classes.Model.Game.I18N.Pair;
+import classes.Model.I18N.ChessGameException;
+import classes.Model.I18N.Pair;
 import lombok.*;
 
 import java.util.*;
@@ -11,15 +11,15 @@ import static classes.Model.AI.Ai.AiNode.*;
 import static classes.Model.AI.BitBoards.BBVars.*;
 import static classes.Model.AI.BitBoards.BitBoards.*;
 import static classes.GUI.FrameParts.Logger.*;
-import static classes.GUI.FrameParts.ViewBoard.getViewBoard;
-import static classes.Model.Game.I18N.METHODS.*;
-import static classes.Model.Game.I18N.VARS.FINALS.*;
-import static classes.Model.Game.I18N.VARS.MUTABLE.*;
-import static classes.Controller.EDT.receivedMoveFromAi;
+import static classes.GUI.FrameParts.ViewBoard.*;
+import static classes.Controller.EDT.*;
 import static classes.Controller.FenConverter.*;
-import static classes.Model.Game.Structure.Board.getBoard;
-import static classes.Model.Game.Structure.GameOverOrPositionEnd.*;
-import static classes.Model.Game.Structure.IBoard.convertOneBoardToAnother;
+import static classes.Model.I18N.METHODS.*;
+import static classes.Model.I18N.VARS.FINALS.*;
+import static classes.Model.I18N.VARS.MUTABLE.*;
+import static classes.Model.Structure.Board.*;
+import static classes.Model.Structure.GameOverOrPositionEnd.*;
+import static classes.Model.Structure.IBoard.*;
 
 
 /**

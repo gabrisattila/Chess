@@ -8,7 +8,8 @@ import org.junit.Test;
 import java.io.*;
 import java.util.Objects;
 
-import static classes.Model.Game.I18N.METHODS.notNull;
+import static classes.Model.I18N.METHODS.*;
+import static classes.Model.I18N.VARS.FINALS.*;
 
 
 public class LoggerTest  {
@@ -23,7 +24,7 @@ public class LoggerTest  {
                     Objects.requireNonNull(directory.listFiles()).length :
                     0;
 
-        Window window = Window.getWindow();
+        Window.getWindow();
 
         File[] files = directory.listFiles();
         int fileNumAfterOpen = notNull(files) ? files.length : 0;

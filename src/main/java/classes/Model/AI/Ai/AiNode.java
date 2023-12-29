@@ -1,6 +1,6 @@
 package classes.Model.AI.Ai;
 
-import classes.Model.Game.I18N.VARS;
+import classes.Model.I18N.VARS;
 import lombok.*;
 
 import java.util.HashSet;

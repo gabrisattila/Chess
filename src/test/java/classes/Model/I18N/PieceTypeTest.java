@@ -1,25 +1,26 @@
-package classes.Game.I18N;
+package classes.Model.I18N;
 
-import classes.Model.Game.I18N.PieceType;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Collections;
 import java.util.Random;
 
+import static classes.Model.AI.BitBoards.BBVars.*;
+
 public class PieceTypeTest {
 
-    PieceType pawn = P;
+    PieceType pawn = PieceType.P;
 
-    PieceType knight = N;
+    PieceType knight = PieceType.N;
 
-    PieceType bishop = B;
+    PieceType bishop = PieceType.B;
 
-    PieceType rook = R;
+    PieceType rook = PieceType.R;
 
-    PieceType queen = Q;
+    PieceType queen = PieceType.Q;
 
-    PieceType king = K;
+    PieceType king = PieceType.K;
 
     Random random = new Random();
 
@@ -45,12 +46,12 @@ public class PieceTypeTest {
 
         Assert.assertNotEquals(queen, king);
 
-        Assert.assertEquals(pawn, P);
-        Assert.assertEquals(knight, N);
-        Assert.assertEquals(bishop, B);
-        Assert.assertEquals(rook, R);
-        Assert.assertEquals(queen, Q);
-        Assert.assertEquals(king, K);
+        Assert.assertEquals(pawn, PieceType.P);
+        Assert.assertEquals(knight, PieceType.N);
+        Assert.assertEquals(bishop, PieceType.B);
+        Assert.assertEquals(rook, PieceType.R);
+        Assert.assertEquals(queen, PieceType.Q);
+        Assert.assertEquals(king, PieceType.K);
     }
 
     @Test
@@ -69,7 +70,7 @@ public class PieceTypeTest {
     @Test
     public void testGetPieceTypeFromIndex() {
         for (int piece : pieceIndexes) {
-            Assert.assertEquals(getPieceType(piece).toString(piece <= wKingI), englishPieceLetters.get(piece));
+            Assert.assertEquals(PieceType.getPieceType(piece).toString(piece <= wKingI), englishPieceLetters.get(piece));
         }
     }
 
@@ -77,11 +78,11 @@ public class PieceTypeTest {
     public void testGetPieceTypeFromString() {
         int i = 0;
         for (PieceType t : PieceType.values()) {
-            Assert.assertEquals(getPieceType(englishPieceLetters.get(i)), t);
+            Assert.assertEquals(PieceType.getPieceType(englishPieceLetters.get(i)), t);
             i++;
         }
         for (PieceType t : PieceType.values()) {
-            Assert.assertEquals(getPieceType(englishPieceLetters.get(i)), t);
+            Assert.assertEquals(PieceType.getPieceType(englishPieceLetters.get(i)), t);
             i++;
         }
     }
@@ -91,22 +92,22 @@ public class PieceTypeTest {
         int i = 0;
         Collections.reverse(englishPieceLetters);
         for (PieceType t : PieceType.values()) {
-            Assert.assertNotEquals(getPieceType(englishPieceLetters.get(i).charAt(0)), t);
+            Assert.assertNotEquals(PieceType.getPieceType(englishPieceLetters.get(i).charAt(0)), t);
             i++;
         }
         for (PieceType t : PieceType.values()) {
-            Assert.assertNotEquals(getPieceType(englishPieceLetters.get(i).charAt(0)), t);
+            Assert.assertNotEquals(PieceType.getPieceType(englishPieceLetters.get(i).charAt(0)), t);
             i++;
         }
 
         i = 0;
         Collections.reverse(englishPieceLetters);
         for (PieceType t : PieceType.values()) {
-            Assert.assertEquals(getPieceType(englishPieceLetters.get(i).charAt(0)), t);
+            Assert.assertEquals(PieceType.getPieceType(englishPieceLetters.get(i).charAt(0)), t);
             i++;
         }
         for (PieceType t : PieceType.values()) {
-            Assert.assertEquals(getPieceType(englishPieceLetters.get(i).charAt(0)), t);
+            Assert.assertEquals(PieceType.getPieceType(englishPieceLetters.get(i).charAt(0)), t);
             i++;
         }
     }

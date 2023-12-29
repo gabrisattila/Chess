@@ -1,11 +1,11 @@
-package classes.Model.Game.I18N;
+package classes.Model.I18N;
 
 
 import classes.GUI.FrameParts.ViewField;
 import lombok.*;
 
 import static classes.GUI.FrameParts.ViewBoard.*;
-import static classes.Model.Game.I18N.METHODS.containsLocation;
+import static classes.Model.I18N.METHODS.containsLocation;
 
 @Getter
 @Setter

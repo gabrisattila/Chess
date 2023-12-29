@@ -1,7 +1,7 @@
 package classes.Controller;
 
 import classes.Model.AI.Ai.AI;
-import classes.Model.Game.I18N.VARS;
+import classes.Model.I18N.VARS;
 import lombok.*;
 
 import javax.swing.*;
@@ -11,7 +11,7 @@ import static classes.GUI.Frame.Window.*;
 import static classes.GUI.FrameParts.ChessButton.ChessButtonMouseListener.saveBoard;
 import static classes.GUI.FrameParts.Logger.initializeLogFile;
 import static classes.GUI.FrameParts.ViewBoard.getViewBoard;
-import static classes.Model.Game.I18N.METHODS.switchWhoComes;
+import static classes.Model.I18N.METHODS.switchWhoComes;
 import static classes.Controller.FenConverter.*;
 import static java.lang.Thread.sleep;
 

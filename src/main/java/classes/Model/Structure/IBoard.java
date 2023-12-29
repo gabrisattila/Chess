@@ -1,14 +1,12 @@
-package classes.Model.Game.Structure;
+package classes.Model.Structure;
 
 import classes.GUI.FrameParts.ViewField;
-import classes.Model.Game.I18N.Location;
-import classes.Model.Game.I18N.METHODS;
-import classes.Model.Game.I18N.VARS;
+import classes.Model.I18N.Location;
+import classes.Model.I18N.METHODS;
+import classes.Model.I18N.VARS;
 import classes.Controller.FenConverter;
 
 import java.util.ArrayList;
-
-import static classes.Model.Game.I18N.VARS.FINALS.*;
 
 public interface IBoard {
 
@@ -18,9 +16,9 @@ public interface IBoard {
         Location Location;
         ArrayList<IField> row;
 
-        for (int i = 0; i < MAX_HEIGHT; i++) {
+        for (int i = 0; i < VARS.FINALS.MAX_HEIGHT; i++) {
             row = new ArrayList<>();
-            for (int j = 0; j < MAX_WIDTH; j++) {
+            for (int j = 0; j < VARS.FINALS.MAX_WIDTH; j++) {
                 Location = new Location(i, j);
                 fieldColor = tableIf(VARS.FINALS.WHITE_STRING, VARS.FINALS.BLACK_STRING, i, j);
                 if (board instanceof Board)

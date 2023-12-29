@@ -1,6 +1,6 @@
 package classes.Model.AI.BitBoards;
 
-import classes.Model.Game.I18N.VARS;
+import classes.Model.I18N.VARS;
 
 import java.util.*;
 

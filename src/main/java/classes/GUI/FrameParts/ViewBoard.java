@@ -1,9 +1,9 @@
 package classes.GUI.FrameParts;
 
-import classes.Model.Game.I18N.Location;
-import classes.Model.Game.Structure.IBoard;
-import classes.Model.Game.Structure.IField;
-import classes.Model.Game.Structure.IPiece;
+import classes.Model.I18N.Location;
+import classes.Model.Structure.IBoard;
+import classes.Model.Structure.IField;
+import classes.Model.Structure.IPiece;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,13 +11,12 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import static classes.Model.AI.Ai.AI.gameFinished;
-import static classes.Model.Game.I18N.METHODS.isNull;
-import static classes.Model.Game.I18N.METHODS.notNull;
-import static classes.Model.Game.I18N.PieceType.P;
-import static classes.Model.Game.I18N.VARS.FINALS.*;
-import static classes.Model.Game.Structure.Board.getBoard;
-import static classes.Model.Game.Structure.GameOverOrPositionEnd.GameOverDecision;
+import static classes.Model.AI.Ai.AI.*;
+import static classes.Model.I18N.METHODS.*;
+import static classes.Model.I18N.PieceType.P;
+import static classes.Model.I18N.VARS.FINALS.*;
+import static classes.Model.Structure.Board.*;
+import static classes.Model.Structure.GameOverOrPositionEnd.*;
 
 @Getter
 @Setter

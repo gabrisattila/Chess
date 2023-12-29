@@ -1,9 +1,9 @@
 package classes.GUI.FrameParts;
 
-import classes.Model.Game.I18N.Location;
-import classes.Model.Game.I18N.PieceAttributes;
-import classes.Model.Game.I18N.PieceType;
-import classes.Model.Game.Structure.IPiece;
+import classes.Model.I18N.Location;
+import classes.Model.I18N.PieceAttributes;
+import classes.Model.I18N.PieceType;
+import classes.Model.Structure.IPiece;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,8 +11,8 @@ import javax.swing.*;
 import java.util.HashSet;
 import java.util.Set;
 
-import static classes.Model.Game.I18N.PieceType.getPieceType;
-import static classes.Model.Game.I18N.VARS.FINALS.WHITE_STRING;
+import static classes.Model.I18N.PieceType.getPieceType;
+import static classes.Model.I18N.VARS.FINALS.WHITE_STRING;
 
 @Getter
 @Setter

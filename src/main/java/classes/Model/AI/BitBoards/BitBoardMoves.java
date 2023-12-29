@@ -1,16 +1,16 @@
 package classes.Model.AI.BitBoards;
 
-import classes.Model.Game.I18N.Pair;
+import classes.Model.I18N.Pair;
 import lombok.*;
 
 import java.util.*;
 
-import static classes.Model.AI.Ai.AI.waitOnPause;
+import static classes.Model.AI.Ai.AI.*;
 import static classes.Model.AI.BitBoards.BBVars.*;
 import static classes.Model.AI.BitBoards.BitBoards.*;
 import static classes.Model.AI.Evaluation.Evaluator.*;
-import static classes.Model.Game.I18N.VARS.FINALS.*;
-import static classes.Model.Game.I18N.VARS.MUTABLE.*;
+import static classes.Model.I18N.VARS.FINALS.*;
+import static classes.Model.I18N.VARS.MUTABLE.*;
 
 @Getter
 @Setter

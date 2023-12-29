@@ -1,8 +1,8 @@
-package classes.Model.Game.Structure;
+package classes.Model.Structure;
 
 import classes.Model.AI.Ai.AI;
 import classes.GUI.FrameParts.ViewPiece;
-import classes.Model.Game.I18N.*;
+import classes.Model.I18N.*;
 import lombok.*;
 
 import javax.swing.*;

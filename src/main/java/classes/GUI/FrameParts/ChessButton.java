@@ -1,7 +1,7 @@
 package classes.GUI.FrameParts;
 
-import classes.Model.Game.I18N.ChessGameException;
-import classes.Model.Game.Structure.IBoard;
+import classes.Model.I18N.ChessGameException;
+import classes.Model.Structure.IBoard;
 import lombok.*;
 
 import javax.swing.*;
@@ -18,10 +18,10 @@ import static classes.GUI.Frame.Window.*;
 import static classes.GUI.FrameParts.GameBoard.*;
 import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Model.AI.BitBoards.BitBoardMoves.*;
-import static classes.Model.Game.I18N.METHODS.*;
-import static classes.Model.Game.I18N.VARS.FINALS.*;
-import static classes.Model.Game.I18N.VARS.MUTABLE.*;
-import static classes.Model.Game.Structure.GameOverOrPositionEnd.*;
+import static classes.Model.I18N.METHODS.*;
+import static classes.Model.I18N.VARS.FINALS.*;
+import static classes.Model.I18N.VARS.MUTABLE.*;
+import static classes.Model.Structure.GameOverOrPositionEnd.*;
 
 public class ChessButton extends JButton {
 

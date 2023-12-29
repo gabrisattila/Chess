@@ -1,11 +1,11 @@
 package classes.GUI.FrameParts;
 
-import classes.Model.Game.Structure.IField;
-import classes.Model.Game.I18N.Location;
-import classes.Model.Game.I18N.PieceAttributes;
+import classes.Model.Structure.IField;
+import classes.Model.I18N.Location;
+import classes.Model.I18N.PieceAttributes;
 import classes.Controller.EDT;
-import classes.Model.Game.Structure.IPiece;
-import classes.Model.Game.Structure.Move;
+import classes.Model.Structure.IPiece;
+import classes.Model.Structure.Move;
 import lombok.*;
 
 import javax.swing.*;
@@ -17,10 +17,10 @@ import static classes.Model.AI.Ai.AiNode.*;
 import static classes.GUI.Frame.Window.*;
 import static classes.GUI.FrameParts.ViewBoard.*;
 import static classes.Controller.FenConverter.*;
-import static classes.Model.Game.I18N.METHODS.*;
-import static classes.Model.Game.I18N.VARS.FINALS.*;
-import static classes.Model.Game.I18N.VARS.MUTABLE.*;
-import static classes.Model.Game.Structure.Move.*;
+import static classes.Model.I18N.METHODS.*;
+import static classes.Model.I18N.VARS.FINALS.*;
+import static classes.Model.I18N.VARS.MUTABLE.*;
+import static classes.Model.Structure.Move.*;
 
 @Getter
 @Setter

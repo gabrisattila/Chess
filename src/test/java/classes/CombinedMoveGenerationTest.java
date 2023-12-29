@@ -2,10 +2,10 @@ package classes;
 
 
 import classes.Model.AI.Ai.AI;
-import classes.Model.Game.I18N.Location;
+import classes.Model.I18N.Location;
 import classes.Controller.FenConverter;
-import classes.Model.Game.Structure.Board;
-import classes.Model.Game.Structure.IPiece;
+import classes.Model.Structure.Board;
+import classes.Model.Structure.IPiece;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import static classes.Model.AI.BitBoards.BitBoardMoves.fillBaseBitBoardPossibilities;
 import static classes.Model.AI.BitBoards.BitBoardMoves.generateMoves;
 import static classes.Model.AI.BitBoards.BitBoards.setUpBitBoard;
-import static classes.Model.Game.I18N.VARS.FINALS.testFens;
-import static classes.Model.Game.I18N.VARS.MUTABLE.whiteToPlay;
+import static classes.Model.I18N.VARS.FINALS.testFens;
+import static classes.Model.I18N.VARS.MUTABLE.whiteToPlay;
 
 public class CombinedMoveGenerationTest {
 

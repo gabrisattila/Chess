@@ -1,9 +1,9 @@
-package classes.Model.Game.I18N;
+package classes.Model.I18N;
 
 
 import lombok.*;
 
-import static classes.Model.Game.I18N.PieceType.*;
+import static classes.Model.I18N.PieceType.*;
 
 @Getter
 @Setter

@@ -1,7 +1,7 @@
-package classes.Model.Game.Structure;
+package classes.Model.Structure;
 
 
-import classes.Model.Game.I18N.*;
+import classes.Model.I18N.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,7 +11,7 @@ public class Field implements IField {
 
     //region Fields
 
-    private classes.Model.Game.I18N.Location Location;
+    private classes.Model.I18N.Location Location;
 
     private String fieldColor;
 

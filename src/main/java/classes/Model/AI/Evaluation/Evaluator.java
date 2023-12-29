@@ -2,10 +2,10 @@ package classes.Model.AI.Evaluation;
 
 import classes.Model.AI.BitBoards.BBVars;
 import classes.Model.AI.BitBoards.BitBoards;
-import classes.Model.Game.I18N.VARS;
-import classes.Model.Game.I18N.PieceType;
+import classes.Model.I18N.VARS;
+import classes.Model.I18N.PieceType;
 
-import static classes.Model.Game.I18N.PieceType.*;
+import static classes.Model.I18N.PieceType.*;
 
 public class Evaluator {
 

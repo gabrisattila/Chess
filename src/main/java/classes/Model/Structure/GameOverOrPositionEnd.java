@@ -1,10 +1,10 @@
-package classes.Model.Game.Structure;
+package classes.Model.Structure;
 
 import classes.Model.AI.BitBoards.BBVars;
 import classes.GUI.FrameParts.ViewBoard;
-import classes.Model.Game.I18N.METHODS;
-import classes.Model.Game.I18N.PieceType;
-import classes.Model.Game.I18N.VARS;
+import classes.Model.I18N.METHODS;
+import classes.Model.I18N.PieceType;
+import classes.Model.I18N.VARS;
 import lombok.*;
 
 import javax.swing.*;
@@ -13,7 +13,6 @@ import java.util.ArrayList;
 
 import static classes.GUI.Frame.Window.*;
 import static classes.GUI.FrameParts.ViewBoard.*;
-import static classes.Model.Game.I18N.VARS.FINALS.MAX_WIDTH;
 
 @Getter
 @Setter
@@ -231,7 +230,7 @@ public class GameOverOrPositionEnd {
             }
             assert onlyPawn != null;
             enemyKing = Board.getBoard().getKing(!onlyPawn.isWhite());
-            if (onlyPawn.getJ() != 0 || onlyPawn.getJ() != MAX_WIDTH - 1){
+            if (onlyPawn.getJ() != 0 || onlyPawn.getJ() != VARS.FINALS.MAX_WIDTH - 1){
                 return false;
             }
             int pawnDistance = Math.abs(onlyPawn.getJ() - onlyPawn.getEnemyStartRow());

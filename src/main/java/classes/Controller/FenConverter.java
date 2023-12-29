@@ -2,12 +2,10 @@ package classes.Controller;
 
 import classes.GUI.FrameParts.ViewField;
 import classes.GUI.FrameParts.ViewPiece;
-import classes.Model.Game.I18N.*;
-import classes.Model.Game.I18N.Location;
-import classes.Model.Game.I18N.PieceAttributes;
-import classes.Model.Game.Structure.*;
+import classes.Model.I18N.*;
+import classes.Model.Structure.*;
 
-import static classes.Model.Game.I18N.VARS.FINALS.*;
+import static classes.Model.I18N.VARS.FINALS.*;
 
 public class FenConverter {
 

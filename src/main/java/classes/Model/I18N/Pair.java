@@ -1,4 +1,4 @@
-package classes.Model.Game.I18N;
+package classes.Model.I18N;
 
 import lombok.*;
 

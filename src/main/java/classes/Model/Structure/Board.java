@@ -1,9 +1,9 @@
-package classes.Model.Game.Structure;
+package classes.Model.Structure;
 
 
-import classes.Model.Game.I18N.Location;
-import classes.Model.Game.I18N.Pair;
-import classes.Model.Game.I18N.*;
+import classes.Model.I18N.Location;
+import classes.Model.I18N.Pair;
+import classes.Model.I18N.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,8 +12,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
-import static classes.Model.Game.I18N.VARS.FINALS.*;
 
 
 /**
@@ -58,7 +56,7 @@ public class Board implements IBoard {
 
     public static Board getBoard() {
         if(board == null){
-            board = new Board(MAX_WIDTH, MAX_HEIGHT);
+            board = new Board(VARS.FINALS.MAX_WIDTH, VARS.FINALS.MAX_HEIGHT);
             return board;
         }
         return board;
@@ -314,7 +312,7 @@ public class Board implements IBoard {
      * @param forWhite in that case forWhite simbolize my color (Me is who count the step)
      */
     private void kingCastle(boolean forWhite) {
-        if (MAX_WIDTH == 8 && MAX_HEIGHT == 8 &&
+        if (VARS.FINALS.MAX_WIDTH == 8 && VARS.FINALS.MAX_HEIGHT == 8 &&
                 (   (forWhite && (VARS.MUTABLE.whiteBigCastleEnabled || VARS.MUTABLE.whiteSmallCastleEnabled)) ||
                         (!forWhite && (VARS.MUTABLE.blackBigCastleEnabled || VARS.MUTABLE.blackSmallCastleEnabled)) ) &&
                 !METHODS.locationCollectionContains(getAttackRangeWithoutKing(!forWhite), getKingsPlace(forWhite))

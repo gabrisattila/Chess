@@ -1,12 +1,12 @@
 package classes.Model.AI.BitBoards;
 
-import classes.Model.Game.I18N.VARS;
-import classes.Model.Game.I18N.ChessGameException;
+import classes.Model.I18N.VARS;
+import classes.Model.I18N.ChessGameException;
 import lombok.*;
 
 import static classes.Model.AI.BitBoards.BBVars.*;
 import static classes.Controller.FenConverter.*;
-import static classes.Model.Game.I18N.VARS.FINALS.*;
+import static classes.Model.I18N.VARS.FINALS.*;
 
 
 @Getter

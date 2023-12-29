@@ -1,9 +1,9 @@
-package classes.Model.Game.I18N;
+package classes.Model.I18N;
 
 import classes.Model.AI.Evaluation.GameState;
 import classes.GUI.FrameParts.ViewField;
 import classes.GUI.FrameParts.ViewPiece;
-import classes.Model.Game.Structure.Piece;
+import classes.Model.Structure.Piece;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,9 +12,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static classes.Model.AI.BitBoards.BBVars.ply;
 import static classes.Model.AI.Evaluation.GameState.*;
-import static classes.Model.Game.I18N.METHODS.dateToString;
-import static classes.Model.Game.I18N.PieceType.*;
-import static classes.Model.Game.I18N.VARS.MUTABLE.*;
+import static classes.Model.I18N.METHODS.dateToString;
+import static classes.Model.I18N.PieceType.*;
 
 public class VARS {
 

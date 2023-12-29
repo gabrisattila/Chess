@@ -1,12 +1,10 @@
-package classes.Model.Game.I18N;
+package classes.Model.I18N;
 
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import static classes.Model.Game.I18N.VARS.FINALS.*;
 
 public class METHODS {
 
@@ -88,7 +86,7 @@ public class METHODS {
     }
 
     public static boolean containsLocation(int i, int j){
-        return containsLocation(MAX_WIDTH, MAX_HEIGHT, i, j);
+        return containsLocation(VARS.FINALS.MAX_WIDTH, VARS.FINALS.MAX_HEIGHT, i, j);
     }
 
     public static boolean containsLocation(int maxWidth, int maxHeight, int x, int y){
