@@ -101,8 +101,6 @@ public class AI extends Thread {
         String newPosFen = bitBoardsToFen();
         FenToBoard(newPosFen, getBoard());
         appendToHappenedList(newPosFen);
-
-//        printSearchData(startTime, evaluatedSearch);
     }
 
     public static AiNode getNewNodeAndSetUpProperEnvironmentForMinimaxStart(){
@@ -282,108 +280,6 @@ public class AI extends Thread {
     }
 
     //endregion
-
-    //For Test:
-
-    public static double miniMaxWithoutAlphaBeta(AiNode starterPos, boolean maxNeeded, double depth, double inheritedValue){
-
-        nodeNum++;
-
-        if (depth == MINIMAX_DEPTH || isDraw()){
-
-            if (isDraw()){
-                starterPos.setFinalValue(DRAW);
-                return DRAW;
-            }
-
-            starterPos.setFinalValue(inheritedValue);
-            return inheritedValue;
-        }
-
-        double evaluatedMiniMax;
-
-        Pair<ArrayList<Double>, ArrayList<Integer>> valuedMoves = getPairList(BitBoardMoves.generateMoves(maxNeeded));
-
-        int move;
-        double value;
-
-        ArrayList<Double> valuesInThisTurn = valuedMoves.getFirst();
-        ArrayList<Integer> movesInThisTurn = valuedMoves.getSecond();
-
-        int legalMoves = 0;
-
-        if (maxNeeded){
-            double possibleMax = -Double.MAX_VALUE;
-
-            for (int i = 0; i < movesInThisTurn.size(); i++) {
-
-                BitBoardMoves.copyPosition();
-
-                move = movesInThisTurn.get(i);
-                value = valuesInThisTurn.get(i);
-
-                if (BitBoardMoves.makeMove(move)) { //If move is legal
-                    legalMoves++;
-                    ply++;
-
-                    AiNode next = new AiNode(move);
-                    starterPos.getChildren().add(next);
-
-                    evaluatedMiniMax = miniMaxWithoutAlphaBeta(next, false, (BitBoardMoves.isCheck(move) ? 0 : 1) + depth, value);
-                    ply--;
-                    BitBoardMoves.undoMove();
-
-                    possibleMax = Math.max(evaluatedMiniMax, possibleMax);
-
-                }else {
-                    ply--;
-                }
-            }
-            if (legalMoves == 0){
-                if (BitBoardMoves.isSquareAttacked(false, getFirstBitIndex(bitBoards[wKingI])))
-                    possibleMax = WHITE_GOT_CHECKMATE;
-                else
-                    possibleMax = DRAW;
-            }
-            starterPos.setFinalValue(possibleMax);
-            return possibleMax;
-        } else {
-            double possibleMin = Double.MAX_VALUE;
-
-            for (int i = 0; i < movesInThisTurn.size(); i++) {
-
-                BitBoardMoves.copyPosition();
-
-                move = movesInThisTurn.get(i);
-                value = valuesInThisTurn.get(i);
-
-                if (BitBoardMoves.makeMove(move)){ // If move is legal
-                    legalMoves++;
-                    ply++;
-
-                    AiNode next = new AiNode(move);
-                    starterPos.getChildren().add(next);
-
-                    evaluatedMiniMax = miniMaxWithoutAlphaBeta(next, true, (BitBoardMoves.isCheck(move) ? 0 : 1) + depth, value);
-                    ply--;
-                    BitBoardMoves.undoMove();
-
-                    possibleMin = Math.min(evaluatedMiniMax, possibleMin);
-
-                }else {
-                    ply--;
-                }
-            }
-            if (legalMoves == 0){
-                if (BitBoardMoves.isSquareAttacked(true, getFirstBitIndex(bitBoards[bKingI])))
-                    possibleMin = BLACK_GOT_CHECKMATE;
-                else
-                    possibleMin = DRAW;
-            }
-            starterPos.setFinalValue(possibleMin);
-            return possibleMin;
-        }
-    }
 
     //endregion
 

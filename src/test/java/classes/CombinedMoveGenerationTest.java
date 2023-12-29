@@ -1,6 +1,5 @@
 package classes;
 
-
 import classes.Model.AI.Ai.AI;
 import classes.Model.I18N.Location;
 import classes.Controller.FenConverter;
