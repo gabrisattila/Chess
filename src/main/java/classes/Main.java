@@ -1,6 +1,6 @@
 package classes;
 
-import classes.Game.Model.Logic.EDT;
+import classes.Controller.EDT;
 
 public class Main {
     public static void main(String[] args) {

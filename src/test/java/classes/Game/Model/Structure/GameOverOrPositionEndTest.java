@@ -1,11 +1,11 @@
 package classes.Game.Model.Structure;
 
-import classes.Game.Model.Logic.FenConverter;
+import classes.Controller.FenConverter;
+import classes.Model.Game.Structure.Board;
 import org.junit.Assert;
 import org.junit.Test;
-import static classes.Game.I18N.VARS.FINALS.*;
-import static classes.Game.I18N.VARS.MUTABLE.gameEndFlag;
-import static classes.Game.Model.Structure.GameOverOrPositionEnd.*;
+
+import static classes.Model.Game.I18N.VARS.MUTABLE.gameEndFlag;
 
 public class GameOverOrPositionEndTest {
 

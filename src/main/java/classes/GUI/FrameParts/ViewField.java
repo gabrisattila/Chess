@@ -1,10 +1,11 @@
 package classes.GUI.FrameParts;
 
-import classes.Game.I18N.Location;
-import classes.Game.I18N.PieceAttributes;
-import classes.Game.Model.Logic.EDT;
-import classes.Game.Model.Structure.IPiece;
-import classes.Game.Model.Structure.Move;
+import classes.Model.Game.Structure.IField;
+import classes.Model.Game.I18N.Location;
+import classes.Model.Game.I18N.PieceAttributes;
+import classes.Controller.EDT;
+import classes.Model.Game.Structure.IPiece;
+import classes.Model.Game.Structure.Move;
 import lombok.*;
 
 import javax.swing.*;
@@ -12,18 +13,18 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
-import static classes.AI.Ai.AiNode.appendToHappenedList;
-import static classes.GUI.Frame.Window.putTakenPieceToItsPlace;
-import static classes.GUI.FrameParts.ViewBoard.getViewBoard;
-import static classes.Game.I18N.METHODS.*;
-import static classes.Game.I18N.VARS.FINALS.*;
-import static classes.Game.I18N.VARS.MUTABLE.*;
-import static classes.Game.Model.Logic.FenConverter.BoardToFen;
-import static classes.Game.Model.Structure.Move.Step;
+import static classes.Model.AI.Ai.AiNode.*;
+import static classes.GUI.Frame.Window.*;
+import static classes.GUI.FrameParts.ViewBoard.*;
+import static classes.Controller.FenConverter.*;
+import static classes.Model.Game.I18N.METHODS.*;
+import static classes.Model.Game.I18N.VARS.FINALS.*;
+import static classes.Model.Game.I18N.VARS.MUTABLE.*;
+import static classes.Model.Game.Structure.Move.*;
 
 @Getter
 @Setter
-public class ViewField extends JButton implements classes.Game.Model.Structure.IField {
+public class ViewField extends JButton implements IField {
 
     //region Fields
 

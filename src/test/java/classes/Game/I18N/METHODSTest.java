@@ -1,14 +1,12 @@
 package classes.Game.I18N;
 
+import classes.Model.Game.I18N.Location;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
-
-import static classes.Game.I18N.METHODS.*;
-import static classes.Game.I18N.VARS.MUTABLE.*;
 
 
 public class METHODSTest {

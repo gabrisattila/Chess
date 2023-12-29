@@ -1,13 +1,13 @@
 package classes.GUI.FrameParts;
 
-import classes.Game.Model.Logic.FenConverter;
-import classes.Game.Model.Structure.IPiece;
+import classes.Controller.FenConverter;
+import classes.Model.Game.Structure.IPiece;
 import junit.framework.TestCase;
 import org.junit.Assert;
 
-import static classes.Game.I18N.VARS.FINALS.testFens;
-import static classes.Game.I18N.VARS.MUTABLE.gameEndFlag;
-import static classes.Game.Model.Structure.Board.getBoard;
+import static classes.Model.Game.I18N.VARS.FINALS.testFens;
+import static classes.Model.Game.I18N.VARS.MUTABLE.gameEndFlag;
+import static classes.Model.Game.Structure.Board.getBoard;
 
 public class ViewBoardTest extends TestCase {
 

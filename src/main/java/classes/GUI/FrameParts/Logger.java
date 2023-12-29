@@ -1,6 +1,6 @@
 package classes.GUI.FrameParts;
 
-import classes.Game.Model.Structure.Move;
+import classes.Model.Game.Structure.Move;
 
 import javax.swing.*;
 import java.io.BufferedWriter;
@@ -8,13 +8,13 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import static classes.AI.BitBoards.BBVars.KING_SIDE;
-import static classes.AI.BitBoards.BBVars.QUEEN_SIDE;
-import static classes.AI.BitBoards.BitBoardMoves.getKingBoard;
+import static classes.Model.AI.BitBoards.BBVars.KING_SIDE;
+import static classes.Model.AI.BitBoards.BBVars.QUEEN_SIDE;
+import static classes.Model.AI.BitBoards.BitBoardMoves.getKingBoard;
 import static classes.GUI.Frame.Window.*;
-import static classes.Game.I18N.PieceType.*;
-import static classes.Game.I18N.VARS.FINALS.*;
-import static classes.Game.I18N.VARS.MUTABLE.*;
+import static classes.Model.Game.I18N.PieceType.getProperPieceImage;
+import static classes.Model.Game.I18N.VARS.FINALS.*;
+import static classes.Model.Game.I18N.VARS.MUTABLE.*;
 
 public class Logger extends JTextArea {
 

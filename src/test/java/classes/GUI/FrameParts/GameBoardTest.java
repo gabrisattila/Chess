@@ -1,8 +1,8 @@
 package classes.GUI.FrameParts;
 
 import classes.GUI.Frame.Window;
-import classes.Game.I18N.Location;
-import classes.Game.Model.Structure.IField;
+import classes.Model.Game.I18N.Location;
+import classes.Model.Game.Structure.IField;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 import static classes.GUI.FrameParts.GameBoard.clearLeftIcons;
 import static classes.GUI.FrameParts.GameBoard.edgeCoordinates;
-import static classes.Game.I18N.VARS.FINALS.usualFens;
+import static classes.Model.Game.I18N.VARS.FINALS.usualFens;
 
 public class GameBoardTest {
 

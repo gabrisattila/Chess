@@ -3,8 +3,8 @@ package classes.GUI.FrameParts;
 import javax.swing.*;
 import java.awt.*;
 
-import static classes.Game.I18N.VARS.FINALS.BOARD_HEIGHT;
-import static classes.Game.I18N.VARS.FINALS.BOARD_WIDTH;
+import static classes.Model.Game.I18N.VARS.FINALS.BOARD_HEIGHT;
+import static classes.Model.Game.I18N.VARS.FINALS.BOARD_WIDTH;
 
 
 public class CornerSquare extends JLabel {

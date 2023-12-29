@@ -1,9 +1,9 @@
 package classes.GUI.Frame;
 
 import classes.GUI.FrameParts.*;
-import classes.Game.I18N.Pair;
-import classes.Game.I18N.PieceAttributes;
-import classes.Game.Model.Structure.IField;
+import classes.Model.Game.I18N.Pair;
+import classes.Model.Game.I18N.PieceAttributes;
+import classes.Model.Game.Structure.IField;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,13 +13,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
-import static classes.GUI.FrameParts.GameBoard.cleanFieldFromLeftIcon;
-import static classes.GUI.FrameParts.ViewBoard.getViewBoard;
-import static classes.Game.I18N.METHODS.isNull;
-import static classes.Game.I18N.PieceAttributes.charToPieceAttributes;
-import static classes.Game.I18N.PieceAttributes.createSourceStringFromGotAttributes;
-import static classes.Game.I18N.VARS.FINALS.*;
-import static classes.Game.I18N.VARS.MUTABLE.canBeLogger;
+import static classes.GUI.FrameParts.GameBoard.*;
+import static classes.GUI.FrameParts.ViewBoard.*;
+import static classes.Model.Game.I18N.METHODS.*;
+import static classes.Model.Game.I18N.PieceAttributes.*;
+import static classes.Model.Game.I18N.VARS.FINALS.*;
+import static classes.Model.Game.I18N.VARS.MUTABLE.*;
 import static java.util.Objects.requireNonNull;
 
 @Getter

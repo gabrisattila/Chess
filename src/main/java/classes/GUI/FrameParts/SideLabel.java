@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static classes.Game.I18N.VARS.FINALS.*;
-import static classes.Game.I18N.VARS.MUTABLE.*;
+import static classes.Model.Game.I18N.VARS.FINALS.*;
+import static classes.Model.Game.I18N.VARS.MUTABLE.*;
 
 @Getter
 @Setter

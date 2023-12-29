@@ -1,14 +1,11 @@
 package classes.Game.I18N;
 
-import junit.framework.TestCase;
+import classes.Model.Game.I18N.PieceType;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Collections;
 import java.util.Random;
-
-import static classes.AI.BitBoards.BBVars.*;
-import static classes.Game.I18N.PieceType.*;
 
 public class PieceTypeTest {
 

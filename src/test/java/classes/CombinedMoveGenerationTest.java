@@ -1,22 +1,20 @@
 package classes;
 
 
-import classes.AI.Ai.AI;
-import classes.AI.Ai.AiNode;
-import classes.AI.BitBoards.BitBoardMoves;
-import classes.Game.I18N.Location;
-import classes.Game.Model.Logic.FenConverter;
-import classes.Game.Model.Structure.Board;
-import classes.Game.Model.Structure.IPiece;
+import classes.Model.AI.Ai.AI;
+import classes.Model.Game.I18N.Location;
+import classes.Controller.FenConverter;
+import classes.Model.Game.Structure.Board;
+import classes.Model.Game.Structure.IPiece;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
 
-import static classes.AI.BitBoards.BitBoardMoves.*;
-import static classes.AI.BitBoards.BitBoards.setUpBitBoard;
-import static classes.Game.I18N.VARS.FINALS.testFens;
-import static classes.Game.I18N.VARS.MUTABLE.*;
+import static classes.Model.AI.BitBoards.BitBoardMoves.fillBaseBitBoardPossibilities;
+import static classes.Model.AI.BitBoards.BitBoards.setUpBitBoard;
+import static classes.Model.Game.I18N.VARS.FINALS.testFens;
+import static classes.Model.Game.I18N.VARS.MUTABLE.whiteToPlay;
 
 public class CombinedMoveGenerationTest {
 

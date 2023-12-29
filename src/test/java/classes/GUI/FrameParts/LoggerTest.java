@@ -6,12 +6,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Objects;
 
-import static classes.Game.I18N.METHODS.notNull;
-import static classes.Game.I18N.VARS.FINALS.*;
+import static classes.Model.Game.I18N.METHODS.notNull;
 
 
 public class LoggerTest  {

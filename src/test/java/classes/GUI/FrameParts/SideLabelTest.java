@@ -9,9 +9,9 @@ import java.util.Random;
 
 import static classes.GUI.FrameParts.SideLabel.collectProperLabelTexts;
 import static classes.GUI.FrameParts.SideLabel.setBackNumsAndAbcToNormal;
-import static classes.Game.I18N.VARS.FINALS.nums;
-import static classes.Game.I18N.VARS.FINALS.abc;
-import static classes.Game.I18N.VARS.MUTABLE.whiteDown;
+import static classes.Model.Game.I18N.VARS.FINALS.nums;
+import static classes.Model.Game.I18N.VARS.FINALS.abc;
+import static classes.Model.Game.I18N.VARS.MUTABLE.whiteDown;
 
 public class SideLabelTest {
 

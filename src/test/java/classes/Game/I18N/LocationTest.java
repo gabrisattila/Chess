@@ -1,8 +1,9 @@
 package classes.Game.I18N;
 
 import classes.GUI.FrameParts.ViewField;
-import classes.Game.Model.Structure.Field;
-import classes.Game.Model.Structure.Piece;
+import classes.Model.Game.I18N.Location;
+import classes.Model.Game.Structure.Field;
+import classes.Model.Game.Structure.Piece;
 import org.junit.Assert;
 import org.junit.Test;
 
