@@ -2,6 +2,8 @@ package classes.Model.AI.BitBoards;
 
 import classes.Model.I18N.VARS;
 
+import static classes.Model.I18N.VARS.MUTABLE.*;
+
 import java.util.*;
 
 public class BBVars {
@@ -101,29 +103,29 @@ public class BBVars {
     
     //region Helper Boards
 
-    public static final long COL_A = VARS.MUTABLE.whiteDown ? -9187201950435737472L : 72340172838076673L;
+    public static final long COL_A = whiteDown ? -9187201950435737472L : 72340172838076673L;
 
-    public static final long COL_H = VARS.MUTABLE.whiteDown ? 72340172838076673L : -9187201950435737472L;
+    public static final long COL_H = whiteDown ? 72340172838076673L : -9187201950435737472L;
 
-    public static final long COL_AB = VARS.MUTABLE.whiteDown ? -4557430888798830400L : 217020518514230019L;
+    public static final long COL_AB = whiteDown ? -4557430888798830400L : 217020518514230019L;
 
-    public static final long COL_GH = VARS.MUTABLE.whiteDown ? 217020518514230019L : -4557430888798830400L;
+    public static final long COL_GH = whiteDown ? 217020518514230019L : -4557430888798830400L;
 
-    public static final long ROW_1 = VARS.MUTABLE.whiteDown ? 255L : -72057594037927936L;
+    public static final long ROW_1 = whiteDown ? 255L : -72057594037927936L;
 
-    public static final long ROW_2 = VARS.MUTABLE.whiteDown ? 65280 : 71776119061217280L;
+    public static final long ROW_2 = whiteDown ? 65280 : 71776119061217280L;
 
-    public static final long ROW_3 = VARS.MUTABLE.whiteDown ? 16711680 : 280375465082880L;
+    public static final long ROW_3 = whiteDown ? 16711680 : 280375465082880L;
 
-    public static final long ROW_6 = VARS.MUTABLE.whiteDown ? 280375465082880L : 16711680;
+    public static final long ROW_6 = whiteDown ? 280375465082880L : 16711680;
 
-    public static final long ROW_7 = VARS.MUTABLE.whiteDown ? 71776119061217280L : 65280;
+    public static final long ROW_7 = whiteDown ? 71776119061217280L : 65280;
 
-    public static final long ROW_8 = VARS.MUTABLE.whiteDown ? -72057594037927936L : 255L;
+    public static final long ROW_8 = whiteDown ? -72057594037927936L : 255L;
 
-    public static final long KING_SIDE = VARS.MUTABLE.whiteDown ? 1085102592571150095L : ~1085102592571150095L;
+    public static final long KING_SIDE = whiteDown ? 1085102592571150095L : ~1085102592571150095L;
 
-    public static final long QUEEN_SIDE = VARS.MUTABLE.whiteDown ? ~1085102592571150095L : 1085102592571150095L;
+    public static final long QUEEN_SIDE = whiteDown ? ~1085102592571150095L : 1085102592571150095L;
 
     public static long KING_SPAN = 924430;
 

@@ -5,6 +5,9 @@ import classes.Model.I18N.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import static classes.Model.I18N.VARS.MUTABLE.*;
+import static classes.Model.I18N.VARS.FINALS.*;
+
 @Getter
 @Setter
 public class Field implements IField {

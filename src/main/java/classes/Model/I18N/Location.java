@@ -5,7 +5,6 @@ import classes.GUI.FrameParts.ViewField;
 import lombok.*;
 
 import static classes.GUI.FrameParts.ViewBoard.*;
-import static classes.Model.I18N.METHODS.containsLocation;
 
 @Getter
 @Setter

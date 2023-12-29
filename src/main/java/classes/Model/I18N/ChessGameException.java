@@ -7,6 +7,8 @@ import lombok.Setter;
 import java.util.Arrays;
 
 import static classes.Model.I18N.METHODS.*;
+import static classes.Model.I18N.VARS.FINALS.*;
+import static classes.Model.I18N.VARS.MUTABLE.*;
 
 @Getter
 @Setter
@@ -42,7 +44,7 @@ public class ChessGameException extends RuntimeException {
     private static boolean fenIsWrong(String FEN){
         boolean fenIsWrong = false;
         String fen = FEN.split(" ")[0];
-        if(VARS.FINALS.MAX_HEIGHT - 1 == countOccurrences(fen, '/')){
+        if(MAX_HEIGHT - 1 == countOccurrences(fen, '/')){
             String[] parts = fen.split("/");
             int lengthOfPart = 0;
             for (String part : parts) {
@@ -54,7 +56,7 @@ public class ChessGameException extends RuntimeException {
                     }
                 }
 
-                if (VARS.FINALS.MAX_WIDTH != lengthOfPart){
+                if (MAX_WIDTH != lengthOfPart){
                     fenIsWrong = true;
                 }
                 lengthOfPart = 0;
@@ -71,13 +73,13 @@ public class ChessGameException extends RuntimeException {
         errorMessage.append(fen).append('\n');
         errorMessage.append("nem passzol a megszabott tábla méretekhez, mert ");
         String[] rows = fen.split("/");
-        boolean rowCountEqualsMaxHeight = rows.length == VARS.FINALS.MAX_HEIGHT;
-        boolean colCountEqualsMaxWidth = Arrays.stream(rows).allMatch(r -> r.length() == VARS.FINALS.MAX_WIDTH);
+        boolean rowCountEqualsMaxHeight = rows.length == MAX_HEIGHT;
+        boolean colCountEqualsMaxWidth = Arrays.stream(rows).allMatch(r -> r.length() == MAX_WIDTH);
         if (!rowCountEqualsMaxHeight && !colCountEqualsMaxWidth){
             badRowNum(errorMessage, rows);
             badColNum(errorMessage, rows, ". \nTovábbá ez a sor: ");
         } else if (!rowCountEqualsMaxHeight) {
-            errorMessage.append("a megadott fen ").append(rows.length).append(" sort tartalmaz, holott az elvárt: ").append(VARS.FINALS.MAX_HEIGHT);
+            errorMessage.append("a megadott fen ").append(rows.length).append(" sort tartalmaz, holott az elvárt: ").append(MAX_HEIGHT);
         } else if (!colCountEqualsMaxWidth) {
             badColNum(errorMessage, rows, ". \nEz a sor: ");
         }
@@ -85,14 +87,14 @@ public class ChessGameException extends RuntimeException {
     }
 
     private static void badRowNum(StringBuilder errorMessage, String[] rows){
-        errorMessage.append("a megadott fen ").append(rows.length).append(" sort tartalmaz, holott az elvárt: ").append(VARS.FINALS.MAX_HEIGHT);
+        errorMessage.append("a megadott fen ").append(rows.length).append(" sort tartalmaz, holott az elvárt: ").append(MAX_HEIGHT);
     }
 
     private static void badColNum(StringBuilder errorMessage, String[] rows, String openingLine) {
         errorMessage.append(openingLine);
         String badRow = "";
         for (String row : rows) {
-            if (row.length() != VARS.FINALS.MAX_WIDTH) {
+            if (row.length() != MAX_WIDTH) {
                 badRow = row;
                 break;
             }
@@ -100,7 +102,7 @@ public class ChessGameException extends RuntimeException {
         errorMessage
                 .append(badRow)
                 .append(" nem megfelelő hosszúságú, hiszen a kívánt hossz ")
-                .append(VARS.FINALS.MAX_WIDTH)
+                .append(MAX_WIDTH)
                 .append(" a sor pedig ")
                 .append(badRow.length())
                 .append(" hosszú.\n");

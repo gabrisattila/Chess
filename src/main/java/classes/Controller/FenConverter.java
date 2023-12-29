@@ -6,6 +6,7 @@ import classes.Model.I18N.*;
 import classes.Model.Structure.*;
 
 import static classes.Model.I18N.VARS.FINALS.*;
+import static classes.Model.I18N.VARS.MUTABLE.*;
 
 public class FenConverter {
 
@@ -43,7 +44,7 @@ public class FenConverter {
         PieceAttributes piece;
         board.cleanBoard();
 
-        VARS.MUTABLE.whiteToPlay = 'w' == separatedFen[1].charAt(0);
+        whiteToPlay = 'w' == separatedFen[1].charAt(0);
 
         String emPassant = separatedFen[3];
 
@@ -70,7 +71,7 @@ public class FenConverter {
                         enemyAndOwnStartRowFenToBoard(piece);
 
                         if (f instanceof Field) {
-                            Piece pieceForParams = piece.isWhite() ? VARS.MUTABLE.whitePieceSet.getFirstEmpty() : VARS.MUTABLE.blackPieceSet.getFirstEmpty();
+                            Piece pieceForParams = piece.isWhite() ? whitePieceSet.getFirstEmpty() : blackPieceSet.getFirstEmpty();
                             pieceForParams.setAttributes(piece);
                             pieceForParams.setLocation(new Location(sor, oszlop));
                             pieceForParams.setBoard((Board) board);
@@ -98,7 +99,7 @@ public class FenConverter {
 
         castleCaseFenToBoard(separatedFen[2]);
 
-        VARS.MUTABLE.evenOrOddStep = '1' == separatedFen[5].charAt(0) ? 1 : 0;
+        evenOrOddStep = '1' == separatedFen[5].charAt(0) ? 1 : 0;
 
     }
 
@@ -131,46 +132,46 @@ public class FenConverter {
         fenToReturn.deleteCharAt(fenToReturn.length() - 1);
 
         fenToReturn.append(' ');
-        Character toPlay = VARS.MUTABLE.evenOrOddStep == 0 ? 'w' : 'b';
+        Character toPlay = evenOrOddStep == 0 ? 'w' : 'b';
         fenToReturn.append(toPlay);
 
         fenToReturn.append(' ');
 
-        if (VARS.MUTABLE.whiteSmallCastleEnabled)
+        if (whiteSmallCastleEnabled)
             fenToReturn.append('K');
         else
             fenToReturn.append('-');
 
-        if (VARS.MUTABLE.whiteBigCastleEnabled)
+        if (whiteBigCastleEnabled)
             fenToReturn.append('Q');
         else
             fenToReturn.append('-');
 
-        if (VARS.MUTABLE.blackSmallCastleEnabled)
+        if (blackSmallCastleEnabled)
             fenToReturn.append('k');
         else
             fenToReturn.append('-');
 
-        if (VARS.MUTABLE.blackBigCastleEnabled)
+        if (blackBigCastleEnabled)
             fenToReturn.append('q');
         else
             fenToReturn.append('-');
 
         fenToReturn.append(' ');
-        fenToReturn.append(VARS.MUTABLE.emPassantChance.charAt(0));
+        fenToReturn.append(emPassantChance.charAt(0));
 
-        if (VARS.MUTABLE.emPassantChance.length() == 2) {
-            fenToReturn.append(VARS.MUTABLE.emPassantChance.charAt(1));
+        if (emPassantChance.length() == 2) {
+            fenToReturn.append(emPassantChance.charAt(1));
         }
 
         fenToReturn.append(' ');
-        fenToReturn.append(VARS.MUTABLE.stepNumber);
+        fenToReturn.append(stepNumber);
 
         fenToReturn.append(' ');
 
-        VARS.MUTABLE.evenOrOddStep = 'w' == toPlay ? 0 : 1;
+        evenOrOddStep = 'w' == toPlay ? 0 : 1;
 
-        fenToReturn.append(VARS.MUTABLE.evenOrOddStep);
+        fenToReturn.append(evenOrOddStep);
 
         return fenToReturn.toString();
     }
@@ -181,7 +182,7 @@ public class FenConverter {
     }
 
     private static void emPassantFenToBoard(String emPassant, PieceAttributes piece, int sor, int oszlop){
-        if (piece.isWhite() == VARS.MUTABLE.whiteToPlay &&
+        if (piece.isWhite() == whiteToPlay &&
                 piece.getType() == PieceType.P &&
                 Math.abs(sor - Character.getNumericValue(emPassant.charAt(0))) == 1 &&
                 Math.abs(oszlop - Character.getNumericValue(emPassant.charAt(1))) == 1
@@ -200,7 +201,7 @@ public class FenConverter {
 
     private static void enemyAndOwnStartRowFenToBoard(PieceAttributes piece){
 
-        if(VARS.MUTABLE.whiteDown){
+        if(whiteDown){
             piece.setEnemyStartRow(piece.isWhite() ? 7 : 0);
         }else {
             piece.setEnemyStartRow(piece.isWhite() ? 0 : 7);
@@ -211,13 +212,13 @@ public class FenConverter {
 
     public static void castleCaseFenToBoard(String castleCases){
 
-        VARS.MUTABLE.whiteSmallCastleEnabled = 'K' == castleCases.charAt(0);
+        whiteSmallCastleEnabled = 'K' == castleCases.charAt(0);
 
-        VARS.MUTABLE.whiteBigCastleEnabled = 'Q' == castleCases.charAt(1);
+        whiteBigCastleEnabled = 'Q' == castleCases.charAt(1);
 
-        VARS.MUTABLE.blackSmallCastleEnabled = 'k' == castleCases.charAt(2);
+        blackSmallCastleEnabled = 'k' == castleCases.charAt(2);
 
-        VARS.MUTABLE.blackBigCastleEnabled = 'q' == castleCases.charAt(3);
+        blackBigCastleEnabled = 'q' == castleCases.charAt(3);
 
     }
 }

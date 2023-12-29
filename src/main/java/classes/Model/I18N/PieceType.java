@@ -2,6 +2,10 @@ package classes.Model.I18N;
 
 import classes.Model.AI.BitBoards.BBVars;
 
+import static classes.Model.I18N.VARS.FINALS.*;
+import static classes.Model.I18N.VARS.MUTABLE.*;
+import static classes.Model.AI.BitBoards.BBVars.*;
+
 public enum PieceType {
 
     P,
@@ -46,19 +50,19 @@ public enum PieceType {
 
     public static PieceType getPieceType(int pieceIndex){
         switch (pieceIndex){
-            case BBVars.wPawnI, BBVars.bPawnI -> {
+            case wPawnI, bPawnI -> {
                 return P;
             }
-            case BBVars.wKnightI, BBVars.bKnightI -> {
+            case wKnightI, bKnightI -> {
                 return N;
             }
-            case BBVars.wBishopI, BBVars.bBishopI -> {
+            case wBishopI, bBishopI -> {
                 return B;
             }
-            case BBVars.wRookI, BBVars.bRookI -> {
+            case wRookI, bRookI -> {
                 return R;
             }
-            case BBVars.wQueenI, BBVars.bQueenI -> {
+            case wQueenI, bQueenI -> {
                 return Q;
             }
             default -> {

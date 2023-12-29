@@ -13,6 +13,11 @@ import java.util.ArrayList;
 
 import static classes.GUI.Frame.Window.*;
 import static classes.GUI.FrameParts.ViewBoard.*;
+import static classes.Model.AI.BitBoards.BBVars.bitBoards;
+import static classes.Model.I18N.VARS.MUTABLE.*;
+import static classes.Model.I18N.VARS.FINALS.*;
+import static classes.Model.AI.BitBoards.BBVars.*;
+
 
 @Getter
 @Setter
@@ -28,7 +33,7 @@ public class GameOverOrPositionEnd {
 
         gameOver = gameEnd(Board.getBoard(), submissionOrDrawComeFromPlayer);
 
-        if (VARS.FINALS.GAME_OVER_CASES.contains(gameOver)){
+        if (GAME_OVER_CASES.contains(gameOver)){
             gameEndDialog(gameOver);
         }
     }
@@ -38,21 +43,21 @@ public class GameOverOrPositionEnd {
     public static void gameEndDialog(double gameResult)  {
         String message = "";
         String title = "";
-        if (gameResult == VARS.FINALS.WHITE_GOT_CHECKMATE || gameResult == VARS.FINALS.BLACK_GOT_CHECKMATE){
+        if (gameResult == WHITE_GOT_CHECKMATE || gameResult == BLACK_GOT_CHECKMATE){
             title = "Sakk Matt";
             message = "A játék véget ért, Sakk Matt!";
-        } else if (gameResult == VARS.FINALS.DRAW) {
+        } else if (gameResult == DRAW) {
             title = "Döntetlen";
             message = "A játék döntetlen lett!";
-        } else if (gameResult == VARS.FINALS.BLACK_SUBMITTED) {
+        } else if (gameResult == BLACK_SUBMITTED) {
             title = "A játéknak vége";
-            message = VARS.MUTABLE.theresOnlyOneAi ?
-                    (VARS.MUTABLE.whiteToPlay ? "Az ellenfeled feladta a partit." : "Feladtad.") :
+            message = theresOnlyOneAi ?
+                    (whiteToPlay ? "Az ellenfeled feladta a partit." : "Feladtad.") :
                     ("Sötét feladta.");
-        } else if (gameResult == VARS.FINALS.WHITE_SUBMITTED) {
+        } else if (gameResult == WHITE_SUBMITTED) {
             title = "A játéknak vége";
-            message = VARS.MUTABLE.theresOnlyOneAi ?
-                    (VARS.MUTABLE.whiteToPlay ? "Feladtad." : "Az ellenfeled feladta a partit.") :
+            message = theresOnlyOneAi ?
+                    (whiteToPlay ? "Feladtad." : "Az ellenfeled feladta a partit.") :
                     ("Világos feladta.");
         }
         buttonsEnabled(new ArrayList<>(){{add("Új játék"); add("Mentés"); add("Betöltés");}});
@@ -64,10 +69,10 @@ public class GameOverOrPositionEnd {
         JFrame flashFrame = new JFrame("Mentés");
         flashFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         flashFrame.setSize(400, 200);
-        flashFrame.getContentPane().setBackground(VARS.FINALS.BLACK);
+        flashFrame.getContentPane().setBackground(BLACK);
 
         JLabel label = new JLabel("<html><div style='text-align: center;'>" + message.replace("\n", "<br>") + "</div></html>");
-        label.setForeground(VARS.FINALS.WHITE);
+        label.setForeground(WHITE);
         label.setVerticalAlignment(SwingConstants.CENTER);
         label.setHorizontalAlignment(SwingConstants.CENTER);
         label.setFont(new Font("Source Code Pro", Font.BOLD, 20));
@@ -94,20 +99,20 @@ public class GameOverOrPositionEnd {
 
         if (isCheckMate(board)){
             finalGameEnd();
-            return VARS.MUTABLE.whiteToPlay ? VARS.FINALS.WHITE_GOT_CHECKMATE : VARS.FINALS.BLACK_GOT_CHECKMATE;
+            return whiteToPlay ? WHITE_GOT_CHECKMATE : BLACK_GOT_CHECKMATE;
         } else if (isDraw(submissionOrDraw, board)) {
             finalGameEnd();
-            return VARS.FINALS.DRAW;
+            return DRAW;
         } else if (isSubmission(submissionOrDraw)) {
             finalGameEnd();
             return submissionOrDraw;
         }
 
-        if (submissionOrDraw == VARS.FINALS.DRAW_OFFER) {
+        if (submissionOrDraw == DRAW_OFFER) {
             if (itWorthRecommendDraw()){
                 showFlashFrame("Döntetlent ajánlottál, \naz ellenfeled fogadta el.", 5);
                 finalGameEnd();
-                return VARS.FINALS.DRAW_OFFER;
+                return DRAW_OFFER;
             }
         }
 
@@ -118,9 +123,9 @@ public class GameOverOrPositionEnd {
         if (board.hasTwoKings()){
             if (METHODS.notNull(board.getCheckers())){
                 if (METHODS.notNull(board.getCheckers().getSecond())){
-                    return board.getKing(VARS.MUTABLE.whiteToPlay).getPossibleRange().isEmpty();
+                    return board.getKing(whiteToPlay).getPossibleRange().isEmpty();
                 } else {
-                    return board.getPieces(VARS.MUTABLE.whiteToPlay).stream().allMatch(p -> p.getPossibleRange().isEmpty());
+                    return board.getPieces(whiteToPlay).stream().allMatch(p -> p.getPossibleRange().isEmpty());
                 }
             }
         } else {
@@ -130,14 +135,14 @@ public class GameOverOrPositionEnd {
     }
 
     private static boolean isDraw(double submissionOrDraw, Board board) {
-        if (submissionOrDraw == VARS.FINALS.DRAW){
+        if (submissionOrDraw == DRAW){
             return true;
         } else {
 
-            VARS.MUTABLE.thirdSimilarPositionOfTheGame = VARS.MUTABLE.happenedList.keySet().stream().anyMatch(a -> VARS.MUTABLE.happenedList.get(a) == 3);
+            thirdSimilarPositionOfTheGame = happenedList.keySet().stream().anyMatch(a -> happenedList.get(a) == 3);
 
             boolean nextPlayerEmptyRange = METHODS.isNull(board.getCheckers()) &&
-                                            board.getPieces(VARS.MUTABLE.whiteToPlay).stream().allMatch(p -> p.getPossibleRange().isEmpty());
+                                            board.getPieces(whiteToPlay).stream().allMatch(p -> p.getPossibleRange().isEmpty());
             boolean allRemainingPieceIsKing = board.getPieces().size() == 2 &&
                                               board.getPieces().stream().allMatch(p -> p.getType() == PieceType.K);
             boolean remained2KingAnd1KnightOr1Bishop =
@@ -173,40 +178,40 @@ public class GameOverOrPositionEnd {
                         possibleKnight.size() == 2 &&  possibleKnight.get(0).isWhite() == possibleKnight.get(1).isWhite() &&
                                 possibleBishop.size() == 1 && possibleBishop.get(0).isWhite() != possibleKnight.get(0).isWhite();
             }
-            return nextPlayerEmptyRange || VARS.MUTABLE.thirdSimilarPositionOfTheGame || allRemainingPieceIsKing || remained2KingAnd1KnightOr1Bishop || remained2KingAnd2DrawPieces ||
+            return nextPlayerEmptyRange || thirdSimilarPositionOfTheGame || allRemainingPieceIsKing || remained2KingAnd1KnightOr1Bishop || remained2KingAnd2DrawPieces ||
                     remained2King2KnightFromSameColorAnd1Bishop;
         }
     }
 
     public static boolean isDraw(){
 
-        VARS.MUTABLE.thirdSimilarPositionOfTheGame = !VARS.MUTABLE.happenedList.isEmpty() && VARS.MUTABLE.happenedList.keySet().stream().anyMatch(a -> VARS.MUTABLE.happenedList.get(a) == 3);
+        thirdSimilarPositionOfTheGame = !happenedList.isEmpty() && happenedList.keySet().stream().anyMatch(a -> happenedList.get(a) == 3);
 
         boolean allRemainingPiecesAreKing =
-                BBVars.bitBoards[BBVars.wPawnI] == 0 && BBVars.bitBoards[BBVars.wKnightI] == 0 && BBVars.bitBoards[BBVars.wBishopI] == 0 && BBVars.bitBoards[BBVars.wRookI] == 0 && BBVars.bitBoards[BBVars.wQueenI] == 0 && BBVars.bitBoards[BBVars.wKingI] != 0 &&
-                BBVars.bitBoards[BBVars.bPawnI] == 0 && BBVars.bitBoards[BBVars.bKnightI] == 0 && BBVars.bitBoards[BBVars.bBishopI] == 0 && BBVars.bitBoards[BBVars.bRookI] == 0 && BBVars.bitBoards[BBVars.bQueenI] == 0 && BBVars.bitBoards[BBVars.bKingI] != 0;
+                bitBoards[wPawnI] == 0 && bitBoards[wKnightI] == 0 && bitBoards[wBishopI] == 0 && bitBoards[wRookI] == 0 && bitBoards[wQueenI] == 0 && bitBoards[wKingI] != 0 &&
+                bitBoards[bPawnI] == 0 && bitBoards[bKnightI] == 0 && bitBoards[bBishopI] == 0 && bitBoards[bRookI] == 0 && bitBoards[bQueenI] == 0 && bitBoards[bKingI] != 0;
         boolean noBigOneRemained =
-                (BBVars.bitBoards[BBVars.wPawnI] == 0 && BBVars.bitBoards[BBVars.wRookI] == 0 && BBVars.bitBoards[BBVars.wQueenI] == 0 && BBVars.bitBoards[BBVars.wKingI] != 0 &&
-                 BBVars.bitBoards[BBVars.bPawnI] == 0 && BBVars.bitBoards[BBVars.bRookI] == 0 && BBVars.bitBoards[BBVars.bQueenI] == 0 && BBVars.bitBoards[BBVars.bKingI] != 0);
+                (bitBoards[wPawnI] == 0 && bitBoards[wRookI] == 0 && bitBoards[wQueenI] == 0 && bitBoards[wKingI] != 0 &&
+                 bitBoards[bPawnI] == 0 && bitBoards[bRookI] == 0 && bitBoards[bQueenI] == 0 && bitBoards[bKingI] != 0);
         boolean only1WBishop =
-                (Long.bitCount(BBVars.bitBoards[BBVars.wBishopI]) == 1 && BBVars.bitBoards[BBVars.wKnightI] == 0 && BBVars.bitBoards[BBVars.bBishopI] == 0 && BBVars.bitBoards[BBVars.bKnightI] == 0);
+                (Long.bitCount(bitBoards[wBishopI]) == 1 && bitBoards[wKnightI] == 0 && bitBoards[bBishopI] == 0 && bitBoards[bKnightI] == 0);
         boolean only1BBishop =
-                (Long.bitCount(BBVars.bitBoards[BBVars.bBishopI]) == 1 && BBVars.bitBoards[BBVars.wKnightI] == 0 && BBVars.bitBoards[BBVars.wBishopI] == 0 && BBVars.bitBoards[BBVars.bKnightI] == 0);
+                (Long.bitCount(bitBoards[bBishopI]) == 1 && bitBoards[wKnightI] == 0 && bitBoards[wBishopI] == 0 && bitBoards[bKnightI] == 0);
         boolean only1WKnight =
-                (Long.bitCount(BBVars.bitBoards[BBVars.wKnightI]) == 1 && BBVars.bitBoards[BBVars.wBishopI] == 0 && BBVars.bitBoards[BBVars.bBishopI] == 0 && BBVars.bitBoards[BBVars.bKnightI] == 0);
+                (Long.bitCount(bitBoards[wKnightI]) == 1 && bitBoards[wBishopI] == 0 && bitBoards[bBishopI] == 0 && bitBoards[bKnightI] == 0);
         boolean only1BKnight =
-                (Long.bitCount(BBVars.bitBoards[BBVars.bKnightI]) == 1 && BBVars.bitBoards[BBVars.wBishopI] == 0 && BBVars.bitBoards[BBVars.bBishopI] == 0 && BBVars.bitBoards[BBVars.wKnightI] == 0);
+                (Long.bitCount(bitBoards[bKnightI]) == 1 && bitBoards[wBishopI] == 0 && bitBoards[bBishopI] == 0 && bitBoards[wKnightI] == 0);
         boolean only1WBishop1BKnight =
-                (Long.bitCount(BBVars.bitBoards[BBVars.wBishopI]) == 1 && (Long.bitCount(BBVars.bitBoards[BBVars.bKnightI]) == 1) && BBVars.bitBoards[BBVars.bBishopI] == 0 && BBVars.bitBoards[BBVars.wKnightI] == 0);
+                (Long.bitCount(bitBoards[wBishopI]) == 1 && (Long.bitCount(bitBoards[bKnightI]) == 1) && bitBoards[bBishopI] == 0 && bitBoards[wKnightI] == 0);
         boolean only1BBishop1WKnight =
-                (Long.bitCount(BBVars.bitBoards[BBVars.bBishopI]) == 1 && (Long.bitCount(BBVars.bitBoards[BBVars.wKnightI]) == 1) && BBVars.bitBoards[BBVars.bBishopI] == 0 && BBVars.bitBoards[BBVars.wKnightI] == 0);
+                (Long.bitCount(bitBoards[bBishopI]) == 1 && (Long.bitCount(bitBoards[wKnightI]) == 1) && bitBoards[bBishopI] == 0 && bitBoards[wKnightI] == 0);
         boolean only2KnightFromTheSameColor =
-                (Long.bitCount(BBVars.bitBoards[BBVars.wKnightI]) == 2 || Long.bitCount(BBVars.bitBoards[BBVars.bKnightI]) == 2) && BBVars.bitBoards[BBVars.bBishopI] == 0 && BBVars.bitBoards[BBVars.wBishopI] == 0;
+                (Long.bitCount(bitBoards[wKnightI]) == 2 || Long.bitCount(bitBoards[bKnightI]) == 2) && bitBoards[bBishopI] == 0 && bitBoards[wBishopI] == 0;
         boolean twoBishopAgainstOne =
-                (Long.bitCount(BBVars.bitBoards[BBVars.wBishopI]) == 2 && Long.bitCount(BBVars.bitBoards[BBVars.bBishopI]) == 1 && BBVars.bitBoards[BBVars.bKnightI] == 0 && BBVars.bitBoards[BBVars.wKnightI] == 0)  ||
-                (Long.bitCount(BBVars.bitBoards[BBVars.wBishopI]) == 1 && Long.bitCount(BBVars.bitBoards[BBVars.bBishopI]) == 2 && BBVars.bitBoards[BBVars.bKnightI] == 0 && BBVars.bitBoards[BBVars.wKnightI] == 0);
+                (Long.bitCount(bitBoards[wBishopI]) == 2 && Long.bitCount(bitBoards[bBishopI]) == 1 && bitBoards[bKnightI] == 0 && bitBoards[wKnightI] == 0)  ||
+                (Long.bitCount(bitBoards[wBishopI]) == 1 && Long.bitCount(bitBoards[bBishopI]) == 2 && bitBoards[bKnightI] == 0 && bitBoards[wKnightI] == 0);
 
-        return VARS.MUTABLE.thirdSimilarPositionOfTheGame || allRemainingPiecesAreKing ||
+        return thirdSimilarPositionOfTheGame || allRemainingPiecesAreKing ||
                 (noBigOneRemained &&
                         (only1WBishop || only1BBishop || only1WKnight || only1BKnight ||
                          only1WBishop1BKnight || only1BBishop1WKnight || only2KnightFromTheSameColor || twoBishopAgainstOne));
@@ -215,7 +220,7 @@ public class GameOverOrPositionEnd {
     }
 
     private static boolean isSubmission(double submissionOrDraw) {
-        return submissionOrDraw == VARS.FINALS.WHITE_SUBMITTED || submissionOrDraw == VARS.FINALS.BLACK_SUBMITTED;
+        return submissionOrDraw == WHITE_SUBMITTED || submissionOrDraw == BLACK_SUBMITTED;
     }
 
     public static boolean itWorthRecommendDraw(){
@@ -230,7 +235,7 @@ public class GameOverOrPositionEnd {
             }
             assert onlyPawn != null;
             enemyKing = Board.getBoard().getKing(!onlyPawn.isWhite());
-            if (onlyPawn.getJ() != 0 || onlyPawn.getJ() != VARS.FINALS.MAX_WIDTH - 1){
+            if (onlyPawn.getJ() != 0 || onlyPawn.getJ() != MAX_WIDTH - 1){
                 return false;
             }
             int pawnDistance = Math.abs(onlyPawn.getJ() - onlyPawn.getEnemyStartRow());
@@ -242,7 +247,7 @@ public class GameOverOrPositionEnd {
     }
 
     public static void finalGameEnd(){
-        VARS.MUTABLE.gameEndFlag.set(true);
+        gameEndFlag.set(true);
         getViewBoard().clearPiecesRanges();
         Board.getBoard().cleanBoard();
     }

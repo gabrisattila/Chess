@@ -9,6 +9,9 @@ import javax.swing.*;
 import java.util.stream.Collectors;
 
 import static classes.GUI.FrameParts.Logger.*;
+import static classes.Model.I18N.VARS.MUTABLE.*;
+import static classes.Model.I18N.VARS.FINALS.*;
+
 
 @Getter
 @Setter
@@ -86,7 +89,7 @@ public class Move {
     //region Methods
 
     public static void Step(Move move) {
-        synchronized (VARS.MUTABLE.pauseFlag){
+        synchronized (pauseFlag){
             AI.waitOnPause();
             move.moveCaseExploreAndSet();
             move.collectPlusPiece();
@@ -166,9 +169,9 @@ public class Move {
 
             Location middleLocOfPawnStep = Board.getTheMiddleLocation(from, to);
             assert middleLocOfPawnStep != null;
-            VARS.MUTABLE.emPassantChance = "";
-            VARS.MUTABLE.emPassantChance += middleLocOfPawnStep.getI();
-            VARS.MUTABLE.emPassantChance += middleLocOfPawnStep.getJ();
+            emPassantChance = "";
+            emPassantChance += middleLocOfPawnStep.getI();
+            emPassantChance += middleLocOfPawnStep.getJ();
 
 
         } else if (itIsPawnGotIn) {
@@ -188,7 +191,7 @@ public class Move {
         castleBoolsModify();
         METHODS.changeEvenOrOddStep();
         if (!itIsEmPassantAuthorization)
-            VARS.MUTABLE.emPassantChance = "-";
+            emPassantChance = "-";
     }
 
     /**
@@ -200,7 +203,7 @@ public class Move {
 
         if (what.getType() == PieceType.K && Math.abs(from.getJ() - to.getJ()) == 2){
             return "castle";
-        } else if (what.getType() == PieceType.P && to.equals(Location.emPassantStringToLocation(VARS.MUTABLE.emPassantChance))) {
+        } else if (what.getType() == PieceType.P && to.equals(Location.emPassantStringToLocation(emPassantChance))) {
             return "emPassant";
         } else if (emPassantAuthorizationIf()) {
             return "emPassantAut";
@@ -226,46 +229,46 @@ public class Move {
 
     private void castleBoolsModify() {
         if (what.getType() == PieceType.R){
-            if (VARS.MUTABLE.whiteDown) {
+            if (whiteDown) {
                 if (from.getJ() > 4){
                     if (what.isWhite()) {
-                        VARS.MUTABLE.whiteSmallCastleEnabled = false;
+                        whiteSmallCastleEnabled = false;
                     }
                     else {
-                        VARS.MUTABLE.blackSmallCastleEnabled = false;
+                        blackSmallCastleEnabled = false;
                     }
                 }else {
                     if (what.isWhite()) {
-                        VARS.MUTABLE.whiteBigCastleEnabled = false;
+                        whiteBigCastleEnabled = false;
                     }
                     else {
-                        VARS.MUTABLE.blackBigCastleEnabled = false;
+                        blackBigCastleEnabled = false;
                     }
                 }
             } else {
                 if (from.getJ() < 4){
                     if (what.isWhite()) {
-                        VARS.MUTABLE.whiteSmallCastleEnabled = false;
+                        whiteSmallCastleEnabled = false;
                     }
                     else {
-                        VARS.MUTABLE.blackSmallCastleEnabled = false;
+                        blackSmallCastleEnabled = false;
                     }
                 }else {
                     if (what.isWhite()) {
-                        VARS.MUTABLE.whiteBigCastleEnabled = false;
+                        whiteBigCastleEnabled = false;
                     }
                     else {
-                        VARS.MUTABLE.blackBigCastleEnabled = false;
+                        blackBigCastleEnabled = false;
                     }
                 }
             }
         } else if (what.getType() == PieceType.K) {
             if (what.isWhite()){
-                VARS.MUTABLE.whiteSmallCastleEnabled = false;
-                VARS.MUTABLE.whiteBigCastleEnabled = false;
+                whiteSmallCastleEnabled = false;
+                whiteBigCastleEnabled = false;
             }else {
-                VARS.MUTABLE.blackSmallCastleEnabled = false;
-                VARS.MUTABLE.blackBigCastleEnabled = false;
+                blackSmallCastleEnabled = false;
+                blackBigCastleEnabled = false;
             }
         }
     }
@@ -274,7 +277,7 @@ public class Move {
         if (itIsCastle){
             return new Location(to.getI(), Math.abs(to.getJ()) < Math.abs(7 - to.getJ()) ? 0 : 7);
         } else if (itIsEmPassant) {
-            int plusI = what.isWhite() ? (VARS.MUTABLE.whiteDown ? -1 : 1) : (VARS.MUTABLE.whiteDown ? 1 : -1);
+            int plusI = what.isWhite() ? (whiteDown ? -1 : 1) : (whiteDown ? 1 : -1);
             return new Location(to.getI() + plusI, to.getJ());
         } else if (METHODS.notNull(plusPiece)) {
             return to;
@@ -303,24 +306,24 @@ public class Move {
     private PieceType pawnGotInCaseView(){
         int result = JOptionPane.showOptionDialog(null, "Válassz melyik figurát szeretnéd.", "Lehetőségek.",
                 JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null,
-                VARS.MUTABLE.pieceToChange.isWhite() ?
-                        VARS.FINALS.WhitePieceChoiceInsteadOfPawnGotIn.toArray() :
-                        VARS.FINALS.BlackPieceChoiceInsteadOfPawnGotIn.toArray(),
+                pieceToChange.isWhite() ?
+                        WhitePieceChoiceInsteadOfPawnGotIn.toArray() :
+                        BlackPieceChoiceInsteadOfPawnGotIn.toArray(),
                 null);
         PieceType newType;
         switch (result){
             case 0 -> newType = PieceType.N;
             case 1 -> newType = PieceType.R;
-            case 2 -> newType = PieceType.R;
+            case 2 -> newType = PieceType.B;
             case 3 -> newType = PieceType.Q;
             default -> throw new IllegalStateException("Unexpected value: " + result);
         }
-        VARS.MUTABLE.pieceToChange.getAttributes().setType(newType);
+        pieceToChange.getAttributes().setType(newType);
 
-        VARS.MUTABLE.pieceToChange.setImage(
-                VARS.MUTABLE.pieceToChange.isWhite() ?
-                        VARS.FINALS.WhitePieceChoiceInsteadOfPawnGotIn.get(result).getImage() :
-                        VARS.FINALS.BlackPieceChoiceInsteadOfPawnGotIn.get(result).getImage()
+        pieceToChange.setImage(
+                pieceToChange.isWhite() ?
+                        WhitePieceChoiceInsteadOfPawnGotIn.get(result).getImage() :
+                        BlackPieceChoiceInsteadOfPawnGotIn.get(result).getImage()
         );
         return newType;
     }

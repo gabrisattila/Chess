@@ -7,6 +7,9 @@ import lombok.Setter;
 import java.util.HashSet;
 import java.util.Set;
 
+import static classes.Model.I18N.VARS.MUTABLE.*;
+import static classes.Model.I18N.VARS.FINALS.*;
+
 @Getter
 @Setter
 public class Piece implements IPiece {
@@ -64,7 +67,7 @@ public class Piece implements IPiece {
 
     @Override
     public boolean isWhite(){
-        return VARS.FINALS.WHITE_STRING.equals(attributes.getColor());
+        return WHITE_STRING.equals(attributes.getColor());
     }
 
     public int getOwnStartRow(){
@@ -151,8 +154,8 @@ public class Piece implements IPiece {
     protected Set<Location> range(PieceType type, boolean posOrWatch)  {
         Set<Location> range = new HashSet<>();
         Set<Location> optionsToIterateTrough = (type == PieceType.P && getEnemyStartRow() > getOwnStartRow()) ?
-                VARS.FINALS.matrixChooser.get(type) :
-                METHODS.locationSetTimesN(VARS.FINALS.matrixChooser.get(type), - 1);
+                matrixChooser.get(type) :
+                METHODS.locationSetTimesN(matrixChooser.get(type), - 1);
         for (Location loc : optionsToIterateTrough) {
             Location locForCalculation = loc.add(Location);
             if (type == PieceType.P){

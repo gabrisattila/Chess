@@ -6,13 +6,15 @@ import classes.Model.I18N.VARS;
 import classes.Model.I18N.PieceType;
 
 import static classes.Model.I18N.PieceType.*;
+import static classes.Model.I18N.VARS.FINALS.*;
+import static classes.Model.I18N.VARS.MUTABLE.*;
 
 public class Evaluator {
 
     public static double evaluate(int possibilityNumAfterMove, double enemyKingPossibilityNumAfterMove, boolean forWhite){
         double eval = evaluateWithFieldValues();
         eval += (forWhite ? +1 : -1) * 0.1 * possibilityNumAfterMove;
-        if (VARS.MUTABLE.currentGameState == GameState.SECOND_STATE)
+        if (currentGameState == GameState.SECOND_STATE)
             eval -= (forWhite ? +1 : -1) * enemyKingPossibilityNumAfterMove;
         return eval;
     }
@@ -45,38 +47,38 @@ public class Evaluator {
 
     public static double evaluate(){
         double eval = 0;
-        eval += VARS.FINALS.PAWN_BASE_VALUE * (Long.bitCount(BBVars.bitBoards[BBVars.wPawnI]) - Long.bitCount(BBVars.bitBoards[BBVars.bPawnI]));
-        eval += VARS.FINALS.KNIGHT_OR_BISHOP_BASE_VALUE * (
+        eval += PAWN_BASE_VALUE * (Long.bitCount(BBVars.bitBoards[BBVars.wPawnI]) - Long.bitCount(BBVars.bitBoards[BBVars.bPawnI]));
+        eval += KNIGHT_OR_BISHOP_BASE_VALUE * (
                     Long.bitCount(BBVars.bitBoards[BBVars.wKnightI]) - Long.bitCount(BBVars.bitBoards[BBVars.bKnightI]) +
                     Long.bitCount(BBVars.bitBoards[BBVars.wBishopI]) - Long.bitCount(BBVars.bitBoards[BBVars.bBishopI])
                 );
-        eval += VARS.FINALS.ROOK_BASE_VALUE * (Long.bitCount(BBVars.bitBoards[BBVars.wRookI]) - Long.bitCount(BBVars.bitBoards[BBVars.bRookI]));
-        eval += VARS.FINALS.QUEEN_BASE_VALUE * (Long.bitCount(BBVars.bitBoards[BBVars.wQueenI]) - Long.bitCount(BBVars.bitBoards[BBVars.bQueenI]));
-        eval += VARS.FINALS.KING_BASE_VALUE * (Long.bitCount(BBVars.bitBoards[BBVars.wKingI]) - Long.bitCount(BBVars.bitBoards[BBVars.bKingI]));
+        eval += ROOK_BASE_VALUE * (Long.bitCount(BBVars.bitBoards[BBVars.wRookI]) - Long.bitCount(BBVars.bitBoards[BBVars.bRookI]));
+        eval += QUEEN_BASE_VALUE * (Long.bitCount(BBVars.bitBoards[BBVars.wQueenI]) - Long.bitCount(BBVars.bitBoards[BBVars.bQueenI]));
+        eval += KING_BASE_VALUE * (Long.bitCount(BBVars.bitBoards[BBVars.wKingI]) - Long.bitCount(BBVars.bitBoards[BBVars.bKingI]));
         return eval;
     }
 
     private static double getBaseFieldValue(PieceType type, boolean forWhite, int i, int j){
         if (type == P) {
-            return forWhite ? VARS.FINALS.PAWN_BASE_VALUE_MATRIX_WP[i][j] : -VARS.FINALS.PAWN_BASE_VALUE_MATRIX_BP[i][j];
+            return forWhite ? PAWN_BASE_VALUE_MATRIX_WP[i][j] : -PAWN_BASE_VALUE_MATRIX_BP[i][j];
         }else if (type == B){
-            return forWhite ? VARS.FINALS.BISHOP_BASE_VALUE_MATRIX_WP[i][j] : -VARS.FINALS.BISHOP_BASE_VALUE_MATRIX_BP[i][j];
+            return forWhite ? BISHOP_BASE_VALUE_MATRIX_WP[i][j] : -BISHOP_BASE_VALUE_MATRIX_BP[i][j];
         } else if (type == R) {
-            return forWhite ? VARS.FINALS.ROOK_BASE_VALUE_MATRIX_WP[i][j] : -VARS.FINALS.ROOK_BASE_VALUE_MATRIX_BP[i][j];
+            return forWhite ? ROOK_BASE_VALUE_MATRIX_WP[i][j] : -ROOK_BASE_VALUE_MATRIX_BP[i][j];
         } else if (type == Q) {
-            if (VARS.MUTABLE.whiteDown){
-                return forWhite ? VARS.FINALS.QUEEN_BASE_VALUE_MATRIX_WD_WP[i][j] : -VARS.FINALS.QUEEN_BASE_VALUE_MATRIX_WD_BP[i][j];
+            if (whiteDown){
+                return forWhite ? QUEEN_BASE_VALUE_MATRIX_WD_WP[i][j] : -QUEEN_BASE_VALUE_MATRIX_WD_BP[i][j];
             } else {
-                return forWhite ? VARS.FINALS.QUEEN_BASE_VALUE_MATRIX_BD_WP[i][j] : -VARS.FINALS.QUEEN_BASE_VALUE_MATRIX_BD_BP[i][j];
+                return forWhite ? QUEEN_BASE_VALUE_MATRIX_BD_WP[i][j] : -QUEEN_BASE_VALUE_MATRIX_BD_BP[i][j];
             }
         } else if (type == K) {
-            if (VARS.MUTABLE.whiteDown){
-                return forWhite ? VARS.FINALS.KING_BASE_VALUE_MATRIX_WD_WP[i][j] : -VARS.FINALS.KING_BASE_VALUE_MATRIX_WD_BP[i][j];
+            if (whiteDown){
+                return forWhite ? KING_BASE_VALUE_MATRIX_WD_WP[i][j] : -KING_BASE_VALUE_MATRIX_WD_BP[i][j];
             } else {
-                return forWhite ? VARS.FINALS.KING_BASE_VALUE_MATRIX_BD_WP[i][j] : -VARS.FINALS.KING_BASE_VALUE_MATRIX_BD_BP[i][j];
+                return forWhite ? KING_BASE_VALUE_MATRIX_BD_WP[i][j] : -KING_BASE_VALUE_MATRIX_BD_BP[i][j];
             }
         } else {
-            double val = VARS.FINALS.FIELD_BASE_VALUES_BY_PIECE_TYPE.get(N)[i][j];
+            double val = FIELD_BASE_VALUES_BY_PIECE_TYPE.get(N)[i][j];
             return forWhite ? val : -val;
         }
     }

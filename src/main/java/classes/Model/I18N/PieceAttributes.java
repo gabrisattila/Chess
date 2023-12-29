@@ -4,6 +4,8 @@ package classes.Model.I18N;
 import lombok.*;
 
 import static classes.Model.I18N.PieceType.*;
+import static classes.Model.I18N.VARS.FINALS.*;
+import static classes.Model.I18N.METHODS.*;
 
 @Getter
 @Setter
@@ -50,11 +52,11 @@ public class PieceAttributes {
     }
 
     public boolean isEmpty(){
-        return METHODS.isNull(type) || METHODS.isNull(color);
+        return isNull(type) || isNull(color);
     }
 
     public boolean isWhite(){
-        return VARS.FINALS.WHITE_STRING.equals(color);
+        return WHITE_STRING.equals(color);
     }
 
     public void setType(PieceType type){

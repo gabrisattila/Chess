@@ -12,6 +12,8 @@ import static classes.GUI.FrameParts.ChessButton.ChessButtonMouseListener.saveBo
 import static classes.GUI.FrameParts.Logger.initializeLogFile;
 import static classes.GUI.FrameParts.ViewBoard.getViewBoard;
 import static classes.Model.I18N.METHODS.switchWhoComes;
+import static classes.Model.I18N.VARS.MUTABLE.*;
+import static classes.Model.I18N.VARS.FINALS.*;
 import static classes.Controller.FenConverter.*;
 import static java.lang.Thread.sleep;
 
@@ -51,26 +53,26 @@ public class EDT {
 
 
     public static void initialization() {
-        if (VARS.MUTABLE.isFirstOpen){
+        if (isFirstOpen){
             getWindow();
         } else {
             initializeAis();
             initializeLogFile();
-            if (VARS.MUTABLE.theresOnlyOneAi)
+            if (theresOnlyOneAi)
                 getViewBoard().rangeUpdater();
         }
     }
 
 
     private static void initializeAis(){
-        if (VARS.MUTABLE.theresOnlyOneAi){
-            if ((VARS.MUTABLE.whiteToPlay && VARS.MUTABLE.whiteAiNeeded) || (!VARS.MUTABLE.whiteToPlay && !VARS.MUTABLE.whiteAiNeeded)){
-                VARS.MUTABLE.aiTurn = true;
-                VARS.MUTABLE.playerTurn = false;
+        if (theresOnlyOneAi){
+            if ((whiteToPlay && whiteAiNeeded) || (!whiteToPlay && !whiteAiNeeded)){
+                aiTurn = true;
+                playerTurn = false;
                 SwingUtilities.invokeLater(EDT::startAI);
             }else {
-                VARS.MUTABLE.aiTurn = false;
-                VARS.MUTABLE.playerTurn = true;
+                aiTurn = false;
+                playerTurn = true;
             }
         }else {
             SwingUtilities.invokeLater(EDT::startAI);
@@ -78,7 +80,7 @@ public class EDT {
     }
 
     public static void startAI(){
-        if (!VARS.MUTABLE.gameEndFlag.get()){
+        if (!gameEndFlag.get()){
             buttonsEnabled(new ArrayList<>(){{add("Új játék"); add("Mentés"); add("Szünet");}});
             ai = new AI();
             try {
@@ -92,7 +94,7 @@ public class EDT {
 
     public static void receivedMoveFromAi(String fen){
         setUpViewBoard(fen);
-        if (VARS.MUTABLE.theresOnlyOneAi){
+        if (theresOnlyOneAi){
             switchWhoComes();
             buttonsEnabled(new ArrayList<>(){{add("All");}});
             getViewBoard().rangeUpdater();

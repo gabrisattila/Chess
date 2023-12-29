@@ -13,6 +13,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static classes.Model.I18N.VARS.FINALS.*;
+import static classes.Model.I18N.VARS.MUTABLE.*;
 
 /**
  * Singleton.
@@ -56,7 +58,7 @@ public class Board implements IBoard {
 
     public static Board getBoard() {
         if(board == null){
-            board = new Board(VARS.FINALS.MAX_WIDTH, VARS.FINALS.MAX_HEIGHT);
+            board = new Board(MAX_WIDTH, MAX_HEIGHT);
             return board;
         }
         return board;
@@ -133,8 +135,8 @@ public class Board implements IBoard {
             }
         }
         pieces.clear();
-        VARS.MUTABLE.whitePieceSet.clean();
-        VARS.MUTABLE.blackPieceSet.clean();
+        whitePieceSet.clean();
+        blackPieceSet.clean();
     }
 
     @Override
@@ -143,13 +145,13 @@ public class Board implements IBoard {
         pseudos();
         if (hasTwoKings()) {
             constrainPseudos();
-            inspectCheck(!VARS.MUTABLE.whiteToPlay);
+            inspectCheck(!whiteToPlay);
             if (METHODS.isNull(checkers)) {
-                kingFreeRange(!VARS.MUTABLE.whiteToPlay);
-                kingFreeRange(VARS.MUTABLE.whiteToPlay);
+                kingFreeRange(!whiteToPlay);
+                kingFreeRange(whiteToPlay);
             } else {
-                kingFreeRange(!VARS.MUTABLE.whiteToPlay);
-                kingRangeInsteadOfCheck(VARS.MUTABLE.whiteToPlay);
+                kingFreeRange(!whiteToPlay);
+                kingRangeInsteadOfCheck(whiteToPlay);
             }
         }
         clearDuplicatesFromRanges();
@@ -192,8 +194,8 @@ public class Board implements IBoard {
     }
 
     public void constrainPseudos()  {
-        constrainCalculatedPseudos(!VARS.MUTABLE.whiteToPlay);
-        constrainCalculatedPseudos(VARS.MUTABLE.whiteToPlay);
+        constrainCalculatedPseudos(!whiteToPlay);
+        constrainCalculatedPseudos(whiteToPlay);
     }
 
     /**
@@ -293,7 +295,7 @@ public class Board implements IBoard {
 
     private void kingSimpleMoves(boolean my) {
         getKing(my).setPossibleRange(new HashSet<>());
-        for (Location l : VARS.FINALS.matrixChooser.get(PieceType.K)) {
+        for (Location l : matrixChooser.get(PieceType.K)) {
             Location possiblePlaceOfMyKing = l.add(getKingsPlace(my));
             if (
                     METHODS.containsLocation(possiblePlaceOfMyKing) &&
@@ -312,14 +314,14 @@ public class Board implements IBoard {
      * @param forWhite in that case forWhite simbolize my color (Me is who count the step)
      */
     private void kingCastle(boolean forWhite) {
-        if (VARS.FINALS.MAX_WIDTH == 8 && VARS.FINALS.MAX_HEIGHT == 8 &&
-                (   (forWhite && (VARS.MUTABLE.whiteBigCastleEnabled || VARS.MUTABLE.whiteSmallCastleEnabled)) ||
-                        (!forWhite && (VARS.MUTABLE.blackBigCastleEnabled || VARS.MUTABLE.blackSmallCastleEnabled)) ) &&
+        if (MAX_WIDTH == 8 && MAX_HEIGHT == 8 &&
+                (   (forWhite && (whiteBigCastleEnabled || whiteSmallCastleEnabled)) ||
+                        (!forWhite && (blackBigCastleEnabled || blackSmallCastleEnabled)) ) &&
                 !METHODS.locationCollectionContains(getAttackRangeWithoutKing(!forWhite), getKingsPlace(forWhite))
         ){
 
-            int bigCastlePointPlus = (VARS.MUTABLE.whiteDown ? -2 : 2);
-            int bigCastleRoadPlus = (VARS.MUTABLE.whiteDown ? -1 : 1);
+            int bigCastlePointPlus = (whiteDown ? -2 : 2);
+            int bigCastleRoadPlus = (whiteDown ? -1 : 1);
             Location bigCastlePointLocation = new Location(
                     getKingsPlace(forWhite).getI(),
                     getKingsPlace(forWhite).getJ() + bigCastlePointPlus);
@@ -327,8 +329,8 @@ public class Board implements IBoard {
                     getKingsPlace(forWhite).getI(),
                     getKingsPlace(forWhite).getJ() + bigCastleRoadPlus);
 
-            int smallCastlePointPlus = (VARS.MUTABLE.whiteDown ? 2 : -2);
-            int smallCastleRoadPlus = (VARS.MUTABLE.whiteDown ? 1 : -1);
+            int smallCastlePointPlus = (whiteDown ? 2 : -2);
+            int smallCastleRoadPlus = (whiteDown ? 1 : -1);
             Location smallCastlePointLocation = new Location(
                     getKingsPlace(forWhite).getI(),
                     getKingsPlace(forWhite).getJ() + smallCastlePointPlus);
@@ -347,9 +349,9 @@ public class Board implements IBoard {
                     bigCastleRoadLocation,
                     smallCastlePointLocation,
                     smallCastleRoadLocation,
-                    (getKing(forWhite).isWhite() ? VARS.MUTABLE.whiteBigCastleEnabled : VARS.MUTABLE.blackBigCastleEnabled)
+                    (getKing(forWhite).isWhite() ? whiteBigCastleEnabled : blackBigCastleEnabled)
                             && theresNoPieceOnBigCastlePlusRoad,
-                    getKing(forWhite).isWhite() ? VARS.MUTABLE.whiteSmallCastleEnabled : VARS.MUTABLE.blackSmallCastleEnabled
+                    getKing(forWhite).isWhite() ? whiteSmallCastleEnabled : blackSmallCastleEnabled
             );
 
         }
@@ -400,7 +402,7 @@ public class Board implements IBoard {
 
     private void kingStepOutFromCheck(boolean enemy)  {
         if (checkers.getFirst().getType() == PieceType.N || checkers.getFirst().getType() == PieceType.P){
-            for (Location l : VARS.FINALS.matrixChooser.get(PieceType.K)) {
+            for (Location l : matrixChooser.get(PieceType.K)) {
                 l = getKingsPlace(!enemy).add(l);
                 if (
                         METHODS.containsLocation(l) && !METHODS.locationCollectionContains(getAttackRangeWithoutKing(enemy), l) &&
@@ -510,7 +512,7 @@ public class Board implements IBoard {
 
     private Set<Location> setBaseRangeOfAttacked(IPiece boundOrKing)  {
         if (boundOrKing.getType() == PieceType.K){
-            for (Location l : VARS.FINALS.matrixChooser.get(PieceType.K)) {
+            for (Location l : matrixChooser.get(PieceType.K)) {
                 l = getKingsPlace(boundOrKing.isWhite()).add(l);
 
                 if (

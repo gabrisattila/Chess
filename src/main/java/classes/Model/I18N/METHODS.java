@@ -6,18 +6,21 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static classes.Model.I18N.VARS.FINALS.*;
+import static classes.Model.I18N.VARS.MUTABLE.*;
+
 public class METHODS {
 
     public static void changeEvenOrOddStep(){
-        if (VARS.MUTABLE.evenOrOddStep == 0)
-            VARS.MUTABLE.evenOrOddStep = 1;
+        if (evenOrOddStep == 0)
+            evenOrOddStep = 1;
         else
-            VARS.MUTABLE.evenOrOddStep = 0;
+            evenOrOddStep = 0;
     }
 
     public static void switchWhoComes(){
-        VARS.MUTABLE.aiTurn = !VARS.MUTABLE.aiTurn;
-        VARS.MUTABLE.playerTurn = !VARS.MUTABLE.playerTurn;
+        aiTurn = !aiTurn;
+        playerTurn = !playerTurn;
     }
 
 
@@ -86,7 +89,7 @@ public class METHODS {
     }
 
     public static boolean containsLocation(int i, int j){
-        return containsLocation(VARS.FINALS.MAX_WIDTH, VARS.FINALS.MAX_HEIGHT, i, j);
+        return containsLocation(MAX_WIDTH, MAX_HEIGHT, i, j);
     }
 
     public static boolean containsLocation(int maxWidth, int maxHeight, int x, int y){
