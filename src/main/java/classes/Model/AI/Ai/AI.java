@@ -82,8 +82,6 @@ public class AI extends Thread {
         AiNode starterPos = getNewNodeAndSetUpProperEnvironmentForMinimaxStart();
         setUpBitBoard(starterFen);
 
-        int startTime = (int) System.currentTimeMillis();
-
         double evaluatedSearch = miniMax(starterPos, whiteToPlay, 0, -Double.MAX_VALUE, Double.MAX_VALUE, 0);
 
         if (evaluatedSearch == WHITE_GOT_CHECKMATE || evaluatedSearch == BLACK_GOT_CHECKMATE ||

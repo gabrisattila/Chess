@@ -384,6 +384,7 @@ public class BitBoardMoves {
                     shouldBePartOfMove = pAndS.getSecond();
 
                     while (possibilities != 0){
+                        setHittableOccupiedEmpty();
                         to = getFirstBitIndex(possibilities);
 
                         //Calc what should be part of pawn range
@@ -506,6 +507,7 @@ public class BitBoardMoves {
                         shouldBePartOfMove = pAndS.getSecond();
 
                         while (possibility != 0) {
+                            setHittableOccupiedEmpty();
                             to = getFirstBitIndex(possibility);
 
                             //Calc what should be part of pawn range
@@ -551,10 +553,9 @@ public class BitBoardMoves {
                                 if (makeMove(move)) {
                                     Pair<Integer, Integer> moveCountsNextTurn = possibilitiesNumInNextTurn(forWhite);
                                     int possibilitiesAfterMove = moveCountsNextTurn.getFirst();
-                                    double enemyKingPossibilitiesAfterMove = 0.1 * moveCountsNextTurn.getSecond();
                                     moveIsCheck = isSquareAttacked(forWhite, getFirstBitIndex(getKingBoard(!forWhite)));
                                     move |= moveIsCheck ? 0x200000 : 0;
-                                    value = evaluate(possibilitiesAfterMove, enemyKingPossibilitiesAfterMove, forWhite);
+                                    value = evaluate(possibilitiesAfterMove, forWhite);
                                     putToMap(valuedMoves, value, move);
                                     undoMove();
                                 }

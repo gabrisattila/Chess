@@ -11,11 +11,9 @@ import static classes.Model.I18N.VARS.MUTABLE.*;
 
 public class Evaluator {
 
-    public static double evaluate(int possibilityNumAfterMove, double enemyKingPossibilityNumAfterMove, boolean forWhite){
+    public static double evaluate(int possibilityNumAfterMove, boolean forWhite){
         double eval = evaluateWithFieldValues();
         eval += (forWhite ? +1 : -1) * 0.1 * possibilityNumAfterMove;
-        if (currentGameState == GameState.SECOND_STATE)
-            eval -= (forWhite ? +1 : -1) * enemyKingPossibilityNumAfterMove;
         return eval;
     }
 
