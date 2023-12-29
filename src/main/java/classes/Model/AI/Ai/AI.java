@@ -102,7 +102,7 @@ public class AI extends Thread {
         FenToBoard(newPosFen, getBoard());
         appendToHappenedList(newPosFen);
 
-        printSearchData(startTime, evaluatedSearch);
+//        printSearchData(startTime, evaluatedSearch);
     }
 
     public static AiNode getNewNodeAndSetUpProperEnvironmentForMinimaxStart(){

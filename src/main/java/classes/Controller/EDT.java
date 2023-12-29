@@ -38,19 +38,7 @@ public class EDT {
 
     //endregion
 
-
-    //region Constructor
-
-    public EDT() {
-//        saveBoardInsteadOfException();
-        initialization();
-    }
-
-    //endregion
-
-
     //region Methods
-
 
     public static void initialization() {
         if (isFirstOpen){
@@ -84,7 +72,7 @@ public class EDT {
             buttonsEnabled(new ArrayList<>(){{add("Új játék"); add("Mentés"); add("Szünet");}});
             ai = new AI();
             try {
-                sleep(300);
+                sleep(theresOnlyOneAi ? 300 : 1000);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -98,12 +86,11 @@ public class EDT {
             switchWhoComes();
             buttonsEnabled(new ArrayList<>(){{add("All");}});
             getViewBoard().rangeUpdater();
-            getViewBoard().setFieldColorsToNormal();
         }else {
             buttonsEnabled(new ArrayList<>(){{add("Új játék"); add("Mentés"); add("Szünet");}});
-            getViewBoard().setFieldColorsToNormal();
             startAI();
         }
+        getViewBoard().setFieldColorsToNormal();
     }
 
 
@@ -116,15 +103,6 @@ public class EDT {
     }
 
 
-    public static void saveBoardInsteadOfException(){
-        Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-            saveBoard(getViewBoard());
-        });
-    }
-
     //endregion
-
 
 }
