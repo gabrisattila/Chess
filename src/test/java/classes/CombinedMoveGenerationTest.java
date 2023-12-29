@@ -12,6 +12,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 
 import static classes.Model.AI.BitBoards.BitBoardMoves.fillBaseBitBoardPossibilities;
+import static classes.Model.AI.BitBoards.BitBoardMoves.generateMoves;
 import static classes.Model.AI.BitBoards.BitBoards.setUpBitBoard;
 import static classes.Model.Game.I18N.VARS.FINALS.testFens;
 import static classes.Model.Game.I18N.VARS.MUTABLE.whiteToPlay;
