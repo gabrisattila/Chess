@@ -90,8 +90,6 @@ public class GameBoard extends JLayeredPane {
         rotateBoard();
         addFieldsAtTheirFinalForm();
         clearLeftIcons();
-//        viewFieldPrinter(new ArrayList<>(){{add("base"); add("Pw");}});
-
 
         addCorners();
         addLabels();

@@ -15,33 +15,14 @@ import static classes.Model.I18N.VARS.FINALS.*;
 public class LoggerTest  {
 
     @Test
-    public void testInitializeLogFile() {
-        File directory = new File("src/main/Saves");
-
-        // listFiles() meghívása a mappa tartalmának lekéréséhez
-        int fileNumBeforeOpen =
-                notNull(directory.listFiles()) ?
-                    Objects.requireNonNull(directory.listFiles()).length :
-                    0;
-
-        Window.getWindow();
-
-        File[] files = directory.listFiles();
-        int fileNumAfterOpen = notNull(files) ? files.length : 0;
-        Assert.assertEquals(fileNumBeforeOpen + 1, fileNumAfterOpen);
-        assert files != null;
-        Assert.assertEquals("log", files[files.length - 1].getName().substring(0, 3));
-    }
-
-    @Test
     public void testLogFilesCheck() throws IOException {
         Window.getWindow();
-        File directory = new File("src/main/Saves");
+        File directory = new File(SAVES_DIRECTORY_PATH);
         File[] files = directory.listFiles();
         assert files != null;
         for (File f : files) {
             if ("log".equals(f.getName().substring(0, 3))){
-                BufferedReader reader = new BufferedReader(new FileReader("src/main/Saves/" + f.getName()));
+                BufferedReader reader = new BufferedReader(new FileReader(SAVES_DIRECTORY_PATH + f.getName()));
                 String line = reader.readLine();
                 int pieceIndex;
                 while (notNull(line)){

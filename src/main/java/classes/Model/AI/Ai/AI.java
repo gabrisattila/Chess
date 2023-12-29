@@ -42,7 +42,7 @@ public class AI extends Thread {
     public void run(){
         try {
             aiMove();
-            if (!gameFinished())
+            if (gameIsntFinished())
                 receivedMoveFromAi(BoardToFen(getBoard()));
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
@@ -52,7 +52,7 @@ public class AI extends Thread {
     public void aiMove() throws InterruptedException {
         convertOneBoardToAnother(getViewBoard(), getBoard());
         Move();
-        if (canBeLogger && !gameFinished())
+        if (canBeLogger && gameIsntFinished())
             logAiStep(detectChessMove(BoardToFen(getViewBoard()), BoardToFen(getBoard())));
     }
 
@@ -60,8 +60,8 @@ public class AI extends Thread {
         searchForBestMove();
     }
     
-    public static boolean gameFinished(){
-        return gameEndFlag.get();
+    public static boolean gameIsntFinished(){
+        return !gameEndFlag.get();
     }
 
     public static void waitOnPause(){
@@ -284,7 +284,6 @@ public class AI extends Thread {
     //endregion
 
     //For Test:
-
 
     public static double miniMaxWithoutAlphaBeta(AiNode starterPos, boolean maxNeeded, double depth, double inheritedValue){
 

@@ -110,7 +110,7 @@ public class ViewBoard extends Component implements IBoard {
 
         GameOverDecision(this, Double.MIN_VALUE);
 
-        if (!gameFinished()) {
+        if (gameIsntFinished()) {
             for (int i = 0; i < MAX_HEIGHT; i++) {
                 for (int j = 0; j < MAX_WIDTH; j++) {
                     if (getBoard().getField(i, j).isGotPiece() && notNull(getBoard().getPiece(i, j).getPossibleRange())) {

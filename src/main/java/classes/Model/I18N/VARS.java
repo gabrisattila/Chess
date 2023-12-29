@@ -90,7 +90,9 @@ public class VARS {
 
         public static final double VERTICAL_SIDE_LABEL_HEIGHT = FIELD_HEIGHT;
 
-        public static final String LOG_FILE_PATH = "src\\main\\java\\Saves\\log-"+dateToString(new Date())+".txt";
+        public static final String SAVES_DIRECTORY_PATH = "src\\main\\java\\Saves\\";
+
+        public static final String LOG_FILE_PATH = SAVES_DIRECTORY_PATH + "log-"+dateToString(new Date())+".txt";
 
         public static final String WHITE_STRING = "WHITE";
 
@@ -581,6 +583,8 @@ public class VARS {
         public static final AtomicBoolean pauseFlag = new AtomicBoolean(false);
 
         public static AtomicBoolean gameEndFlag = new AtomicBoolean(false);
+
+        public static int windowCreationCounter = 0;
 
     }
 

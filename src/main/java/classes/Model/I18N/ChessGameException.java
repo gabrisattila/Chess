@@ -8,7 +8,6 @@ import java.util.Arrays;
 
 import static classes.Model.I18N.METHODS.*;
 import static classes.Model.I18N.VARS.FINALS.*;
-import static classes.Model.I18N.VARS.MUTABLE.*;
 
 @Getter
 @Setter
@@ -46,20 +45,11 @@ public class ChessGameException extends RuntimeException {
         String fen = FEN.split(" ")[0];
         if(MAX_HEIGHT - 1 == countOccurrences(fen, '/')){
             String[] parts = fen.split("/");
-            int lengthOfPart = 0;
             for (String part : parts) {
-                for (char c : part.toCharArray()) {
-                    if (Character.isDigit(c)){
-                        lengthOfPart += Integer.parseInt(String.valueOf(c));
-                    }else {
-                        lengthOfPart++;
-                    }
-                }
-
-                if (MAX_WIDTH != lengthOfPart){
+                if (MAX_WIDTH != getFenRowCalculableLength(part)){
                     fenIsWrong = true;
+                    break;
                 }
-                lengthOfPart = 0;
             }
         }else {
             fenIsWrong = true;
@@ -74,7 +64,7 @@ public class ChessGameException extends RuntimeException {
         errorMessage.append("nem passzol a megszabott tábla méretekhez, mert ");
         String[] rows = fen.split("/");
         boolean rowCountEqualsMaxHeight = rows.length == MAX_HEIGHT;
-        boolean colCountEqualsMaxWidth = Arrays.stream(rows).allMatch(r -> r.length() == MAX_WIDTH);
+        boolean colCountEqualsMaxWidth = Arrays.stream(rows).allMatch(r -> getFenRowCalculableLength(r) == MAX_WIDTH);
         if (!rowCountEqualsMaxHeight && !colCountEqualsMaxWidth){
             badRowNum(errorMessage, rows);
             badColNum(errorMessage, rows, ". \nTovábbá ez a sor: ");
@@ -90,11 +80,24 @@ public class ChessGameException extends RuntimeException {
         errorMessage.append("a megadott fen ").append(rows.length).append(" sort tartalmaz, holott az elvárt: ").append(MAX_HEIGHT);
     }
 
+    public static String getBadRow(String[] rows){
+        String badRow = "";
+        for (String row : rows) {
+            if (MAX_WIDTH != getFenRowCalculableLength(row)){
+                badRow = row;
+                break;
+            }
+        }
+        return badRow;
+    }
+
     private static void badColNum(StringBuilder errorMessage, String[] rows, String openingLine) {
         errorMessage.append(openingLine);
         String badRow = "";
+        int rowCalculableLength = 0;
         for (String row : rows) {
-            if (row.length() != MAX_WIDTH) {
+            rowCalculableLength = getFenRowCalculableLength(row);
+            if (rowCalculableLength != MAX_WIDTH) {
                 badRow = row;
                 break;
             }
@@ -104,8 +107,22 @@ public class ChessGameException extends RuntimeException {
                 .append(" nem megfelelő hosszúságú, hiszen a kívánt hossz ")
                 .append(MAX_WIDTH)
                 .append(" a sor pedig ")
-                .append(badRow.length())
+                .append(rowCalculableLength)
                 .append(" hosszú.\n");
+    }
+
+    public static int getFenRowCalculableLength(String fenRow){
+        int fenRowLength = 0;
+        char currentC;
+        for (int i = 0; i < fenRow.length(); i++) {
+            currentC = fenRow.charAt(i);
+            if (Character.isLetter(currentC)){
+                fenRowLength++;
+            } else if (Character.isDigit(currentC)){
+                fenRowLength += Character.getNumericValue(currentC);
+            }
+        }
+        return fenRowLength;
     }
 
     //endregion

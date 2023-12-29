@@ -210,7 +210,7 @@ public class ChessButton extends JButton {
         private void loadClicked() throws IOException {
             isFirstOpen = false;
 
-            JFileChooser fileChooser = new JFileChooser(LOG_FILE_PATH);
+            JFileChooser fileChooser = new JFileChooser(SAVES_DIRECTORY_PATH);
 
             int result = fileChooser.showOpenDialog(null);
 
@@ -289,10 +289,9 @@ public class ChessButton extends JButton {
         }
 
         public static void saveBoard(IBoard board) {
-
             String fen = BoardToFen(board);
             String save = dateToString(new Date());
-            String savePath = "src\\main\\java\\Saves\\" + " " + save + ".txt";
+            String savePath = SAVES_DIRECTORY_PATH + save + ".txt";
             File file = new File(savePath);
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
 
@@ -303,7 +302,7 @@ public class ChessButton extends JButton {
                     writer.write("whiteDown" + "blackAi\n" + fen);
                 }
                 showFlashFrame("A mentés megtörtént a\n" +
-                        "src\\main\\java\\Saves helyre" +
+                        SAVES_DIRECTORY_PATH + " helyre " +
                         save +".txt", 3);
             } catch (IOException e) {
                 e.printStackTrace();
